@@ -1,0 +1,3 @@
+Instructions for the ./human_data folder.
+
+From the UniProt Downloads page (http://www.uniprot.org/downloads), go to 'Taxonomic Divisions' and download the `uniprot_sprot_human.dat.gz` and `uniprot_trembl_human.dat.gz` files. Extract them into this folder. Then run `grep.sh` to create the `data.txt` file.

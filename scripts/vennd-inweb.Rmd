@@ -1,0 +1,28 @@
+Report generated using Genoppi from Lage Lab
+<br>
+https://github.com/lagelab/Genoppi
+<br>
+<br>
+<h4>Venn diagram - InWeb_IM</h4>
+<br>
+<br>
+<b>Labels</b>
+```{r warning = FALSE, echo = FALSE, comment = NA}
+a <- paste0("pull down ∩ InWeb_IM database (", nrow(params$f), ")")
+b <- paste0("A = pull down subset of ", params$c, "<FDR<", params$d, " and ", params$i, 
+                           "<logFC<", params$j, " (", nrow(params$g), ")")
+c <- paste0("B = InWeb_IM interactors of ", params$e, " (", nrow(params$h), ")")
+c(a, b, c)
+```
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE}
+grid.newpage()
+grid.draw(params$a)
+```
+<br>
+<br>
+<b>Hypergeometric distribution result</b>
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$b
+```

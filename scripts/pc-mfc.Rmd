@@ -1,0 +1,24 @@
+Report generated using Genoppi from Lage Lab
+<br>
+https://github.com/lagelab/Genoppi
+<br>
+<br>
+<h4>MFC Additional Features</h4>
+<br>
+<br>
+```{r warning=FALSE, echo=FALSE, fig.width=2, fig.height=2, out.width='100px', fig.show='hold'}
+params$a
+params$b
+params$c
+```
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE, fig.width=3, fig.height=3}
+grid.newpage()
+grid.draw(params$d)
+```
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE, comment=NA}
+params$e
+```

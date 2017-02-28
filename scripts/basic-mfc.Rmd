@@ -1,0 +1,36 @@
+Report generated using Genoppi from Lage Lab
+<br>
+https://github.com/lagelab/Genoppi
+<br>
+<br>
+<h4>Quality Control MFC</h4>
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE, fig.height=1, fig.width=4}
+params$g
+```
+<br>
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$a
+```
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$b
+```
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$c
+```
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$d
+```
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$e
+```
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$f
+```
+
+
