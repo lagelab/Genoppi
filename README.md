@@ -1,4 +1,4 @@
-# Genoppi v1.0
+# Genoppi v1.5
 Genoppi is an interactive web application for analyzing and visualizing integrated experimental human proteomics data with genetics. It provides a visual interface for generating a variety of interactive plots to quality control raw data, integrate with GWAS dataset, identify known protein interacting partners, determine protein families present and offer easy visualization.
 
 ## Installation
@@ -11,7 +11,7 @@ Genoppi depends on several R packages. Run the following command from within RSt
 ```r
 source("https://bioconductor.org/biocLite.R")
 biocLite("limma")
-install.packages(c("shiny", "shinyjs", "plotly", "stringr", "VennDiagram", "rmarkdown", "plyr", "data.table"))
+install.packages(c("shiny", "shinyjs", "plotly", "stringr", "VennDiagram", "rmarkdown", "plyr", "data.table", "ggplot2", "RColorBrewer"))
 ```
 
 ## Running Genoppi 
