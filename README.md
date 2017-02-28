@@ -40,7 +40,7 @@ The headers must include<br>
 (1) <b>gene, logFC, FDR, pvalue</b> or<br>
 (2) <b>gene, rep1, rep2</b><br> or<br>
 (1) <b>accession_number, logFC, FDR, pvalue</b> or<br>
-(2) <b>accession_number, rep1, rep2</b><br> or<br>
+(2) <b>accession_number, rep1, rep2</b><br>
 
 Any missing values in input files may lead to improper visualization of the data and thus will be removed.
 
