@@ -1,4 +1,4 @@
-# Genoppi v1.5
+# Genoppi v2.0
 Genoppi is an interactive web application for analyzing and visualizing integrated experimental human proteomics data with genetics. It provides a visual interface for generating a variety of interactive plots to quality control raw data, integrate with GWAS dataset, identify known protein interacting partners, determine protein families present and offer easy visualization.
 
 ## Installation
@@ -32,21 +32,17 @@ runApp("/path/to/Genoppi/folder")
 
 ## Preparing your data
 <h3>Human experimental proteomics data</h3>
-Genoppi takes experimental IP-MS/MS results of bait pull down or full proteome data as text file. This file should include corresponding gene names and either <br>
+Genoppi takes experimental IP-MS/MS results of bait pull down or full proteome data as text file. This file should include corresponding gene names or Uniprot accession numbers and either <br>
 (1) results of statistical analyses or <br>
 (2) values of logarithmic fold change (logFC, the ratio of case to control) for two replicates in chosen condition.
 
 The headers must include<br>
 (1) <b>gene, logFC, FDR, pvalue</b> or<br>
-(2) <b>gene, rep1, rep2</b><br>
+(2) <b>gene, rep1, rep2</b><br> or<br>
+(1) <b>accession_number, logFC, FDR, pvalue</b> or<br>
+(2) <b>accession_number, rep1, rep2</b><br> or<br>
 
-It is recommended that all files use up-to-date HUGO gene nomenclature standards to comply with existing metadata. Any missing values may lead to improper visualization of the data.
-
-
-
-<h3>1000 Genomes imputed SNPs</h3>
-To integrate genetic data, you will need a single column text file with one Reference SNP ID(rs) per line. Runtime for mapping SNPs to genes depends on the number of SNPs and their genomic positions.
-
+Any missing values in input files may lead to improper visualization of the data and thus will be removed.
 
 
 <h3>Example files</h3>
