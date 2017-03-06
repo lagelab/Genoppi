@@ -312,7 +312,41 @@ shinyUI(navbarPage("Genoppi",
                                                        column(8, tableOutput("c_unique_snp"))
                                                      )
                                                      ),
-                                            tabPanel("Download", value = "3_p6",
+                                            tabPanel("Protein Family", value = "3_p6",
+                                                     br(),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_pf_FDR_slider1")),
+                                                       column(4, uiOutput("c_pf_FDR_slider2")),
+                                                       column(4, uiOutput("c_pf_FDR_slider3"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_pf_pvalue_slider1")),
+                                                       column(4, uiOutput("c_pf_pvalue_slider2")),
+                                                       column(4, uiOutput("c_pf_pvalue_slider3"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_pf_logFC_slider1")),
+                                                       column(4, uiOutput("c_pf_logFC_slider2")),
+                                                       column(4, uiOutput("c_pf_logFC_slider3"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(3, uiOutput("c_PF_marker_size")), 
+                                                       column(3, uiOutput("c_PF_sort_col")),
+                                                       column(3, uiOutput("c_PF_freq")),
+                                                       column(3, uiOutput("c_PF_button"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(9, plotlyOutput("comparison1_pf"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(9, plotlyOutput("comparison2_pf"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(9, plotlyOutput("comparison3_pf"))
+                                                     )
+                                                     ),
+                                            tabPanel("Download", value = "3_p7",
                                                      br(),
                                                      fluidRow(
                                                        column(3, downloadButton("c1_download_mapped_uniprot", "Converted identifiers f1")),

@@ -609,49 +609,101 @@ sp_layer_for_uploaded_genes_none_cbf <- function(p, d){
 
 assignFamily_inc_doubles <- function(d){
   ### exclude bait
+  ### currently not keeping track of what bait is
   # tmp <- subset(d, gene != bait)
   tmp <- d
   ### save file with gene names
-  write.table(tmp$gene, file = "data/t.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-  ### run sh script that assigns protein families and saves two files: one for genes that have families assigned and one for those that do not belong to any defined protein family
-  system("scripts/find_families_inc-doubles.sh")
-  ### read in families
-  families <- read.csv("data/gene_families.txt", sep = "\t")
-  system("rm data/gene_families.txt")
-  ### subset data for genes that have families assigned
-  d_families <- subset(d, gene %in% families$gene)
-  d_families$family <- families$family[match(d_families$gene, families$gene)]
-  ### alphabetic sort
-  d_families <- d_families[with(d_families, order(family, decreasing = FALSE)),]
-  ### count members of the same protein family
-  tmp <- data.frame(table(d_families$family))
-  d_families$frequency <- tmp$Freq[match(d_families$family, tmp$Var1)]
+  if (nrow(tmp)<1){
+    d_families <- data.frame("gene" = character(0), "id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), "logFC" = numeric(0), "pvalue" = numeric(0), "adjpvalue" = numeric(0), "BA_pvalue" = numeric(0), "BA_adjpvalue" = numeric(0), "BA_reproducible" = numeric(0), "family" = character(0), "frequency" = numeric(0))
+  }
+  else{
+    write.table(tmp$gene, file = "data/t.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+    ### run sh script that assigns protein families and saves two files: one for genes that have families assigned and one for those that do not belong to any defined protein family
+    system("scripts/find_families_inc-doubles.sh")
+    ### read in families
+    families <- read.csv("data/gene_families.txt", sep = "\t", header = T)
+    system("rm data/gene_families.txt")
+    if (nrow(families)<1){
+      d_families <- data.frame("gene" = character(0), "id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), "logFC" = numeric(0), "pvalue" = numeric(0), "adjpvalue" = numeric(0), "BA_pvalue" = numeric(0), "BA_adjpvalue" = numeric(0), "BA_reproducible" = numeric(0), "family" = character(0), "frequency" = numeric(0))
+    }
+    else{
+      d_families <- d[1:length(families$family),]
+      for (i in 1:length(families$family)){
+        inx <- which(d$gene %in% families$gene[i])
+        d_families[i,] <- d[inx,]
+      }
+      d_families <- cbind(d_families, family=families$family)
+      d_families <- d_families[with(d_families, order(family, decreasing = FALSE)),]
+      howmany <- length(unique(d_families$family))
+      tmp <- data.frame(table(d_families$family))
+      d_families$frequency <- tmp$Freq[match(d_families$family, tmp$Var1)]
+      ### uncomment the line below if you would like to show protein families with more than one member
+      #d_families <- subset(d_families, frequency>1)
+      ### in case it becomes empty after subsetting
+      if (nrow(d_families)<1){
+        d_families <- data.frame("gene" = character(0), "id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), "logFC" = numeric(0), "pvalue" = numeric(0), "adjpvalue" = numeric(0), "BA_pvalue" = numeric(0), "BA_adjpvalue" = numeric(0), "BA_reproducible" = numeric(0), "family" = character(0), "frequency" = numeric(0))
+      }
+    }
+  }
   d_families
 }
 
 addNames <- function(d){
-  ### read genes that have no family assigned
-  genesNotAs <- read.csv("data/genes_naf_wnames.txt", sep = "\t")
+  if((file.exists("/Users/aprilkim/Documents/lagelab_github/Genoppi/data/genes_naf_wnames.txt")) == TRUE){
+    ### read genes that have no family assigned
+    genesNotAs <- read.csv("data/genes_naf_wnames.txt", sep = "\t")
+  }
+  else {
+    system("echo -e \"gene\"$'\t'\"name\" > data/genes_naf_secondary.txt")
+    genesNotAs <- read.csv("data/genes_naf_secondary.txt", sep = "\t")
+  }
   system("rm data/genes_naf_wnames.txt")
+  system("rm data/genes_naf_secondary.txt")
   ### gna = gene not assigned
   d_gna <- subset(d, gene %in% genesNotAs$gene)
   d_gna$name <- genesNotAs$name[match(d_gna$gene, genesNotAs$gene)]
   d_gna
 }
 
-# compareSP <- function(d1,d2){
-#   g = ggplot(data = rbind(d1, d2), mapping=aes(x = rep1, y = rep2, group = gene))+
-#     geom_line(color = "dodgerblue")+
-#     geom_point(data = d1, mapping=aes(x = rep1, y = rep2), alpha = 0.9, size = 1, color="black")+
-#     geom_point(data = d2, mapping=aes(x = rep1, y = rep2), alpha = 0.9, size = 1, color="red")+
-#     theme_bw() +
-#     xlab("rep1") + ylab("rep2")+
-#     geom_hline(yintercept = 0)+
-#     geom_vline(xintercept = 0)+
-#     geom_abline(intercept = 0, slope = 1, color = "gray")
-#   g
-#   ggplotly(g)
-# }
+makePlotFamilies_1quadrant <- function(data_fam, data_gna, data, sortPF){
+  ### replace logFC and pvalue in di* by these from dpm
+  data_fam$logFC <- data$logFC[match(data_fam$gene, data$gene)]
+  data_fam$pvalue <- data$pvalue[match(data_fam$gene, data$gene)]
+  if(sortPF == "sort_f"){
+    data_fam <- data_fam[order(-data_fam$frequency), ]
+    if(nrow(data_fam)>=1){
+      data_fam <- cbind(data_fam, new_f = paste0("(", data_fam$frequency, ") ", data_fam$family))
+      # data_fam$new_f <- factor(data_fam$new_f, levels = unique(data_fam$new_f))
+    }
+    else {
+      data_fam <- data.frame("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
+                             "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
+                             "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                             "new_f" = character(0))
+    }
+  }
+  else if(sortPF == "sort_a"){
+    data_fam 
+    if(nrow(data_fam)>=1){
+      data_fam <- cbind(data_fam, new_f = paste0(data_fam$family, " (", data_fam$frequency, ")"))
+    }
+    else {
+      data_fam <- data.frame("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0),
+                             "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
+                             "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                             "new_f" = character(0))
+    }
+  }
+  data_fam$new_f <- factor(data_fam$new_f, levels = unique(data_fam$new_f))
+
+  data_gna$logFC <- data$logFC[match(data_gna$gene, data$gene)]
+  data_gna$pvalue <- data$pvalue[match(data_gna$gene, data$gene)]
+  pf_list <- list("list" = data_fam, "list" = data_gna)
+  pf_list
+  #for download
+  # families <- cbind(data_fam$gene, data_fam$family, data_fam$frequency)
+  # colnames(families) <- c("gene", "family", "frequency")
+}
 
 compare_two_files_a <- function(orig, subset, overlaps){
   p <- plot_ly(showlegend = T, width = 300, height = 390)
@@ -760,4 +812,338 @@ compare_two_files_cc <- function(orig, subset, overlaps1, overlaps2, overlaps3){
                    opacity = 0.9,
                    text = ~paste(gene), hoverinfo = "text", name = "1, 2 & 3")
   p <- p %>% layout(legend = list(orientation = 'h', y = -0.23))
+}
+
+compare_two_files_pf_a <- function(orig, subset, s_nga, overlaps, o_nga){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#e41a1c'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f1 unassigned")
+  p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f1&2 unassigned")
+    p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue),
+                     marker = list(color = "#e41a1c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                     opacity = 0.9, color = ~new_f,
+                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "none")
+    p <- add_markers(p, data = overlaps, x = ~logFC, y = ~-log10(pvalue),
+                     marker = list(color = "#fdb462", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                     opacity = 0.9, color = ~new_f,
+                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "none")
+}
+
+compare_two_files_pf_a_size <- function(orig, subset, s_nga, overlaps, o_nga, increase){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#e41a1c'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1 unassigned") 
+  p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&2 unassigned") 
+    p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                     marker = list(color = "#e41a1c", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                                   opacity = 0.8), color = ~new_f,
+                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+    p <- add_markers(p, data = overlaps, x = ~logFC, y = ~-log10(pvalue),
+                     marker = list(color = "#fdb462", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                                   opacity = 0.8), color = ~new_f,
+                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files__pf_b <- function(orig, subset, s_nga, overlaps, o_nga){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#ffff33'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2 unassigned") 
+  p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&2 unassigned") 
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffff33", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = overlaps, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#fdb462", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_b_size <- function(orig, subset, s_nga, overlaps, o_nga, increase){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#ffff33'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2 unassigned") 
+  p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&2 unassigned") 
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffff33", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                                 opacity = 0.8), color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = overlaps, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#fdb462", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                                 opacity = 0.8), color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_aa <- function(orig, subset, s_nga, o_12, o_12_nga, o_13, o_13_nga, o_123, o_123_nga){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#e41a1c'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1 unassigned") 
+  p <- add_markers(p, data = o_12_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&2 unassigned") 
+  p <- add_markers(p, data = o_13_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#8c6bb1'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&3 unassigned") 
+  p <- add_markers(p, data = o_123_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f12&3 unassigned")
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#e41a1c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_12, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#fdb462", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_13, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#8c6bb1", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_123, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#d9d9d9", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_aa_size <- function(orig, subset, s_nga, o_12, o_12_nga, o_13, o_13_nga, o_123, o_123_nga, increase){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#e41a1c'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1 unassigned") 
+  p <- add_markers(p, data = o_12_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&2 unassigned") 
+  p <- add_markers(p, data = o_13_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#8c6bb1'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f1&3 unassigned") 
+  p <- add_markers(p, data = o_123_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f12&3 unassigned")
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#e41a1c", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                   opacity = 0.8), color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_12, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#fdb462", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                   opacity = 0.8), color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_13, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#8c6bb1", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                   opacity = 0.8), color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_123, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#d9d9d9", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
+                   opacity = 0.8), color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_bb <- function(orig, subset, s_nga, o_21, o_21_nga, o_23, o_23_nga, o_213, o_213_nga){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#ffff33'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2 unassigned") 
+  p <- add_markers(p, data = o_21_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fd8d3c'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2&1 unassigned") 
+  p <- add_markers(p, data = o_23_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#41ab5d'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2&3 unassigned") 
+  p <- add_markers(p, data = o_213_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f21&3 unassigned")
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffff33", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_21, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#fd8d3c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_23, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#41ab5d", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_213, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#d9d9d9", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_bb_size <- function(orig, subset, s_nga, o_21, o_21_nga, o_23, o_23_nga, o_213, o_213_nga, increase){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#ffff33'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2 unassigned") 
+  p <- add_markers(p, data = o_21_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#fd8d3c'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2&1 unassigned") 
+  p <- add_markers(p, data = o_23_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#41ab5d'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f2&3 unassigned") 
+  p <- add_markers(p, data = o_213_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f21&3 unassigned")
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffff33", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_21, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#fd8d3c", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_23, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#41ab5d", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_213, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#d9d9d9", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_cc <- function(orig, subset, s_nga, o_31, o_31_nga, o_32, o_32_nga, o_312, o_312_nga){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#1f78b4'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f3 unassigned") 
+  p <- add_markers(p, data = o_31_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#8c6bb1'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f3&1 unassigned") 
+  p <- add_markers(p, data = o_32_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#41ab5d'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f3&2 unassigned") 
+  p <- add_markers(p, data = o_312_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f31&1 unassigned")
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#1f78b4", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_31, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#8c6bb1", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_32, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#41ab5d", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_312, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#d9d9d9", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+}
+
+compare_two_files_pf_cc_size <- function(orig, subset, s_nga, o_31, o_31_nga, o_32, o_32_nga, o_312, o_312_nga, increase){
+  p <- plot_ly(showlegend = T)
+  p <- add_markers(p, data = orig, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#ffffff", size = 6, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9,
+                   text = ~paste(gene), hoverinfo = "text", showlegend = F)
+  p <- add_markers(p, data = s_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#1f78b4'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f3 unassigned") 
+  p <- add_markers(p, data = o_31_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#8c6bb1'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f3&1 unassigned") 
+  p <- add_markers(p, data = o_32_nga, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(size = 6, symbol = 2, color = c('#41ab5d'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                   name="f3&2 unassigned") 
+  p <- add_markers(p, data = o_312_nga, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
+                   text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                   name="f31&1 unassigned")
+  p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
+                   marker = list(color = "#1f78b4", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_31, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#8c6bb1", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_32, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#41ab5d", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  p <- add_markers(p, data = o_312, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(color = "#d9d9d9", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
+                   opacity = 0.9, color = ~new_f,
+                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
 }

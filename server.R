@@ -2934,8 +2934,6 @@ shinyServer(function(input, output, session){
       combined_max <- max(-(min_logFC), max_logFC)
       numericInput("c_logfc_thresh_comb", "logFC threshold",
                    min = 0, max = combined_max, value = 1, step = 0.1)
-      # sliderInput("c_logfc_thresh_comb", "logFC threshold",
-      #             min = 0, max = combined_max, value = 1, step = 0.1)
     }
     else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
@@ -2972,7 +2970,6 @@ shinyServer(function(input, output, session){
     )
     sliderInput("c_compare_FDR_range", "FDR",
                 min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
-    
   })
   
   #create slider for pvalue
@@ -3012,7 +3009,7 @@ shinyServer(function(input, output, session){
                 min = min_logFC, max = max_logFC, value = c(1, max_logFC), step = 0.1)
   })
   
-  #create slide for logFC FILE1
+  #create slide for logFC FILE3
   output$c_comparison_logFC_slider3 <- renderUI({
     validate(
       need(input$c_file_pulldown3 != '', "")
@@ -3105,6 +3102,170 @@ shinyServer(function(input, output, session){
     }
   })
   
+  #create slider for FDR
+  output$c_pf_FDR_slider1 <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    sliderInput("c_f1_pf_FDR", "FDR",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for FDR file2
+  output$c_pf_FDR_slider2 <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    sliderInput("c_f2_pf_FDR", "FDR",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for FDR file3
+  output$c_pf_FDR_slider3 <- renderUI({
+    validate(
+      need(input$c_file_pulldown3 != '', "")
+    )
+    sliderInput("c_f3_pf_FDR", "FDR",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for pvalue
+  output$c_pf_pvalue_slider1 <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    sliderInput("c_f1_pf_pvalue", "pvalue",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for pvalue file2
+  output$c_pf_pvalue_slider2 <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    sliderInput("c_f2_pf_pvalue", "pvalue",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for pvalue file3
+  output$c_pf_pvalue_slider3 <- renderUI({
+    validate(
+      need(input$c_file_pulldown3 != '', "")
+    )
+    sliderInput("c_f3_pf_pvalue", "pvalue",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slide for logFC FILE1
+  output$c_pf_logFC_slider1 <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    df <- c_pd1()
+    min_logFC <- min(df$logFC)
+    min_logFC <- signif(min_logFC-0.5, 1)
+    max_logFC <- max(df$logFC)
+    max_logFC <- signif(max_logFC+0.5, 1)
+    sliderInput("c_f1_pf_logFC_range", "logFC",
+                min = min_logFC, max = max_logFC, value = c(1, max_logFC), step = 0.1)
+  })
+  
+  #create slide for logFC FILE2
+  output$c_pf_logFC_slider2 <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    df <- c_pd2()
+    min_logFC <- min(df$logFC)
+    min_logFC <- signif(min_logFC-0.5, 1)
+    max_logFC <- max(df$logFC)
+    max_logFC <- signif(max_logFC+0.5, 1)
+    sliderInput("c_f2_pf_logFC_range", "logFC",
+                min = min_logFC, max = max_logFC, value = c(1, max_logFC), step = 0.1)
+  })
+  
+  #create slide for logFC FILE3
+  output$c_pf_logFC_slider3 <- renderUI({
+    validate(
+      need(input$c_file_pulldown3 != '', "")
+    )
+    df <- c_pd3()
+    min_logFC <- min(df$logFC)
+    min_logFC <- signif(min_logFC-0.5, 1)
+    max_logFC <- max(df$logFC)
+    max_logFC <- signif(max_logFC+0.5, 1)
+    sliderInput("c_f3_pf_logFC_range", "logFC",
+                min = min_logFC, max = max_logFC, value = c(1, max_logFC), step = 0.1)
+  })
+  
+  output$c_PF_button <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    if(!is.null(c_compare1()) & !is.null(c_compare2())){
+      actionButton("c_make_bpf", "Generate PF plot")
+    }
+  })
+  
+  output$c_PF_marker_size <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    radioButtons('c_PF_option', 'Turn on/off marker sizing',
+                 c(On = 'change_m_PF',
+                   Off = 'static_m_PF'),
+                 inline = T
+    )
+  })
+  
+  c_PF_marker <- reactive({
+    inPFmarker <- input$c_PF_option
+    if (inPFmarker == "change_m_PF") {
+      marker <- "change"
+    }
+    else {
+      marker <- "no_change"
+    }
+  })
+  
+  output$c_PF_sort_col <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    radioButtons('c_PF_sort_option', 'Sort',
+                 c("Alphabetically" = 'sort_alph',
+                   "PF Frequency" = 'sort_freq'),
+                 inline = T
+    )
+  })
+  
+  c_PF_sorting <- reactive({
+    inPFsort <- input$c_PF_sort_option
+    if (inPFsort == "sort_alph") {
+      marker <- "sort_a"
+    }
+    else {
+      marker <- "sort_f"
+    }
+  })
+  
+  output$c_PF_freq <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    if(!is.null(input$c_PF_option)){
+      inPFmarker <- input$c_PF_option
+      if (inPFmarker == "change_m_PF") {
+        sliderInput("c_PF_marker_freq", "Marker size",
+                    min = 1, max = 40, value = 1, step = 1)     
+      }
+    }
+  })
+  
   observe({
     if(input$comparison == "3_p2"){
       shinyjs::hide("c_colorscheme")
@@ -3112,12 +3273,27 @@ shinyServer(function(input, output, session){
       shinyjs::hide("c_pval_thresh")
       shinyjs::hide("c_logfc_thresh_comb")
     }
-    else {
-      shinyjs::show("c_colorscheme")
-      shinyjs::show("c_fdr_thresh")
-      shinyjs::show("c_pval_thresh")
-      shinyjs::show("c_logfc_thresh_comb")
+    # else {
+    #   shinyjs::show("c_colorscheme")
+    #   shinyjs::show("c_fdr_thresh")
+    #   shinyjs::show("c_pval_thresh")
+    #   shinyjs::show("c_logfc_thresh_comb")
+    # }
+  })
+  
+  observe({
+    if(input$comparison == "3_p6"){
+      shinyjs::hide("c_colorscheme")
+      shinyjs::hide("c_fdr_thresh")
+      shinyjs::hide("c_pval_thresh")
+      shinyjs::hide("c_logfc_thresh_comb")
     }
+    # else {
+    #   shinyjs::show("c_colorscheme")
+    #   shinyjs::show("c_fdr_thresh")
+    #   shinyjs::show("c_pval_thresh")
+    #   shinyjs::show("c_logfc_thresh_comb")
+    # }
   })
   
   c_search_gene <- reactive({
@@ -5077,24 +5253,127 @@ shinyServer(function(input, output, session){
                         & logFC < input$c_f3_logFC_range[2] & logFC > input$c_f3_logFC_range[1])
   })
   
+  c_f1_pf <- reactive({
+    f1 <- c_pd1()
+    f1_subset <- subset(f1, FDR < input$c_f1_pf_FDR[2] & FDR > input$c_f1_pf_FDR[1]
+                        & pvalue < input$c_f1_pf_pvalue[2] & pvalue > input$c_f1_pf_pvalue[1]
+                        & logFC < input$c_f1_pf_logFC_range[2] & logFC > input$c_f1_pf_logFC_range[1])
+  })
+  
+  c_f2_pf <- reactive({
+    f2 <- c_pd2()
+    f2_subset <- subset(f2, FDR < input$c_f2_pf_FDR[2] & FDR > input$c_f2_pf_FDR[1]
+                        & pvalue < input$c_f2_pf_pvalue[2] & pvalue > input$c_f2_pf_pvalue[1]
+                        & logFC < input$c_f2_pf_logFC_range[2] & logFC > input$c_f2_pf_logFC_range[1])
+  })
+  
+  c_f3_pf <- reactive({
+    f3 <- c_pd3()
+    f3_subset <- subset(f3, FDR < input$c_f3_pf_FDR[2] & FDR > input$c_f3_pf_FDR[1]
+                        & pvalue < input$c_f3_pf_pvalue[2] & pvalue > input$c_f3_pf_pvalue[1]
+                        & logFC < input$c_f3_pf_logFC_range[2] & logFC > input$c_f3_pf_logFC_range[1])
+  })
+  
   #comparison for file1
   c_compare1 <- reactive({
+    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
-      f1_subset <- c_f1()
-      f2_subset <- c_f2()
+      if(input$comparison == "3_p2"){
+        f1_subset <- c_f1()
+        f2_subset <- c_f2()
+      }
+      else if(input$comparison == "3_p6"){
+        f1_subset <- c_f1_pf()
+        f2_subset <- c_f2_pf()
+      }
       overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
+      f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene)
       list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2)
     }
     else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
-      f1_subset <- c_f1()
-      f2_subset <- c_f2()
-      f3_subset <- c_f3()
+      if(input$comparison == "3_p2"){
+        f1_subset <- c_f1()
+        f2_subset <- c_f2()
+        f3_subset <- c_f3()
+      }
+      else if(input$comparison == "3_p6"){
+        f1_subset <- c_f1_pf()
+        f2_subset <- c_f2_pf()
+        f3_subset <- c_f3_pf()
+      }
       overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
       overlap1_3 <- subset(f1_subset, gene %in% f3_subset$gene)
       overlap1_2_3 <- subset(f1_subset, gene %in% f2_subset$gene & gene %in% f3_subset$gene)
+      f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene & gene %!in% (overlap1_3)$gene & gene %!in% (overlap1_2_3)$gene)
+      overlap1_2 <- subset(overlap1_2, gene %!in% (overlap1_2_3)$gene)
+      overlap1_3 <- subset(overlap1_3, gene %!in% (overlap1_2_3)$gene)
       list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2, overlap1_3=overlap1_3, overlap1_2_3=overlap1_2_3)
+    }
+  })
+  
+  #comparison for file2
+  c_compare2 <- reactive({
+    '%!in%' <- function(x,y)!('%in%'(x,y))
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      f2 <- c_pd2()
+      if(input$comparison == "3_p2"){
+        f1_subset <- c_f1()
+        f2_subset <- c_f2()
+      }
+      else if(input$comparison == "3_p6"){
+        f1_subset <- c_f1_pf()
+        f2_subset <- c_f2_pf()
+      }
+      overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
+      f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene)
+      list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1)
+    }
+    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f2 <- c_pd2()
+      if(input$comparison == "3_p2"){
+        f1_subset <- c_f1()
+        f2_subset <- c_f2()
+        f3_subset <- c_f3()
+      }
+      else if(input$comparison == "3_p6"){
+        f1_subset <- c_f1_pf()
+        f2_subset <- c_f2_pf()
+        f3_subset <- c_f3_pf()
+      }
+      overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
+      overlap2_3 <- subset(f2_subset, gene %in% f3_subset$gene)
+      overlap2_1_3 <- subset(f2_subset, gene %in% f1_subset$gene & gene %in% f3_subset$gene)
+      f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene & gene %!in% (overlap2_3)$gene & gene %!in% (overlap2_1_3)$gene)
+      overlap2_1 <- subset(overlap2_1, gene %!in% (overlap2_1_3)$gene)
+      overlap2_3 <- subset(overlap2_3, gene %!in% (overlap2_1_3)$gene)
+      list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1, overlap2_3=overlap2_3, overlap2_1_3=overlap2_1_3)
+    }
+  })
+  
+  #comparison for file3
+  c_compare3 <- reactive({
+    '%!in%' <- function(x,y)!('%in%'(x,y))
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f3 <- c_pd3()
+      if(input$comparison == "3_p2"){
+        f1_subset <- c_f1()
+        f2_subset <- c_f2()
+        f3_subset <- c_f3()
+      }
+      else if(input$comparison == "3_p6"){
+        f1_subset <- c_f1_pf()
+        f2_subset <- c_f2_pf()
+        f3_subset <- c_f3_pf()
+      }
+      overlap3_1 <- subset(f3_subset, gene %in% f1_subset$gene)
+      overlap3_2 <- subset(f3_subset, gene %in% f2_subset$gene)
+      overlap3_1_2 <- subset(f3_subset, gene %in% f1_subset$gene & gene %in% f2_subset$gene)
+      f3_subset <- subset(f3_subset, gene %!in% (overlap3_1)$gene & gene %!in% (overlap3_2)$gene & gene %!in% (overlap3_1_2)$gene)
+      overlap3_1 <- subset(overlap3_1, gene %!in% (overlap3_1_2)$gene)
+      overlap3_2 <- subset(overlap3_2, gene %!in% (overlap3_1_2)$gene)
+      list(f3=f3, f3_subset=f3_subset, overlap3_1=overlap3_1, overlap3_2=overlap3_2, overlap3_1_2=overlap3_1_2)
     }
   })
   
@@ -5120,27 +5399,6 @@ shinyServer(function(input, output, session){
     p1
   })
   
-  #comparison for file2
-  c_compare2 <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f2 <- c_pd2()
-      f1_subset <- c_f1()
-      f2_subset <- c_f2()
-      overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
-      list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f2 <- c_pd2()
-      f1_subset <- c_f1()
-      f2_subset <- c_f2()
-      f3_subset <- c_f3()
-      overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
-      overlap2_3 <- subset(f2_subset, gene %in% f3_subset$gene)
-      overlap2_1_3 <- subset(f2_subset, gene %in% f1_subset$gene & gene %in% f3_subset$gene)
-      list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1, overlap2_3=overlap2_3, overlap2_1_3=overlap2_1_3)
-    }
-  })
-  
   c_compare2_plot <- reactive({
     d <- c_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
@@ -5162,21 +5420,7 @@ shinyServer(function(input, output, session){
     p2 <- search_volcano(p, searchgene)
     p2
   })
-  
-  #comparison for file3
-  c_compare3 <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f3 <- c_pd3()
-      f1_subset <- c_f1()
-      f2_subset <- c_f2()
-      f3_subset <- c_f3()
-      overlap3_1 <- subset(f3_subset, gene %in% f1_subset$gene)
-      overlap3_2 <- subset(f3_subset, gene %in% f2_subset$gene)
-      overlap3_1_2 <- subset(f3_subset, gene %in% f1_subset$gene & gene %in% f2_subset$gene)
-      list(f3=f3, f3_subset=f3_subset, overlap3_1=overlap3_1, overlap3_2=overlap3_2, overlap3_1_2=overlap3_1_2)
-    }
-  })
-  
+
   c_compare3_plot <- reactive({
     d <- c_compare3()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
@@ -5196,89 +5440,338 @@ shinyServer(function(input, output, session){
     p3
   })
   
-  c_f1_unique <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
+  c_compare1_pfe_plot <- eventReactive(input$c_make_bpf, {
     d <- c_compare1()
+    pfmsizing <- c_PF_marker()
+    pfsort <- c_PF_sorting()
+    increase_size <- input$c_PF_marker_freq
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f1 <- subset(d$f1_subset, gene %!in% (d$overlap1_2)$gene)
+      withProgress(message = 'This may take a while', 
+                   detail = 'Hold please', value = 0, {
+                     pf_f1 <- d$f1
+                     pf_f1s <- d$f1_subset
+                     pf_overlap1_2 <- d$overlap1_2
+                     incProgress(0.2)
+                     #f1 subset
+                     f1s_families <- assignFamily_inc_doubles(pf_f1s)
+                     f1s_gna <- addNames(pf_f1s)
+                     incProgress(0.5)
+                     #f1 and f2 overlap
+                     o12_families <- assignFamily_inc_doubles(pf_overlap1_2)
+                     o12_gna <- addNames(pf_overlap1_2)
+                     incProgress(0.8)
+                     f1_subset <- makePlotFamilies_1quadrant(f1s_families, f1s_gna, pf_f1, pfsort)
+                     overlap1_2 <- makePlotFamilies_1quadrant(o12_families, o12_gna, pf_f1, pfsort)
+                     incProgress(0.9)
+                     if (pfmsizing == "change"){
+                       p1 <- compare_two_files_pf_a_size(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]], increase_size)
+                     }
+                     else if (pfmsizing == "no_change"){
+                       p1 <- compare_two_files_pf_a(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]])
+                     }
+                   })
     }
     else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f1 <- subset(d$f1_subset, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
+      withProgress(message = 'This may take a while', 
+                   detail = 'Hold please', value = 0, {
+                     pf_f1 <- d$f1
+                     pf_f1s <- d$f1_subset
+                     pf_overlap1_2 <- d$overlap1_2
+                     pf_overlap1_3 <- d$overlap1_3
+                     pf_overlap1_2_3 <- d$overlap1_2_3
+                     incProgress(0.1)
+                     #f1 subset
+                     f1s_families <- assignFamily_inc_doubles(pf_f1s)
+                     f1s_gna <- addNames(pf_f1s)
+                     incProgress(0.3)
+                     #f1 and f2 overlap
+                     o12_families <- assignFamily_inc_doubles(pf_overlap1_2)
+                     o12_gna <- addNames(pf_overlap1_2)
+                     incProgress(0.5)
+                     #f1 and f3 overlap
+                     o13_families <- assignFamily_inc_doubles(pf_overlap1_3)
+                     o13_gna <- addNames(pf_overlap1_3)
+                     incProgress(0.7)
+                     #f1 and f2 overlap
+                     o123_families <- assignFamily_inc_doubles(pf_overlap1_2_3)
+                     o123_gna <- addNames(pf_overlap1_2_3)
+                     incProgress(0.9)
+                     f1_subset <- makePlotFamilies_1quadrant(f1s_families, f1s_gna, pf_f1, pfsort)
+                     overlap1_2 <- makePlotFamilies_1quadrant(o12_families, o12_gna, pf_f1, pfsort)
+                     overlap1_3 <- makePlotFamilies_1quadrant(o13_families, o13_gna, pf_f1, pfsort)
+                     overlap1_2_3 <- makePlotFamilies_1quadrant(o123_families, o123_gna, pf_f1, pfsort)
+                     
+                     if (pfmsizing == "change"){
+                       p1 <- compare_two_files_pf_aa_size(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]],
+                                                          overlap1_3[[1]], overlap1_3[[2]], overlap1_2_3[[1]], overlap1_2_3[[2]], increase_size)
+                     }
+                     else{
+                       p1 <- compare_two_files_pf_aa(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]],
+                                                     overlap1_3[[1]], overlap1_3[[2]], overlap1_2_3[[1]], overlap1_2_3[[2]])
+                     }
+                   })
     }
+  })
+  
+  c_compare2_pfe_plot <- eventReactive(input$c_make_bpf, {
+    d <- c_compare2()
+    pfmsizing <- c_PF_marker()
+    pfsort <- c_PF_sorting()
+    increase_size <- input$c_PF_marker_freq
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      withProgress(message = 'This may take a while', 
+                   detail = 'Hold please', value = 0, {
+                     pf_f2 <- d$f2
+                     pf_f2s <- d$f2_subset
+                     pf_overlap2_1 <- d$overlap2_1
+                     incProgress(0.2)
+                     #f2 subset
+                     f2s_families <- assignFamily_inc_doubles(pf_f2s)
+                     f2s_gna <- addNames(pf_f2s)
+                     incProgress(0.5)
+                     #f1 and f2 overlap
+                     o21_families <- assignFamily_inc_doubles(pf_overlap2_1)
+                     o21_gna <- addNames(pf_overlap2_1)
+                     incProgress(0.8)
+                     f2_subset <- makePlotFamilies_1quadrant(f2s_families, f2s_gna, pf_f2, pfsort)
+                     overlap2_1 <- makePlotFamilies_1quadrant(o21_families, o21_gna, pf_f2, pfsort)
+                     incProgress(0.9)
+                     if (pfmsizing == "change"){
+                       p1 <- compare_two_files_pf_b_size(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]], increase_size)
+                     }
+                     else if (pfmsizing == "no_change"){
+                       p1 <- compare_two_files_pf_b(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]])
+                     }
+                   })
+    }
+    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      withProgress(message = 'This may take a while', 
+                   detail = 'Hold please', value = 0, {
+                     pf_f2 <- d$f2
+                     pf_f2s <- d$f2_subset
+                     pf_overlap2_1 <- d$overlap2_1
+                     pf_overlap2_3 <- d$overlap2_3
+                     pf_overlap2_1_3 <- d$overlap2_1_3
+                     incProgress(0.1)
+                     #f2 subset
+                     f2s_families <- assignFamily_inc_doubles(pf_f2s)
+                     f2s_gna <- addNames(pf_f2s)
+                     incProgress(0.3)
+                     #f1 and f2 overlap
+                     o21_families <- assignFamily_inc_doubles(pf_overlap2_1)
+                     o21_gna <- addNames(pf_overlap2_1)
+                     incProgress(0.5)
+                     #f1 and f3 overlap
+                     o23_families <- assignFamily_inc_doubles(pf_overlap2_3)
+                     o23_gna <- addNames(pf_overlap2_3)
+                     incProgress(0.7)
+                     #f1, f2 and f3 overlap
+                     o213_families <- assignFamily_inc_doubles(pf_overlap2_1_3)
+                     o213_gna <- addNames(pf_overlap2_1_3)
+                     incProgress(0.9)
+                     f2_subset <- makePlotFamilies_1quadrant(f2s_families, f2s_gna, pf_f2, pfsort)
+                     overlap2_1 <- makePlotFamilies_1quadrant(o21_families, o21_gna, pf_f2, pfsort)
+                     overlap2_3 <- makePlotFamilies_1quadrant(o23_families, o23_gna, pf_f2, pfsort)
+                     overlap2_1_3 <- makePlotFamilies_1quadrant(o213_families, o213_gna, pf_f2, pfsort)
+                     
+                     if (pfmsizing == "change"){
+                       p1 <- compare_two_files_pf_bb_size(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]],
+                                                          overlap2_3[[1]], overlap2_3[[2]], overlap2_1_3[[1]], overlap2_1_3[[2]], increase_size)
+                     }
+                     else{
+                       p1 <- compare_two_files_pf_bb(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]],
+                                                     overlap2_3[[1]], overlap2_3[[2]], overlap2_1_3[[1]], overlap2_1_3[[2]])
+                     }
+                   })
+    }
+  })
+  
+  c_compare3_pfe_plot <- eventReactive(input$c_make_bpf, {
+    d <- c_compare3()
+    pfmsizing <- c_PF_marker()
+    pfsort <- c_PF_sorting()
+    increase_size <- input$c_PF_marker_freq
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      withProgress(message = 'This may take a while', 
+                   detail = 'Hold please', value = 0, {
+                     pf_f3 <- d$f3
+                     pf_f3s <- d$f3_subset
+                     pf_overlap3_1 <- d$overlap3_1
+                     pf_overlap3_2 <- d$overlap3_2
+                     pf_overlap3_1_2 <- d$overlap3_1_2
+                     incProgress(0.1)
+                     #f2 subset
+                     f3s_families <- assignFamily_inc_doubles(pf_f3s)
+                     f3s_gna <- addNames(pf_f3s)
+                     incProgress(0.3)
+                     #f1 and f2 overlap
+                     o31_families <- assignFamily_inc_doubles(pf_overlap3_1)
+                     o31_gna <- addNames(pf_overlap3_1)
+                     incProgress(0.5)
+                     #f1 and f3 overlap
+                     o32_families <- assignFamily_inc_doubles(pf_overlap3_2)
+                     o32_gna <- addNames(pf_overlap3_2)
+                     incProgress(0.7)
+                     #f1, f2 and f3 overlap
+                     o312_families <- assignFamily_inc_doubles(pf_overlap3_1_2)
+                     o312_gna <- addNames(pf_overlap3_1_2)
+                     incProgress(0.9)
+                     f3_subset <- makePlotFamilies_1quadrant(f3s_families, f3s_gna, pf_f3, pfsort)
+                     overlap3_1 <- makePlotFamilies_1quadrant(o31_families, o31_gna, pf_f3, pfsort)
+                     overlap3_2 <- makePlotFamilies_1quadrant(o32_families, o32_gna, pf_f3, pfsort)
+                     overlap3_1_2 <- makePlotFamilies_1quadrant(o312_families, o312_gna, pf_f3, pfsort)
+                     
+                     if (pfmsizing == "change"){
+                       p1 <- compare_two_files_pf_cc_size(pf_f3, f3_subset[[1]], f3_subset[[2]], overlap3_1[[1]], overlap3_1[[2]],
+                                                          overlap3_2[[1]], overlap3_2[[2]], overlap3_1_2[[1]], overlap3_1_2[[2]], increase_size)
+                     }
+                     else{
+                       p1 <- compare_two_files_pf_cc(pf_f3, f3_subset[[1]], f3_subset[[2]], overlap3_1[[1]], overlap3_1[[2]],
+                                                     overlap3_2[[1]], overlap3_2[[2]], overlap3_1_2[[1]], overlap3_1_2[[2]])
+                     }
+                   })
+    }
+  })
+  
+  c_f1_unique <- reactive({
+    d <- c_compare1()
+    f1 <- d$f1_subset
     d1 <- data.frame(f1$gene)
     colnames(d1) <- c("f1")    
     d1 <- unique(sort(d1$f1))
   })
   
   c_f2_unique <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_compare2()
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f2 <- subset(d$f2_subset, gene %!in% (d$overlap2_1)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f2 <- subset(d$f2_subset, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
-    }
+    f2 <- d$f2_subset
     d1 <- data.frame(f2$gene)
     colnames(d1) <- c("f2")    
     d1 <- unique(sort(d1$f2))
   })
   
   c_f1_and_f2 <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_compare2()
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f2 <- d$overlap2_1
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
-    }
+    f2 <- d$overlap2_1
     d1 <- data.frame(f2$gene)
     colnames(d1) <- c("f12")    
     d1 <- unique(sort(d1$f12))
   })
   
   c_f3_unique <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_compare3()
-      f3 <- subset(d$f3_subset, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
-      d1 <- data.frame(f3$gene)
-      colnames(d1) <- c("f3")    
-      d1 <- unique(sort(d1$f3))
-    }
+    d <- c_compare3()
+    f3 <- d$f3_subset
+    d1 <- data.frame(f3$gene)
+    colnames(d1) <- c("f3")    
+    d1 <- unique(sort(d1$f3))
   })
   
   c_f1_and_f3 <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_compare3()
-      f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
-      d1 <- data.frame(f3$gene)
-      colnames(d1) <- c("f13")    
-      d1 <- unique(sort(d1$f13))
-    }
+    d <- c_compare3()
+    f3 <- d$overlap3_1
+    d1 <- data.frame(f3$gene)
+    colnames(d1) <- c("f13")    
+    d1 <- unique(sort(d1$f13))
   })
   
   c_f2_and_f3 <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_compare3()
-      f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
-      d1 <- data.frame(f3$gene)
-      colnames(d1) <- c("f23")    
-      d1 <- unique(sort(d1$f23))
-    }
+    d <- c_compare3()
+    f3 <- d$overlap3_2
+    d1 <- data.frame(f3$gene)
+    colnames(d1) <- c("f23")    
+    d1 <- unique(sort(d1$f23))
   })
   
   c_f1_f2_and_f3 <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_compare3()
-      d1 <- data.frame((d$overlap3_1_2)$gene)
-      colnames(d1) <- c("f123")    
-      d1 <- unique(sort(d1$f123))
-    }
+    d <- c_compare3()
+    d1 <- data.frame((d$overlap3_1_2)$gene)
+    colnames(d1) <- c("f123")    
+    d1 <- unique(sort(d1$f123))
   })
+  
+  
+  # c_f1_unique <- reactive({
+  #   '%!in%' <- function(x,y)!('%in%'(x,y))
+  #   d <- c_compare1()
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f1 <- subset(d$f1_subset, gene %!in% (d$overlap1_2)$gene)
+  #   }
+  #   else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f1 <- subset(d$f1_subset, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
+  #   }
+  #   d1 <- data.frame(f1$gene)
+  #   colnames(d1) <- c("f1")    
+  #   d1 <- unique(sort(d1$f1))
+  # })
+  # 
+  # c_f2_unique <- reactive({
+  #   '%!in%' <- function(x,y)!('%in%'(x,y))
+  #   d <- c_compare2()
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f2 <- subset(d$f2_subset, gene %!in% (d$overlap2_1)$gene)
+  #   }
+  #   else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f2 <- subset(d$f2_subset, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
+  #   }
+  #   d1 <- data.frame(f2$gene)
+  #   colnames(d1) <- c("f2")    
+  #   d1 <- unique(sort(d1$f2))
+  # })
+  # 
+  # c_f1_and_f2 <- reactive({
+  #   '%!in%' <- function(x,y)!('%in%'(x,y))
+  #   d <- c_compare2()
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f2 <- d$overlap2_1
+  #   }
+  #   else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
+  #   }
+  #   d1 <- data.frame(f2$gene)
+  #   colnames(d1) <- c("f12")    
+  #   d1 <- unique(sort(d1$f12))
+  # })
+  # 
+  # c_f3_unique <- reactive({
+  #   '%!in%' <- function(x,y)!('%in%'(x,y))
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_compare3()
+  #     f3 <- subset(d$f3_subset, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
+  #     d1 <- data.frame(f3$gene)
+  #     colnames(d1) <- c("f3")    
+  #     d1 <- unique(sort(d1$f3))
+  #   }
+  # })
+  # 
+  # c_f1_and_f3 <- reactive({
+  #   '%!in%' <- function(x,y)!('%in%'(x,y))
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_compare3()
+  #     f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
+  #     d1 <- data.frame(f3$gene)
+  #     colnames(d1) <- c("f13")    
+  #     d1 <- unique(sort(d1$f13))
+  #   }
+  # })
+  # 
+  # c_f2_and_f3 <- reactive({
+  #   '%!in%' <- function(x,y)!('%in%'(x,y))
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_compare3()
+  #     f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
+  #     d1 <- data.frame(f3$gene)
+  #     colnames(d1) <- c("f23")    
+  #     d1 <- unique(sort(d1$f23))
+  #   }
+  # })
+  # 
+  # c_f1_f2_and_f3 <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_compare3()
+  #     d1 <- data.frame((d$overlap3_1_2)$gene)
+  #     colnames(d1) <- c("f123")    
+  #     d1 <- unique(sort(d1$f123))
+  #   }
+  # })
   
   c_unique_dat <- reactive({
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
@@ -6592,6 +7085,14 @@ shinyServer(function(input, output, session){
     }
   })
   
+  output$comparison1_pf <- renderPlotly({
+    validate(
+      need(input$c_file_pulldown1 != '', "Upload file"),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    c_compare1_pfe_plot()
+  })
+  
   output$comparison2 <- renderPlotly({
     validate(
       need(input$c_file_pulldown1 != '', "Upload file"),
@@ -6603,6 +7104,14 @@ shinyServer(function(input, output, session){
     else{
       c_compare2_plus()
     }
+  })
+  
+  output$comparison2_pf <- renderPlotly({
+    validate(
+      need(input$c_file_pulldown1 != '', "Upload file"),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    c_compare2_pfe_plot()
   })
   
   output$comparison3 <- renderPlotly({
@@ -6617,6 +7126,15 @@ shinyServer(function(input, output, session){
     else{
       c_compare3_plus()
     }
+  })
+  
+  output$comparison3_pf <- renderPlotly({
+    validate(
+      need(input$c_file_pulldown1 != '', "Upload file"),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_file_pulldown3 != '', "")
+    )
+    c_compare3_pfe_plot()
   })
   
   output$c_VennDiagram <- renderPlot({
