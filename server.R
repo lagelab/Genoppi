@@ -2303,18 +2303,18 @@ shinyServer(function(input, output, session){
       df <- a_in_pulldown()
       if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
         if(is.null(a_search_gene())){
-          params <- list(a = a_multi_vp_layer(), c = a_multi_vp_colorbar_dl())
+          params <- list(a = a_multi_vp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
         }
         else{
-          params <- list(a = a_multi_vp_plus(), c = a_multi_vp_colorbar_dl())
+          params <- list(a = a_multi_vp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
         }
       }
       else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
         if(is.null(a_search_gene())){
-          params <- list(a = a_multi_vp_layer(), b = a_multi_sp_layer(), c = a_multi_vp_colorbar_dl())
+          params <- list(a = a_multi_vp_layer(), b = a_multi_sp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
         }
         else{
-          params <- list(a = a_multi_vp_plus(), b = a_multi_sp_plus(), c = a_multi_vp_colorbar_dl())
+          params <- list(a = a_multi_vp_plus(), b = a_multi_sp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
         }
       }
       rmarkdown::render("scripts/basic.Rmd", 
