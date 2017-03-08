@@ -316,7 +316,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F,
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
@@ -2512,7 +2512,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
@@ -2554,7 +2554,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
@@ -2596,7 +2596,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
       withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
                    detail = 'Hold please', value = 0, {
-                     write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                     write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
                                  row.names = F, col.names = F)
                      incProgress(0.6)
                      system("python scripts/gene-tools-master/map/map.py")
@@ -3475,7 +3475,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
       withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
                    detail = 'Hold please', value = 0, {
-                     write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                     write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
                                  row.names = F, col.names = F)
                      incProgress(0.6)
                      system("python scripts/gene-tools-master/map/map.py")
@@ -3524,7 +3524,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
       withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
                    detail = 'Hold please', value = 0, {
-                     write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                     write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
                                  row.names = F, col.names = F)
                      incProgress(0.6)
                      system("python scripts/gene-tools-master/map/map.py")
@@ -3573,7 +3573,7 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "~/Documents/Genoppi/Shiny/scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
