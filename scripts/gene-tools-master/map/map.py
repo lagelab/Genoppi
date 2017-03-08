@@ -269,10 +269,6 @@ def answerQueries():
 
         if ask not in MAP or MAP[ask] == '':
             MAP[ask] = "gene_name_not_available"
-            if STATUS[ask] == STATUS_MSG[3]:
-                STATUS[ask] = "obsolete ID"
-            elif STATUS[ask] == STATUS_MSG[6]:
-                STATUS[ask] = "deleted ID"
         if ask not in STATUS:
             STATUS[ask] = STATUS_MSG[5]
             MAP[ask] = "incorrect_ID"
