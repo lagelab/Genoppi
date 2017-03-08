@@ -8,4 +8,4 @@ library(plotly)
 human_genome <- read.table("data/ensembl_homo_sapiens_genes.txt", header = T)
 exac <- read.table("data/constrained_cleaned_exac_with_pHI_Aug26.txt", header = T, sep = "\t")
 inweb_combined <- read.table("data/InWeb_pooled_all_genes.txt")
-
+prot_fam <- read.table(gzfile("data/prot_fams_and_genes.txt.gz"), sep = "\t", quote = "")

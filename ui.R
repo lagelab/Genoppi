@@ -56,16 +56,6 @@ shinyUI(navbarPage("Genoppi",
                                                        column(9),
                                                        column(3, uiOutput("Multi_VP_count_text"))
                                                      )
-                                                     # br(),
-                                                     # br(),
-                                                     # br(),
-                                                     # br(),
-                                                     # br(),
-                                                     # br(),
-                                                     # br(),
-                                                     # br(),
-                                                     # column(1),
-                                                     # column(9, plotlyOutput("Multi_ScatterPlot"))
                                             ),
                                             tabPanel("Venn Diagrams", value = "p3",
                                                      br(),
@@ -101,12 +91,12 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      br(),
                                                      fluidRow(
-                                                       column(4, plotOutput("Venn_Diagram_SNP_SGL", width = "220px", height = "220px")),
-                                                       column(4, plotOutput("Venn_Diagram_GOI_1", width = "220px", height = "220px"))
+                                                       column(4, plotOutput("Venn_Diagram_SNP_SGL", width = "220px", height = "220px"))
+                                                       #column(4, plotOutput("Venn_Diagram_GOI_1", width = "220px", height = "220px"))
                                                        ),
                                                      fluidRow(
-                                                       column(4, uiOutput("a_vd_SNP_SGL_text")),
-                                                       column(4, uiOutput("a_vd_GOI_text_1"))
+                                                       column(4, uiOutput("a_vd_SNP_SGL_text"))
+                                                       #column(4, uiOutput("a_vd_GOI_text_1"))
                                                      ),
                                                      br(),
                                                      fluidRow(
@@ -346,7 +336,21 @@ shinyUI(navbarPage("Genoppi",
                                                        column(9, plotlyOutput("comparison3_pf"))
                                                      )
                                                      ),
-                                            tabPanel("Download", value = "3_p7",
+                                            # tabPanel("PF Search", value = "3_p7",
+                                            #          br(),
+                                            #          fluidRow(
+                                            #            column(4, uiOutput("c_prot_fam_db")),
+                                            #            column(4, uiOutput("c_text_prot_fam_db")),
+                                            #            column(4, uiOutput("c_prot_fam_db_button"))
+                                            #          ),
+                                            #          br(),
+                                            #          fluidRow(
+                                            #            column(4, plotlyOutput("VolcanoPlot_c1_pf_db")),
+                                            #            column(4, plotlyOutput("VolcanoPlot_c2_pf_db")),
+                                            #            column(4, plotlyOutput("VolcanoPlot_c3_pf_db"))
+                                            #          )
+                                            #          ),
+                                            tabPanel("Download", value = "3_p8",
                                                      br(),
                                                      fluidRow(
                                                        column(3, downloadButton("c1_download_mapped_uniprot", "Converted identifiers f1")),

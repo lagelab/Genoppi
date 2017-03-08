@@ -3266,34 +3266,46 @@ shinyServer(function(input, output, session){
     }
   })
   
-  observe({
-    if(input$comparison == "3_p2"){
-      shinyjs::hide("c_colorscheme")
-      shinyjs::hide("c_fdr_thresh")
-      shinyjs::hide("c_pval_thresh")
-      shinyjs::hide("c_logfc_thresh_comb")
+  output$c_prot_fam_db <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', "")
+    )
+    selectInput('c_pfam_db', 'Protein families', prot_fam$V1, multiple=TRUE, selectize=TRUE)
+  })
+  
+  output$c_prot_fam_db_button <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', "")
+    )
+    if(!is.null(input$c_pfam_db)){
+      actionButton("c_search_pf_db", "Find PFs")
     }
-    # else {
-    #   shinyjs::show("c_colorscheme")
-    #   shinyjs::show("c_fdr_thresh")
-    #   shinyjs::show("c_pval_thresh")
-    #   shinyjs::show("c_logfc_thresh_comb")
-    # }
+  })
+  
+  output$c_text_prot_fam_db <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', "")
+    )
+    radioButtons('c_marker_text_prot_fam_db', 'Turn on/off labels',
+                 c(On = 'yes_label',
+                   Off = 'no_label'),
+                 inline = T
+    )
   })
   
   observe({
-    if(input$comparison == "3_p6"){
+    if(input$comparison == "3_p2" | input$comparison == "3_p6"){
       shinyjs::hide("c_colorscheme")
       shinyjs::hide("c_fdr_thresh")
       shinyjs::hide("c_pval_thresh")
       shinyjs::hide("c_logfc_thresh_comb")
     }
-    # else {
-    #   shinyjs::show("c_colorscheme")
-    #   shinyjs::show("c_fdr_thresh")
-    #   shinyjs::show("c_pval_thresh")
-    #   shinyjs::show("c_logfc_thresh_comb")
-    # }
+    else {
+      shinyjs::show("c_colorscheme")
+      shinyjs::show("c_fdr_thresh")
+      shinyjs::show("c_pval_thresh")
+      shinyjs::show("c_logfc_thresh_comb")
+    }
   })
   
   c_search_gene <- reactive({
@@ -6800,6 +6812,364 @@ shinyServer(function(input, output, session){
     d
   })
   
+  c_pf_db_search <- eventReactive(input$c_search_pf_db, {
+    pf_db <- input$c_pfam_db
+    selected_pf <- prot_fam[prot_fam$V1 %in% pf_db, ]
+    selected_pf <- t(selected_pf)
+    colnames(selected_pf) <- selected_pf[1, ]
+    selected_pf <- selected_pf[-1, ]
+    pf <- as.data.frame(selected_pf)
+    pf[pf==""] <- NA
+    pf <- na.omit(pf)
+    print(pf)
+    pf
+  })
+  
+  c_pf_db_vp1 <- reactive({
+    validate(
+      need(input$c_file_pulldown1 != '', "")
+    )
+    if(!is.null(c_pf_db_search())){
+      d <- c_pd1()
+      gene_interest <- c_pf_db_search()
+      print(gene_interest)
+      d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
+      list(d_g2s=d_g2s)
+    }
+  })
+  
+  c_pf_db_vp2 <- reactive({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    if(!is.null(c_pf_db_search())){
+      d <- c_pd2()
+      gene_interest <- c_pf_db_search()
+      d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
+      list(d_g2s=d_g2s)
+    }
+  })
+  
+  c_pf_db_vp3 <- reactive({
+    validate(
+      need(input$c_file_pulldown3 != '', "")
+    )
+    if(!is.null(c_pf_db_search())){
+      d <- c_pd3()
+      gene_interest <- c_pf_db_search()
+      d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
+      list(d_g2s=d_g2s)
+    }
+  })
+  
+  c_vp1_pf_db_layer <- reactive({
+    validate(
+      need(!is.null(c_pd1()), "")
+    )
+    d <- c_pd1()
+    c1_pf_db <- c_pf_db_vp1()
+    min_x <- c_min_x()
+    min_y <- c_min_y()
+    max_x <- c_max_x()
+    max_y <- c_max_y()
+    if(input$c_colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    }
+    else if(input$c_colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+      p
+    }
+    else if(input$c_colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    }
+    p <- p%>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+             legend = list(orientation = 'h', y = -0.23))
+    # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      if(!is.null(c_pf_db_search())){
+        df <- ldply(c1_pf_db$d_g2s, data.frame)
+        if(nrow(df) != 0){
+          if(input$c_marker_text_prot_fam_db == "yes_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+          }
+          else if(input$c_marker_text_prot_fam_db == "no_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
+          }
+          p <- vp_layer_genes
+        }
+        else{
+          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+          p <- vp_layer_no_genes
+        }
+      }
+    }
+    else if(input$colorscheme == "cbf"){
+      if(!is.null(c_pf_db_search())){
+        df <- ldply(c1_pf_db$d_g2s, data.frame)
+        if(nrow(df) != 0){
+          if(input$c_marker_text_prot_fam_db == "yes_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+          }
+          else if(input$c_marker_text_prot_fam_db == "no_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
+          }
+          p <- vp_layer_genes
+        }
+        else{
+          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+          p <- vp_layer_no_genes
+        }
+      }
+    }
+    p <- p %>% 
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+      add_lines(x = input$c_logfc_thresh_comb, y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh), showlegend = F) %>%
+      add_lines(x = -(input$c_logfc_thresh_comb), y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_logFC_thresh)), showlegend = F)
+  })
+  
+  c_vp2_pf_db_layer <- reactive({
+    validate(
+      need(!is.null(c_pd2()), "")
+    )
+    d <- c_pd2()
+    c2_pf_db <- c_pf_db_vp2()
+    min_x <- c_min_x()
+    min_y <- c_min_y()
+    max_x <- c_max_x()
+    max_y <- c_max_y()
+    if(input$c_colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    }
+    else if(input$c_colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+      p
+    }
+    else if(input$c_colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    }
+    p <- p%>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+             legend = list(orientation = 'h', y = -0.23))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      if(!is.null(c_pf_db_search())){
+        df <- ldply(c2_pf_db$d_g2s, data.frame)
+        if(nrow(df) != 0){
+          if(input$c_marker_text_prot_fam_db == "yes_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+          }
+          else if(input$c_marker_text_prot_fam_db == "no_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
+          }
+          p <- vp_layer_genes
+        }
+        else{
+          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+          p <- vp_layer_no_genes
+        }
+      }
+    }
+    else if(input$colorscheme == "cbf"){
+      if(!is.null(c_pf_db_search())){
+        df <- ldply(c2_pf_db$d_g2s, data.frame)
+        if(nrow(df) != 0){
+          if(input$c_marker_text_prot_fam_db == "yes_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+          }
+          else if(input$c_marker_text_prot_fam_db == "no_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
+          }
+          p <- vp_layer_genes
+        }
+        else{
+          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+          p <- vp_layer_no_genes
+        }
+      }
+    }
+    p <- p %>% 
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+      add_lines(x = input$c_logfc_thresh_comb, y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh), showlegend = F) %>%
+      add_lines(x = -(input$c_logfc_thresh_comb), y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_logFC_thresh)), showlegend = F)
+  })
+  
+  c_vp3_pf_db_layer <- reactive({
+    validate(
+      need(!is.null(c_pd3()), "")
+    )
+    d <- c_pd3()
+    c3_pf_db <- c_pf_db_vp3()
+    min_x <- c_min_x()
+    min_y <- c_min_y()
+    max_x <- c_max_x()
+    max_y <- c_max_y()
+    if(input$c_colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    }
+    else if(input$c_colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+      p
+    }
+    else if(input$c_colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    }
+    p <- p%>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+             legend = list(orientation = 'h', y = -0.23))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      if(!is.null(c_pf_db_search())){
+        df <- ldply(c3_pf_db$d_g2s, data.frame)
+        if(nrow(df) != 0){
+          if(input$c_marker_text_prot_fam_db == "yes_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+          }
+          else if(input$c_marker_text_prot_fam_db == "no_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
+          }
+          p <- vp_layer_genes
+        }
+        else{
+          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+          p <- vp_layer_no_genes
+        }
+      }
+    }
+    else if(input$colorscheme == "cbf"){
+      if(!is.null(c_pf_db_search())){
+        df <- ldply(c3_pf_db$d_g2s, data.frame)
+        if(nrow(df) != 0){
+          if(input$c_marker_text_prot_fam_db == "yes_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+          }
+          else if(input$c_marker_text_prot_fam_db == "no_label"){
+            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
+          }
+          p <- vp_layer_genes
+        }
+        else{
+          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+          p <- vp_layer_no_genes
+        }
+      }
+    }
+    p <- p %>% 
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+      add_lines(x = input$c_logfc_thresh_comb, y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh), showlegend = F) %>%
+      add_lines(x = -(input$c_logfc_thresh_comb), y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_logFC_thresh)), showlegend = F)
+  })
+  
   output$c_FDR_colorbar <- renderPlot({
     validate(
       need(input$c_file_pulldown1 != '', "")
@@ -7186,6 +7556,24 @@ shinyServer(function(input, output, session){
   },
   caption.placement = getOption("xtable.caption.placement", "top"), 
   caption.width = getOption("xtable.caption.width", NULL))
+  
+  output$VolcanoPlot_c1_pf_db <- renderPlotly({
+    if(!is.null(c_pf_db_vp1())){
+      c_vp1_pf_db_layer()
+    }
+  })
+  
+  output$VolcanoPlot_c2_pf_db <- renderPlotly({
+    if(!is.null(c_pf_db_vp2())){
+      c_vp2_pf_db_layer()
+    }
+  })
+  
+  output$VolcanoPlot_c3_pf_db <- renderPlotly({
+    if(!is.null(c_pf_db_vp3())){
+      c_vp3_pf_db_layer()
+    }
+  })
 
   output$c1_download_mapped_uniprot <- downloadHandler(
     filename = function() {
