@@ -7898,6 +7898,22 @@ shinyServer(function(input, output, session){
     }
   )
   
+  output$c_download_protein_fams <- downloadHandler(
+    filename = "MFC-prot-fam.html",
+    content = function(file) {
+      if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+        params <- list(a = c_compare1_pfe_plot(), b = c_compare2_pfe_plot())
+      }
+      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+        params <- list(a = c_compare1_pfe_plot(), b = c_compare2_pfe_plot(), c = c_compare3_pfe_plot())
+      }
+      rmarkdown::render("scripts/pf-mfc.Rmd", 
+                        output_file = file,
+                        params = params
+      )
+    }
+  )
+  
   observe({
     if(!is.null(input$c_file_pulldown1)){
       df <- c_in_pd1()
@@ -8016,6 +8032,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("c_download_snp")
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
+      shinyjs::disable("c_download_protein_fams")
     }
     else {
       shinyjs::enable("c_download_basic_plots")
@@ -8031,6 +8048,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("c_download_snp")
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
+      shinyjs::disable("c_download_protein_fams")
     }
     else {
       shinyjs::enable("c_download_protein_comparisons")
@@ -8045,6 +8063,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("c_download_snp")
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
+      shinyjs::disable("c_download_protein_fams")
     }
   })
   
@@ -8074,6 +8093,17 @@ shinyServer(function(input, output, session){
     }
     else {
       shinyjs::enable("c_download_inweb")
+    }
+  })
+  
+  observe({
+    if (is.null(input$c_file_pulldown2)){
+      shinyjs::disable("c_download_protein_fams")
+    }
+    else {
+      if(!is.null(c_compare2_pfe_plot())){
+        shinyjs::enable("c_download_protein_fams")
+      }
     }
   })
 

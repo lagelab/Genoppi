@@ -1,0 +1,13 @@
+Report generated using Genoppi from Lage Lab
+<br>
+  https://github.com/lagelab/Genoppi
+<br>
+  <br>
+  <h4>MFC Protein Families</h4>
+  <br>
+  <br>
+```{r warning = FALSE, echo = FALSE, out.width='1000px', comment=NA}
+params$a
+params$b
+params$c
+```

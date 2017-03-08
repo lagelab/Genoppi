@@ -386,6 +386,10 @@ shinyUI(navbarPage("Genoppi",
                                                      br(),
                                                      fluidRow(
                                                        column(3, downloadButton("c_download_snp", "SNP comparisons"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(3, downloadButton("c_download_protein_fams", "Protein families"))
                                                      )
                                                      )
                                             )
