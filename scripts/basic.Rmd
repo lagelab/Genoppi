@@ -5,10 +5,10 @@ https://github.com/lagelab/Genoppi
 <br>
 <h4>Quality Control</h4>
 <br>
+<br>
 ```{r warning = FALSE, echo = FALSE, fig.height=1, fig.width=4}
 params$c
 ```
-<br>
 <br>
 ```{r warning = FALSE, echo = FALSE, comment = NA}
 params$d
