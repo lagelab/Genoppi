@@ -801,7 +801,7 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -828,7 +828,7 @@ shinyServer(function(input, output, session){
       bar
     }
     else if(input$colorscheme == "cbf"){
-      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -1072,7 +1072,7 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -1099,7 +1099,7 @@ shinyServer(function(input, output, session){
       bar
     }
     else if(input$colorscheme == "cbf"){
-      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -7646,7 +7646,7 @@ shinyServer(function(input, output, session){
       if(!is.null(input$c_file_pulldown1) & is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         df <- c_in_pd1()
         if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7654,7 +7654,7 @@ shinyServer(function(input, output, session){
           }
         }
         else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7667,7 +7667,7 @@ shinyServer(function(input, output, session){
         df1 <- c_in_pd2()
         if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
            "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7676,7 +7676,7 @@ shinyServer(function(input, output, session){
         }
         else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7685,7 +7685,7 @@ shinyServer(function(input, output, session){
         }  
         else if("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7694,7 +7694,7 @@ shinyServer(function(input, output, session){
         }
         else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7709,7 +7709,7 @@ shinyServer(function(input, output, session){
         if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
            "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
            "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), e = c_vp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7719,7 +7719,7 @@ shinyServer(function(input, output, session){
         else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7729,7 +7729,7 @@ shinyServer(function(input, output, session){
         else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7739,7 +7739,7 @@ shinyServer(function(input, output, session){
         else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), e = c_vp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7749,7 +7749,7 @@ shinyServer(function(input, output, session){
         else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7759,7 +7759,7 @@ shinyServer(function(input, output, session){
         else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7769,7 +7769,7 @@ shinyServer(function(input, output, session){
         else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7779,7 +7779,7 @@ shinyServer(function(input, output, session){
         else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
-          if(is.null(a_search_gene())){
+          if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
           }
           else{
@@ -7798,7 +7798,7 @@ shinyServer(function(input, output, session){
     filename = "comparisons.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_compare1_plot(), b = c_compare2_plot(), d = c_venndiagram(), e = c_unique_dat())
         }
         else{
@@ -7806,7 +7806,7 @@ shinyServer(function(input, output, session){
         }
       }
       else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_compare1_plot(), b = c_compare2_plot(), c = c_compare3_plot(), d = c_venndiagram(), e = c_unique_dat())
         }
         else{
@@ -7824,7 +7824,7 @@ shinyServer(function(input, output, session){
     filename = "MFC-inweb.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_vp1_inweb_layer(), b = c_vp2_inweb_layer(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         }
         else{
@@ -7832,7 +7832,7 @@ shinyServer(function(input, output, session){
         }
       }
       else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_vp1_inweb_layer(), b = c_vp2_inweb_layer(), c = c_vp3_inweb_layer(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         }
         else{
@@ -7850,7 +7850,7 @@ shinyServer(function(input, output, session){
     filename = "MFC-goi.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_vp1_goi_layer(), b = c_vp2_goi_layer(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
         }
         else{
@@ -7858,7 +7858,7 @@ shinyServer(function(input, output, session){
         }
       }
       else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_vp1_goi_layer(), b = c_vp2_goi_layer(), c = c_vp3_goi_layer(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
         }
         else{
@@ -7876,7 +7876,7 @@ shinyServer(function(input, output, session){
     filename = "MFC-snp.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_vp1_snp_layer(), b = c_vp2_snp_layer(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
         }
         else{
@@ -7884,7 +7884,7 @@ shinyServer(function(input, output, session){
         }
       }
       else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-        if(is.null(a_search_gene())){
+        if(is.null(c_search_gene())){
           params <- list(a = c_vp1_snp_layer(), b = c_vp2_snp_layer(), c = c_vp3_snp_layer(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
         }
         else{
