@@ -403,7 +403,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  a_genes_uploaded_vennd <- eventReactive(input$a_make_vennd_goi, { #reactive({
+  a_genes_uploaded_vennd <- eventReactive(input$a_make_vennd_goi, { 
     if(!is.null(a_upload_genes_vennd())){
       genes <- a_upload_genes_vennd()
       genes <- toupper(genes$V1)
@@ -507,7 +507,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  a_bait_friends_vennd <- eventReactive(input$a_make_vennd_bait, { #reactive({
+  a_bait_friends_vennd <- eventReactive(input$a_make_vennd_bait, { 
     if(!is.null(a_bait_gene_vennd())){
       withProgress(message = 'Finding bait interactors in InWeb', 
                    detail = 'Hold please', value = 0, {
@@ -720,7 +720,7 @@ shinyServer(function(input, output, session){
   })
   
   # eventReactive(input$a_make_vennd, 
-  SNP_to_gene_vennd <- eventReactive(input$a_make_vennd_snp,{ #reactive({
+  SNP_to_gene_vennd <- eventReactive(input$a_make_vennd_snp,{
     if(!is.null(a_snp_vennd())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
@@ -3418,7 +3418,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  c_inweb_pd1 <- eventReactive(input$c_make_plot_inweb, { #reactive({
+  c_inweb_pd1 <- eventReactive(input$c_make_plot_inweb, {
     if(!is.null(c_bait_friends())){
       bait_interactors <- c_bait_friends()
       d <- c_pd1()
@@ -3428,7 +3428,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  c_inweb_pd2 <- eventReactive(input$c_make_plot_inweb, { #reactive({
+  c_inweb_pd2 <- eventReactive(input$c_make_plot_inweb, {
     if(!is.null(c_bait_friends())){
       bait_interactors <- c_bait_friends()
       d <- c_pd2()
@@ -3438,7 +3438,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  c_inweb_pd3 <- eventReactive(input$c_make_plot_inweb, { #reactive({
+  c_inweb_pd3 <- eventReactive(input$c_make_plot_inweb, { 
     if(!is.null(c_bait_friends())){
       bait_interactors <- c_bait_friends()
       d <- c_pd3()
@@ -7888,7 +7888,7 @@ shinyServer(function(input, output, session){
   })
   
   observe({
-    if (is.null(input$c_bait)){
+    if (input$c_make_plot_inweb == 0 || is.null(input$c_make_plot_inweb)){
       shinyjs::disable("c_download_inweb")
     }
     else {
