@@ -183,7 +183,7 @@ shinyUI(navbarPage("Genoppi",
                                                        column(3, plotOutput("c_FDR_colorbar", height = "100px"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, plotlyOutput("VolcanoPlot_c1")),
+                                                       column(4, plotlyOutput("VolcanoPlot_c1")), #, height = "350px", width = "320px"
                                                        column(4, plotlyOutput("VolcanoPlot_c2")),
                                                        column(4, plotlyOutput("VolcanoPlot_c3"))
                                                      ),
@@ -201,14 +201,21 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      br(),
                                                      fluidRow(
-                                                       column(3, uiOutput("c_comparison_FDR_slider")),
-                                                       column(4, uiOutput("c_comparison_pvalue_slider"))
+                                                       column(4, uiOutput("c_comparison1_FDR_slider")),
+                                                       column(4, uiOutput("c_comparison2_FDR_slider")),
+                                                       column(4, uiOutput("c_comparison3_FDR_slider"))
                                                      ),
                                                      fluidRow(
-                                                       column(3, uiOutput("c_comparison_logFC_slider1")),
+                                                       column(4, uiOutput("c_comparison_logFC_slider1")),
                                                        column(4, uiOutput("c_comparison_logFC_slider2")),
                                                        column(4, uiOutput("c_comparison_logFC_slider3"))
                                                      ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_comparison1_pvalue_slider")),
+                                                       column(4, uiOutput("c_comparison2_pvalue_slider")),
+                                                       column(4, uiOutput("c_comparison3_pvalue_slider"))
+                                                     ),
+
                                                      br(),
                                                      fluidRow(
                                                        column(4, plotlyOutput("comparison1")),
@@ -310,14 +317,14 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("c_pf_FDR_slider3"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, uiOutput("c_pf_pvalue_slider1")),
-                                                       column(4, uiOutput("c_pf_pvalue_slider2")),
-                                                       column(4, uiOutput("c_pf_pvalue_slider3"))
-                                                     ),
-                                                     fluidRow(
                                                        column(4, uiOutput("c_pf_logFC_slider1")),
                                                        column(4, uiOutput("c_pf_logFC_slider2")),
                                                        column(4, uiOutput("c_pf_logFC_slider3"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_pf_pvalue_slider1")),
+                                                       column(4, uiOutput("c_pf_pvalue_slider2")),
+                                                       column(4, uiOutput("c_pf_pvalue_slider3"))
                                                      ),
                                                      fluidRow(
                                                        column(3, uiOutput("c_PF_marker_size")), 

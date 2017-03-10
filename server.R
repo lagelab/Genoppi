@@ -2965,21 +2965,57 @@ shinyServer(function(input, output, session){
                   min = 0, max = 1, value = 0.1, step = 0.1)
   })
   
-  #create slider for FDR
-  output$c_comparison_FDR_slider <- renderUI({
+  #create slider for FDR f1
+  output$c_comparison1_FDR_slider <- renderUI({
     validate(
       need(input$c_file_pulldown2 != '', "")
     )
-    sliderInput("c_compare_FDR_range", "FDR",
+    sliderInput("c_compare1_FDR_range", "FDR",
                 min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
   })
   
-  #create slider for pvalue
-  output$c_comparison_pvalue_slider <- renderUI({
+  #create slider for FDR f2
+  output$c_comparison2_FDR_slider <- renderUI({
     validate(
       need(input$c_file_pulldown2 != '', "")
     )
-    sliderInput("c_compare_pvalue_range", "pvalue",
+    sliderInput("c_compare2_FDR_range", "FDR",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for FDR f3
+  output$c_comparison3_FDR_slider <- renderUI({
+    validate(
+      need(input$c_file_pulldown3 != '', "")
+    )
+    sliderInput("c_compare3_FDR_range", "FDR",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for pvalue f1
+  output$c_comparison1_pvalue_slider <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    sliderInput("c_compare1_pvalue_range", "pvalue",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for pvalue f2
+  output$c_comparison2_pvalue_slider <- renderUI({
+    validate(
+      need(input$c_file_pulldown2 != '', "")
+    )
+    sliderInput("c_compare2_pvalue_range", "pvalue",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+  })
+  
+  #create slider for pvalue f3
+  output$c_comparison3_pvalue_slider <- renderUI({
+    validate(
+      need(input$c_file_pulldown3 != '', "")
+    )
+    sliderInput("c_compare3_pvalue_range", "pvalue",
                 min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
   })
   
@@ -3686,144 +3722,6 @@ shinyServer(function(input, output, session){
   })
   
   c_vp_colorbar_dl <- reactive({
-    FDR <- seq(0, 1, 0.01)
-    limit <- rep("FDR", 101)
-    d <- data.frame(limit, FDR)
-    if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-    else if(input$c_colorscheme == "exac"){
-      d1 <- separate_to_groups_for_exac_bar(d)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-    else if(input$c_colorscheme == "cbf"){
-      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-  })
-  
-  c_vp_inweb_colorbar_dl <- reactive({
-    FDR <- seq(0, 1, 0.01)
-    limit <- rep("FDR", 101)
-    d <- data.frame(limit, FDR)
-    if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-    else if(input$c_colorscheme == "exac"){
-      d1 <- separate_to_groups_for_exac_bar(d)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-    else if(input$c_colorscheme == "cbf"){
-      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-  })
-  
-  c_vp_goi_colorbar_dl <- reactive({
-    FDR <- seq(0, 1, 0.01)
-    limit <- rep("FDR", 101)
-    d <- data.frame(limit, FDR)
-    if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-    else if(input$c_colorscheme == "exac"){
-      d1 <- separate_to_groups_for_exac_bar(d)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-    else if(input$c_colorscheme == "cbf"){
-      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-  })
-  
-  c_vp_snp_colorbar_dl <- reactive({
     FDR <- seq(0, 1, 0.01)
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
@@ -5248,22 +5146,22 @@ shinyServer(function(input, output, session){
   
   c_f1 <- reactive({
     f1 <- c_pd1()
-    f1_subset <- subset(f1, FDR < input$c_compare_FDR_range[2] & FDR > input$c_compare_FDR_range[1]
-                        & pvalue < input$c_compare_pvalue_range[2] & pvalue > input$c_compare_pvalue_range[1]
+    f1_subset <- subset(f1, FDR < input$c_compare1_FDR_range[2] & FDR > input$c_compare1_FDR_range[1]
+                        & pvalue < input$c_compare1_pvalue_range[2] & pvalue > input$c_compare1_pvalue_range[1]
                         & logFC < input$c_f1_logFC_range[2] & logFC > input$c_f1_logFC_range[1])
   })
   
   c_f2 <- reactive({
     f2 <- c_pd2()
-    f2_subset <- subset(f2, FDR < input$c_compare_FDR_range[2] & FDR > input$c_compare_FDR_range[1]
-                        & pvalue < input$c_compare_pvalue_range[2] & pvalue > input$c_compare_pvalue_range[1]
+    f2_subset <- subset(f2, FDR < input$c_compare2_FDR_range[2] & FDR > input$c_compare2_FDR_range[1]
+                        & pvalue < input$c_compare2_pvalue_range[2] & pvalue > input$c_compare2_pvalue_range[1]
                         & logFC < input$c_f2_logFC_range[2] & logFC > input$c_f2_logFC_range[1])
   })
   
   c_f3 <- reactive({
     f3 <- c_pd3()
-    f3_subset <- subset(f3, FDR < input$c_compare_FDR_range[2] & FDR > input$c_compare_FDR_range[1]
-                        & pvalue < input$c_compare_pvalue_range[2] & pvalue > input$c_compare_pvalue_range[1]
+    f3_subset <- subset(f3, FDR < input$c_compare3_FDR_range[2] & FDR > input$c_compare3_FDR_range[1]
+                        & pvalue < input$c_compare3_pvalue_range[2] & pvalue > input$c_compare3_pvalue_range[1]
                         & logFC < input$c_f3_logFC_range[2] & logFC > input$c_f3_logFC_range[1])
   })
   
@@ -5293,30 +5191,17 @@ shinyServer(function(input, output, session){
     '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
-      if(input$comparison == "3_p2"){
-        f1_subset <- c_f1()
-        f2_subset <- c_f2()
-      }
-      else if(input$comparison == "3_p6"){
-        f1_subset <- c_f1_pf()
-        f2_subset <- c_f2_pf()
-      }
+      f1_subset <- c_f1()
+      f2_subset <- c_f2()
       overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
       f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene)
       list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2)
     }
     else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
-      if(input$comparison == "3_p2"){
-        f1_subset <- c_f1()
-        f2_subset <- c_f2()
-        f3_subset <- c_f3()
-      }
-      else if(input$comparison == "3_p6"){
-        f1_subset <- c_f1_pf()
-        f2_subset <- c_f2_pf()
-        f3_subset <- c_f3_pf()
-      }
+      f1_subset <- c_f1()
+      f2_subset <- c_f2()
+      f3_subset <- c_f3()
       overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
       overlap1_3 <- subset(f1_subset, gene %in% f3_subset$gene)
       overlap1_2_3 <- subset(f1_subset, gene %in% f2_subset$gene & gene %in% f3_subset$gene)
@@ -5332,30 +5217,17 @@ shinyServer(function(input, output, session){
     '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- c_pd2()
-      if(input$comparison == "3_p2"){
-        f1_subset <- c_f1()
-        f2_subset <- c_f2()
-      }
-      else if(input$comparison == "3_p6"){
-        f1_subset <- c_f1_pf()
-        f2_subset <- c_f2_pf()
-      }
+      f1_subset <- c_f1()
+      f2_subset <- c_f2()
       overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
       f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene)
       list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1)
     }
     else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- c_pd2()
-      if(input$comparison == "3_p2"){
-        f1_subset <- c_f1()
-        f2_subset <- c_f2()
-        f3_subset <- c_f3()
-      }
-      else if(input$comparison == "3_p6"){
-        f1_subset <- c_f1_pf()
-        f2_subset <- c_f2_pf()
-        f3_subset <- c_f3_pf()
-      }
+      f1_subset <- c_f1()
+      f2_subset <- c_f2()
+      f3_subset <- c_f3()
       overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
       overlap2_3 <- subset(f2_subset, gene %in% f3_subset$gene)
       overlap2_1_3 <- subset(f2_subset, gene %in% f1_subset$gene & gene %in% f3_subset$gene)
@@ -5371,16 +5243,79 @@ shinyServer(function(input, output, session){
     '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f3 <- c_pd3()
-      if(input$comparison == "3_p2"){
-        f1_subset <- c_f1()
-        f2_subset <- c_f2()
-        f3_subset <- c_f3()
-      }
-      else if(input$comparison == "3_p6"){
-        f1_subset <- c_f1_pf()
-        f2_subset <- c_f2_pf()
-        f3_subset <- c_f3_pf()
-      }
+      f1_subset <- c_f1()
+      f2_subset <- c_f2()
+      f3_subset <- c_f3()
+      overlap3_1 <- subset(f3_subset, gene %in% f1_subset$gene)
+      overlap3_2 <- subset(f3_subset, gene %in% f2_subset$gene)
+      overlap3_1_2 <- subset(f3_subset, gene %in% f1_subset$gene & gene %in% f2_subset$gene)
+      f3_subset <- subset(f3_subset, gene %!in% (overlap3_1)$gene & gene %!in% (overlap3_2)$gene & gene %!in% (overlap3_1_2)$gene)
+      overlap3_1 <- subset(overlap3_1, gene %!in% (overlap3_1_2)$gene)
+      overlap3_2 <- subset(overlap3_2, gene %!in% (overlap3_1_2)$gene)
+      list(f3=f3, f3_subset=f3_subset, overlap3_1=overlap3_1, overlap3_2=overlap3_2, overlap3_1_2=overlap3_1_2)
+    }
+  })
+  
+  #comparison for file1
+  c_compare1_pf <- reactive({
+    '%!in%' <- function(x,y)!('%in%'(x,y))
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      f1 <- c_pd1()
+      f1_subset <- c_f1_pf()
+      f2_subset <- c_f2_pf()
+      overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
+      f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene)
+      list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2)
+    }
+    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f1 <- c_pd1()
+      f1_subset <- c_f1_pf()
+      f2_subset <- c_f2_pf()
+      f3_subset <- c_f3_pf()
+      overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
+      overlap1_3 <- subset(f1_subset, gene %in% f3_subset$gene)
+      overlap1_2_3 <- subset(f1_subset, gene %in% f2_subset$gene & gene %in% f3_subset$gene)
+      f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene & gene %!in% (overlap1_3)$gene & gene %!in% (overlap1_2_3)$gene)
+      overlap1_2 <- subset(overlap1_2, gene %!in% (overlap1_2_3)$gene)
+      overlap1_3 <- subset(overlap1_3, gene %!in% (overlap1_2_3)$gene)
+      list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2, overlap1_3=overlap1_3, overlap1_2_3=overlap1_2_3)
+    }
+  })
+  
+  #comparison for file2
+  c_compare2_pf <- reactive({
+    '%!in%' <- function(x,y)!('%in%'(x,y))
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      f2 <- c_pd2()
+      f1_subset <- c_f1_pf()
+      f2_subset <- c_f2_pf()
+      overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
+      f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene)
+      list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1)
+    }
+    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f2 <- c_pd2()
+      f1_subset <- c_f1_pf()
+      f2_subset <- c_f2_pf()
+      f3_subset <- c_f3_pf()
+      overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
+      overlap2_3 <- subset(f2_subset, gene %in% f3_subset$gene)
+      overlap2_1_3 <- subset(f2_subset, gene %in% f1_subset$gene & gene %in% f3_subset$gene)
+      f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene & gene %!in% (overlap2_3)$gene & gene %!in% (overlap2_1_3)$gene)
+      overlap2_1 <- subset(overlap2_1, gene %!in% (overlap2_1_3)$gene)
+      overlap2_3 <- subset(overlap2_3, gene %!in% (overlap2_1_3)$gene)
+      list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1, overlap2_3=overlap2_3, overlap2_1_3=overlap2_1_3)
+    }
+  })
+  
+  #comparison for file3
+  c_compare3_pf <- reactive({
+    '%!in%' <- function(x,y)!('%in%'(x,y))
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f3 <- c_pd3()
+      f1_subset <- c_f1_pf()
+      f2_subset <- c_f2_pf()
+      f3_subset <- c_f3_pf()
       overlap3_1 <- subset(f3_subset, gene %in% f1_subset$gene)
       overlap3_2 <- subset(f3_subset, gene %in% f2_subset$gene)
       overlap3_1_2 <- subset(f3_subset, gene %in% f1_subset$gene & gene %in% f2_subset$gene)
@@ -5455,7 +5390,7 @@ shinyServer(function(input, output, session){
   })
   
   c_compare1_pfe_plot <- eventReactive(input$c_make_bpf, {
-    d <- c_compare1()
+    d <- c_compare1_pf()
     pfmsizing <- c_PF_marker()
     pfsort <- c_PF_sorting()
     increase_size <- input$c_PF_marker_freq
@@ -5528,7 +5463,7 @@ shinyServer(function(input, output, session){
   })
   
   c_compare2_pfe_plot <- eventReactive(input$c_make_bpf, {
-    d <- c_compare2()
+    d <- c_compare2_pf()
     pfmsizing <- c_PF_marker()
     pfsort <- c_PF_sorting()
     increase_size <- input$c_PF_marker_freq
@@ -5601,7 +5536,7 @@ shinyServer(function(input, output, session){
   })
   
   c_compare3_pfe_plot <- eventReactive(input$c_make_bpf, {
-    d <- c_compare3()
+    d <- c_compare3_pf()
     pfmsizing <- c_PF_marker()
     pfsort <- c_PF_sorting()
     increase_size <- input$c_PF_marker_freq
@@ -5701,91 +5636,6 @@ shinyServer(function(input, output, session){
     colnames(d1) <- c("f123")    
     d1 <- unique(sort(d1$f123))
   })
-  
-  
-  # c_f1_unique <- reactive({
-  #   '%!in%' <- function(x,y)!('%in%'(x,y))
-  #   d <- c_compare1()
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-  #     f1 <- subset(d$f1_subset, gene %!in% (d$overlap1_2)$gene)
-  #   }
-  #   else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     f1 <- subset(d$f1_subset, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
-  #   }
-  #   d1 <- data.frame(f1$gene)
-  #   colnames(d1) <- c("f1")    
-  #   d1 <- unique(sort(d1$f1))
-  # })
-  # 
-  # c_f2_unique <- reactive({
-  #   '%!in%' <- function(x,y)!('%in%'(x,y))
-  #   d <- c_compare2()
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-  #     f2 <- subset(d$f2_subset, gene %!in% (d$overlap2_1)$gene)
-  #   }
-  #   else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     f2 <- subset(d$f2_subset, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
-  #   }
-  #   d1 <- data.frame(f2$gene)
-  #   colnames(d1) <- c("f2")    
-  #   d1 <- unique(sort(d1$f2))
-  # })
-  # 
-  # c_f1_and_f2 <- reactive({
-  #   '%!in%' <- function(x,y)!('%in%'(x,y))
-  #   d <- c_compare2()
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-  #     f2 <- d$overlap2_1
-  #   }
-  #   else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
-  #   }
-  #   d1 <- data.frame(f2$gene)
-  #   colnames(d1) <- c("f12")    
-  #   d1 <- unique(sort(d1$f12))
-  # })
-  # 
-  # c_f3_unique <- reactive({
-  #   '%!in%' <- function(x,y)!('%in%'(x,y))
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     d <- c_compare3()
-  #     f3 <- subset(d$f3_subset, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
-  #     d1 <- data.frame(f3$gene)
-  #     colnames(d1) <- c("f3")    
-  #     d1 <- unique(sort(d1$f3))
-  #   }
-  # })
-  # 
-  # c_f1_and_f3 <- reactive({
-  #   '%!in%' <- function(x,y)!('%in%'(x,y))
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     d <- c_compare3()
-  #     f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
-  #     d1 <- data.frame(f3$gene)
-  #     colnames(d1) <- c("f13")    
-  #     d1 <- unique(sort(d1$f13))
-  #   }
-  # })
-  # 
-  # c_f2_and_f3 <- reactive({
-  #   '%!in%' <- function(x,y)!('%in%'(x,y))
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     d <- c_compare3()
-  #     f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
-  #     d1 <- data.frame(f3$gene)
-  #     colnames(d1) <- c("f23")    
-  #     d1 <- unique(sort(d1$f23))
-  #   }
-  # })
-  # 
-  # c_f1_f2_and_f3 <- reactive({
-  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-  #     d <- c_compare3()
-  #     d1 <- data.frame((d$overlap3_1_2)$gene)
-  #     colnames(d1) <- c("f123")    
-  #     d1 <- unique(sort(d1$f123))
-  #   }
-  # })
   
   c_unique_dat <- reactive({
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
@@ -7183,21 +7033,21 @@ shinyServer(function(input, output, session){
     validate(
       need(!is.null(c_vp2_inweb()), "")
     )
-    c_vp_inweb_colorbar_dl()
+    c_vp_colorbar_dl()
   })
   
   output$c_goi_colorbar <- renderPlot({
     validate(
       need(!is.null(c_goi_vp2()), "")
     )
-    c_vp_goi_colorbar_dl()
+    c_vp_colorbar_dl()
   })
   
   output$c_snp_colorbar <- renderPlot({
     validate(
       need(!is.null(c_snp_vp2()), "")
     )
-    c_vp_snp_colorbar_dl()
+    c_vp_colorbar_dl()
   })
   
   output$VolcanoPlot_c1 <- renderPlotly({
