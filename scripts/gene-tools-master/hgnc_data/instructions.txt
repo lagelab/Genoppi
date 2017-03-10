@@ -1,7 +1,0 @@
-Instructions for the ./hgnc_data folder.
-
-From the HGNC Custom Downloads page (http://www.genenames.org/cgi-bin/download), download two files:
-
-1. Download a file with _only_ the 'Approved Symbol' and 'UniProt ID' checked. Save this as `hgnc_symbol_ac.txt` in this folder.
-
-2. Download another file with _only_ the 'Approved Symbol, 'Previous Symbols' and 'Synonyms' checked. Save this as `hgnc_symbol_previous_synonym.txt` in this folder.
