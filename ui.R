@@ -92,11 +92,9 @@ shinyUI(navbarPage("Genoppi",
                                                      br(),
                                                      fluidRow(
                                                        column(4, plotOutput("Venn_Diagram_SNP_SGL", width = "220px", height = "220px"))
-                                                       #column(4, plotOutput("Venn_Diagram_GOI_1", width = "220px", height = "220px"))
                                                        ),
                                                      fluidRow(
                                                        column(4, uiOutput("a_vd_SNP_SGL_text"))
-                                                       #column(4, uiOutput("a_vd_GOI_text_1"))
                                                      ),
                                                      br(),
                                                      fluidRow(

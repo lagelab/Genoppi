@@ -403,7 +403,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  a_genes_uploaded_vennd <- reactive({
+  a_genes_uploaded_vennd <- eventReactive(input$a_make_vennd_goi, { #reactive({
     if(!is.null(a_upload_genes_vennd())){
       genes <- a_upload_genes_vennd()
       genes <- toupper(genes$V1)
@@ -429,38 +429,31 @@ shinyServer(function(input, output, session){
   })
   
   #success in population_bait -- within user FDR and logFC cutoff in population_bait
-  success_population_bait <- eventReactive(input$a_logFC_range | input$a_FDR_range, {
+  success_population_bait <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range, {
     pullDown_in_inweb <- population_bait()
-    success_population_bait <- subset(pullDown_in_inweb, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
+    success_population <- subset(pullDown_in_inweb, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
                                    FDR < input$a_FDR_range[2] & FDR > input$a_FDR_range[1] &
                                      pvalue < input$a_pvalue_range[2] & pvalue > input$a_pvalue_range[1])
-    rownames(success_population_bait) <- NULL 
-    success_population_bait
+    rownames(success_population) <- NULL 
+    success_population
   })
   
-  success_population_GOI <- eventReactive(input$a_logFC_range | input$a_FDR_range, {
+  success_population_GOI <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range, {
     pullDown_in_hum_genome <- population_GOI()
-    success_population_goi <- subset(pullDown_in_hum_genome, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
+    success_population <- subset(pullDown_in_hum_genome, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
                                         FDR < input$a_FDR_range[2] & FDR > input$a_FDR_range[1] &
                                        pvalue < input$a_pvalue_range[2] & pvalue > input$a_pvalue_range[1])
-    rownames(success_population_goi) <- NULL 
-    success_population_goi
+    rownames(success_population) <- NULL 
+    success_population
   })
   
-  success_population_GOI_1 <- eventReactive(input$a_logFC_range | input$a_FDR_range | input$a_pvalue_range, {
-    pullDown_in_hum_genome <- population_GOI()
-    success_population_goi <- subset(pullDown_in_hum_genome, rep1 > 0 & rep2 > 0)
-    rownames(success_population_goi) <- NULL 
-    success_population_goi
-  })
-  
-  success_population_SNP <- eventReactive(input$a_logFC_range | input$a_FDR_range | input$a_pvalue_range, {
+  success_population_SNP <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range | input$a_pvalue_range, {
     pullDown_in_hum_genome <- population_SNP()
-    success_population_snp <- subset(pullDown_in_hum_genome, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
+    success_population <- subset(pullDown_in_hum_genome, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
                                        FDR < input$a_FDR_range[2] & FDR > input$a_FDR_range[1] &
                                        pvalue < input$a_pvalue_range[2] & pvalue > input$a_pvalue_range[1])
-    rownames(success_population_snp) <- NULL 
-    success_population_snp
+    rownames(success_population) <- NULL 
+    success_population
   })
   
   a_bait_gene_layer <- reactive({
@@ -514,8 +507,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  # eventReactive(input$a_make_vennd, 
-  a_bait_friends_vennd <- reactive({
+  a_bait_friends_vennd <- eventReactive(input$a_make_vennd_bait, { #reactive({
     if(!is.null(a_bait_gene_vennd())){
       withProgress(message = 'Finding bait interactors in InWeb', 
                    detail = 'Hold please', value = 0, {
@@ -728,7 +720,7 @@ shinyServer(function(input, output, session){
   })
   
   # eventReactive(input$a_make_vennd, 
-  SNP_to_gene_vennd <- reactive({
+  SNP_to_gene_vennd <- eventReactive(input$a_make_vennd_snp,{ #reactive({
     if(!is.null(a_snp_vennd())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
@@ -1571,18 +1563,30 @@ shinyServer(function(input, output, session){
     HTML("<b>User-defined significance thresholds:</b>")
   })
   
-  a_venndiagram <- eventReactive(input$a_make_vennd_bait, {
+  a_venndiagram <- reactive({
     bait <- a_bait_gene_vennd()
     success_pop <- success_population_bait()
+    s_p <- unique(sort(success_pop$gene))
     pop <- population_bait()
+    p <- unique(sort(pop$gene))
     samp <- sample_bait()
+    s <- unique(sort(samp$gene))
     success_samp <- success_sample_bait()
-    success_pop_l <- nrow(success_pop)
-    pop_l <- nrow(pop)
-    samp_l <- nrow(samp)
-    success_samp_l <- nrow(success_samp)
+    s_s <- unique(sort(success_samp$gene))
+    success_pop_l <- length(s_p)
+    pop_l <- length(p)
+    samp_l <- length(s)
+    success_samp_l <- length(s_s)
+    # bait <- a_bait_gene_vennd()
+    # success_pop <- success_population_bait()
+    # pop <- population_bait()
+    # samp <- sample_bait()
+    # success_samp <- success_sample_bait()
+    # success_pop_l <- nrow(success_pop)
+    # pop_l <- nrow(pop)
+    # samp_l <- nrow(samp)
+    # success_samp_l <- nrow(success_samp)
     pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
-    # pvalue <- dhyper(success_samp_l, success_pop_l, (pop_l-success_pop_l), samp_l)
     mycolours3 = c("cornflowerblue", "yellow1")
     
     x <- list()
@@ -1599,13 +1603,15 @@ shinyServer(function(input, output, session){
     v0
   })
   
-  a_venndiagram_text <- eventReactive(input$a_make_vennd_bait, {
+  a_venndiagram_text <- reactive({
     bait <- a_bait_gene_vennd()
     pop <- population_bait()
     success_pop <- success_population_bait()
     samp <- sample_bait()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], " and ", input$a_logFC_range[1], 
-                           "&lt;logFC&lt;", input$a_logFC_range[2], " &#40;", nrow(success_pop), "&#41;")
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+                           " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
     inweb_name <- paste0("B = InWeb_IM interactors of ", bait, " &#40;", nrow(samp), "&#41;")
     total <- paste0("pull down &cap; InWeb_IM database &#40;", nrow(pop), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
@@ -1620,7 +1626,7 @@ shinyServer(function(input, output, session){
     HTML(paste(output$c, output$a, output$b, sep = "<br/>"))
   })
   
-  a_venndiagram_GOI <- eventReactive(input$a_make_vennd_goi, {
+  a_venndiagram_GOI <- reactive({
     success_pop <- success_population_GOI()
     s_p <- unique(sort(success_pop$gene))
     pop <- population_GOI()
@@ -1652,12 +1658,14 @@ shinyServer(function(input, output, session){
     v0
   })
   
-  a_venndiagram_GOI_text <- eventReactive(input$a_make_vennd_goi, {
+  a_venndiagram_GOI_text <- reactive({ 
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_GOI()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], " and ", input$a_logFC_range[1], 
-                           "&lt;logFC&lt;", input$a_logFC_range[2], " &#40;", nrow(success_pop), "&#41;")
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+                           " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
     inweb_name <- paste0("B = Genes of interest in HGNC database", " &#40;", nrow(samp), "&#41;")
     total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
@@ -1672,66 +1680,27 @@ shinyServer(function(input, output, session){
     HTML(paste(output$c, output$a, output$b, sep = "<br/>"))
   })
   
-  a_venndiagram_GOI_1 <- eventReactive(input$a_make_vennd_goi, {
-    success_pop <- success_population_GOI_1()
+  a_venndiagram_SNP <- reactive({
+    success_pop <- success_population_GOI()
     s_p <- unique(sort(success_pop$gene))
     pop <- population_GOI()
     p <- unique(sort(pop$gene))
-    samp <- sample_GOI()
+    samp <- sample_SNP()
     s <- unique(sort(samp$gene))
-    success_samp <- success_sample_GOI()
+    success_samp <- success_sample_SNP()
     s_s <- unique(sort(success_samp$gene))
     success_pop_l <- length(s_p)
     pop_l <- length(p)
     samp_l <- length(s)
     success_samp_l <- length(s_s)
-    pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
-    mycolours3 = c("cornflowerblue", "#fdb462")
-    # subset_limit <- paste0(input$a_FDR_range[1], "<FDR<", input$a_FDR_range[2], " and ", input$a_logFC_range[1], "<logFC<", input$a_logFC_range[2])
-    # goi_name <- "Genes of interest"
-    
-    x <- list()
-    x[["A"]] <- success_pop$gene
-    x[["B"]] <- samp$gene
-    
-    v0 <- venn.diagram(x, 
-                       col = mycolours3, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
-                       main = paste("p value = ", format(pvalue, digits = 4)), 
-                       sub = " ", sub.pos = c(0, 0), scaled = F,
-                       cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05))
-    for (i in 1:length(v0)){ v0[[i]]$gp$fontfamily <- 'Arial' }
-    
-    v0
-  })
-  
-  a_venndiagram_GOI_text_1 <- eventReactive(input$a_make_vennd_goi, {
-    pop <- population_GOI()
-    success_pop <- success_population_GOI_1()
-    samp <- sample_GOI()
-    subset_limit <- paste0("A = pull down subset of 0&lt;rep1 and 0&lt;rep2 &#40;", nrow(success_pop), "&#41;")
-    inweb_name <- paste0("B = Genes of interest in HGNC database", " &#40;", nrow(samp), "&#41;")
-    total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
-    list(a=subset_limit, b=inweb_name, c=total)
-  })
-  
-  output$a_vd_GOI_text_1 <- renderUI({
-    validate(
-      need(input$a_file_pulldown_r != '', ""),
-      need(!is.null(input$a_file_genes_vennd), "")
-    )
-    output <- a_venndiagram_GOI_text_1()
-    HTML(paste(output$c, output$a, output$b, sep = "<br/>"))
-  })
-  
-  a_venndiagram_SNP <- eventReactive(input$a_make_vennd_snp,{
-    success_pop <- success_population_GOI()
-    pop <- population_GOI()
-    samp <- sample_SNP()
-    success_samp <- success_sample_SNP()
-    success_pop_l <- nrow(success_pop)
-    pop_l <- nrow(pop)
-    samp_l <- nrow(samp)
-    success_samp_l <- nrow(success_samp)
+    # success_pop <- success_population_GOI()
+    # pop <- population_GOI()
+    # samp <- sample_SNP()
+    # success_samp <- success_sample_SNP()
+    # success_pop_l <- nrow(success_pop)
+    # pop_l <- nrow(pop)
+    # samp_l <- nrow(samp)
+    # success_samp_l <- nrow(success_samp)
     mycolours3 = c("cornflowerblue", "salmon")
     # subset_limit <- paste0(input$a_FDR_range[1], "<FDR<", input$a_FDR_range[2], " and ", input$a_logFC_range[1], "<logFC<", input$a_logFC_range[2])
     # SNP_gene <- "SNP to gene"
@@ -1749,12 +1718,14 @@ shinyServer(function(input, output, session){
     v0
   })
   
-  a_venndiagram_SNP_text <- eventReactive(input$a_make_vennd_snp, {
+  a_venndiagram_SNP_text <- reactive({
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_SNP()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], " and ", input$a_logFC_range[1], 
-                           "&lt;logFC&lt;", input$a_logFC_range[2], " &#40;", nrow(success_pop), "&#41;")
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+                           " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
     inweb_name <- paste0("B = SNPs in 1K Genome database", " &#40;", nrow(samp), "&#41;")
     total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
@@ -1769,15 +1740,27 @@ shinyServer(function(input, output, session){
     HTML(paste(output$a, output$b, sep = "<br/>"))
   })
   
-  a_venndiagram_SNP_SGL <- eventReactive(input$a_make_vennd_snp,{
+  a_venndiagram_SNP_SGL <- reactive({
     success_pop <- success_population_GOI()
+    s_p <- unique(sort(success_pop$gene))
     pop <- population_GOI()
+    p <- unique(sort(pop$gene))
     samp <- sample_SNP_SGL()
+    s <- unique(sort(samp$gene))
     success_samp <- success_sample_SNP_SGL()
-    success_pop_l <- nrow(success_pop)
-    pop_l <- nrow(pop)
-    samp_l <- nrow(samp)
-    success_samp_l <- nrow(success_samp)
+    s_s <- unique(sort(success_samp$gene))
+    success_pop_l <- length(s_p)
+    pop_l <- length(p)
+    samp_l <- length(s)
+    success_samp_l <- length(s_s)
+    # success_pop <- success_population_GOI()
+    # pop <- population_GOI()
+    # samp <- sample_SNP_SGL()
+    # success_samp <- success_sample_SNP_SGL()
+    # success_pop_l <- nrow(success_pop)
+    # pop_l <- nrow(pop)
+    # samp_l <- nrow(samp)
+    # success_samp_l <- nrow(success_samp)
     mycolours3 = c("cornflowerblue", "#80cdc1")
 
     x <- list()
@@ -1793,12 +1776,14 @@ shinyServer(function(input, output, session){
     v0
   })
   
-  a_venndiagram_SNP_SGL_text <- eventReactive(input$a_make_vennd_snp, {
+  a_venndiagram_SNP_SGL_text <- reactive({
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_SNP_SGL()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], " and ", input$a_logFC_range[1], 
-                           "&lt;logFC&lt;", input$a_logFC_range[2], " &#40;", nrow(success_pop), "&#41;")
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+                           " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
     inweb_name <- paste0("B = SGL SNPs in 1K Genome database", " &#40;", nrow(samp), "&#41;")
     total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
@@ -1813,15 +1798,27 @@ shinyServer(function(input, output, session){
     HTML(paste(output$a, output$b, sep = "<br/>"))
   })
   
-  a_venndiagram_SNP_MGL <- eventReactive(input$a_make_vennd_snp,{
+  a_venndiagram_SNP_MGL <- reactive({ 
     success_pop <- success_population_GOI()
+    s_p <- unique(sort(success_pop$gene))
     pop <- population_GOI()
+    p <- unique(sort(pop$gene))
     samp <- sample_SNP_MGL()
+    s <- unique(sort(samp$gene))
     success_samp <- success_sample_SNP_MGL()
-    success_pop_l <- nrow(success_pop)
-    pop_l <- nrow(pop)
-    samp_l <- nrow(samp)
-    success_samp_l <- nrow(success_samp)
+    s_s <- unique(sort(success_samp$gene))
+    success_pop_l <- length(s_p)
+    pop_l <- length(p)
+    samp_l <- length(s)
+    success_samp_l <- length(s_s)
+    # success_pop <- success_population_GOI()
+    # pop <- population_GOI()
+    # samp <- sample_SNP_MGL()
+    # success_samp <- success_sample_SNP_MGL()
+    # success_pop_l <- nrow(success_pop)
+    # pop_l <- nrow(pop)
+    # samp_l <- nrow(samp)
+    # success_samp_l <- nrow(success_samp)
     mycolours3 = c("cornflowerblue", "#c2a5cf")
 
     x <- list()
@@ -1837,12 +1834,14 @@ shinyServer(function(input, output, session){
     v0
   })
   
-  a_venndiagram_SNP_MGL_text <- eventReactive(input$a_make_vennd_snp, {
+  a_venndiagram_SNP_MGL_text <- reactive({
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_SNP_MGL()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], " and ", input$a_logFC_range[1], 
-                           "&lt;logFC&lt;", input$a_logFC_range[2], " &#40;", nrow(success_pop), "&#41;")
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+                           " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
     inweb_name <- paste0("B = MGL SNPs in 1K Genome database", " &#40;", nrow(samp), "&#41;")
     total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
@@ -2086,17 +2085,6 @@ shinyServer(function(input, output, session){
     grid.newpage()
     grid.draw(v0)
 
-  })
-  
-  output$Venn_Diagram_GOI_1 <- renderPlot({
-    validate(
-      need(input$a_file_pulldown_r != '', "Upload file"),
-      need(!is.null(a_upload_genes_vennd()), "Requires GOI")
-    )
-    v0 <- a_venndiagram_GOI_1()
-    grid.newpage()
-    grid.draw(v0)
-    
   })
   
   output$Venn_Diagram_SNP <- renderPlot({
