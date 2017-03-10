@@ -18,7 +18,7 @@ install.packages(c("shiny", "shinyjs", "plotly", "stringr", "VennDiagram", "rmar
 After installing Genoppi dependencies, the latest stable version of Genoppi can be downloaded and run simultaneously using the following R commands in RStudio.
 ```r
 library(shiny)
-runGitHub('Genoppi', 'mjapkim')
+runGitHub('Genoppi', 'lagelab')
 ```
 
 ## Running Genoppi locally
