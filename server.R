@@ -1577,15 +1577,6 @@ shinyServer(function(input, output, session){
     pop_l <- length(p)
     samp_l <- length(s)
     success_samp_l <- length(s_s)
-    # bait <- a_bait_gene_vennd()
-    # success_pop <- success_population_bait()
-    # pop <- population_bait()
-    # samp <- sample_bait()
-    # success_samp <- success_sample_bait()
-    # success_pop_l <- nrow(success_pop)
-    # pop_l <- nrow(pop)
-    # samp_l <- nrow(samp)
-    # success_samp_l <- nrow(success_samp)
     pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
     mycolours3 = c("cornflowerblue", "yellow1")
     
@@ -1641,8 +1632,6 @@ shinyServer(function(input, output, session){
     success_samp_l <- length(s_s)
     pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
     mycolours3 = c("cornflowerblue", "#fdb462")
-    # subset_limit <- paste0(input$a_FDR_range[1], "<FDR<", input$a_FDR_range[2], " and ", input$a_logFC_range[1], "<logFC<", input$a_logFC_range[2])
-    # goi_name <- "Genes of interest"
     
     x <- list()
     x[["A"]] <- success_pop$gene
@@ -1693,17 +1682,7 @@ shinyServer(function(input, output, session){
     pop_l <- length(p)
     samp_l <- length(s)
     success_samp_l <- length(s_s)
-    # success_pop <- success_population_GOI()
-    # pop <- population_GOI()
-    # samp <- sample_SNP()
-    # success_samp <- success_sample_SNP()
-    # success_pop_l <- nrow(success_pop)
-    # pop_l <- nrow(pop)
-    # samp_l <- nrow(samp)
-    # success_samp_l <- nrow(success_samp)
     mycolours3 = c("cornflowerblue", "salmon")
-    # subset_limit <- paste0(input$a_FDR_range[1], "<FDR<", input$a_FDR_range[2], " and ", input$a_logFC_range[1], "<logFC<", input$a_logFC_range[2])
-    # SNP_gene <- "SNP to gene"
     
     x <- list()
     x[["A"]] <- success_pop$gene
@@ -1753,14 +1732,6 @@ shinyServer(function(input, output, session){
     pop_l <- length(p)
     samp_l <- length(s)
     success_samp_l <- length(s_s)
-    # success_pop <- success_population_GOI()
-    # pop <- population_GOI()
-    # samp <- sample_SNP_SGL()
-    # success_samp <- success_sample_SNP_SGL()
-    # success_pop_l <- nrow(success_pop)
-    # pop_l <- nrow(pop)
-    # samp_l <- nrow(samp)
-    # success_samp_l <- nrow(success_samp)
     mycolours3 = c("cornflowerblue", "#80cdc1")
 
     x <- list()
@@ -1811,16 +1782,7 @@ shinyServer(function(input, output, session){
     pop_l <- length(p)
     samp_l <- length(s)
     success_samp_l <- length(s_s)
-    # success_pop <- success_population_GOI()
-    # pop <- population_GOI()
-    # samp <- sample_SNP_MGL()
-    # success_samp <- success_sample_SNP_MGL()
-    # success_pop_l <- nrow(success_pop)
-    # pop_l <- nrow(pop)
-    # samp_l <- nrow(samp)
-    # success_samp_l <- nrow(success_samp)
-    mycolours3 = c("cornflowerblue", "#c2a5cf")
-
+    
     x <- list()
     x[["A"]] <- success_pop$gene
     x[["B"]] <- samp$gene
