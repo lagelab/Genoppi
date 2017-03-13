@@ -1129,15 +1129,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac(below_thresh, above_thresh, no_exist)
       p
     }
@@ -1398,15 +1398,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_scatter_exac(d, below_thresh, above_thresh, no_exist)
       p
     }
@@ -3891,15 +3891,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p 
     }
@@ -4017,15 +4017,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     }
@@ -4299,15 +4299,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     }
@@ -4426,15 +4426,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     }
@@ -4708,15 +4708,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     }
@@ -4834,15 +4834,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     }
@@ -6695,15 +6695,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     }
@@ -6799,15 +6799,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       p
     }
     else if(input$c_colorscheme == "cbf"){
@@ -6901,15 +6901,15 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC < 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "ExAC > 0.1")
+                       text = ~paste(gene), hoverinfo = "text")
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = "not in ExAC")
+                       text = ~paste(gene), hoverinfo = "text")
       p
     }
     else if(input$c_colorscheme == "cbf"){
