@@ -1,18 +1,4 @@
 Approved Symbol	Gene family description
-HRASLS	 HRAS like suppressor family
-HRASLS2	 HRAS like suppressor family
-HRASLS5	 HRAS like suppressor family
-RARRES3	 HRAS like suppressor family
-PLA2G16	 HRAS like suppressor family
-SRCAP	 SRCAP complex
-VPS72	 SRCAP complex
-ACTL6A	 SRCAP complex
-ACTR6	 SRCAP complex
-RUVBL1	 SRCAP complex
-RUVBL2	 SRCAP complex
-DMAP1	 SRCAP complex
-YEATS4	 SRCAP complex
-ZNHIT1	 SRCAP complex
 AGPAT1	1-acylglycerol-3-phosphate O-acyltransferases
 AGPAT2	1-acylglycerol-3-phosphate O-acyltransferases
 AGPAT3	1-acylglycerol-3-phosphate O-acyltransferases
@@ -31,6 +17,21 @@ YWHAH	14-3-3 phospho-serine/phospho-threonine binding proteins
 YWHAQ	14-3-3 phospho-serine/phospho-threonine binding proteins
 YWHAZ	14-3-3 phospho-serine/phospho-threonine binding proteins
 SFN	14-3-3 phospho-serine/phospho-threonine binding proteins
+RNA18S1	18S ribosomal RNAs
+RNA18S2	18S ribosomal RNAs
+RNA18S3	18S ribosomal RNAs
+RNA18S4	18S ribosomal RNAs
+RNA18S5	18S ribosomal RNAs
+RNA28S1	28S ribosomal RNAs
+RNA28S2	28S ribosomal RNAs
+RNA28S3	28S ribosomal RNAs
+RNA28S4	28S ribosomal RNAs
+RNA28S5	28S ribosomal RNAs
+RNA45S1	45S pre-ribosomal RNAs
+RNA45S2	45S pre-ribosomal RNAs
+RNA45S3	45S pre-ribosomal RNAs
+RNA45S4	45S pre-ribosomal RNAs
+RNA45S5	45S pre-ribosomal RNAs
 NT5C	5'-nucleotidases
 NT5C1A	5'-nucleotidases
 NT5C1B	5'-nucleotidases
@@ -56,12 +57,34 @@ HTR3B	5-hydroxytryptamine receptors, ionotropic
 HTR3C	5-hydroxytryptamine receptors, ionotropic 
 HTR3D	5-hydroxytryptamine receptors, ionotropic 
 HTR3E	5-hydroxytryptamine receptors, ionotropic 
+RNA5-8S1	5.8S ribosomal RNAs
+RNA5-8S2	5.8S ribosomal RNAs
+RNA5-8S3	5.8S ribosomal RNAs
+RNA5-8S4	5.8S ribosomal RNAs
+RNA5-8S5	5.8S ribosomal RNAs
 PELP1	5FMC ribosome biogenesis complex
 TEX10	5FMC ribosome biogenesis complex
 LAS1L	5FMC ribosome biogenesis complex
 NOL9	5FMC ribosome biogenesis complex
 WDR18	5FMC ribosome biogenesis complex
 SENP3	5FMC ribosome biogenesis complex
+RNA5S1	5S ribosomal RNAs
+RNA5S10	5S ribosomal RNAs
+RNA5S11	5S ribosomal RNAs
+RNA5S12	5S ribosomal RNAs
+RNA5S13	5S ribosomal RNAs
+RNA5S14	5S ribosomal RNAs
+RNA5S15	5S ribosomal RNAs
+RNA5S16	5S ribosomal RNAs
+RNA5S17	5S ribosomal RNAs
+RNA5S2	5S ribosomal RNAs
+RNA5S3	5S ribosomal RNAs
+RNA5S4	5S ribosomal RNAs
+RNA5S5	5S ribosomal RNAs
+RNA5S6	5S ribosomal RNAs
+RNA5S7	5S ribosomal RNAs
+RNA5S8	5S ribosomal RNAs
+RNA5S9	5S ribosomal RNAs
 PFKFB1	6-phosphofructo-2-kinases/fructose-2,6-biphosphatases
 PFKFB2	6-phosphofructo-2-kinases/fructose-2,6-biphosphatases
 PFKFB3	6-phosphofructo-2-kinases/fructose-2,6-biphosphatases
@@ -321,7 +344,7 @@ ADAL	Adenosine deaminase family
 AMPD1	Adenosine deaminase family
 AMPD2	Adenosine deaminase family
 AMPD3	Adenosine deaminase family
-CECR1	Adenosine deaminase family
+ADA2	Adenosine deaminase family
 ADAT1	Adenosine deaminases acting on RNA
 ADAT2	Adenosine deaminases acting on RNA
 ADAT3	Adenosine deaminases acting on RNA
@@ -401,6 +424,9 @@ AFF1	AF4/FMR2 family
 AFF2	AF4/FMR2 family
 AFF3	AF4/FMR2 family
 AFF4	AF4/FMR2 family
+AJUBA	Ajuba family
+LIMD1	Ajuba family
+WTIP	Ajuba family
 ADH1A	Alcohol dehydrogenases
 ADH1B	Alcohol dehydrogenases
 ADH1C	Alcohol dehydrogenases
@@ -1514,6 +1540,24 @@ CSGALNACT2	Beta 4-glycosyltransferases
 B3GAT1	Beta-1,3-glucuronyltransferases
 B3GAT2	Beta-1,3-glucuronyltransferases
 B3GAT3	Beta-1,3-glucuronyltransferases
+CRYBG3	Beta-gamma crystallin domain containing
+AIM1	Beta-gamma crystallin domain containing
+AIM1L	Beta-gamma crystallin domain containing
+CRYBA1	Beta-gamma crystallins
+CRYBA2	Beta-gamma crystallins
+CRYBA4	Beta-gamma crystallins
+CRYBB1	Beta-gamma crystallins
+CRYBB2	Beta-gamma crystallins
+CRYBB3	Beta-gamma crystallins
+CRYGA	Beta-gamma crystallins
+CRYGB	Beta-gamma crystallins
+CRYGC	Beta-gamma crystallins
+CRYGD	Beta-gamma crystallins
+CRYGEP	Beta-gamma crystallins
+CRYGFP	Beta-gamma crystallins
+CRYGGP	Beta-gamma crystallins
+CRYGN	Beta-gamma crystallins
+CRYGS	Beta-gamma crystallins
 BLOC1S1	Biogenesis of lysosomal organelles complex 1 
 BLOC1S2	Biogenesis of lysosomal organelles complex 1 
 BLOC1S3	Biogenesis of lysosomal organelles complex 1 
@@ -1635,9 +1679,13 @@ GKN2	BRICHOS domain containing
 ITM2A	BRICHOS domain containing
 ITM2B	BRICHOS domain containing
 ITM2C	BRICHOS domain containing
-LECT1	BRICHOS domain containing
+CNMD	BRICHOS domain containing
 SFTPC	BRICHOS domain containing
 TNMD	BRICHOS domain containing
+BRCC3	BRISC complex
+FAM175B	BRISC complex
+BABAM1	BRISC complex
+BRE	BRISC complex
 ABTB1	BTB domain containing
 ABTB2	BTB domain containing
 ANKFY1	BTB domain containing
@@ -1890,6 +1938,7 @@ MRC1	C-type lectin domain family
 MRC2	C-type lectin domain family
 OLR1	C-type lectin domain family
 PLA2R1	C-type lectin domain family
+CLEC20A	C-type lectin domain family
 CX3CR1	C-X-3-C motif chemokine receptors
 CXCR1	C-X-C motif chemokine receptors
 CXCR2	C-X-C motif chemokine receptors
@@ -1939,6 +1988,24 @@ SIRPB1	C1-set domain containing
 SIRPG	C1-set domain containing
 TAPBP	C1-set domain containing
 TAPBPL	C1-set domain containing
+ADIPOQ	C1q and TNF related 
+C1QL1	C1q and TNF related 
+C1QL2	C1q and TNF related 
+C1QL3	C1q and TNF related 
+C1QL4	C1q and TNF related 
+C1QTNF1	C1q and TNF related 
+C1QTNF12	C1q and TNF related 
+C1QTNF2	C1q and TNF related 
+C1QTNF3	C1q and TNF related 
+C1QTNF4	C1q and TNF related 
+C1QTNF5	C1q and TNF related 
+C1QTNF6	C1q and TNF related 
+C1QTNF7	C1q and TNF related 
+C1QTNF8	C1q and TNF related 
+C1QTNF9	C1q and TNF related 
+C1QTNF9B	C1q and TNF related 
+ERFE	C1q and TNF related 
+OTOL1	C1q and TNF related 
 RASA1	C2 and RasGAP domain containing
 RASA2	C2 and RasGAP domain containing
 RASA3	C2 and RasGAP domain containing
@@ -1956,12 +2023,6 @@ WWP2	C2 and WW domain containing
 ABR	C2 domain containing
 BAIAP3	C2 domain containing
 BCR	C2 domain containing
-CADPS2	C2 domain containing
-CAPN5	C2 domain containing
-CAPN6	C2 domain containing
-CCDC33	C2 domain containing
-CC2D1A	C2 domain containing
-CC2D1B	C2 domain containing
 C2CD2	C2 domain containing
 C2CD3	C2 domain containing
 C2CD4A	C2 domain containing
@@ -1969,6 +2030,12 @@ C2CD4B	C2 domain containing
 C2CD4C	C2 domain containing
 C2CD4D	C2 domain containing
 C2CD5	C2 domain containing
+CADPS2	C2 domain containing
+CAPN5	C2 domain containing
+CAPN6	C2 domain containing
+CC2D1A	C2 domain containing
+CC2D1B	C2 domain containing
+CCDC33	C2 domain containing
 HECW1	C2 domain containing
 HECW2	C2 domain containing
 INPP4A	C2 domain containing
@@ -1989,6 +2056,7 @@ SMURF2	C2 domain containing
 SYDE2	C2 domain containing
 TOLLIP	C2 domain containing
 UVRAG	C2 domain containing
+C2CD6	C2 domain containing
 PLA2G4A	C2 domain containing phospholipases
 PLA2G4B	C2 domain containing phospholipases
 PLA2G4D	C2 domain containing phospholipases
@@ -2291,6 +2359,9 @@ MURC	Cavins
 PRKCDBP	Cavins
 PTRF	Cavins
 SDPR	Cavins
+CARD11	CBM complex
+MALT1	CBM complex
+BCL10	CBM complex
 CEBPA	CCAAT/enhancer binding proteins 
 CEBPB	CCAAT/enhancer binding proteins 
 CEBPD	CCAAT/enhancer binding proteins 
@@ -3066,6 +3137,16 @@ COMMD7	COMM domain containing
 COMMD8	COMM domain containing
 COMMD9	COMM domain containing
 COMMD10	COMM domain containing
+CERNA1	Competing endogenous long non-coding RNAs
+HOTAIR	Competing endogenous long non-coding RNAs
+HULC	Competing endogenous long non-coding RNAs
+LINC-ROR	Competing endogenous long non-coding RNAs
+LINCMD1	Competing endogenous long non-coding RNAs
+MALAT1	Competing endogenous long non-coding RNAs
+MHENCR	Competing endogenous long non-coding RNAs
+UCA1	Competing endogenous long non-coding RNAs
+ZEB1-AS1	Competing endogenous long non-coding RNAs
+EWSAT1	Competing endogenous long non-coding RNAs
 C3AR1	Complement component GPCRs
 C5AR1	Complement component GPCRs
 C5AR2	Complement component GPCRs
@@ -3131,6 +3212,8 @@ CPNE6	Copines
 CPNE7	Copines
 CPNE8	Copines
 CPNE9	Copines
+LOR	Cornified envelope precursor family
+IVL	Cornified envelope precursor family
 CORO1A	Coronins
 CORO1B	Coronins
 CORO1C	Coronins
@@ -4010,12 +4093,13 @@ TRY-GTA6-1	Cytoplasmic transfer RNAs
 TRY-GTA7-1	Cytoplasmic transfer RNAs
 TRY-GTA8-1	Cytoplasmic transfer RNAs
 TRY-GTA9-1	Cytoplasmic transfer RNAs
-NUBP1	Cytosolic iron-sulfur assembly components
-NUBP2	Cytosolic iron-sulfur assembly components
 CIAO1	Cytosolic iron-sulfur assembly components
 FAM96A	Cytosolic iron-sulfur assembly components
 FAM96B	Cytosolic iron-sulfur assembly components
 MMS19	Cytosolic iron-sulfur assembly components
+NUBP1	Cytosolic iron-sulfur assembly components
+NUBP2	Cytosolic iron-sulfur assembly components
+NARFL	Cytosolic iron-sulfur assembly components
 CER1	DAN family
 DAND5	DAN family
 GREM1	DAN family
@@ -4510,6 +4594,17 @@ DRD2	Dopamine receptors
 DRD3	Dopamine receptors
 DRD4	Dopamine receptors
 DRD5	Dopamine receptors
+DCDC1	Doublecortin superfamily
+DCDC2	Doublecortin superfamily
+DCDC2B	Doublecortin superfamily
+DCDC2C	Doublecortin superfamily
+DCDC5	Doublecortin superfamily
+DCLK1	Doublecortin superfamily
+DCLK2	Doublecortin superfamily
+DCLK3	Doublecortin superfamily
+RP1	Doublecortin superfamily
+RP1L1	Doublecortin superfamily
+DCX	Doublecortin superfamily
 DCTN1	Dynactin
 DCTN2	Dynactin
 DCTN3	Dynactin
@@ -4790,6 +4885,14 @@ ELP4	Elongator acetyltransferase complex
 ELP5	Elongator acetyltransferase complex 
 ELP6	Elongator acetyltransferase complex 
 IKBKAP	Elongator acetyltransferase complex 
+ELOA	Elongin complex
+ELOA2	Elongin complex
+ELOA3	Elongin complex
+ELOA3B	Elongin complex
+ELOA3C	Elongin complex
+ELOA3D	Elongin complex
+ELOB	Elongin complex
+ELOC	Elongin complex
 COL26A1	EMI domain containing
 EMID1	EMI domain containing
 EMILIN1	EMI domain containing
@@ -5941,6 +6044,14 @@ MTA3	GATA zinc finger domain containing
 RERE	GATA zinc finger domain containing
 TRPS1	GATA zinc finger domain containing
 ZGLP1	GATA zinc finger domain containing
+DEPDC5	GATOR1 subcomplex
+NPRL2	GATOR1 subcomplex
+NPRL3	GATOR1 subcomplex
+MIOS	GATOR2 subcomplex
+WDR24	GATOR2 subcomplex
+WDR59	GATOR2 subcomplex
+SEH1L	GATOR2 subcomplex
+SEC13	GATOR2 subcomplex
 NAA10	GCN5 related N-acetyltransferases
 NAA11	GCN5 related N-acetyltransferases
 NAA20	GCN5 related N-acetyltransferases
@@ -6222,6 +6333,13 @@ PSPH	HAD Asp-based non-protein phosphatases
 PUDP	HAD Asp-based non-protein phosphatases
 PDXP	HAD Asp-based protein phosphatases
 MDP1	HAD Asp-based protein phosphatases
+HDHD2	Haloacid dehalogenase-like hydrolase domain containing
+HDHD3	Haloacid dehalogenase-like hydrolase domain containing
+LHPP	Haloacid dehalogenase-like hydrolase domain containing
+NANP	Haloacid dehalogenase-like hydrolase domain containing
+PUDP	Haloacid dehalogenase-like hydrolase domain containing
+PUDPP1	Haloacid dehalogenase-like hydrolase domain containing
+HDHD5	Haloacid dehalogenase-like hydrolase domain containing
 HAUS1	HAUS augmin like complex 
 HAUS2	HAUS augmin like complex 
 HAUS3	HAUS augmin like complex 
@@ -6511,6 +6629,11 @@ MEOX1	HOXL subclass homeoboxes
 MEOX2	HOXL subclass homeoboxes
 MNX1	HOXL subclass homeoboxes
 PDX1	HOXL subclass homeoboxes
+HRASLS	HRAS like suppressor family
+HRASLS2	HRAS like suppressor family
+HRASLS5	HRAS like suppressor family
+RARRES3	HRAS like suppressor family
+PLA2G16	HRAS like suppressor family
 ACAN	Hyalectan proteoglycans
 BCAN	Hyalectan proteoglycans
 NCAN	Hyalectan proteoglycans
@@ -6798,6 +6921,7 @@ IGHV2-10	Immunoglobulin heavy locus at 14q32.33
 IGHV2-26	Immunoglobulin heavy locus at 14q32.33
 IGHV2-5	Immunoglobulin heavy locus at 14q32.33
 IGHV2-70	Immunoglobulin heavy locus at 14q32.33
+IGHV2-70D	Immunoglobulin heavy locus at 14q32.33
 IGHV3-11	Immunoglobulin heavy locus at 14q32.33
 IGHV3-13	Immunoglobulin heavy locus at 14q32.33
 IGHV3-15	Immunoglobulin heavy locus at 14q32.33
@@ -6880,6 +7004,7 @@ IGHVII-22-1	Immunoglobulin heavy locus at 14q32.33
 IGHVII-26-2	Immunoglobulin heavy locus at 14q32.33
 IGHVII-28-1	Immunoglobulin heavy locus at 14q32.33
 IGHVII-30-1	Immunoglobulin heavy locus at 14q32.33
+IGHVII-30-21	Immunoglobulin heavy locus at 14q32.33
 IGHVII-31-1	Immunoglobulin heavy locus at 14q32.33
 IGHVII-33-1	Immunoglobulin heavy locus at 14q32.33
 IGHVII-40-1	Immunoglobulin heavy locus at 14q32.33
@@ -7361,6 +7486,21 @@ IGFBP3	Insulin like growth factor binding proteins
 IGFBP4	Insulin like growth factor binding proteins
 IGFBP5	Insulin like growth factor binding proteins
 IGFBP6	Insulin like growth factor binding proteins
+INTS13	Integrator complex
+INTS11	Integrator complex
+INTS1	Integrator complex
+INTS10	Integrator complex
+INTS12	Integrator complex
+INTS2	Integrator complex
+INTS3	Integrator complex
+INTS4	Integrator complex
+INTS5	Integrator complex
+INTS6	Integrator complex
+INTS7	Integrator complex
+INTS8	Integrator complex
+INTS9	Integrator complex
+INTS14	Integrator complex
+INTS6L	Integrator complex
 ITGA1	Integrin alpha subunits
 ITGA10	Integrin alpha subunits
 ITGA11	Integrin alpha subunits
@@ -7785,6 +7925,10 @@ KRT84	Keratins, type II
 KRT85	Keratins, type II
 KRT86	Keratins, type II
 KRT222	Keratins, type II
+KPTN	KICSTOR complex
+ITFG2	KICSTOR complex
+C12orf66	KICSTOR complex
+SZT2	KICSTOR complex
 KIR2DL1	Killer cell immunoglobulin like receptors
 KIR2DL2	Killer cell immunoglobulin like receptors
 KIR2DL3	Killer cell immunoglobulin like receptors
@@ -8010,7 +8154,6 @@ LMX1B	LIM class homeoboxes
 ABLIM1	LIM domain containing
 ABLIM2	LIM domain containing
 ABLIM3	LIM domain containing
-AJUBA	LIM domain containing
 CRIP1	LIM domain containing
 CRIP2	LIM domain containing
 CRIP3	LIM domain containing
@@ -8026,7 +8169,6 @@ LASP1	LIM domain containing
 LDB3	LIM domain containing
 LIMA1	LIM domain containing
 LIMCH1	LIM domain containing
-LIMD1	LIM domain containing
 LIMD2	LIM domain containing
 LIMK1	LIM domain containing
 LIMK2	LIM domain containing
@@ -8038,7 +8180,6 @@ LMO2	LIM domain containing
 LMO3	LIM domain containing
 LMO4	LIM domain containing
 LMO7	LIM domain containing
-LPP	LIM domain containing
 LPXN	LIM domain containing
 MICAL1	LIM domain containing
 MICAL2	LIM domain containing
@@ -8061,15 +8202,15 @@ PXN	LIM domain containing
 SCEL	LIM domain containing
 TES	LIM domain containing
 TGFB1I1	LIM domain containing
-TRIP6	LIM domain containing
-WTIP	LIM domain containing
 XIRP2	LIM domain containing
 ZNF185	LIM domain containing
-ZYX	LIM domain containing
 LIMS1	LIM zinc finger domain containing
 LIMS2	LIM zinc finger domain containing
 LIMS3	LIM zinc finger domain containing
 LIMS4	LIM zinc finger domain containing
+SHARPIN	Linear ubiquitin chain assembly complex 
+RBCK1	Linear ubiquitin chain assembly complex 
+RNF31	Linear ubiquitin chain assembly complex 
 AADAC	Lipases
 CEL	Lipases
 LIPC	Lipases
@@ -8118,6 +8259,7 @@ RBP4	Lipocalins
 AATBC	Long non-coding RNAs
 ABALON	Long non-coding RNAs
 ABHD11-AS1	Long non-coding RNAs
+AFAP1-AS1	Long non-coding RNAs
 AIRN	Long non-coding RNAs
 APOA1-AS	Long non-coding RNAs
 APTR	Long non-coding RNAs
@@ -8132,6 +8274,7 @@ BIRC6-AS2	Long non-coding RNAs
 BISPR	Long non-coding RNAs
 BLACAT1	Long non-coding RNAs
 BPESC1	Long non-coding RNAs
+BRE-AS1	Long non-coding RNAs
 CAHM	Long non-coding RNAs
 CARMN	Long non-coding RNAs
 CASC11	Long non-coding RNAs
@@ -8142,6 +8285,7 @@ CASC22	Long non-coding RNAs
 CASC8	Long non-coding RNAs
 CCAT1	Long non-coding RNAs
 CCAT2	Long non-coding RNAs
+CCND2-AS1	Long non-coding RNAs
 CDKN2B-AS1	Long non-coding RNAs
 CDR1-AS	Long non-coding RNAs
 CISTR	Long non-coding RNAs
@@ -8157,6 +8301,8 @@ DANT1	Long non-coding RNAs
 DANT2	Long non-coding RNAs
 DBET	Long non-coding RNAs
 DBH-AS1	Long non-coding RNAs
+DDX11-AS1	Long non-coding RNAs
+DGCR5	Long non-coding RNAs
 DHRS4-AS1	Long non-coding RNAs
 DIO3OS	Long non-coding RNAs
 DISC2	Long non-coding RNAs
@@ -8165,17 +8311,24 @@ DLEU2	Long non-coding RNAs
 DLG2-AS1	Long non-coding RNAs
 DLX6-AS1	Long non-coding RNAs
 DRAIC	Long non-coding RNAs
+DSCAM-AS1	Long non-coding RNAs
 EGFR-AS1	Long non-coding RNAs
 EGOT	Long non-coding RNAs
 EMX2OS	Long non-coding RNAs
 ERICD	Long non-coding RNAs
 ESRG	Long non-coding RNAs
+EWSAT1	Long non-coding RNAs
 FALEC	Long non-coding RNAs
+FAM83H-AS1	Long non-coding RNAs
 FAS-AS1	Long non-coding RNAs
 FENDRR	Long non-coding RNAs
+FEZF1-AS1	Long non-coding RNAs
+FGF14-AS2	Long non-coding RNAs
 FIRRE	Long non-coding RNAs
 FMR1-AS1	Long non-coding RNAs
 FOXCUT	Long non-coding RNAs
+FOXD3-AS1	Long non-coding RNAs
+FOXP4-AS1	Long non-coding RNAs
 FTX	Long non-coding RNAs
 GACAT1	Long non-coding RNAs
 GACAT2	Long non-coding RNAs
@@ -8187,13 +8340,16 @@ GCASPC	Long non-coding RNAs
 GHET1	Long non-coding RNAs
 GHRLOS	Long non-coding RNAs
 GNAS-AS1	Long non-coding RNAs
+GNG12-AS1	Long non-coding RNAs
 GPR1-AS	Long non-coding RNAs
+GSEC	Long non-coding RNAs
 H19	Long non-coding RNAs
 HAGLR	Long non-coding RNAs
 HAR1A	Long non-coding RNAs
 HAR1B	Long non-coding RNAs
 HEIH	Long non-coding RNAs
 HIF1A-AS1	Long non-coding RNAs
+HMMR-AS1	Long non-coding RNAs
 HOTAIR	Long non-coding RNAs
 HOTAIRM1	Long non-coding RNAs
 HOTTIP	Long non-coding RNAs
@@ -8204,27 +8360,41 @@ HULC	Long non-coding RNAs
 IFNG-AS1	Long non-coding RNAs
 IGF2-AS	Long non-coding RNAs
 IPW	Long non-coding RNAs
+IRAIN	Long non-coding RNAs
+ITFG2-AS1	Long non-coding RNAs
 JADRR	Long non-coding RNAs
 JPX	Long non-coding RNAs
 KANTR	Long non-coding RNAs
 KCNIP4-IT1	Long non-coding RNAs
 KCNQ1OT1	Long non-coding RNAs
+KRT7-AS	Long non-coding RNAs
 LCAL1	Long non-coding RNAs
 LINC-PINT	Long non-coding RNAs
 LINC-ROR	Long non-coding RNAs
+LINC00161	Long non-coding RNAs
 LINC00163	Long non-coding RNAs
 LINC00165	Long non-coding RNAs
+LINC00261	Long non-coding RNAs
 LINC00312	Long non-coding RNAs
+LINC00473	Long non-coding RNAs
+LINC00511	Long non-coding RNAs
 LINC00570	Long non-coding RNAs
 LINC00581	Long non-coding RNAs
 LINC00599	Long non-coding RNAs
+LINC00673	Long non-coding RNAs
 LINC00850	Long non-coding RNAs
 LINC00853	Long non-coding RNAs
 LINC01080	Long non-coding RNAs
+LINC01105	Long non-coding RNAs
+LINC01116	Long non-coding RNAs
 LINC01133	Long non-coding RNAs
 LINC01157	Long non-coding RNAs
+LINC01186	Long non-coding RNAs
 LINC01191	Long non-coding RNAs
 LINCMD1	Long non-coding RNAs
+LNCPRESS1	Long non-coding RNAs
+LNCPRESS2	Long non-coding RNAs
+LNCSRLR	Long non-coding RNAs
 LRP1-AS	Long non-coding RNAs
 LSINCT5	Long non-coding RNAs
 LUADT1	Long non-coding RNAs
@@ -8237,10 +8407,12 @@ MEG8	Long non-coding RNAs
 MEG9	Long non-coding RNAs
 MHRT	Long non-coding RNAs
 MIAT	Long non-coding RNAs
+MIF-AS1	Long non-coding RNAs
 MINCR	Long non-coding RNAs
 MIR100HG	Long non-coding RNAs
 MIR155HG	Long non-coding RNAs
 MIR17HG	Long non-coding RNAs
+MIR2052HG	Long non-coding RNAs
 MIR222HG	Long non-coding RNAs
 MIR22HG	Long non-coding RNAs
 MIR31HG	Long non-coding RNAs
@@ -8250,12 +8422,16 @@ MIR99AHG	Long non-coding RNAs
 MT-LIPCAR	Long non-coding RNAs
 MYCNOS	Long non-coding RNAs
 MYCNUT	Long non-coding RNAs
+MYOSLID	Long non-coding RNAs
 NALT1	Long non-coding RNAs
 NAMA	Long non-coding RNAs
 NBAT1	Long non-coding RNAs
+NBR2	Long non-coding RNAs
 NCRUPAR	Long non-coding RNAs
 NEAT1	Long non-coding RNAs
+NFIA-AS1	Long non-coding RNAs
 NKILA	Long non-coding RNAs
+NNT-AS1	Long non-coding RNAs
 NORAD	Long non-coding RNAs
 NRAV	Long non-coding RNAs
 NRIR	Long non-coding RNAs
@@ -8280,10 +8456,16 @@ PCAT5	Long non-coding RNAs
 PCAT6	Long non-coding RNAs
 PCAT7	Long non-coding RNAs
 PCGEM1	Long non-coding RNAs
+PCSK6-AS1	Long non-coding RNAs
 PEG13	Long non-coding RNAs
+PGR-AS1	Long non-coding RNAs
 PICSAR	Long non-coding RNAs
+PPP1R12A-AS1	Long non-coding RNAs
+PRAL	Long non-coding RNAs
 PRINS	Long non-coding RNAs
 PRNCR1	Long non-coding RNAs
+PRNT	Long non-coding RNAs
+PSMD6-AS1	Long non-coding RNAs
 PTCSC1	Long non-coding RNAs
 PTCSC2	Long non-coding RNAs
 PTCSC3	Long non-coding RNAs
@@ -8294,20 +8476,27 @@ PWAR5	Long non-coding RNAs
 PWARSN	Long non-coding RNAs
 PWRN1	Long non-coding RNAs
 PWRN2	Long non-coding RNAs
+RAMP2-AS1	Long non-coding RNAs
 RASSF1-AS1	Long non-coding RNAs
 RGMB-AS1	Long non-coding RNAs
 RPS6KA2-AS1	Long non-coding RNAs
+SALRNA1	Long non-coding RNAs
 SAMMSON	Long non-coding RNAs
+SATB2-AS1	Long non-coding RNAs
 SCAANT1	Long non-coding RNAs
 SCHLAP1	Long non-coding RNAs
 SENCR	Long non-coding RNAs
+SMILR	Long non-coding RNAs
 SNHG1	Long non-coding RNAs
 SNHG16	Long non-coding RNAs
+SNHG18	Long non-coding RNAs
 SNHG3	Long non-coding RNAs
 SNHG4	Long non-coding RNAs
 SNHG5	Long non-coding RNAs
 SNHG6	Long non-coding RNAs
+SNHG8	Long non-coding RNAs
 SOX2-OT	Long non-coding RNAs
+SOX21-AS1	Long non-coding RNAs
 SPRY4-IT1	Long non-coding RNAs
 TARID	Long non-coding RNAs
 TDRG1	Long non-coding RNAs
@@ -8324,11 +8513,16 @@ TUNAR	Long non-coding RNAs
 TUSC7	Long non-coding RNAs
 TUSC8	Long non-coding RNAs
 UCA1	Long non-coding RNAs
+VLDLR-AS1	Long non-coding RNAs
+WSPAR	Long non-coding RNAs
 WT1-AS	Long non-coding RNAs
+XACT	Long non-coding RNAs
 XIST	Long non-coding RNAs
 YAM1	Long non-coding RNAs
+ZEB1-AS1	Long non-coding RNAs
 ZEB2-AS1	Long non-coding RNAs
 ZFAS1	Long non-coding RNAs
+LINC00672	Long non-coding RNAs
 NPTX1	Long pentraxins
 NPTX2	Long pentraxins
 PTX3	Long pentraxins
@@ -8409,6 +8603,7 @@ NCOA1	Lysine acetyltransferases
 NCOA2	Lysine acetyltransferases
 NCOA3	Lysine acetyltransferases
 TAF1	Lysine acetyltransferases
+JMJD1C	Lysine demethylases
 KDM1A	Lysine demethylases
 KDM1B	Lysine demethylases
 KDM2A	Lysine demethylases
@@ -8420,6 +8615,7 @@ KDM4B	Lysine demethylases
 KDM4C	Lysine demethylases
 KDM4D	Lysine demethylases
 KDM4E	Lysine demethylases
+KDM4F	Lysine demethylases
 KDM5A	Lysine demethylases
 KDM5B	Lysine demethylases
 KDM5C	Lysine demethylases
@@ -8430,6 +8626,7 @@ KDM7A	Lysine demethylases
 KDM8	Lysine demethylases
 PHF2	Lysine demethylases
 PHF8	Lysine demethylases
+UTY	Lysine demethylases
 ASH1L	Lysine methyltransferases
 DOT1L	Lysine methyltransferases
 EHMT1	Lysine methyltransferases
@@ -8441,13 +8638,15 @@ KMT2B	Lysine methyltransferases
 KMT2C	Lysine methyltransferases
 KMT2D	Lysine methyltransferases
 KMT2E	Lysine methyltransferases
+KMT5A	Lysine methyltransferases
+KMT5B	Lysine methyltransferases
+KMT5C	Lysine methyltransferases
 NSD1	Lysine methyltransferases
 PRDM2	Lysine methyltransferases
 SETD1A	Lysine methyltransferases
 SETD1B	Lysine methyltransferases
 SETD2	Lysine methyltransferases
 SETD7	Lysine methyltransferases
-KMT5A	Lysine methyltransferases
 SETDB1	Lysine methyltransferases
 SETDB2	Lysine methyltransferases
 SMYD1	Lysine methyltransferases
@@ -8455,8 +8654,13 @@ SMYD2	Lysine methyltransferases
 SMYD3	Lysine methyltransferases
 SUV39H1	Lysine methyltransferases
 SUV39H2	Lysine methyltransferases
-KMT5B	Lysine methyltransferases
-KMT5C	Lysine methyltransferases
+NSD2	Lysine methyltransferases
+NSD3	Lysine methyltransferases
+PRDM9	Lysine methyltransferases
+PRDM6	Lysine methyltransferases
+PRDM8	Lysine methyltransferases
+PRDM16	Lysine methyltransferases
+MECOM	Lysine methyltransferases
 LPAR1	Lysophosphatidic acid receptors
 LPAR2	Lysophosphatidic acid receptors
 LPAR3	Lysophosphatidic acid receptors
@@ -8752,9 +8956,10 @@ SETDB1	Methyl-CpG binding domain containing
 SETDB2	Methyl-CpG binding domain containing
 BAZ2A	Methyl-CpG binding domain containing
 BAZ2B	Methyl-CpG binding domain containing
+EEF1AKMT2	Methyltransferase like
+EEF1AKMT3	Methyltransferase like
 ETFBKMT	Methyltransferase like
 METTL1	Methyltransferase like
-METTL10	Methyltransferase like
 METTL11B	Methyltransferase like
 METTL12	Methyltransferase like
 METTL13	Methyltransferase like
@@ -8764,12 +8969,11 @@ METTL16	Methyltransferase like
 METTL17	Methyltransferase like
 METTL18	Methyltransferase like
 METTL21A	Methyltransferase like
-METTL21B	Methyltransferase like
 METTL21C	Methyltransferase like
 METTL22	Methyltransferase like
 METTL23	Methyltransferase like
-METTL24	Methyltransferase like
 METTL25	Methyltransferase like
+METTL26	Methyltransferase like
 METTL2A	Methyltransferase like
 METTL2B	Methyltransferase like
 METTL3	Methyltransferase like
@@ -8784,7 +8988,6 @@ NTMT1	Methyltransferase like
 RRNAD1	Methyltransferase like
 TRMT44	Methyltransferase like
 VCPKMT	Methyltransferase like
-METTL26	Methyltransferase like
 MIA	MIA family
 MIA2	MIA family
 MIA3	MIA family
@@ -10565,6 +10768,11 @@ MIR3179-4	MicroRNAs
 MIR6724-4	MicroRNAs
 MIR1244-4	MicroRNAs
 MIR548BB	MicroRNAs
+MINDY1	MINDY deubiquitinases
+MINDY2	MINDY deubiquitinases
+MINDY3	MINDY deubiquitinases
+MINDY4	MINDY deubiquitinases
+MINDY4B	MINDY deubiquitinases
 AKAP13	Minor histocompatibility antigens
 APOBEC3B	Minor histocompatibility antigens
 ARHGDIB	Minor histocompatibility antigens
@@ -10622,6 +10830,11 @@ DSN1	MIS12 kinetochore complex
 MIS12	MIS12 kinetochore complex
 NSL1	MIS12 kinetochore complex
 PMF1	MIS12 kinetochore complex
+NDUFAF1	Mitochondrial complex I assembly complex
+ACAD9	Mitochondrial complex I assembly complex
+ECSIT	Mitochondrial complex I assembly complex
+TMEM126B	Mitochondrial complex I assembly complex
+TIMMDC1	Mitochondrial complex I assembly complex
 SDHA	Mitochondrial complex II: succinate dehydrogenase subunits
 SDHB	Mitochondrial complex II: succinate dehydrogenase subunits
 SDHC	Mitochondrial complex II: succinate dehydrogenase subunits
@@ -10674,7 +10887,6 @@ ATP5O	Mitochondrial complex V: ATP synthase subunits
 ATPIF1	Mitochondrial complex V: ATP synthase subunits
 MT-ATP6	Mitochondrial complex V: ATP synthase subunits
 MT-ATP8	Mitochondrial complex V: ATP synthase subunits
-ACAD9	Mitochondrial respiratory chain complex assembly factors
 ATPAF1	Mitochondrial respiratory chain complex assembly factors
 ATPAF2	Mitochondrial respiratory chain complex assembly factors
 BCS1L	Mitochondrial respiratory chain complex assembly factors
@@ -10692,14 +10904,14 @@ COX17	Mitochondrial respiratory chain complex assembly factors
 COX18	Mitochondrial respiratory chain complex assembly factors
 COX19	Mitochondrial respiratory chain complex assembly factors
 COX20	Mitochondrial respiratory chain complex assembly factors
-ECSIT	Mitochondrial respiratory chain complex assembly factors
-NDUFAF1	Mitochondrial respiratory chain complex assembly factors
+FOXRED1	Mitochondrial respiratory chain complex assembly factors
 NDUFAF2	Mitochondrial respiratory chain complex assembly factors
 NDUFAF3	Mitochondrial respiratory chain complex assembly factors
 NDUFAF4	Mitochondrial respiratory chain complex assembly factors
 NDUFAF5	Mitochondrial respiratory chain complex assembly factors
 NDUFAF6	Mitochondrial respiratory chain complex assembly factors
 NDUFAF7	Mitochondrial respiratory chain complex assembly factors
+NDUFAF8	Mitochondrial respiratory chain complex assembly factors
 NUBPL	Mitochondrial respiratory chain complex assembly factors
 SCO1	Mitochondrial respiratory chain complex assembly factors
 SCO2	Mitochondrial respiratory chain complex assembly factors
@@ -10708,12 +10920,9 @@ SDHAF2	Mitochondrial respiratory chain complex assembly factors
 SDHAF3	Mitochondrial respiratory chain complex assembly factors
 SDHAF4	Mitochondrial respiratory chain complex assembly factors
 SURF1	Mitochondrial respiratory chain complex assembly factors
-TMEM126B	Mitochondrial respiratory chain complex assembly factors
 UQCC1	Mitochondrial respiratory chain complex assembly factors
 UQCC2	Mitochondrial respiratory chain complex assembly factors
 UQCC3	Mitochondrial respiratory chain complex assembly factors
-TIMMDC1	Mitochondrial respiratory chain complex assembly factors
-FOXRED1	Mitochondrial respiratory chain complex assembly factors
 DAP3	Mitochondrial ribosomal proteins
 LACTB	Mitochondrial ribosomal proteins
 MRPL1	Mitochondrial ribosomal proteins
@@ -10793,6 +11002,8 @@ MRPS5	Mitochondrial ribosomal proteins
 MRPS6	Mitochondrial ribosomal proteins
 MRPS7	Mitochondrial ribosomal proteins
 MRPS9	Mitochondrial ribosomal proteins
+MT-RNR1	Mitochondrially encoded ribosomal RNAs
+MT-RNR2	Mitochondrially encoded ribosomal RNAs
 MT-TA	Mitochondrially encoded tRNAs
 MT-TC	Mitochondrially encoded tRNAs
 MT-TD	Mitochondrially encoded tRNAs
@@ -10842,6 +11053,8 @@ RAF1	Mitogen-activated protein kinase kinase kinases
 TAOK1	Mitogen-activated protein kinase kinase kinases
 TAOK2	Mitogen-activated protein kinase kinase kinases
 TAOK3	Mitogen-activated protein kinase kinase kinases
+MAP3K20	Mitogen-activated protein kinase kinase kinases
+MAP3K21	Mitogen-activated protein kinase kinase kinases
 MAP2K1	Mitogen-activated protein kinase kinases
 MAP2K2	Mitogen-activated protein kinase kinases
 MAP2K3	Mitogen-activated protein kinase kinases
@@ -11143,35 +11356,35 @@ NDUFV3	NADH:ubiquinone oxidoreductase supernumerary subunits
 NDUFS4	NADH:ubiquinone oxidoreductase supernumerary subunits
 NDUFS5	NADH:ubiquinone oxidoreductase supernumerary subunits
 NDUFS6	NADH:ubiquinone oxidoreductase supernumerary subunits
+NBPF1	NBPF members
+NBPF10	NBPF members
+NBPF11	NBPF members
+NBPF12	NBPF members
+NBPF13P	NBPF members
+NBPF14	NBPF members
+NBPF15	NBPF members
+NBPF17P	NBPF members
+NBPF18P	NBPF members
+NBPF19	NBPF members
+NBPF20	NBPF members
+NBPF21P	NBPF members
+NBPF22P	NBPF members
+NBPF25P	NBPF members
+NBPF26	NBPF members
+NBPF2P	NBPF members
+NBPF3	NBPF members
+NBPF4	NBPF members
+NBPF5P	NBPF members
+NBPF6	NBPF members
+NBPF7	NBPF members
+NBPF8	NBPF members
+NBPF9	NBPF members
 NTN1	Netrins
 NTN3	Netrins
 NTN4	Netrins
 NTN5	Netrins
 NTNG1	Netrins
 NTNG2	Netrins
-NBPF1	Neuroblastoma breakpoint family
-NBPF10	Neuroblastoma breakpoint family
-NBPF11	Neuroblastoma breakpoint family
-NBPF12	Neuroblastoma breakpoint family
-NBPF13P	Neuroblastoma breakpoint family
-NBPF14	Neuroblastoma breakpoint family
-NBPF15	Neuroblastoma breakpoint family
-NBPF17P	Neuroblastoma breakpoint family
-NBPF18P	Neuroblastoma breakpoint family
-NBPF19	Neuroblastoma breakpoint family
-NBPF20	Neuroblastoma breakpoint family
-NBPF21P	Neuroblastoma breakpoint family
-NBPF22P	Neuroblastoma breakpoint family
-NBPF25P	Neuroblastoma breakpoint family
-NBPF26	Neuroblastoma breakpoint family
-NBPF2P	Neuroblastoma breakpoint family
-NBPF3	Neuroblastoma breakpoint family
-NBPF4	Neuroblastoma breakpoint family
-NBPF5P	Neuroblastoma breakpoint family
-NBPF6	Neuroblastoma breakpoint family
-NBPF7	Neuroblastoma breakpoint family
-NBPF8	Neuroblastoma breakpoint family
-NBPF9	Neuroblastoma breakpoint family
 NMUR1	Neuromedin U receptors
 NMUR2	Neuromedin U receptors
 NPFFR1	Neuropeptide receptors
@@ -11191,6 +11404,13 @@ NFKB2	NF-kappa B complex subunits
 REL	NF-kappa B complex subunits
 RELA	NF-kappa B complex subunits
 RELB	NF-kappa B complex subunits
+PRPF19	NineTeen complex
+CDC5L	NineTeen complex
+PLRG1	NineTeen complex
+BCAS2	NineTeen complex
+CWC15	NineTeen complex
+CTNNB1	NineTeen complex
+HSPA8	NineTeen complex
 BARHL1	NKL subclass homeoboxes and pseudogenes
 BARHL2	NKL subclass homeoboxes and pseudogenes
 BARX1	NKL subclass homeoboxes and pseudogenes
@@ -12309,7 +12529,7 @@ OR8D2	Olfactory receptors, family 8
 OR8D4	Olfactory receptors, family 8
 OR8F1P	Olfactory receptors, family 8
 OR8G1	Olfactory receptors, family 8
-OR8G2	Olfactory receptors, family 8
+OR8G2P	Olfactory receptors, family 8
 OR8G3P	Olfactory receptors, family 8
 OR8G5	Olfactory receptors, family 8
 OR8G7P	Olfactory receptors, family 8
@@ -12465,6 +12685,7 @@ PNMAL1	Paraneoplastic Ma antigens
 PNMAL2	Paraneoplastic Ma antigens
 ZCCHC12	Paraneoplastic Ma antigens
 ZCCHC18	Paraneoplastic Ma antigens
+PNMA6E	Paraneoplastic Ma antigens
 PON1	Paraoxonases
 PON2	Paraoxonases
 PON3	Paraoxonases
@@ -12479,7 +12700,7 @@ PARK10	Parkinson disease associated genes
 PARK11	Parkinson disease associated genes
 PARK12	Parkinson disease associated genes
 PARK16	Parkinson disease associated genes
-PARK2	Parkinson disease associated genes
+PRKN	Parkinson disease associated genes
 PARK3	Parkinson disease associated genes
 PARK7	Parkinson disease associated genes
 PINK1	Parkinson disease associated genes
@@ -12668,6 +12889,10 @@ MLNR	Peptide receptors
 PRLHR	Peptide receptors
 QRFPR	Peptide receptors
 TRHR	Peptide receptors
+PGLYRP1	Peptidoglycan recognition proteins
+PGLYRP2	Peptidoglycan recognition proteins
+PGLYRP3	Peptidoglycan recognition proteins
+PGLYRP4	Peptidoglycan recognition proteins
 PADI1	Peptidyl arginine deiminases
 PADI2	Peptidyl arginine deiminases
 PADI3	Peptidyl arginine deiminases
@@ -12775,7 +13000,7 @@ TRIM28	PHD finger proteins
 TRIM33	PHD finger proteins
 TRIM66	PHD finger proteins
 UHRF2	PHD finger proteins
-WHSC1	PHD finger proteins
+NSD2	PHD finger proteins
 ZMYND8	PHD finger proteins
 SP110	PHD finger proteins
 BRPF1	PHD finger proteins
@@ -12787,7 +13012,7 @@ BRD1	PHD finger proteins
 ZMYND11	PHD finger proteins
 KDM2A	PHD finger proteins
 KDM2B	PHD finger proteins
-WHSC1L1	PHD finger proteins
+NSD3	PHD finger proteins
 UHRF1	PHD finger proteins
 FBXL19	PHD finger proteins
 PHACTR1	Phosphatase and actin regulators
@@ -14139,7 +14364,7 @@ DDX11L16	Pseudoautosomal region 2
 DPH3P2	Pseudoautosomal region 2
 IL9R	Pseudoautosomal region 2
 SPRY3	Pseudoautosomal region 2
-TCEB1P24	Pseudoautosomal region 2
+ELOCP24	Pseudoautosomal region 2
 TRPC6P	Pseudoautosomal region 2
 VAMP7	Pseudoautosomal region 2
 WASH6P	Pseudoautosomal region 2
@@ -14175,8 +14400,8 @@ PWWP2B	PWWP domain containing
 DNMT3A	PWWP domain containing
 DNMT3B	PWWP domain containing
 MBD5	PWWP domain containing
-WHSC1	PWWP domain containing
-WHSC1L1	PWWP domain containing
+NSD2	PWWP domain containing
+NSD3	PWWP domain containing
 NSD1	PWWP domain containing
 ZCWPW1	PWWP domain containing
 ZCWPW2	PWWP domain containing
@@ -14230,6 +14455,10 @@ PYHIN1	Pyrin domain containing
 PYHIN5P	Pyrin domain containing
 IFI16	Pyrin domain containing
 MNDA	Pyrin domain containing
+RUVBL1	R2TP complex
+RUVBL2	R2TP complex
+RPAP3	R2TP complex
+PIH1D1	R2TP complex
 IFT22	RAB like GTPases
 RABL2A	RAB like GTPases
 RABL2B	RAB like GTPases
@@ -14352,6 +14581,18 @@ RIT1	RAS type GTPase family
 RIT2	RAS type GTPase family
 RRAS	RAS type GTPase family
 RRAS2	RAS type GTPase family
+PRKN	RBR E3 ubiquitin ligases
+ARIH1	RBR E3 ubiquitin ligases
+ARIH2	RBR E3 ubiquitin ligases
+ANKIB1	RBR E3 ubiquitin ligases
+CUL9	RBR E3 ubiquitin ligases
+RNF14	RBR E3 ubiquitin ligases
+RNF216	RBR E3 ubiquitin ligases
+RNF31	RBR E3 ubiquitin ligases
+RBCK1	RBR E3 ubiquitin ligases
+RNF144A	RBR E3 ubiquitin ligases
+RNF144B	RBR E3 ubiquitin ligases
+RNF19A	RBR E3 ubiquitin ligases
 RAMP1	Receptor (G protein-coupled) activity modifying proteins
 RAMP2	Receptor (G protein-coupled) activity modifying proteins
 RAMP3	Receptor (G protein-coupled) activity modifying proteins
@@ -14448,6 +14689,9 @@ RXFP1	Relaxin family peptide receptors
 RXFP2	Relaxin family peptide receptors
 RXFP3	Relaxin family peptide receptors
 RXFP4	Relaxin family peptide receptors
+RELL1	RELT family
+RELL2	RELT family
+RELT	RELT family
 REM1	RGK type GTPase family
 REM2	RGK type GTPase family
 GEM	RGK type GTPase family
@@ -14615,40 +14859,11 @@ RNASE6	Ribonuclease A family
 RNASE7	Ribonuclease A family
 RNASE8	Ribonuclease A family
 RNASE9	Ribonuclease A family
-RNA5S1	Ribosomal RNAs
-RNA5S10	Ribosomal RNAs
-RNA5S11	Ribosomal RNAs
-RNA5S12	Ribosomal RNAs
-RNA5S13	Ribosomal RNAs
-RNA5S14	Ribosomal RNAs
-RNA5S15	Ribosomal RNAs
-RNA5S16	Ribosomal RNAs
-RNA5S17	Ribosomal RNAs
-RNA5S2	Ribosomal RNAs
-RNA5S3	Ribosomal RNAs
-RNA5S4	Ribosomal RNAs
-RNA5S5	Ribosomal RNAs
-RNA5S6	Ribosomal RNAs
-RNA5S7	Ribosomal RNAs
-RNA5S8	Ribosomal RNAs
-RNA5S9	Ribosomal RNAs
-RNA5-8S1	Ribosomal RNAs
-RNA5-8S2	Ribosomal RNAs
-RNA5-8S3	Ribosomal RNAs
-RNA5-8S4	Ribosomal RNAs
-RNA5-8S5	Ribosomal RNAs
-RNA18S1	Ribosomal RNAs
-RNA18S2	Ribosomal RNAs
-RNA18S3	Ribosomal RNAs
-RNA18S4	Ribosomal RNAs
-RNA18S5	Ribosomal RNAs
-RNA28S1	Ribosomal RNAs
-RNA28S2	Ribosomal RNAs
-RNA28S3	Ribosomal RNAs
-RNA28S4	Ribosomal RNAs
-RNA28S5	Ribosomal RNAs
-MT-RNR1	Ribosomal RNAs
-MT-RNR2	Ribosomal RNAs
+RNR1	Ribosomal 45S RNA clusters
+RNR2	Ribosomal 45S RNA clusters
+RNR3	Ribosomal 45S RNA clusters
+RNR4	Ribosomal 45S RNA clusters
+RNR5	Ribosomal 45S RNA clusters
 AMFR	Ring finger proteins
 BFAR	Ring finger proteins
 BIRC2	Ring finger proteins
@@ -15933,6 +16148,13 @@ S100G	S100 calcium binding proteins
 S100P	S100 calcium binding proteins
 S100Z	S100 calcium binding proteins
 TCHHL1	S100 calcium binding proteins
+FLG	S100 fused type protein family
+FLG2	S100 fused type protein family
+TCHH	S100 fused type protein family
+TCHHL1	S100 fused type protein family
+CRNN	S100 fused type protein family
+RPTN	S100 fused type protein family
+HRNR	S100 fused type protein family
 TRRAP	SAGA complex
 SUPT7L	SAGA complex
 SUPT3H	SAGA complex
@@ -15953,16 +16175,49 @@ KAT2B	SAGA complex
 SAMSN1	SAM and SH3 domain containing
 SASH1	SAM and SH3 domain containing
 SASH3	SAM and SH3 domain containing
+CD163	Scavenger receptor cysteine rich domain containing
+CD163L1	Scavenger receptor cysteine rich domain containing
+CD5	Scavenger receptor cysteine rich domain containing
+CD5L	Scavenger receptor cysteine rich domain containing
+CD6	Scavenger receptor cysteine rich domain containing
+CFI	Scavenger receptor cysteine rich domain containing
+DMBT1	Scavenger receptor cysteine rich domain containing
+HHIPL1	Scavenger receptor cysteine rich domain containing
+LGALS3BP	Scavenger receptor cysteine rich domain containing
+LOXL2	Scavenger receptor cysteine rich domain containing
+LOXL3	Scavenger receptor cysteine rich domain containing
+LOXL4	Scavenger receptor cysteine rich domain containing
+MARCO	Scavenger receptor cysteine rich domain containing
+MSR1	Scavenger receptor cysteine rich domain containing
+PGBD1	Scavenger receptor cysteine rich domain containing
+PRSS12	Scavenger receptor cysteine rich domain containing
+SCARA5	Scavenger receptor cysteine rich domain containing
+SSC4D	Scavenger receptor cysteine rich domain containing
+SSC5D	Scavenger receptor cysteine rich domain containing
+TMPRSS13	Scavenger receptor cysteine rich domain containing
+TMPRSS15	Scavenger receptor cysteine rich domain containing
+TMPRSS2	Scavenger receptor cysteine rich domain containing
+TMPRSS3	Scavenger receptor cysteine rich domain containing
+TMPRSS4	Scavenger receptor cysteine rich domain containing
+TMPRSS5	Scavenger receptor cysteine rich domain containing
+CORIN	Scavenger receptor cysteine rich domain containing
+HPN	Scavenger receptor cysteine rich domain containing
+SCART1	Scavenger receptor cysteine rich domain containing
 AGER	Scavenger receptors
+CD14	Scavenger receptors
 CD163	Scavenger receptors
 CD163L1	Scavenger receptors
+CD207	Scavenger receptors
+CD209	Scavenger receptors
 CD36	Scavenger receptors
 CD68	Scavenger receptors
 CLEC7A	Scavenger receptors
 COLEC12	Scavenger receptors
 CXCL16	Scavenger receptors
+LY75	Scavenger receptors
 MARCO	Scavenger receptors
 MEGF10	Scavenger receptors
+MRC1	Scavenger receptors
 MSR1	Scavenger receptors
 OLR1	Scavenger receptors
 SCARA3	Scavenger receptors
@@ -15971,15 +16226,10 @@ SCARB1	Scavenger receptors
 SCARB2	Scavenger receptors
 SCARF1	Scavenger receptors
 SCARF2	Scavenger receptors
-STAB1	Scavenger receptors
-STAB2	Scavenger receptors
 SSC4D	Scavenger receptors
 SSC5D	Scavenger receptors
-CD14	Scavenger receptors
-CD207	Scavenger receptors
-LY75	Scavenger receptors
-MRC1	Scavenger receptors
-CD209	Scavenger receptors
+STAB1	Scavenger receptors
+STAB2	Scavenger receptors
 SKP1	SCF complex
 CUL1	SCF complex
 RBX1	SCF complex
@@ -16152,6 +16402,111 @@ SERPING1	Serpin peptidase inhibitors
 SERPINH1	Serpin peptidase inhibitors
 SERPINI1	Serpin peptidase inhibitors
 SERPINI2	Serpin peptidase inhibitors
+SETD3	SET domain containing
+SETD4	SET domain containing
+SETD5	SET domain containing
+SETD6	SET domain containing
+SETD9	SET domain containing
+SETMAR	SET domain containing
+SMYD4	SET domain containing
+SMYD5	SET domain containing
+SUV39H1	SET domain containing
+SUV39H2	SET domain containing
+ZFPM1	SET domain containing
+ZFPM2	SET domain containing
+KMT2A	SET domain containing
+KMT2B	SET domain containing
+KMT2C	SET domain containing
+KMT2D	SET domain containing
+KMT2E	SET domain containing
+KMT5A	SET domain containing
+KMT5C	SET domain containing
+SETD1A	SET domain containing
+SETD1B	SET domain containing
+SETDB1	SET domain containing
+SETD2	SET domain containing
+SETD7	SET domain containing
+SETDB2	SET domain containing
+EZH1	SET domain containing
+EZH2	SET domain containing
+EHMT1	SET domain containing
+EHMT2	SET domain containing
+NSD2	SET domain containing
+NSD3	SET domain containing
+SMYD3	SET domain containing
+SMYD1	SET domain containing
+SMYD2	SET domain containing
+ASH1L	SET domain containing
+ALKBH8	Seven-beta-strand methyltransferase motif containing
+AS3MT	Seven-beta-strand methyltransferase motif containing
+ASMT	Seven-beta-strand methyltransferase motif containing
+ASMTL	Seven-beta-strand methyltransferase motif containing
+BCDIN3D	Seven-beta-strand methyltransferase motif containing
+BMT2	Seven-beta-strand methyltransferase motif containing
+BUD23	Seven-beta-strand methyltransferase motif containing
+CAMKMT	Seven-beta-strand methyltransferase motif containing
+CARNMT1	Seven-beta-strand methyltransferase motif containing
+CIAPIN1	Seven-beta-strand methyltransferase motif containing
+CMTR1	Seven-beta-strand methyltransferase motif containing
+CMTR2	Seven-beta-strand methyltransferase motif containing
+COMT	Seven-beta-strand methyltransferase motif containing
+COMTD1	Seven-beta-strand methyltransferase motif containing
+COQ3	Seven-beta-strand methyltransferase motif containing
+COQ5	Seven-beta-strand methyltransferase motif containing
+DIMT1	Seven-beta-strand methyltransferase motif containing
+DNMT1	Seven-beta-strand methyltransferase motif containing
+DOT1L	Seven-beta-strand methyltransferase motif containing
+EEF1AKMT1	Seven-beta-strand methyltransferase motif containing
+EEF2KMT	Seven-beta-strand methyltransferase motif containing
+FAM173A	Seven-beta-strand methyltransferase motif containing
+FAM173B	Seven-beta-strand methyltransferase motif containing
+FAM86B1	Seven-beta-strand methyltransferase motif containing
+FAM86B2	Seven-beta-strand methyltransferase motif containing
+FASN	Seven-beta-strand methyltransferase motif containing
+FBL	Seven-beta-strand methyltransferase motif containing
+FBLL1	Seven-beta-strand methyltransferase motif containing
+FTSJ1	Seven-beta-strand methyltransferase motif containing
+FTSJ3	Seven-beta-strand methyltransferase motif containing
+GAMT	Seven-beta-strand methyltransferase motif containing
+GNMT	Seven-beta-strand methyltransferase motif containing
+GSTCD	Seven-beta-strand methyltransferase motif containing
+HEMK1	Seven-beta-strand methyltransferase motif containing
+HENMT1	Seven-beta-strand methyltransferase motif containing
+HNMT	Seven-beta-strand methyltransferase motif containing
+INMT	Seven-beta-strand methyltransferase motif containing
+KIAA1456	Seven-beta-strand methyltransferase motif containing
+LCMT1	Seven-beta-strand methyltransferase motif containing
+LCMT2	Seven-beta-strand methyltransferase motif containing
+MEPCE	Seven-beta-strand methyltransferase motif containing
+MRM2	Seven-beta-strand methyltransferase motif containing
+N6AMT1	Seven-beta-strand methyltransferase motif containing
+NDUFAF5	Seven-beta-strand methyltransferase motif containing
+NDUFAF7	Seven-beta-strand methyltransferase motif containing
+NNMT	Seven-beta-strand methyltransferase motif containing
+PCMT1	Seven-beta-strand methyltransferase motif containing
+PCMTD1	Seven-beta-strand methyltransferase motif containing
+PCMTD2	Seven-beta-strand methyltransferase motif containing
+PNMT	Seven-beta-strand methyltransferase motif containing
+RNMT	Seven-beta-strand methyltransferase motif containing
+RRP8	Seven-beta-strand methyltransferase motif containing
+TFB1M	Seven-beta-strand methyltransferase motif containing
+TFB2M	Seven-beta-strand methyltransferase motif containing
+TGS1	Seven-beta-strand methyltransferase motif containing
+THUMPD2	Seven-beta-strand methyltransferase motif containing
+THUMPD3	Seven-beta-strand methyltransferase motif containing
+TPMT	Seven-beta-strand methyltransferase motif containing
+TRDMT1	Seven-beta-strand methyltransferase motif containing
+TRMT1	Seven-beta-strand methyltransferase motif containing
+TRMT11	Seven-beta-strand methyltransferase motif containing
+TRMT13	Seven-beta-strand methyltransferase motif containing
+TRMT1L	Seven-beta-strand methyltransferase motif containing
+TRMT2A	Seven-beta-strand methyltransferase motif containing
+TRMT2B	Seven-beta-strand methyltransferase motif containing
+TRMT5	Seven-beta-strand methyltransferase motif containing
+TRMT61A	Seven-beta-strand methyltransferase motif containing
+TRMT61B	Seven-beta-strand methyltransferase motif containing
+WBSCR27	Seven-beta-strand methyltransferase motif containing
+ZCCHC4	Seven-beta-strand methyltransferase motif containing
 ABL1	SH2 domain containing
 ABL2	SH2 domain containing
 BCAR3	SH2 domain containing
@@ -16413,6 +16768,15 @@ SIRPG	Signal regulatory proteins
 KHDRBS1	Signal transduction and activation of RNA metabolism family
 KHDRBS2	Signal transduction and activation of RNA metabolism family
 KHDRBS3	Signal transduction and activation of RNA metabolism family
+HDAC1	SIN3 histone deacetylase complex
+HDAC2	SIN3 histone deacetylase complex
+RBBP4	SIN3 histone deacetylase complex
+RBBP7	SIN3 histone deacetylase complex
+SAP18	SIN3 histone deacetylase complex
+SAP30	SIN3 histone deacetylase complex
+SIN3A	SIN3 histone deacetylase complex
+SIN3B	SIN3 histone deacetylase complex
+SUDS3	SIN3 histone deacetylase complex
 SIX1	SINE class homeoboxes
 SIX2	SINE class homeoboxes
 SIX3	SINE class homeoboxes
@@ -16565,6 +16929,7 @@ SNORD101	Small nucleolar RNAs, C/D box
 SNORD102	Small nucleolar RNAs, C/D box
 SNORD103A	Small nucleolar RNAs, C/D box
 SNORD103B	Small nucleolar RNAs, C/D box
+SNORD103C	Small nucleolar RNAs, C/D box
 SNORD104	Small nucleolar RNAs, C/D box
 SNORD105	Small nucleolar RNAs, C/D box
 SNORD105B	Small nucleolar RNAs, C/D box
@@ -16799,6 +17164,11 @@ SNORD36C	Small nucleolar RNAs, C/D box
 SNORD37	Small nucleolar RNAs, C/D box
 SNORD38A	Small nucleolar RNAs, C/D box
 SNORD38B	Small nucleolar RNAs, C/D box
+SNORD3A	Small nucleolar RNAs, C/D box
+SNORD3B-1	Small nucleolar RNAs, C/D box
+SNORD3B-2	Small nucleolar RNAs, C/D box
+SNORD3C	Small nucleolar RNAs, C/D box
+SNORD3D	Small nucleolar RNAs, C/D box
 SNORD41	Small nucleolar RNAs, C/D box
 SNORD42A	Small nucleolar RNAs, C/D box
 SNORD42B	Small nucleolar RNAs, C/D box
@@ -16860,7 +17230,6 @@ SNORD82	Small nucleolar RNAs, C/D box
 SNORD83A	Small nucleolar RNAs, C/D box
 SNORD83B	Small nucleolar RNAs, C/D box
 SNORD84	Small nucleolar RNAs, C/D box
-SNORD103C	Small nucleolar RNAs, C/D box
 SNORD86	Small nucleolar RNAs, C/D box
 SNORD87	Small nucleolar RNAs, C/D box
 SNORD88A	Small nucleolar RNAs, C/D box
@@ -16880,11 +17249,35 @@ SNORD96B	Small nucleolar RNAs, C/D box
 SNORD97	Small nucleolar RNAs, C/D box
 SNORD98	Small nucleolar RNAs, C/D box
 SNORD99	Small nucleolar RNAs, C/D box
-SNORD3A	Small nucleolar RNAs, C/D box
-SNORD3B-1	Small nucleolar RNAs, C/D box
-SNORD3B-2	Small nucleolar RNAs, C/D box
-SNORD3C	Small nucleolar RNAs, C/D box
-SNORD3D	Small nucleolar RNAs, C/D box
+SNORD3E	Small nucleolar RNAs, C/D box
+SNORD3F	Small nucleolar RNAs, C/D box
+SNORD3G	Small nucleolar RNAs, C/D box
+SNORD3H	Small nucleolar RNAs, C/D box
+SNORD3I	Small nucleolar RNAs, C/D box
+SNORD3J	Small nucleolar RNAs, C/D box
+SNORD3K	Small nucleolar RNAs, C/D box
+SNORD13B-1	Small nucleolar RNAs, C/D box
+SNORD13B-2	Small nucleolar RNAs, C/D box
+SNORD13C	Small nucleolar RNAs, C/D box
+SNORD13D	Small nucleolar RNAs, C/D box
+SNORD13E	Small nucleolar RNAs, C/D box
+SNORD13F	Small nucleolar RNAs, C/D box
+SNORD13G	Small nucleolar RNAs, C/D box
+SNORD13H	Small nucleolar RNAs, C/D box
+SNORD13I	Small nucleolar RNAs, C/D box
+SNORD13J	Small nucleolar RNAs, C/D box
+SNORD19C	Small nucleolar RNAs, C/D box
+SNORD28B	Small nucleolar RNAs, C/D box
+SNORD31B	Small nucleolar RNAs, C/D box
+SNORD38C	Small nucleolar RNAs, C/D box
+SNORD38D	Small nucleolar RNAs, C/D box
+SNORD53B	Small nucleolar RNAs, C/D box
+SNORD63B	Small nucleolar RNAs, C/D box
+SNORD65B	Small nucleolar RNAs, C/D box
+SNORD65C	Small nucleolar RNAs, C/D box
+SNORD70B	Small nucleolar RNAs, C/D box
+SNORD74B	Small nucleolar RNAs, C/D box
+SNORD77B	Small nucleolar RNAs, C/D box
 SNORA1	Small nucleolar RNAs, H/ACA box
 SNORA10	Small nucleolar RNAs, H/ACA box
 SNORA100	Small nucleolar RNAs, H/ACA box
@@ -17027,6 +17420,57 @@ SNORA94	Small nucleolar RNAs, H/ACA box
 SNORA95	Small nucleolar RNAs, H/ACA box
 SNORA98	Small nucleolar RNAs, H/ACA box
 SNORA99	Small nucleolar RNAs, H/ACA box
+SNORA1B	Small nucleolar RNAs, H/ACA box
+SNORA3C	Small nucleolar RNAs, H/ACA box
+SNORA9B	Small nucleolar RNAs, H/ACA box
+SNORA10B	Small nucleolar RNAs, H/ACA box
+SNORA11F	Small nucleolar RNAs, H/ACA box
+SNORA11G	Small nucleolar RNAs, H/ACA box
+SNORA15B-1	Small nucleolar RNAs, H/ACA box
+SNORA15B-2	Small nucleolar RNAs, H/ACA box
+SNORA20B	Small nucleolar RNAs, H/ACA box
+SNORA21B	Small nucleolar RNAs, H/ACA box
+SNORA22B	Small nucleolar RNAs, H/ACA box
+SNORA22C	Small nucleolar RNAs, H/ACA box
+SNORA24B	Small nucleolar RNAs, H/ACA box
+SNORA25B	Small nucleolar RNAs, H/ACA box
+SNORA30B	Small nucleolar RNAs, H/ACA box
+SNORA31B	Small nucleolar RNAs, H/ACA box
+SNORA35B	Small nucleolar RNAs, H/ACA box
+SNORA40B	Small nucleolar RNAs, H/ACA box
+SNORA40C	Small nucleolar RNAs, H/ACA box
+SNORA41B	Small nucleolar RNAs, H/ACA box
+SNORA48B	Small nucleolar RNAs, H/ACA box
+SNORA50B	Small nucleolar RNAs, H/ACA box
+SNORA50D	Small nucleolar RNAs, H/ACA box
+SNORA58B	Small nucleolar RNAs, H/ACA box
+SNORA63B	Small nucleolar RNAs, H/ACA box
+SNORA63C	Small nucleolar RNAs, H/ACA box
+SNORA63D	Small nucleolar RNAs, H/ACA box
+SNORA63E	Small nucleolar RNAs, H/ACA box
+SNORA68B	Small nucleolar RNAs, H/ACA box
+SNORA70H	Small nucleolar RNAs, H/ACA box
+SNORA70I	Small nucleolar RNAs, H/ACA box
+SNORA70J	Small nucleolar RNAs, H/ACA box
+SNORA74C-1	Small nucleolar RNAs, H/ACA box
+SNORA74C-2	Small nucleolar RNAs, H/ACA box
+SNORA74D	Small nucleolar RNAs, H/ACA box
+SNORA75B	Small nucleolar RNAs, H/ACA box
+SNORA77B	Small nucleolar RNAs, H/ACA box
+SNORA79B	Small nucleolar RNAs, H/ACA box
+SNORA80C	Small nucleolar RNAs, H/ACA box
+SNORA80D	Small nucleolar RNAs, H/ACA box
+SPRR1A	Small proline rich proteins
+SPRR1B	Small proline rich proteins
+SPRR2A	Small proline rich proteins
+SPRR2B	Small proline rich proteins
+SPRR2C	Small proline rich proteins
+SPRR2D	Small proline rich proteins
+SPRR2E	Small proline rich proteins
+SPRR2F	Small proline rich proteins
+SPRR2G	Small proline rich proteins
+SPRR3	Small proline rich proteins
+SPRR4	Small proline rich proteins
 NSMCE1	SMC5-6 protein complex
 NSMCE2	SMC5-6 protein complex
 NSMCE3	SMC5-6 protein complex
@@ -17550,6 +17994,7 @@ SPDYE6	Speedy/RINGO cell cycle regulator family
 SPDYE7P	Speedy/RINGO cell cycle regulator family
 SPDYE8P	Speedy/RINGO cell cycle regulator family
 SPDYE9P	Speedy/RINGO cell cycle regulator family
+TMEM225	Spermatogenesis associated
 S1PR1	Sphingosine 1-phosphate receptors
 S1PR2	Sphingosine 1-phosphate receptors
 S1PR3	Sphingosine 1-phosphate receptors
@@ -17570,6 +18015,24 @@ TARBP1	SPOUT methyltranferase domain containing
 TRMT10A	SPOUT methyltranferase domain containing
 TRMT10B	SPOUT methyltranferase domain containing
 TRMT10C	SPOUT methyltranferase domain containing
+YES1	Src family tyrosine kinases
+FYN	Src family tyrosine kinases
+FGR	Src family tyrosine kinases
+LCK	Src family tyrosine kinases
+HCK	Src family tyrosine kinases
+BLK	Src family tyrosine kinases
+LYN	Src family tyrosine kinases
+FRK	Src family tyrosine kinases
+SRC	Src family tyrosine kinases
+SRCAP	SRCAP complex
+VPS72	SRCAP complex
+ACTL6A	SRCAP complex
+ACTR6	SRCAP complex
+RUVBL1	SRCAP complex
+RUVBL2	SRCAP complex
+DMAP1	SRCAP complex
+YEATS4	SRCAP complex
+ZNHIT1	SRCAP complex
 SOX1	SRY-boxes
 SOX10	SRY-boxes
 SOX11	SRY-boxes
@@ -17701,6 +18164,26 @@ TNKS2	Sterile alpha motif domain containing
 USH1G	Sterile alpha motif domain containing
 WDSUB1	Sterile alpha motif domain containing
 ZCCHC14	Sterile alpha motif domain containing
+CTTNBP2	STRIPAK complex
+CTTNBP2NL	STRIPAK complex
+FGFR1OP2	STRIPAK complex
+MINK1	STRIPAK complex
+MOB4	STRIPAK complex
+PDCD10	STRIPAK complex
+PPP2CA	STRIPAK complex
+PPP2R1A	STRIPAK complex
+SIKE1	STRIPAK complex
+SLMAP	STRIPAK complex
+STK24	STRIPAK complex
+STK25	STRIPAK complex
+STK26	STRIPAK complex
+STRIP1	STRIPAK complex
+STRIP2	STRIPAK complex
+STRN	STRIPAK complex
+STRN3	STRIPAK complex
+STRN4	STRIPAK complex
+PPP2CB	STRIPAK complex
+PPP2R1B	STRIPAK complex
 SMC1A	Structural maintenance of chromosomes proteins
 SMC1B	Structural maintenance of chromosomes proteins
 SMC2	Structural maintenance of chromosomes proteins
@@ -18452,6 +18935,16 @@ TIMP1	Tissue inhibitor of metallopeptidases
 TIMP2	Tissue inhibitor of metallopeptidases
 TIMP3	Tissue inhibitor of metallopeptidases
 TIMP4	Tissue inhibitor of metallopeptidases
+CLN8	TLC domain containing
+FAM57A	TLC domain containing
+FAM57B	TLC domain containing
+TLCD1	TLC domain containing
+TLCD2	TLC domain containing
+TMEM56	TLC domain containing
+TRAM1	TLC domain containing
+TRAM1L1	TLC domain containing
+TRAM2	TLC domain containing
+TMEM136	TLC domain containing
 TRAF1	TNF receptor associated factors
 TRAF2	TNF receptor associated factors
 TRAF3	TNF receptor associated factors
@@ -18477,7 +18970,7 @@ TOP3A	Topoisomerases
 TOP3B	Topoisomerases
 TAAR1	Trace amine receptors
 TAAR2	Trace amine receptors
-TAAR3	Trace amine receptors
+TAAR3P	Trace amine receptors
 TAAR4P	Trace amine receptors
 TAAR5	Trace amine receptors
 TAAR6	Trace amine receptors
@@ -18500,6 +18993,8 @@ TRAPPC13	Trafficking protein particle complex
 TRAPPC2L	Trafficking protein particle complex
 ABCC6P1	Transcribed pseudogenes with published function
 AOC4P	Transcribed pseudogenes with published function
+ARHGAP27P1	Transcribed pseudogenes with published function
+BRAFP1	Transcribed pseudogenes with published function
 FER1L4	Transcribed pseudogenes with published function
 HMGA1P8	Transcribed pseudogenes with published function
 KRASP1	Transcribed pseudogenes with published function
@@ -18511,10 +19006,11 @@ SUMO1P3	Transcribed pseudogenes with published function
 TMPOP2	Transcribed pseudogenes with published function
 VIM2P	Transcribed pseudogenes with published function
 ZNF300P1	Transcribed pseudogenes with published function
+SBDSP1	Transcribed pseudogenes with published function
 PCID2	Transcription and export complex 2
 CETN2	Transcription and export complex 2
 ENY2	Transcription and export complex 2
-SHFM1	Transcription and export complex 2
+SEM1	Transcription and export complex 2
 MCM3AP	Transcription and export complex 2
 TCEAL1	Transcription elongation factor A like family
 TCEAL2	Transcription elongation factor A like family
@@ -19134,7 +19630,7 @@ BTNL2	V-set domain containing
 BTNL3	V-set domain containing
 BTNL8	V-set domain containing
 BTNL9	V-set domain containing
-C10orf54	V-set domain containing
+VSIR	V-set domain containing
 CADM1	V-set domain containing
 CADM2	V-set domain containing
 CADM3	V-set domain containing
@@ -19504,6 +20000,7 @@ WFIKKN2	WAP four-disulfide core domain containing
 WASHC1	WASH complex
 WASHC2A	WASH complex
 WASHC2C	WASH complex
+WASHC2D	WASH complex
 WASHC3	WASH complex
 WASHC4	WASH complex
 WASHC5	WASH complex
@@ -20974,3 +21471,6 @@ ZP4	Zona pellucida glycoproteins
 ZER1	ZYG11 cell cycle regulator family
 ZYG11A	ZYG11 cell cycle regulator family
 ZYG11B	ZYG11 cell cycle regulator family
+ZYX	Zyxin family
+TRIP6	Zyxin family
+LPP	Zyxin family
