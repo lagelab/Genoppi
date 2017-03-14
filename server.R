@@ -181,14 +181,14 @@ shinyServer(function(input, output, session){
     )
     if(!is.null(a_pulldown())){
       input_file <- a_pulldown()
-        df <- calculate_moderated_ttest(input_file)
-        min_logFC <- min(df$logFC)
-        min_logFC <- signif(min_logFC-0.5, 1)
-        max_logFC <- max(df$logFC)
-        max_logFC <- signif(max_logFC+0.5, 1)
-        sliderInput("a_logFC_range", "logFC",
-                    min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
-      }
+      df <- input_file
+      min_logFC <- min(df$logFC)
+      min_logFC <- signif(min_logFC-0.5, 1)
+      max_logFC <- max(df$logFC)
+      max_logFC <- signif(max_logFC+0.5, 1)
+      sliderInput("a_logFC_range", "logFC",
+                  min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
+    }
   })
   
   # based on a_pulldown(), create slider for logFC
@@ -236,13 +236,13 @@ shinyServer(function(input, output, session){
     )
     if(!is.null(a_pulldown())){
       input_file <- a_pulldown()
-        df <- calculate_moderated_ttest(input_file)
-        min_logFC <- min(df$logFC)
-        min_logFC <- signif(min_logFC-0.5, 1)
-        max_logFC <- max(df$logFC)
-        max_logFC <- signif(max_logFC+0.5, 1)
-        sliderInput("a_BPF_logFC_range", "logFC",
-                    min = min_logFC, max = max_logFC, value = c(1, max_logFC), step = 0.1)
+      df <- input_file
+      min_logFC <- min(df$logFC)
+      min_logFC <- signif(min_logFC-0.5, 1)
+      max_logFC <- max(df$logFC)
+      max_logFC <- signif(max_logFC+0.5, 1)
+      sliderInput("a_BPF_logFC_range", "logFC",
+                  min = min_logFC, max = max_logFC, value = c(1, max_logFC), step = 0.1)
     }
   })
   
@@ -316,7 +316,6 @@ shinyServer(function(input, output, session){
       if("accession_number" %in% colnames(d)){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       print(head(d))
                        write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
@@ -324,7 +323,6 @@ shinyServer(function(input, output, session){
                        incProgress(0.8)
                        d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                       print(head(d1))
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        incProgress(0.9)
@@ -6623,7 +6621,6 @@ shinyServer(function(input, output, session){
     pf <- as.data.frame(selected_pf)
     pf[pf==""] <- NA
     pf <- na.omit(pf)
-    print(pf)
     pf
   })
   
@@ -6634,7 +6631,6 @@ shinyServer(function(input, output, session){
     if(!is.null(c_pf_db_search())){
       d <- c_pd1()
       gene_interest <- c_pf_db_search()
-      print(gene_interest)
       d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
       list(d_g2s=d_g2s)
     }
