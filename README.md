@@ -20,7 +20,7 @@ To modify the code to suit one's needs, the direct download link for Genoppi is 
 To start local version of Genoppi, begin RStudio and run the following commands.
 ```r
 library(shiny)
-runApp("/path/to/Genoppi/folder")
+runApp("/path/to/your/local/Genoppi/folder")
 ```
 
 ## Preparing your data
