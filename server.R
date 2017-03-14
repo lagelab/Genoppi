@@ -397,14 +397,32 @@ shinyServer(function(input, output, session){
       return(NULL)
     }
     else{
-      df <- read.csv(genes$datapath, header = F)
+      df <- fread(genes$datapath, header = T, fill = T,
+                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
   })
   
   a_genes_uploaded_vennd <- eventReactive(input$a_make_vennd_goi, { 
     if(!is.null(a_upload_genes_vennd())){
       genes <- a_upload_genes_vennd()
-      genes <- toupper(genes$V1)
+      genes = as.data.frame(sapply(genes, toupper)) 
+      genes
+    }
+  })
+  
+  output$a_goi_num_inputs <- renderUI({
+    validate(
+      need(!is.null(a_genes_uploaded_vennd()), "")
+    )
+    d <- a_pulldown()
+    gene_interest <- a_genes_uploaded_vennd()
+    d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )  
+    choices <- names(d_g2s)
+    choices <- append(choices, "total")
+    list_count <- length(d_g2s)
+    if(list_count>0){
+      selectInput("a_goi_num_inputs", "GOI list",
+                  choices = choices, multiple = F)
     }
   })
   
@@ -551,8 +569,7 @@ shinyServer(function(input, output, session){
     if(!is.null(a_genes_uploaded_vennd())){
       genes_upload <- a_genes_uploaded_vennd()
       pop <- population_bait()
-      sample <- subset(pop, pop$gene %in% genes_upload)
-      rownames(sample) <- NULL 
+      sample <- lapply(genes_upload, function(x) subset(pop, gene %in% x) )  
       sample
     }
   })
@@ -602,8 +619,11 @@ shinyServer(function(input, output, session){
   success_sample_GOI <- reactive({
     if(!is.null(sample_GOI()) & !is.null(success_population_GOI())){
       samp <- sample_GOI()
+      samp_total <- as.data.frame(data.table::rbindlist(samp))
+      samp <- c(samp, list(total = samp_total))
+      list_num <- input$a_goi_num_inputs
       success_pop <- success_population_GOI()
-      success_samp <- subset(samp, samp$gene %in% success_pop$gene)
+      success_samp <- subset(samp[[list_num]], samp[[list_num]]$gene %in% success_pop$gene)
       rownames(success_samp) <- NULL
       success_samp
     }
@@ -663,12 +683,15 @@ shinyServer(function(input, output, session){
   hypergeometric_test_list_GOI <- reactive({
     if(!is.null(sample_GOI()) & !is.null(success_population_GOI()) & !is.null(success_sample_GOI())){
       samp <- sample_GOI()
+      samp_total <- as.data.frame(data.table::rbindlist(samp))
+      samp <- c(samp, list(total = samp_total))
+      list_num <- input$a_goi_num_inputs
       success_pop <- success_population_GOI()
       success_samp <- success_sample_GOI()
       genes_upload <- a_genes_uploaded_vennd()
       x <- list()
       x[["A"]] <- as.character(success_pop$gene)
-      x[["B"]] <- as.character(samp$gene)
+      x[["B"]] <- as.character(samp[[list_num]]$gene)
       x[["Overlap"]] <- as.character(success_samp$gene)
       x[["Uploaded list of genes"]] <- as.character(genes_upload)
       n.obs <- sapply(x, length)
@@ -1621,7 +1644,10 @@ shinyServer(function(input, output, session){
     pop <- population_GOI()
     p <- unique(sort(pop$gene))
     samp <- sample_GOI()
-    s <- unique(sort(samp$gene))
+    samp_total <- as.data.frame(data.table::rbindlist(samp))
+    samp <- c(samp, list(total = samp_total))
+    list_num <- input$a_goi_num_inputs
+    s <- unique(sort(samp[[list_num]]$gene))
     success_samp <- success_sample_GOI()
     s_s <- unique(sort(success_samp$gene))
     success_pop_l <- length(s_p)
@@ -1633,7 +1659,7 @@ shinyServer(function(input, output, session){
     
     x <- list()
     x[["A"]] <- success_pop$gene
-    x[["B"]] <- samp$gene
+    x[["B"]] <- samp[[list_num]]$gene
     
     v0 <- venn.diagram(x, 
                        col = mycolours3, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
@@ -1649,11 +1675,14 @@ shinyServer(function(input, output, session){
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_GOI()
+    samp_total <- as.data.frame(data.table::rbindlist(samp))
+    samp <- c(samp, list(total = samp_total))
+    list_num <- input$a_goi_num_inputs
     subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
                            ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
                            " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
                            " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
-    inweb_name <- paste0("B = Genes of interest in HGNC database", " &#40;", nrow(samp), "&#41;")
+    inweb_name <- paste0("B = Genes of interest in HGNC database", " &#40;", nrow(samp[[list_num]]), "&#41;")
     total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
   })
@@ -3352,7 +3381,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  output$goi_num_inputs <- renderUI({
+  output$c_goi_num_inputs <- renderUI({
     validate(
       need(!is.null(c_vp1_goi_layer()), ""),
       need(!is.null(c_vp2_goi_layer()), "")

@@ -80,6 +80,10 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      br(),
                                                      fluidRow(
+                                                       column(4),
+                                                       column(4, uiOutput("a_goi_num_inputs"))
+                                                     ),
+                                                     fluidRow(
                                                        column(4, plotOutput("Venn_Diagram_SNP")),
                                                        column(4, plotOutput("Venn_Diagram_GOI")),
                                                        column(4, plotOutput("Venn_Diagram_bait"))
@@ -270,7 +274,7 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      br(),
                                                      fluidRow(
-                                                       column(4, uiOutput("goi_num_inputs"))
+                                                       column(4, uiOutput("c_goi_num_inputs"))
                                                      ),
                                                      br(),
                                                      br(),
