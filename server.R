@@ -13,7 +13,6 @@ library(plyr)
 library(data.table)
 library(ggplot2)
 library(RColorBrewer)
-library(knitr)
 source("functions.R")
 
 shinyServer(function(input, output, session){
@@ -7932,15 +7931,7 @@ shinyServer(function(input, output, session){
   })
 
   ##### GENERAL #####
-  # output$documentation <- renderImage({
-  #   return(list(
-  #     src = "documentation/documentation.png",
-  #     contentType = "image/png",
-  #     width = 1000,
-  #     alt = "savehowto")
-  #   )
-  # }, deleteFile = FALSE)
-  
+  #documentation
   output$documentation <- renderUI({
     return(includeHTML("documentation/doc_0316.html")
     )
