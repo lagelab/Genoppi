@@ -465,7 +465,11 @@ shinyUI(navbarPage("Genoppi",
                             )
                    ),
                    tabPanel("Documentation",
-                            imageOutput("documentation")
+                            mainPanel(
+                              fluidRow(
+                                column(12, uiOutput("documentation"))
+                              )
+                            )
                    )
 )
 )

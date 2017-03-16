@@ -13,6 +13,7 @@ library(plyr)
 library(data.table)
 library(ggplot2)
 library(RColorBrewer)
+library(knitr)
 source("functions.R")
 
 shinyServer(function(input, output, session){
@@ -6643,14 +6644,12 @@ shinyServer(function(input, output, session){
   
   c_pf_db_search <- eventReactive(input$c_search_pf_db, {
     pf_db <- input$c_pfam_db
-    selected_pf <- prot_fam[prot_fam$V1 %in% pf_db, ]
+    selected_pf <- prot_fam[prot_fam2$V1 %in% pf_db, ]
     selected_pf <- t(selected_pf)
     colnames(selected_pf) <- selected_pf[1, ]
     selected_pf <- selected_pf[-1, ]
-    pf <- as.data.frame(selected_pf)
-    pf[pf==""] <- NA
-    pf <- na.omit(pf)
-    pf
+    selected_pf <- as.data.frame(selected_pf)
+    selected_pf
   })
   
   c_pf_db_vp1 <- reactive({
@@ -7933,14 +7932,19 @@ shinyServer(function(input, output, session){
   })
 
   ##### GENERAL #####
-  output$documentation <- renderImage({
-    return(list(
-      src = "documentation/documentation.png",
-      contentType = "image/png",
-      width = 1000,
-      alt = "savehowto")
+  # output$documentation <- renderImage({
+  #   return(list(
+  #     src = "documentation/documentation.png",
+  #     contentType = "image/png",
+  #     width = 1000,
+  #     alt = "savehowto")
+  #   )
+  # }, deleteFile = FALSE)
+  
+  output$documentation <- renderUI({
+    return(includeHTML("documentation/doc_0316.html")
     )
-  }, deleteFile = FALSE)
+  })
   
 })
 
