@@ -446,9 +446,10 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("b_PF_pvalue_slider"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, uiOutput("b_PF_marker_size")), 
-                                                       column(4, uiOutput("b_PF_freq")),
-                                                       column(4, uiOutput("b_PF_button"))
+                                                       column(3, uiOutput("b_PF_marker_size")), 
+                                                       column(3, uiOutput("b_PF_sort_col")),
+                                                       column(3, uiOutput("b_PF_freq")),
+                                                       column(3, uiOutput("b_PF_button"))
                                                      ),
                                                      fluidRow(
                                                        column(12, plotlyOutput("Protein_Family"), height = "800px")
