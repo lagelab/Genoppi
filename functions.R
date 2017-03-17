@@ -134,7 +134,7 @@ separate_to_groups_for_exac_bar <- function(vp_data){
 
 #volcano - opacity = 1 colorscale
 plot_volcano_qc <- function(d){
-  p <- plot_ly(showlegend = FALSE, width = 550, height = 550)
+  p <- plot_ly(showlegend = FALSE, width = 550, height = 550) 
   for(i in nrow(d)){
     p <- add_markers(p, data = d, x = ~logFC, y = ~-log10(pvalue),
                      marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")), 
@@ -673,7 +673,6 @@ makePlotFamilies_1quadrant <- function(data_fam, data_gna, data, sortPF){
     data_fam <- data_fam[order(-data_fam$frequency), ]
     if(nrow(data_fam)>=1){
       data_fam <- cbind(data_fam, new_f = paste0("(", data_fam$frequency, ") ", data_fam$family))
-      # data_fam$new_f <- factor(data_fam$new_f, levels = unique(data_fam$new_f))
     }
     else {
       data_fam <- data.frame("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
