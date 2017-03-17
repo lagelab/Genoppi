@@ -2476,6 +2476,29 @@ shinyServer(function(input, output, session){
     }
   })
   
+  output$b_PF_sort_col <- renderUI({
+    validate(
+      need(input$file_pfam1 != '', ""),
+      need(input$file_pfam2 != '', ""),
+      need(input$file_pfam3 != '', "")
+    )
+    radioButtons('b_PF_sort_option', 'Sort',
+                 c("Alphabetically" = 'sort_alph',
+                   "PF Frequency" = 'sort_freq'),
+                 inline = T
+    )
+  })
+  
+  b_PF_sorting <- reactive({
+    inPFsort <- input$b_PF_sort_option
+    if (inPFsort == "sort_alph") {
+      marker <- "sort_a"
+    }
+    else {
+      marker <- "sort_f"
+    }
+  })
+  
   b_in_pulldown1 <- reactive({
     if(!is.null(input$file_pfam1)){
       pulldown <- input$file_pfam1
@@ -2631,7 +2654,7 @@ shinyServer(function(input, output, session){
                    pfmsizing <- b_PF_marker()
                    incProgress(0.2)
                    
-                   makePlotFamilies <- function(dim, dip, dpm, increase_size = input$b_PF_marker_freq, bait){
+                   makePlotFamilies <- function(dim, dip, dpm, increase_size = input$b_PF_marker_freq){ #, bait
                      im <- subset(dim, 
                                   (pvalue < input$b_PF_pvalue_range[2] & pvalue > input$b_PF_pvalue_range[1]) & 
                                     (FDR < input$b_PF_FDR_range[2] & FDR > input$b_PF_FDR_range[1]) &
@@ -2670,7 +2693,7 @@ shinyServer(function(input, output, session){
                      howmany1 <- length(unique(enM_families$family))
                      howmany2 <- length(unique(enP_families$family))
                      
-                     enM_families$family <- paste(enM_families$family, " ", sep = '')
+                     # enM_families$family <- paste(enM_families$family, " ", sep = '')
                      
                      increase_size <- input$b_PF_marker_freq
                      
@@ -2697,6 +2720,7 @@ shinyServer(function(input, output, session){
   
   b_pf <- reactive({
     pf_data <- b_pf_data()
+    pfsort <- b_PF_sorting()
     dpm <- pf_data[[1]]
     enM_families <- pf_data[[2]]
     enM_gna <- pf_data[[3]]
@@ -2706,30 +2730,80 @@ shinyServer(function(input, output, session){
     howmany2 <- pf_data[[7]]
     pfmsizing <- pf_data[[8]]
     increase_size <- pf_data[[9]]
+
+    if(pfsort == "sort_f"){
+      enM_families <- enM_families[order(-enM_families$frequency), ]
+      if(nrow(enM_families)>=1){
+        enM_families <- cbind(enM_families, new_f = paste0("(", enM_families$frequency, ") ", enM_families$family))
+      }
+      else {
+        enM_families <- enM_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
+                               "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
+                               "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                               "new_f" = character(0))
+      }
+      enP_families <- enP_families[order(-enP_families$frequency), ]
+      if(nrow(enP_families)>=1){
+        enP_families <- cbind(enP_families, new_f = paste0("(", enP_families$frequency, ") ", enP_families$family))
+      }
+      else {
+        enP_families <- enP_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
+                                     "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
+                                     "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                                     "new_f" = character(0))
+      }
+    }
+    else if(pfsort == "sort_a"){
+      enM_families 
+      if(nrow(enM_families)>=1){
+        enM_families <- cbind(enM_families, new_f = paste0(enM_families$family, " (", enM_families$frequency, ")"))
+      }
+      else {
+        enM_families <- enM_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0),
+                               "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
+                               "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                               "new_f" = character(0))
+      }
+      enP_families 
+      if(nrow(enP_families)>=1){
+        enP_families <- cbind(enP_families, new_f = paste0(enP_families$family, " (", enP_families$frequency, ")"))
+      }
+      else {
+        enP_families <- enP_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0),
+                                     "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
+                                     "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                                     "new_f" = character(0))
+      }
+    }
     
+    
+    enM_families$new_f <- paste(enM_families$new_f, " ", sep = '')
+    enM_families$new_f <- factor(enM_families$new_f, levels = unique(enM_families$new_f))
+    enP_families$new_f <- factor(enP_families$new_f, levels = unique(enP_families$new_f))
+
     if (pfmsizing == "change"){
-      p <- plot_ly(colors = rainbow(howmany1+howmany2, start = 0, end = 0.85), width = 1300, height = 900) %>%
+      p <- plot_ly(colors = rainbow(howmany1+howmany2, start = 0, end = 0.85), width = 1300, height = 900) %>% # ,visible='legendonly'
         #background
         add_markers(data = dpm, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
                     marker = list(color = 'rgba(176,196,222,08)'),
                     text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
-        ### not assigned genes1
-        add_markers(data = enM_gna, x = ~logFC, y = ~-log10(pvalue), 
-                    marker = list(size = 8, symbol = 14, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")), 
+        # ### not assigned genes1
+        add_markers(data = enM_gna, x = ~logFC, y = ~-log10(pvalue),
+                    marker = list(size = 8, symbol = 14, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
                     hoverinfo="text", text = ~paste(gene, name, sep = "  "), name = "Unassigned genes") %>%
         #families1
-        add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue), 
-                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~frequency*increase_size), 
-                    color = ~factor(family),
+        add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue),
+                    marker = list(size = ~frequency*increase_size, symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black")),
+                    color = ~new_f,
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo="text") %>%
         ### not assigned genes2
-        add_markers(data = enP_gna, x = ~logFC, y = ~-log10(pvalue), 
-                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width = 0.9, color = "black")), 
+        add_markers(data = enP_gna, x = ~logFC, y = ~-log10(pvalue),
+                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width = 0.9, color = "black")),
                     hoverinfo="text", text = ~paste(gene, name, sep = "  "), name="Unassigned genes") %>%
         #families2
         add_markers(data = enP_families, x = ~logFC, y = ~-log10(pvalue), 
-                    marker = list(symbol = c('circle'), opacity = 0.8, line = list(width = 0.6, color = "black"), size = ~frequency*increase_size), 
-                    color = ~factor(family),
+                    marker = list(size = ~frequency*increase_size, symbol = c('circle'), opacity = 0.8, line = list(width = 0.6, color = "black")), 
+                    color = ~new_f,
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo="text")
     }
     
@@ -2746,7 +2820,7 @@ shinyServer(function(input, output, session){
         #families1
         add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue), 
                     marker = list(symbol = c('square'), opacity = 1, line = list(width=0.6, color = "black"), size = 12), 
-                    color = ~factor(family),
+                    color = ~new_f,
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo="text") %>%
         ### not assigned genes2
         add_markers(data = enP_gna, x = ~logFC, y = ~-log10(pvalue), 
@@ -2755,7 +2829,7 @@ shinyServer(function(input, output, session){
         #families2
         add_markers(data = enP_families, x = ~logFC, y = ~-log10(pvalue), 
                     marker = list(symbol = c('circle'), opacity = 1, line = list(width = 0.6, color = "black"), size = 12), 
-                    color = ~factor(family),
+                    color = ~new_f,
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo="text") 
     }
     p
