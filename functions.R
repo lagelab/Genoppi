@@ -395,14 +395,14 @@ vp_layer_for_snp_to_gene_mgl_cbf_no_text <- function(p, snp_mgl){
 vp_layer_for_snp_to_gene_none <- function(p, d){
   add_markers(p, data = d, x = ~logFC, y= ~-log10(pvalue),
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group3",
+              mode = "markers", legendgroup = "group3", hoverinfo = "none",
               name = "no SNP to gene")
 }
 
 vp_layer_for_snp_to_gene_none_cbf <- function(p, d){
   add_markers(p, data = d, x = ~logFC, y= ~-log10(pvalue),
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group3",
+              mode = "markers", legendgroup = "group3", hoverinfo = "none",
               name = "no SNP to gene")
 }
 
@@ -441,14 +441,14 @@ vp_layer_for_uploaded_genes_cbf_no_text <- function(p, d_g2s){
 vp_layer_for_uploaded_genes_none <- function(p, d){
   add_markers(p, data = d, x = ~logFC, y= ~-log10(pvalue),
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group2",
+              mode = "markers", legendgroup = "group2", hoverinfo = "none",
               name = "no genes of interest")
 }
 
 vp_layer_for_uploaded_genes_none_cbf <- function(p, d){
   add_markers(p, data = d, x = ~logFC, y= ~-log10(pvalue),
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group2",
+              mode = "markers", legendgroup = "group2", hoverinfo = "none",
               name = "no genes of interest")
 }
 
@@ -552,14 +552,14 @@ sp_layer_for_snp_to_gene_mgl_cbf_no_text <- function(p, snp_mgl){
 sp_layer_for_snp_to_gene_none <- function(p, d){
   add_markers(p, data = d, x = ~rep1, y= ~rep2,
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group3",
+              mode = "markers", legendgroup = "group3", hoverinfo = "none",
               name = "no SNP to gene")
 }
 
 sp_layer_for_snp_to_gene_none_cbf <- function(p, d){
   add_markers(p, data = d, x = ~rep1, y= ~rep2,
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group3",
+              mode = "markers", legendgroup = "group3", hoverinfo = "none",
               name = "no SNP to gene")
 }
 
@@ -598,14 +598,14 @@ sp_layer_for_uploaded_genes_cbf_no_text <- function(p, d_g2s){
 sp_layer_for_uploaded_genes_none <- function(p, d){
   add_markers(p, data = d, x = ~rep1, y= ~rep2,
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group2",
+              mode = "markers", legendgroup = "group2", hoverinfo = "none",
               name = "no genes of interest")
 }
 
 sp_layer_for_uploaded_genes_none_cbf <- function(p, d){
   add_markers(p, data = d, x = ~rep1, y= ~rep2,
               marker = list(opacity = 0),
-              mode = "markers", legendgroup = "group2",
+              mode = "markers", legendgroup = "group2", hoverinfo = "none",
               name = "no genes of interest")
 }
 

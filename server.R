@@ -1241,7 +1241,7 @@ shinyServer(function(input, output, session){
     cc <- a_sp_cor()
     if(input$colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550) 
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 550, height = 550) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       for(i in nrow(data)){
@@ -1256,7 +1256,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550) 
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 550, height = 550) 
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
@@ -1274,7 +1274,7 @@ shinyServer(function(input, output, session){
       p
     } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550) 
+      p <- plot_ly(colors = "Greys", showlegend = F, width = 550, height = 550) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       for(i in nrow(data)){
@@ -1284,9 +1284,6 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
     }
-    p <- p %>%
-      layout(xaxis = list(range=~c(min(d$logFC)-0.5, max(d$logFC)+0.5)),
-             yaxis = list(range=~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5)))
     if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
       df <- ldply(a_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
@@ -7132,17 +7129,6 @@ shinyServer(function(input, output, session){
     selected_pf
   })
   
-  # c_pf1_cleanup <- reactive({
-  #   validate(
-  #     need(input$c_file_pulldown1 != '', ""),
-  #     need(input$c_pfam_db != '', "")
-  #   )
-  #   d <- c_in_pd1()
-  #   prot_remove <- unique(unlist(c_pf_db_search()))  
-  #   prot_cleaned <- subset(d, gene %!in% prot_remove) 
-  #   prot_cleaned
-  # })
-  
   c_pf_db_vp1 <- reactive({
     validate(
       need(input$c_file_pulldown1 != '', "")
@@ -7177,6 +7163,39 @@ shinyServer(function(input, output, session){
       d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
       list(d_g2s=d_g2s)
     }
+  })
+  
+  c_pf1_cleanup <- reactive({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_pfam_db != '', "")
+    )
+    d <- c_in_pd1()
+    prot_remove <- unique(unlist(c_pf_db_search()))
+    prot_cleaned <- subset(d, gene %!in% prot_remove)
+    prot_cleaned
+  })
+  
+  c_pf2_cleanup <- reactive({
+    validate(
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_pfam_db != '', "")
+    )
+    d <- c_in_pd2()
+    prot_remove <- unique(unlist(c_pf_db_search()))
+    prot_cleaned <- subset(d, gene %!in% prot_remove)
+    prot_cleaned
+  })
+  
+  c_pf3_cleanup <- reactive({
+    validate(
+      need(input$c_file_pulldown3 != '', ""),
+      need(input$c_pfam_db != '', "")
+    )
+    d <- c_in_pd3()
+    prot_remove <- unique(unlist(c_pf_db_search()))
+    prot_cleaned <- subset(d, gene %!in% prot_remove)
+    prot_cleaned
   })
   
   c_vp1_pf_db_layer <- reactive({
@@ -7462,6 +7481,264 @@ shinyServer(function(input, output, session){
                 name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_logFC_thresh)), showlegend = F)
   })
   
+  c_sp1_pf_db_layer <- reactive({
+    validate(
+      need(!is.null(c_pd1()), ""),
+      need(!is.null(c_pf_db()), "")
+    )
+    d <- c_pd1()
+    c1_pf_db <- c_pf_db_vp1()
+    cc <- c_sp1_cor()
+    if(input$colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"),
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    } else if(input$colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p
+    } else if(input$colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    }
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+      df <- ldply(c1_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
+        p <- sp_layer_no_genes
+      }
+    } else if(input$c_colorscheme == "cbf"){
+      df <- ldply(c1_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- sp_layer_no_genes
+      }
+    }
+    p <- p %>%
+      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             title = cc, titlefont = list(size=12))
+  })
+  
+  c_sp2_pf_db_layer <- reactive({
+    validate(
+      need(!is.null(c_pd2()), ""),
+      need(!is.null(c_pf_db()), "")
+    )
+    d <- c_pd2()
+    c2_pf_db <- c_pf_db_vp2()
+    cc <- c_sp2_cor()
+    if(input$colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"),
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    } else if(input$colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p
+    } else if(input$colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    }
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+      df <- ldply(c2_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
+        p <- sp_layer_no_genes
+      }
+    } else if(input$c_colorscheme == "cbf"){
+      df <- ldply(c2_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- sp_layer_no_genes
+      }
+    }
+    p <- p %>%
+      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             title = cc, titlefont = list(size=12))
+  })
+  
+  c_sp3_pf_db_layer <- reactive({
+    validate(
+      need(!is.null(c_pd3()), ""),
+      need(!is.null(c_pf_db()), "")
+    )
+    d <- c_pd3()
+    c3_pf_db <- c_pf_db_vp3()
+    cc <- c_sp3_cor()
+    if(input$colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"),
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    } else if(input$colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p
+    } else if(input$colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = F, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    }
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+      df <- ldply(c3_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
+        p <- sp_layer_no_genes
+      }
+    } else if(input$c_colorscheme == "cbf"){
+      df <- ldply(c3_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- sp_layer_no_genes
+      }
+    }
+    p <- p %>%
+      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             title = cc, titlefont = list(size=12))
+  })
+  
   output$c_FDR_colorbar <- renderPlot({
     validate(
       need(input$c_file_pulldown1 != '', "")
@@ -7673,20 +7950,28 @@ shinyServer(function(input, output, session){
     d_col <- colnames(input_file)
     if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
        "rep1" %in% d_col & "rep2" %in% d_col){
-      if(is.null(c_search_gene())){
-        c_sp1()
-      } else{
-        c_sp1_plus()
+      if(is.null(c_pf_db())){
+        if(is.null(c_search_gene())){
+          c_sp1()
+        } else{
+          c_sp1_plus()
+        }
+      }else if(!is.null(c_pf_db())){
+        c_sp1_pf_db_layer()
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
-      if(is.null(c_search_gene())){
-        c_sp1()
-      } else{
-        c_sp1_plus()
+      if(is.null(c_pf_db())){
+        if(is.null(c_search_gene())){
+          c_sp1()
+        } else{
+          c_sp1_plus()
+        }
+      }else if(!is.null(c_pf_db())){
+        c_sp1_pf_db_layer()
       }
     }
   })
@@ -7699,20 +7984,28 @@ shinyServer(function(input, output, session){
     d_col <- colnames(input_file)
     if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
        "rep1" %in% d_col & "rep2" %in% d_col){
-      if(is.null(c_search_gene())){
-        c_sp2()
-      } else{
-        c_sp2_plus()
+      if(is.null(c_pf_db())){
+        if(is.null(c_search_gene())){
+          c_sp2()
+        } else{
+          c_sp2_plus()
+        }
+      }else if(!is.null(c_pf_db())){
+        c_sp2_pf_db_layer()
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
-      if(is.null(c_search_gene())){
-        c_sp2()
-      } else{
-        c_sp2_plus()
+      if(is.null(c_pf_db())){
+        if(is.null(c_search_gene())){
+          c_sp2()
+        } else{
+          c_sp2_plus()
+        }
+      }else if(!is.null(c_pf_db())){
+        c_sp2_pf_db_layer()
       }
     }
   })
@@ -7725,20 +8018,28 @@ shinyServer(function(input, output, session){
     d_col <- colnames(input_file)
     if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
        "rep1" %in% d_col & "rep2" %in% d_col){
-      if(is.null(c_search_gene())){
-        c_sp3()
-      } else{
-        c_sp3_plus()
+      if(is.null(c_pf_db())){
+        if(is.null(c_search_gene())){
+          c_sp3()
+        } else{
+          c_sp3_plus()
+        }
+      }else if(!is.null(c_pf_db())){
+        c_sp3_pf_db_layer()
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
-      if(is.null(c_search_gene())){
-        c_sp3()
-      } else{
-        c_sp3_plus()
+      if(is.null(c_pf_db())){
+        if(is.null(c_search_gene())){
+          c_sp3()
+        } else{
+          c_sp3_plus()
+        }
+      }else if(!is.null(c_pf_db())){
+        c_sp3_pf_db_layer()
       }
     }
   })
@@ -8159,6 +8460,63 @@ shinyServer(function(input, output, session){
       )
     }
   )
+  
+  output$download_c1_pf_cleaned_input <- downloadHandler(
+    filename = function() {
+      paste("input1-pf-removed", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(c_pf1_cleanup(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+    }
+  )
+  
+  output$download_c2_pf_cleaned_input <- downloadHandler(
+    filename = function() {
+      paste("input2-pf-removed", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(c_pf2_cleanup(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+    }
+  )
+  
+  output$download_c3_pf_cleaned_input <- downloadHandler(
+    filename = function() {
+      paste("input3-pf-removed", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(c_pf3_cleanup(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+    }
+  )
+  
+  observe({
+    if(!is.null(c_pf_db())){
+      if(!is.null(c_pd1())){
+        shinyjs::show("download_c1_pf_cleaned_input")
+      }
+    } else if(is.null(c_pf_db())){
+      shinyjs::hide("download_c1_pf_cleaned_input")
+    }
+  })
+  
+  observe({
+    if(!is.null(c_pf_db())){
+      if(!is.null(c_pd2())){
+        shinyjs::show("download_c2_pf_cleaned_input")
+      }
+    } else if(is.null(c_pf_db())){
+      shinyjs::hide("download_c2_pf_cleaned_input")
+    }
+  })
+  
+  observe({
+    if(!is.null(c_pf_db())){
+      if(!is.null(c_pd3())){
+        shinyjs::show("download_c3_pf_cleaned_input")
+      }
+    } else if(is.null(c_pf_db())){
+      shinyjs::hide("download_c3_pf_cleaned_input")
+    }
+  })
   
   observe({
     if(!is.null(input$c_file_pulldown1)){

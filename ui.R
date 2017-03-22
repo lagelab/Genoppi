@@ -3,7 +3,7 @@
 shinyUI(navbarPage("Genoppi",
                    tabPanel("Single File",
                             sidebarLayout(
-                              sidebarPanel(width = 3,
+                              sidebarPanel(width = 2,
                                            uiOutput("a_file"),
                                            HTML('<hr style="border-color: #D6DBE0;">'),
                                            uiOutput("a_GOI_search"),
@@ -12,7 +12,7 @@ shinyUI(navbarPage("Genoppi",
                                            uiOutput("PVal_thresh"),
                                            uiOutput("logFC_thresh")
                               ),
-                              mainPanel(width = 9,
+                              mainPanel(width = 10,
                                 shinyjs::useShinyjs(),
                                 tabsetPanel(id = "basic",
                                             tabPanel("Quality Control", value = "p1",
@@ -191,7 +191,7 @@ shinyUI(navbarPage("Genoppi",
                    ),
                    tabPanel("Multiple Files Comparisons",
                             sidebarLayout(
-                              sidebarPanel(width = 3,
+                              sidebarPanel(width = 2,
                                            uiOutput("c_file1"),
                                            uiOutput("c_file2"),
                                            uiOutput("c_file3"),
@@ -202,7 +202,7 @@ shinyUI(navbarPage("Genoppi",
                                            uiOutput("c_PVal_thresh"),
                                            uiOutput("c_logFC_thresh_combined")
                               ),
-                              mainPanel(width = 9,
+                              mainPanel(width = 10,
                                 shinyjs::useShinyjs(),
                                 tabsetPanel(id = "comparison",
                                             tabPanel("Quality Control", value = "3_p1",
@@ -213,7 +213,13 @@ shinyUI(navbarPage("Genoppi",
                                                        column(3, uiOutput("c_text_prot_fam_db"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, plotlyOutput("VolcanoPlot_c1")), #, height = "350px", width = "320px"
+                                                       column(4, downloadButton("download_c1_pf_cleaned_input", "Remove selected PF from f1")),
+                                                       column(4, downloadButton("download_c2_pf_cleaned_input", "Remove selected PF from f2")),
+                                                       column(4, downloadButton("download_c3_pf_cleaned_input", "Remove selected PF from f3"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(4, plotlyOutput("VolcanoPlot_c1")),
                                                        column(4, plotlyOutput("VolcanoPlot_c2")),
                                                        column(4, plotlyOutput("VolcanoPlot_c3"))
                                                      ),
@@ -420,7 +426,7 @@ shinyUI(navbarPage("Genoppi",
                             )),
                    tabPanel("Advanced PFE",
                             sidebarLayout(
-                              sidebarPanel(width = 3,
+                              sidebarPanel(width = 2,
                                            fileInput('file_pfam1', 'Upload case 1 vs. control 1 file',
                                                      accept = c(
                                                        'text/csv',
