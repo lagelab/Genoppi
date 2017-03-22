@@ -8358,10 +8358,18 @@ shinyServer(function(input, output, session){
 
   ##### GENERAL #####
   #documentation
-  output$documentation <- renderUI({
-    return(includeHTML("documentation/doc_0316.html")
+  output$documentation <- renderImage({
+    return(list(
+      src = "documentation/documentation.png",
+      contentType = "image/png",
+      width = 1000,
+      alt = "savehowto")
     )
-  })
+  }, deleteFile = FALSE)
+  # output$documentation <- renderUI({
+  #   return(includeHTML("documentation/doc_0316.html")
+  #   )
+  # })
   
 })
 
