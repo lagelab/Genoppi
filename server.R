@@ -75,8 +75,7 @@ shinyServer(function(input, output, session){
       combined_max <- max(-(min_logFC), max_logFC)
       numericInput("a_logFC_thresh", "logFC threshold",
                   min = 0, max = combined_max, value = 1, step = 0.1)
-    }
-    else
+    }else
       numericInput("a_logFC_thresh", "logFC threshold",
                   min = 0, max = 1, value = 0.1, step = 0.1)
   })
@@ -286,14 +285,41 @@ shinyServer(function(input, output, session){
     }
   })
   
+  output$a_prot_fam_db <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
+  })
+  
+  # output$a_prot_fam_db_button <- renderUI({
+  #   validate(
+  #     need(input$a_file_pulldown_r != '', ""),
+  #     need(!is.null(a_pf_db()), "")
+  #   )
+  #   if(!is.null(input$a_pfam_db)){
+  #     actionButton("a_search_pf_db", "Remove selected PF from input")
+  #   }
+  # })
+  
+  output$a_text_prot_fam_db <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
+                 c(On = 'yes_label',
+                   Off = 'no_label'),
+                 inline = T
+    )
+  })
+  
   observe({
     if(input$basic == "p3" | input$basic == "p4" | input$basic == "p5"){
       shinyjs::hide("colorscheme")
       shinyjs::hide("a_fdr_thresh")
       shinyjs::hide("a_pval_thresh")
       shinyjs::hide("a_logFC_thresh")
-    }
-    else {
+    }else {
       shinyjs::show("colorscheme")
       shinyjs::show("a_fdr_thresh")
       shinyjs::show("a_pval_thresh")
@@ -310,10 +336,14 @@ shinyServer(function(input, output, session){
     }
   })
   
-  a_pulldown <- reactive({
+  a_orig_pulldown <- reactive({
     if(!is.null(a_in_pulldown())){
       d <- a_in_pulldown()
-      if("accession_number" %in% colnames(d)){
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
                        write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
@@ -325,18 +355,30 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
-      }
-      else if("gene" %in% colnames(d)){
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+  
+  a_pulldown <- reactive({
+    if(!is.null(a_orig_pulldown())){
+      d <- a_orig_pulldown()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -344,7 +386,7 @@ shinyServer(function(input, output, session){
   })
   
   a_converted <- reactive({
-    if(!is.null(a_pulldown())){
+    if(!is.null(a_orig_pulldown())){
       d <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
@@ -386,7 +428,7 @@ shinyServer(function(input, output, session){
   a_genes_uploaded <- reactive({
     if(!is.null(a_upload_genes())){
       genes <- a_upload_genes()
-      genes = as.data.frame(sapply(genes, toupper)) 
+      genes <- as.data.frame(sapply(genes, toupper)) 
       genes
     }
   })
@@ -405,7 +447,7 @@ shinyServer(function(input, output, session){
   a_genes_uploaded_vennd <- eventReactive(input$a_make_vennd_goi, { 
     if(!is.null(a_upload_genes_vennd())){
       genes <- a_upload_genes_vennd()
-      genes = as.data.frame(sapply(genes, toupper)) 
+      genes <- as.data.frame(sapply(genes, toupper)) 
       genes
     }
   })
@@ -763,6 +805,30 @@ shinyServer(function(input, output, session){
     }
   })
   
+  a_pf_db <- reactive({
+    if(!is.null(input$a_pfam_db)){
+      pf_db <- input$a_pfam_db
+    }
+  })
+  
+  a_pf_db_search <- reactive({
+    pf_db <- a_pf_db()
+    selected_pf <- prot_fam[grep(paste(pf_db,collapse='|'), names(prot_fam))]
+    selected_pf <- lapply(selected_pf, function(x) x[!is.na(x)])
+    selected_pf
+  })
+  
+  a_pf_cleanup <- reactive({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(!is.null(a_pf_db()), "")
+    )
+    d <- a_orig_pulldown()
+    prot_remove <- unique(unlist(a_pf_db_search()))
+    prot_cleaned <- subset(d, gene %!in% prot_remove)
+    prot_cleaned
+  })
+  
   a_vp_colorbar <- reactive({
     FDR <- seq(0, 1, 0.01)
     limit <- rep("FDR", 101)
@@ -897,6 +963,105 @@ shinyServer(function(input, output, session){
     p1
   })
   
+  a_pf_db_vp <- reactive({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    if(!is.null(a_pf_db_search())){
+      d <- a_pulldown()
+      gene_interest <- a_pf_db_search()
+      d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
+      list(d_g2s=d_g2s)
+    }
+  })
+  
+  a_vp_pf_db <- reactive({
+    validate(
+      need(!is.null(a_pulldown()), ""),
+      need(!is.null(a_pf_db()), "")
+    )
+    d <- a_pulldown()
+    a_pf_db <- a_pf_db_vp()
+    if(input$colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+      p 
+    } else if(input$colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550)
+      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.8, 
+                       text = ~paste(gene), hoverinfo = "text")
+      # p <- plot_volcano_exac(below_thresh, above_thresh, no_exist)
+      p
+    } else if(input$colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    }
+    p <- p %>%
+      layout(xaxis = list(range=~c(min(logFC)-0.5, max(logFC)+0.5)),
+             yaxis = list(range=~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5)))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      df <- ldply(a_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$a_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+        } else if(input$a_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
+        }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        p <- vp_layer_no_genes
+      }
+    } else if(input$colorscheme == "cbf"){
+      df <- ldply(a_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$a_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$a_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
+        }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- vp_layer_no_genes
+      }
+    }
+    p <- p %>%
+      add_lines(x = ~c(min(logFC)-0.5, max(logFC)+0.5), y = ~-log10(input$a_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$a_pval_thresh), showlegend = F) %>%
+      add_lines(x = input$a_logFC_thresh, y = ~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh), showlegend = F) %>%
+      add_lines(x = -(input$a_logFC_thresh), y = ~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_logFC_thresh)), showlegend = F)
+  })
+  
   a_vp_count <- reactive({
     vp_data <- a_pulldown()
     FDR_pos <- nrow(subset(vp_data, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh)))
@@ -963,12 +1128,101 @@ shinyServer(function(input, output, session){
     p1
   })
   
+  a_sp_pf_db <- reactive({
+    validate(
+      need(!is.null(a_pulldown()), ""),
+      need(!is.null(a_pf_db()), "")
+    )
+    d <- a_pulldown()
+    a_pf_db <- a_pf_db_vp()
+    cc <- a_sp_cor()
+    if(input$colorscheme == "fdr"){
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"),
+                         opacity = 0.8, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    }
+    else if(input$colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       opacity = 0.7, 
+                       text = ~paste(gene), hoverinfo = "text")
+      p
+    }
+    else if(input$colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
+      p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550) 
+      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"), 
+                         opacity = 0.6, 
+                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+      }
+    }
+    p <- p %>%
+      layout(xaxis = list(range=~c(min(logFC)-0.5, max(logFC)+0.5)),
+             yaxis = list(range=~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5)))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      df <- ldply(a_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$a_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
+        } else if(input$a_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
+        p <- sp_layer_no_genes
+      }
+    } else if(input$colorscheme == "cbf"){
+      df <- ldply(a_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$a_marker_text_prot_fam_db == "yes_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$a_marker_text_prot_fam_db == "no_label"){
+          sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
+        }
+        p <- sp_layer_genes
+      } else{
+        sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- sp_layer_no_genes
+      }
+    }
+    p <- p %>%
+      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             title = cc, titlefont = list(size=12))
+  })
+  
   a_multi_vp <- eventReactive(input$a_make_plot, {
     validate(
       need(!is.null(a_pulldown()), "")
     )
-    '%!in%' <- function(x,y)!('%in%'(x,y))
-    
     d <- a_pulldown()
 
     # InWeb, SNP to gene, and genes upload
@@ -1413,7 +1667,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(showlegend = T, width = 650, height = 550) 
+      p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550) 
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
@@ -1966,11 +2220,14 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "Upload file")
     )
-    if(is.null(a_search_gene())){
-      a_vp()
-    }
-    else{
-      a_vp_plus_rep()
+    if(is.null(a_pf_db())){
+      if(is.null(a_search_gene())){
+        a_vp()
+      } else{
+        a_vp_plus_rep()
+      }
+    } else if(!is.null(a_pf_db())){
+      a_vp_pf_db()
     }
   })
   
@@ -1980,23 +2237,37 @@ shinyServer(function(input, output, session){
     )
     a_vp_count()
   }, rownames = T, bordered = T)
-
+  
   output$ScatterPlot <- renderPlotly({
     validate(
       need(input$a_file_pulldown_r != '', "Upload file")
     )
     input_file <- a_in_pulldown()
-    if("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    d_col <- colnames(input_file)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      if(is.null(a_pf_db())){
+        if(is.null(a_search_gene())){
+          a_sp()
+        } else{
+          a_sp_plus()
+        }
+      } else if(!is.null(a_pf_db())){
+        a_sp_pf_db()
+      }
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need(input$filetype == "rep", "Must have rep1 and rep2 values.")
       )
-    }
-    else if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
-      if(is.null(a_search_gene())){
-        a_sp()
-      }
-      else{
-        a_sp_plus()
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
+      if(is.null(a_pf_db())){
+        if(is.null(a_search_gene())){
+          a_sp()
+        } else{
+          a_sp_plus()
+        }
+      } else if(!is.null(a_pf_db())){
+        a_sp_pf_db()
       }
     }
   })
@@ -2040,16 +2311,22 @@ shinyServer(function(input, output, session){
       need(input$a_file_pulldown_r != '', "Upload file")
     )
     input_file <- a_in_pulldown()
-    if("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    d_col <- colnames(input_file)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      if(is.null(a_search_gene())){
+        a_multi_sp_layer()
+      } else{
+        a_multi_sp_plus()
+      }
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need(input$filetype == "rep", "Must have rep1 and rep2 values.")
       )
-    }
-    else if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(a_search_gene())){
         a_multi_sp_layer()
-      }
-      else{
+      } else{
         a_multi_sp_plus()
       }
     }
@@ -2228,6 +2505,24 @@ shinyServer(function(input, output, session){
       shinyjs::enable("download_layered_plots") 
     }
   })
+
+  observe({
+    if(!is.null(a_pf_db())){
+      shinyjs::show("download_pf_cleaned_input")
+    } else if(is.null(a_pf_db())){
+      shinyjs::hide("download_pf_cleaned_input")
+    }
+  })
+  
+  
+  output$download_pf_cleaned_input <- downloadHandler(
+    filename = function() {
+      paste("input-pf-removed", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(a_pf_cleanup(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+    }
+  )
   
   output$download_mapped_uniprot <- downloadHandler(
     filename = function() {
@@ -2508,13 +2803,17 @@ shinyServer(function(input, output, session){
     }
   })
   
-  b_pulldown1 <- reactive({
+  b_orig_pulldown1 <- reactive({
     if(!is.null(b_in_pulldown1())){
       d <- b_in_pulldown1()
-      if("accession_number" %in% colnames(d)){
-        withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
+        withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
@@ -2523,18 +2822,30 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
-      }
-      else if("gene" %in% colnames(d)){
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+  
+  b_pulldown1 <- reactive({
+    if(!is.null(b_orig_pulldown1())){
+      d <- b_orig_pulldown1()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -2550,13 +2861,17 @@ shinyServer(function(input, output, session){
     }
   })
   
-  b_pulldown2 <- reactive({
+  b_orig_pulldown2 <- reactive({
     if(!is.null(b_in_pulldown2())){
       d <- b_in_pulldown2()
-      if("accession_number" %in% colnames(d)){
-        withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
+        withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
@@ -2565,18 +2880,30 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
-      }
-      else if("gene" %in% colnames(d)){
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+  
+  b_pulldown2 <- reactive({
+    if(!is.null(b_orig_pulldown2())){
+      d <- b_orig_pulldown2()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -2592,32 +2919,49 @@ shinyServer(function(input, output, session){
     }
   })
   
-  b_pulldown3 <- reactive({
+  b_orig_pulldown3 <- reactive({
     if(!is.null(b_in_pulldown3())){
       d <- b_in_pulldown3()
-      if("accession_number" %in% colnames(d)){
-      withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
-                   detail = 'Hold please', value = 0, {
-                     write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
-                                 row.names = F, col.names = F)
-                     incProgress(0.6)
-                     system("python scripts/gene-tools-master/map/map.py")
-                     incProgress(0.8)
-                     d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
-                                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                     colnames(d1) <- c("uniprot_id", "gene", "method")
-                     df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                     incProgress(0.9)
-                   })
-      }
-      else if("gene" %in% colnames(d)){
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
+        withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
+                     detail = 'Hold please', value = 0, {
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
+                                   row.names = F, col.names = F)
+                       incProgress(0.6)
+                       system("python scripts/gene-tools-master/map/map.py")
+                       incProgress(0.8)
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                       colnames(d1) <- c("uniprot_id", "gene", "method")
+                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       incProgress(0.9)
+                       df
+                     })
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+  
+  b_pulldown3 <- reactive({
+    if(!is.null(b_orig_pulldown3())){
+      d <- b_orig_pulldown3()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -2664,8 +3008,6 @@ shinyServer(function(input, output, session){
                                     (FDR < input$b_PF_FDR_range[2] & FDR > input$b_PF_FDR_range[1]) &
                                     (logFC < input$b_PF_logFC_range[2] & logFC > input$b_PF_logFC_range[1]))
                      pm <- dpm
-                     
-                     '%!in%' <- function(x,y)!('%in%'(x,y))
                      
                      enM <- subset(im, gene %!in% ip$gene)
                      enP <- subset(ip, gene %!in% im$gene)
@@ -3359,7 +3701,7 @@ shinyServer(function(input, output, session){
     validate(
       need(input$c_file_pulldown1 != '', "")
     )
-    selectInput('c_pfam_db', 'Protein families', prot_fam$V1, multiple=TRUE, selectize=TRUE)
+    selectInput('c_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
   })
   
   output$c_prot_fam_db_button <- renderUI({
@@ -3450,7 +3792,7 @@ shinyServer(function(input, output, session){
   c_genes_uploaded <- reactive({
     if(!is.null(c_upload_genes())){
       genes <- c_upload_genes()
-      genes = as.data.frame(sapply(genes, toupper)) 
+      genes <- as.data.frame(sapply(genes, toupper)) 
       genes
     }
   })
@@ -3558,33 +3900,49 @@ shinyServer(function(input, output, session){
     }
   })
   
-  c_pd1 <- reactive({
+  c_orig_pd1 <- reactive({
     if(!is.null(c_in_pd1())){
       d <- c_in_pd1()
-      if("accession_number" %in% colnames(d)){
-      withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
-                   detail = 'Hold please', value = 0, {
-                     write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
-                                 row.names = F, col.names = F)
-                     incProgress(0.6)
-                     system("python scripts/gene-tools-master/map/map.py")
-                     incProgress(0.8)
-                     system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f1_res.txt")
-                     d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
-                                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                     colnames(d1) <- c("uniprot_id", "gene", "method")
-                     df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                     incProgress(0.9)
-                   })
-      }
-      else if("gene" %in% colnames(d)){
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
+        withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
+                     detail = 'Hold please', value = 0, {
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
+                                   row.names = F, col.names = F)
+                       incProgress(0.6)
+                       system("python scripts/gene-tools-master/map/map.py")
+                       incProgress(0.8)
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                       colnames(d1) <- c("uniprot_id", "gene", "method")
+                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       incProgress(0.9)
+                       df
+                     })
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+  
+  c_pd1 <- reactive({
+    if(!is.null(c_orig_pd1())){
+      d <- c_orig_pd1()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -3592,7 +3950,7 @@ shinyServer(function(input, output, session){
   })
   
   c_pd1_converted <- reactive({
-    if(!is.null(c_pd1())){
+    if(!is.null(c_orig_pd1())){
       d <- fread("scripts/gene-tools-master/map/f1_res.txt", header = TRUE,
                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
@@ -3606,34 +3964,50 @@ shinyServer(function(input, output, session){
       d <- na.omit(d)
     }
   })
-
-  c_pd2 <- reactive({
+  
+  c_orig_pd2 <- reactive({
     if(!is.null(c_in_pd2())){
       d <- c_in_pd2()
-      if("accession_number" %in% colnames(d)){
-      withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
-                   detail = 'Hold please', value = 0, {
-                     write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
-                                 row.names = F, col.names = F)
-                     incProgress(0.6)
-                     system("python scripts/gene-tools-master/map/map.py")
-                     incProgress(0.8)
-                     system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f2_res.txt")
-                     d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
-                                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                     colnames(d1) <- c("uniprot_id", "gene", "method")
-                     df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                     incProgress(0.9)
-                   })
-      }
-      else if("gene" %in% colnames(d)){
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
+        withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
+                     detail = 'Hold please', value = 0, {
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
+                                   row.names = F, col.names = F)
+                       incProgress(0.6)
+                       system("python scripts/gene-tools-master/map/map.py")
+                       incProgress(0.8)
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                       colnames(d1) <- c("uniprot_id", "gene", "method")
+                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       incProgress(0.9)
+                       df
+                     })
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+
+  c_pd2 <- reactive({
+    if(!is.null(c_orig_pd2())){
+      d <- c_orig_pd2()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -3641,7 +4015,7 @@ shinyServer(function(input, output, session){
   })
   
   c_pd2_converted <- reactive({
-    if(!is.null(c_pd2())){
+    if(!is.null(c_orig_pd2())){
       d <- fread("scripts/gene-tools-master/map/f2_res.txt", header = TRUE,
                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
@@ -3656,33 +4030,49 @@ shinyServer(function(input, output, session){
     }
   })
   
-  c_pd3 <- reactive({
+  c_orig_pd3 <- reactive({
     if(!is.null(c_in_pd3())){
       d <- c_in_pd3()
-      if("accession_number" %in% colnames(d)){
-        withProgress(message = 'Mapping UniProt IDs to HGNC symbols', 
+      d_col <- colnames(d)
+      if("gene" %in% d_col & "accession_number" %in% d_col){
+        df <- d
+        df$gene <- toupper(df$gene)
+      } else if("accession_number" %in% d_col){
+        withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F, 
+                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f3_res.txt")
                        d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
+                       df <- subset(df, select=-c(gene.x, method))
+                       names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
+                       df
                      })
-      }
-      else if("gene" %in% colnames(d)){
+      } else if("gene" %in% d_col){
         df <- d
         df$gene <- toupper(df$gene)
       }
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        df1 <- df
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      df
+    }
+  })
+  
+  c_pd3 <- reactive({
+    if(!is.null(c_orig_pd3())){
+      d <- c_orig_pd3()
+      d_col <- colnames(d)
+      if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+         "rep1" %in% d_col & "rep2" %in% d_col){
+        df1 <- d
+      }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+        df1 <- d
+      }else if("rep1" %in% d_col & "rep2" %in% d_col){
+        df <- d[,c("gene","rep1","rep2")]
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -5239,7 +5629,6 @@ shinyServer(function(input, output, session){
   
   #comparison for file1
   c_compare1 <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
       f1_subset <- c_f1()
@@ -5265,7 +5654,6 @@ shinyServer(function(input, output, session){
   
   #comparison for file2
   c_compare2 <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- c_pd2()
       f1_subset <- c_f1()
@@ -5291,7 +5679,6 @@ shinyServer(function(input, output, session){
   
   #comparison for file3
   c_compare3 <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f3 <- c_pd3()
       f1_subset <- c_f1()
@@ -5309,7 +5696,6 @@ shinyServer(function(input, output, session){
   
   #comparison for file1
   c_compare1_pf <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
       f1_subset <- c_f1_pf()
@@ -5335,7 +5721,6 @@ shinyServer(function(input, output, session){
   
   #comparison for file2
   c_compare2_pf <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- c_pd2()
       f1_subset <- c_f1_pf()
@@ -5361,7 +5746,6 @@ shinyServer(function(input, output, session){
   
   #comparison for file3
   c_compare3_pf <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f3 <- c_pd3()
       f1_subset <- c_f1_pf()
@@ -5823,7 +6207,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_unique_inweb <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_inweb_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_inweb, gene %!in% (d$overlap1_2)$gene)
@@ -5837,7 +6220,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f2_unique_inweb <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_inweb_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_inweb, gene %!in% (d$overlap2_1)$gene)
@@ -5851,7 +6233,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_and_f2_inweb <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_inweb_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- d$overlap2_1
@@ -5865,7 +6246,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f3_unique_inweb <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_inweb_compare3()
       f3 <- subset(d$f3_inweb, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
@@ -5876,7 +6256,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_and_f3_inweb <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_inweb_compare3()
       f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
@@ -5887,7 +6266,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f2_and_f3_inweb <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_inweb_compare3()
       f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
@@ -6252,7 +6630,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_unique_goi <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_goi_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_goi, gene %!in% (d$overlap1_2)$gene)
@@ -6266,7 +6643,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f2_unique_goi <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_goi_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_goi, gene %!in% (d$overlap2_1)$gene)
@@ -6280,7 +6656,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_and_f2_goi <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_goi_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- d$overlap2_1
@@ -6294,7 +6669,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f3_unique_goi <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_goi_compare3()
       f3 <- subset(d$f3_goi, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
@@ -6305,7 +6679,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_and_f3_goi <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_goi_compare3()
       f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
@@ -6316,7 +6689,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f2_and_f3_goi <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_goi_compare3()
       f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
@@ -6598,7 +6970,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_unique_snp <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_snp_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene)
@@ -6612,7 +6983,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f2_unique_snp <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_snp_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene)
@@ -6626,7 +6996,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_and_f2_snp <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     d <- c_snp_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- d$overlap2_1
@@ -6640,7 +7009,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f3_unique_snp <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_snp_compare3()
       f3 <- subset(d$f3_snp, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
@@ -6651,7 +7019,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f1_and_f3_snp <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_snp_compare3()
       f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
@@ -6662,7 +7029,6 @@ shinyServer(function(input, output, session){
   })
   
   c_f2_and_f3_snp <- reactive({
-    '%!in%' <- function(x,y)!('%in%'(x,y))
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       d <- c_snp_compare3()
       f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
@@ -6717,12 +7083,24 @@ shinyServer(function(input, output, session){
   
   c_pf_db_search <- eventReactive(input$c_search_pf_db, {
     pf_db <- input$c_pfam_db
-    selected_pf <- prot_fam[prot_fam2$V1 %in% pf_db, ]
-    selected_pf <- t(selected_pf)
-    colnames(selected_pf) <- selected_pf[1, ]
-    selected_pf <- selected_pf[-1, ]
-    selected_pf <- as.data.frame(selected_pf)
+    selected_pf <- prot_fam[grep(paste(pf_db,collapse='|'), names(prot_fam))]
+    selected_pf <- lapply(selected_pf, function(x) x[!is.na(x)])
     selected_pf
+  })
+  
+  c_pf1_cleanup <- reactive({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_pfam_db != '', "")
+    )
+    d <- c_in_pd1()
+    prot_remove <- unique(unlist(c_pf_db_search()))  
+    prot_cleaned <- subset(d, gene %!in% prot_remove) 
+    prot_cleaned
+  })
+  
+  output$cleaned_up <- renderTable({
+    c_pf1_cleanup()
   })
   
   c_pf_db_vp1 <- reactive({
@@ -6819,7 +7197,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c1_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -6837,7 +7215,7 @@ shinyServer(function(input, output, session){
         }
       }
     }
-    else if(input$colorscheme == "cbf"){
+    else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c1_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -6921,7 +7299,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c2_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -6939,7 +7317,7 @@ shinyServer(function(input, output, session){
         }
       }
     }
-    else if(input$colorscheme == "cbf"){
+    else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c2_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -7023,7 +7401,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c3_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -7041,7 +7419,7 @@ shinyServer(function(input, output, session){
         }
       }
     }
-    else if(input$colorscheme == "cbf"){
+    else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c3_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -7277,16 +7655,22 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', "Upload file")
     )
     input_file <- c_in_pd1()
-    if("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    d_col <- colnames(input_file)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      if(is.null(c_search_gene())){
+        c_sp1()
+      } else{
+        c_sp1_plus()
+      }
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need(input$filetype == "rep", "Must have rep1 and rep2 values.")
       )
-    }
-    else if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(c_search_gene())){
         c_sp1()
-      }
-      else{
+      } else{
         c_sp1_plus()
       }
     }
@@ -7297,17 +7681,22 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', "Upload file")
     )
     input_file <- c_in_pd2()
-    if("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    d_col <- colnames(input_file)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      if(is.null(c_search_gene())){
+        c_sp2()
+      } else{
+        c_sp2_plus()
+      }
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need(input$filetype == "rep", "Must have rep1 and rep2 values.")
       )
-    }
-    else if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
-      
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(c_search_gene())){
         c_sp2()
-      }
-      else{
+      } else{
         c_sp2_plus()
       }
     }
@@ -7318,16 +7707,22 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown3 != '', "Upload file")
     )
     input_file <- c_in_pd3()
-    if("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    d_col <- colnames(input_file)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      if(is.null(c_search_gene())){
+        c_sp3()
+      } else{
+        c_sp3_plus()
+      }
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
         need(input$filetype == "rep", "Must have rep1 and rep2 values.")
       )
-    }
-    else if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(c_search_gene())){
         c_sp3()
-      }
-      else{
+      } else{
         c_sp3_plus()
       }
     }

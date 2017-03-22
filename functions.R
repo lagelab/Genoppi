@@ -1,5 +1,7 @@
 #Created 11/1/16 by April Kim
 #Functions file for Shiny app Genoppi
+'%!in%' <- function(x,y)!('%in%'(x,y))
+
 calculate_moderated_ttest <- function(input_file){
   tmp <- data.frame(input_file$gene, rownames(input_file))
   calculated <- data.frame(rownames(input_file), input_file$rep1, input_file$rep2)

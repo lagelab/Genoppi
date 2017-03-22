@@ -18,6 +18,11 @@ shinyUI(navbarPage("Genoppi",
                                             tabPanel("Quality Control", value = "p1",
                                                      br(),
                                                      fluidRow(
+                                                       column(4, uiOutput("a_prot_fam_db")),
+                                                       column(4, uiOutput("a_text_prot_fam_db")),
+                                                       column(4, downloadButton("download_pf_cleaned_input", "Remove selected PF from input"))
+                                                     ),
+                                                     fluidRow(
                                                        column(1, plotOutput("FDR_colorbar", width = "50px")),
                                                        column(6, plotlyOutput("VolcanoPlot")), #, width = "550px", height = "550px"
                                                        column(3, tableOutput("VP_count"))
@@ -182,7 +187,10 @@ shinyUI(navbarPage("Genoppi",
                                             tabPanel("Quality Control", value = "3_p1",
                                                      br(),
                                                      fluidRow(
-                                                       column(3, plotOutput("c_FDR_colorbar", height = "100px"))
+                                                       column(3, plotOutput("c_FDR_colorbar", height = "100px")),
+                                                       column(3, uiOutput("c_prot_fam_db")),
+                                                       column(3, uiOutput("c_text_prot_fam_db")),
+                                                       column(3, uiOutput("c_prot_fam_db_button"))
                                                      ),
                                                      fluidRow(
                                                        column(4, plotlyOutput("VolcanoPlot_c1")), #, height = "350px", width = "320px"
@@ -345,20 +353,24 @@ shinyUI(navbarPage("Genoppi",
                                                        column(9, plotlyOutput("comparison3_pf"))
                                                      )
                                                      ),
-                                            # tabPanel("PF Search", value = "3_p7",
-                                            #          br(),
-                                            #          fluidRow(
-                                            #            column(4, uiOutput("c_prot_fam_db")),
-                                            #            column(4, uiOutput("c_text_prot_fam_db")),
-                                            #            column(4, uiOutput("c_prot_fam_db_button"))
-                                            #          ),
-                                            #          br(),
-                                            #          fluidRow(
-                                            #            column(4, plotlyOutput("VolcanoPlot_c1_pf_db")),
-                                            #            column(4, plotlyOutput("VolcanoPlot_c2_pf_db")),
-                                            #            column(4, plotlyOutput("VolcanoPlot_c3_pf_db"))
-                                            #          )
-                                            #          ),
+                                            tabPanel("PF Search", value = "3_p7",
+                                                     br(),
+                                                     # fluidRow(
+                                                     #   column(4, uiOutput("c_prot_fam_db")),
+                                                     #   column(4, uiOutput("c_text_prot_fam_db")),
+                                                     #   column(4, uiOutput("c_prot_fam_db_button"))
+                                                     # ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(4, plotlyOutput("VolcanoPlot_c1_pf_db")),
+                                                       column(4, plotlyOutput("VolcanoPlot_c2_pf_db")),
+                                                       column(4, plotlyOutput("VolcanoPlot_c3_pf_db"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(5, tableOutput("cleaned_up"))
+                                                     )
+                                                     ),
                                             tabPanel("Download", value = "3_p8",
                                                      br(),
                                                      fluidRow(
@@ -464,13 +476,13 @@ shinyUI(navbarPage("Genoppi",
                                 )
                               )
                             )
-                   ),
-                   tabPanel("Documentation",
-                            mainPanel(
-                              fluidRow(
-                                column(12, uiOutput("documentation"))
-                              )
-                            )
                    )
+                   # tabPanel("Documentation",
+                   #          mainPanel(
+                   #            fluidRow(
+                   #              column(12, uiOutput("documentation"))
+                   #            )
+                   #          )
+                   # )
 )
 )
