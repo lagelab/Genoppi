@@ -397,40 +397,18 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    d <- a_orig_pulldown()
-    d_col <- colnames(d)
-    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
-       "rep1" %in% d_col & "rep2" %in% d_col){
-      selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
-    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
-      return(NULL)
-    } else if("rep1" %in% d_col & "rep2" %in% d_col){
-      selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
-    }
+    selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
   })
   
   output$a_text_prot_fam_db <- renderUI({
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    d <- a_orig_pulldown()
-    d_col <- colnames(d)
-    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
-       "rep1" %in% d_col & "rep2" %in% d_col){
-      radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
-                   c(On = 'yes_label',
-                     Off = 'no_label'),
-                   inline = T
-      )
-    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
-      return(NULL)
-    } else if("rep1" %in% d_col & "rep2" %in% d_col){
-      radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
-                   c(On = 'yes_label',
-                     Off = 'no_label'),
-                   inline = T
-      )
-    }
+    radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
+                 c(On = 'yes_label',
+                   Off = 'no_label'),
+                 inline = T
+    )
   })
   
   observe({
@@ -475,8 +453,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -935,9 +913,12 @@ shinyServer(function(input, output, session){
       need(!is.null(a_pf_db()), "")
     )
     d <- a_orig_pulldown()
-    prot_remove <- unique(unlist(a_pf_db_search()))
-    prot_cleaned <- subset(d, gene %!in% prot_remove)
-    prot_cleaned
+    d_col <- colnames(d)
+    if("rep1" %in% d_col & "rep2" %in% d_col){
+      prot_remove <- unique(unlist(a_pf_db_search()))
+      prot_cleaned <- subset(d, gene %!in% prot_remove)
+      prot_cleaned
+    }
   })
   
   a_vp_colorbar <- reactive({
@@ -2704,11 +2685,23 @@ shinyServer(function(input, output, session){
 
   observe({
     if(!is.null(a_pf_db())){
-      shinyjs::show("download_pf_cleaned_input")
+      if(!is.null(a_pulldown())){
+        d <- a_orig_pulldown() 
+        d_col <- colnames(d)
+        if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+           "rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::hide("download_pf_cleaned_input")
+        } else if("rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::show("download_pf_cleaned_input")
+        } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col) {
+          shinyjs::hide("download_pf_cleaned_input")
+        }
+      }
     } else if(is.null(a_pf_db())){
       shinyjs::hide("download_pf_cleaned_input")
     }
   })
+
   
   
   output$download_pf_cleaned_input <- downloadHandler(
@@ -3009,8 +3002,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -3067,8 +3060,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -3125,8 +3118,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -4074,8 +4067,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -4139,8 +4132,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -4204,8 +4197,8 @@ shinyServer(function(input, output, session){
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(gene.x, method))
-                       names(df)[names(df) == 'gene.y'] <- 'gene'
+                       df <- subset(df, select=-c(method))
+                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -7170,10 +7163,13 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', ""),
       need(input$c_pfam_db != '', "")
     )
-    d <- c_in_pd1()
-    prot_remove <- unique(unlist(c_pf_db_search()))
-    prot_cleaned <- subset(d, gene %!in% prot_remove)
-    prot_cleaned
+    d <- c_orig_pd1()
+    d_col <- colnames(d)
+    if("rep1" %in% d_col & "rep2" %in% d_col){
+      prot_remove <- unique(unlist(c_pf_db_search()))
+      prot_cleaned <- subset(d, gene %!in% prot_remove)
+      prot_cleaned
+    }
   })
   
   c_pf2_cleanup <- reactive({
@@ -7181,10 +7177,13 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', ""),
       need(input$c_pfam_db != '', "")
     )
-    d <- c_in_pd2()
-    prot_remove <- unique(unlist(c_pf_db_search()))
-    prot_cleaned <- subset(d, gene %!in% prot_remove)
-    prot_cleaned
+    d <- c_orig_pd2()
+    d_col <- colnames(d)
+    if("rep1" %in% d_col & "rep2" %in% d_col){
+      prot_remove <- unique(unlist(c_pf_db_search()))
+      prot_cleaned <- subset(d, gene %!in% prot_remove)
+      prot_cleaned
+    }
   })
   
   c_pf3_cleanup <- reactive({
@@ -7192,10 +7191,13 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown3 != '', ""),
       need(input$c_pfam_db != '', "")
     )
-    d <- c_in_pd3()
-    prot_remove <- unique(unlist(c_pf_db_search()))
-    prot_cleaned <- subset(d, gene %!in% prot_remove)
-    prot_cleaned
+    d <- c_orig_pd3()
+    d_col <- colnames(d)
+    if("rep1" %in% d_col & "rep2" %in% d_col){
+      prot_remove <- unique(unlist(c_pf_db_search()))
+      prot_cleaned <- subset(d, gene %!in% prot_remove)
+      prot_cleaned
+    }
   })
   
   c_vp1_pf_db_layer <- reactive({
@@ -8491,7 +8493,16 @@ shinyServer(function(input, output, session){
   observe({
     if(!is.null(c_pf_db())){
       if(!is.null(c_pd1())){
-        shinyjs::show("download_c1_pf_cleaned_input")
+        d <- c_orig_pd1()
+        d_col <- colnames(d)
+        if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+           "rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::hide("download_c1_pf_cleaned_input")
+        } else if("rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::show("download_c1_pf_cleaned_input")
+        } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col) {
+          shinyjs::hide("download_c1_pf_cleaned_input")
+        }
       }
     } else if(is.null(c_pf_db())){
       shinyjs::hide("download_c1_pf_cleaned_input")
@@ -8501,7 +8512,16 @@ shinyServer(function(input, output, session){
   observe({
     if(!is.null(c_pf_db())){
       if(!is.null(c_pd2())){
-        shinyjs::show("download_c2_pf_cleaned_input")
+        d <- c_orig_pd2()
+        d_col <- colnames(d)
+        if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+           "rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::hide("download_c2_pf_cleaned_input")
+        } else if("rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::show("download_c2_pf_cleaned_input")
+        } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col) {
+          shinyjs::hide("download_c2_pf_cleaned_input")
+        }
       }
     } else if(is.null(c_pf_db())){
       shinyjs::hide("download_c2_pf_cleaned_input")
@@ -8511,7 +8531,16 @@ shinyServer(function(input, output, session){
   observe({
     if(!is.null(c_pf_db())){
       if(!is.null(c_pd3())){
-        shinyjs::show("download_c3_pf_cleaned_input")
+        d <- c_orig_pd3()
+        d_col <- colnames(d)
+        if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+           "rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::hide("download_c3_pf_cleaned_input")
+        } else if("rep1" %in% d_col & "rep2" %in% d_col){
+          shinyjs::show("download_c3_pf_cleaned_input")
+        } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col) {
+          shinyjs::hide("download_c3_pf_cleaned_input")
+        }
       }
     } else if(is.null(c_pf_db())){
       shinyjs::hide("download_c3_pf_cleaned_input")
