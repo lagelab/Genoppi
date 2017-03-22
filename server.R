@@ -113,7 +113,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_genes_file <- renderUI({
-    fileInput('a_file_genes_rep', 'File containing genes of interest with header, one HGNC symbol per line (e.g. TINMAN)',
+    fileInput('a_file_genes_rep', 'File containing at least 2 genes with header, one HGNC symbol per line (e.g. TINMAN)',
               accept = c(
                 'text/csv',
                 'text/comma-separated-values',
@@ -125,7 +125,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_genes_file_vennd <- renderUI({
-    fileInput('a_file_genes_vennd', 'File containing list of genes, one HGNC symbol per line (e.g. TINMAN)',
+    fileInput('a_file_genes_vennd', 'File containing at least 2 genes with header, one HGNC symbol per line (e.g. TINMAN)',
               accept = c(
                 'text/csv',
                 'text/comma-separated-values',
@@ -285,32 +285,152 @@ shinyServer(function(input, output, session){
     }
   })
   
+  #slider for rep1
+  output$a_BPF_rep1_slider <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("rep1" %in% d_col & "rep2" %in% d_col){
+      min_rep1 <- min(d$rep1)
+      min_rep1 <- signif(min_rep1-0.5, 1)
+      max_rep1 <- max(d$rep1)
+      max_rep1 <- signif(max_rep1+0.5, 1)
+      sliderInput("a_BPF_rep1_range", "rep1",
+                  min = min_rep1, max = max_rep1, value = c(-1, 1), step = 0.01, sep = '', pre = NULL, post = NULL)
+    }
+  })
+  
+  #slider for rep2
+  output$a_BPF_rep2_slider <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("rep1" %in% d_col & "rep2" %in% d_col){
+      min_rep2 <- min(d$rep2)
+      min_rep2 <- signif(min_rep2-0.5, 1)
+      max_rep2 <- max(d$rep2)
+      max_rep2 <- signif(max_rep2+0.5, 1)
+      sliderInput("a_BPF_rep2_range", "rep2",
+                  min = min_rep2, max = max_rep2, value = c(-1, 1), step = 0.01, sep = '', pre = NULL, post = NULL)
+    }
+  })
+  
+  output$a_BPF_marker_size_sp <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      radioButtons('a_BPF_option_sp', 'Turn on/off marker sizing',
+                   c(On = 'change_m_BPF',
+                     Off = 'static_m_BPF'),
+                   inline = T
+      )
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+      validate(
+        return(NULL)
+      )
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
+      radioButtons('a_BPF_option_sp', 'Turn on/off marker sizing',
+                   c(On = 'change_m_BPF',
+                     Off = 'static_m_BPF'),
+                   inline = T
+      )
+    }
+  })
+  
+  output$a_BPF_freq_sp <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    if(!is.null(input$a_BPF_option_sp)){
+      inBPFmarker <- input$a_BPF_option_sp
+      if (inBPFmarker == "change_m_BPF") {
+        sliderInput("a_BPF_marker_freq_sp", "Marker size",
+                    min = 1, max = 40, value = 1, step = 1)     
+      }
+    }
+  })
+  
+  output$a_BPF_text_sp <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      HTML("<b>User-defined significance thresholds:</b>")
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+      validate(
+        need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
+      )
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
+      HTML("<b>User-defined significance thresholds:</b>")
+    }
+  })
+  
+  output$a_BPF_button_sp <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      actionButton("a_make_bpf_sp", "Generate PF plot")
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+      return(NULL)
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
+      actionButton("a_make_bpf_sp", "Generate PF plot")
+    }
+  })
+  
+  
   output$a_prot_fam_db <- renderUI({
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+      return(NULL)
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
+      selectInput('a_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
+    }
   })
-  
-  # output$a_prot_fam_db_button <- renderUI({
-  #   validate(
-  #     need(input$a_file_pulldown_r != '', ""),
-  #     need(!is.null(a_pf_db()), "")
-  #   )
-  #   if(!is.null(input$a_pfam_db)){
-  #     actionButton("a_search_pf_db", "Remove selected PF from input")
-  #   }
-  # })
   
   output$a_text_prot_fam_db <- renderUI({
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
-                 c(On = 'yes_label',
-                   Off = 'no_label'),
-                 inline = T
-    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col &
+       "rep1" %in% d_col & "rep2" %in% d_col){
+      radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
+                   c(On = 'yes_label',
+                     Off = 'no_label'),
+                   inline = T
+      )
+    } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
+      return(NULL)
+    } else if("rep1" %in% d_col & "rep2" %in% d_col){
+      radioButtons('a_marker_text_prot_fam_db', 'Turn on/off labels',
+                   c(On = 'yes_label',
+                     Off = 'no_label'),
+                   inline = T
+      )
+    }
   })
   
   observe({
@@ -2145,6 +2265,135 @@ shinyServer(function(input, output, session){
     p1
   })
   
+  a_BPF_marker_sp <- reactive({
+    inBPFmarker <- input$a_BPF_option_sp
+    if (inBPFmarker == "change_m_BPF") {
+      marker <- "change"
+    } else {
+      marker <- "no_change"
+    }
+  })
+  
+  a_bpf_data_sp <- eventReactive(input$a_make_bpf_sp, {
+    validate(
+      need(input$a_file_pulldown_r != '', "Upload file")
+    )
+    withProgress(message = 'This may take a while', 
+                 detail = 'Hold please', value = 0, {
+                   bpf <- a_pulldown()
+                   
+                   makePlotFamilies_1quadrant <- function(data, bait){
+                     im <- subset(data, 
+                                  (rep1 < input$a_BPF_rep1_range[2] & rep1 > input$a_BPF_rep1_range[1]) & 
+                                    (rep2 < input$a_BPF_rep2_range[2] & rep2 > input$a_BPF_rep2_range[1]))
+                     incProgress(0.6)
+                     enM_families <- assignFamily_inc_doubles(im)
+                     enM_gna <- addNames(im)
+                     incProgress(0.8)
+                     ### replace logFC and pvalue in di* by these from dpm
+                     enM_families$logFC <- data$logFC[match(enM_families$gene, data$gene)]
+                     enM_families$pvalue <- data$pvalue[match(enM_families$gene, data$gene)]
+                     enM_gna$logFC <- data$logFC[match(enM_gna$gene, data$gene)]
+                     enM_gna$pvalue <- data$pvalue[match(enM_gna$gene, data$gene)]
+                     
+                     # mybait <- data[grepl(bait,data$gene),]
+                     
+                     howmany <- length(unique(enM_families$family))
+                     bpfmsizing <- a_BPF_marker_sp()
+                     increase_size <- input$a_BPF_marker_freq_sp
+                     
+                     incProgress(0.9)
+                     bpf_list <- list("list" = bpf, "list" = enM_families, "list" = enM_gna, "integer" = howmany, bpfmsizing, increase_size)
+                     return(bpf_list)
+                   }
+                   makePlotFamilies_1quadrant(bpf)
+                 })
+  }) 
+  
+  a_bpf_sp <- reactive({
+    bpf_data <- a_bpf_data_sp()
+    bpf <- bpf_data[[1]]
+    enM_families <- bpf_data[[2]]
+    enM_gna <- bpf_data[[3]]
+    howmany <- bpf_data[[4]]
+    bpfmsizing <- bpf_data[[5]]
+    increase_size <- bpf_data[[6]]
+    
+    if (bpfmsizing == "change"){
+      p <- plot_ly(colors = rainbow(howmany)) #, width = 850, height = 800
+      p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
+        #background
+        add_markers(data = bpf, x = ~rep1, y = ~rep2, opacity = 0.6,
+                    marker = list(color = 'rgba(176,196,222,08)'),
+                    text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
+        add_markers(data = enM_gna, x = ~rep1, y = ~rep2, 
+                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                    name="Unassigned genes") %>%
+        add_markers(data = enM_families, x = ~rep1, y = ~rep2,
+                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
+                    color = ~factor(family), 
+                    text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+    } else{
+      p <- plot_ly(colors = rainbow(howmany)) #, width = 850, height = 800
+      p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
+        #background
+        add_markers(data = bpf, x = ~rep1, y = ~rep2, opacity = 0.6,
+                    marker = list(color = 'rgba(176,196,222,08)'),
+                    text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
+        add_markers(data = enM_gna, x = ~rep1, y = ~rep2, 
+                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                    name="Unassigned genes") %>%
+        add_markers(data = enM_families, x = ~rep1, y = ~rep2,
+                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = 12),
+                    color = ~factor(family), 
+                    text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+    }
+    p <- p %>%
+      layout(xaxis = list(title = "logFC(rep1)", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)))
+  })
+  
+  a_bpf_plus_sp <- reactive({
+    validate(
+      need(!is.null(a_search_gene()), "")
+    )
+    p <- a_bpf_sp()
+    goi <- a_search_gene()
+    orig_data <- a_pulldown()
+    searchgene <- orig_data[grepl(goi,orig_data$gene),]
+    p1 <- search_scatter(p, searchgene)
+    p1
+  })
+  
+  a_bpf_sp_preview <- reactive({
+    d <- a_pulldown()
+    p <- plot_ly(showlegend = FALSE, width = 250, height = 250) 
+    p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                   text = "x=y", hoverinfo = "text",
+                   line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+    p <- add_markers(p, data = d, x = ~rep1, y = ~rep2, 
+                     marker = list(color = 'rgba(176,196,222,08)', size = 7, cmin = 0, cmax = 1, line = list(width=0.2, color = "grey89")), 
+                     opacity = 0.9, 
+                     text = ~paste0(gene, ", rep1=", rep1, ", rep2=", rep2), hoverinfo = "text", name = "pull down")
+    p <- p %>%
+      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1))) %>%
+      add_lines(x = input$a_BPF_rep1_range[2], y = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_BPF_rep1_range[2]), showlegend = F) %>%
+      add_lines(x = (input$a_BPF_rep1_range[1]), y = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), line = list(dash = "dash", width = 0.5, color = "#252525"),
+                name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_BPF_rep1_range[1])), showlegend = F) %>%
+      add_lines(x = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), y = input$a_BPF_rep2_range[2], line = list(dash = "dash", width = 0.5, color = "#252525"),
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_BPF_rep2_range[2]), showlegend = F) %>%
+      add_lines(x = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), y = input$a_BPF_rep2_range[1], line = list(dash = "dash", width = 0.5, color = "#252525"),
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_BPF_rep2_range[1]), showlegend = F)
+  })
+  
   output$FDR_colorbar <- renderPlot({
     validate(
       need(input$a_file_pulldown_r != '', "")
@@ -2193,7 +2442,7 @@ shinyServer(function(input, output, session){
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
-        need(input$filetype == "rep", "Must have rep1 and rep2 values.")
+        need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(a_pf_db())){
@@ -2256,7 +2505,7 @@ shinyServer(function(input, output, session){
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
-        need(input$filetype == "rep", "Must have rep1 and rep2 values.")
+        need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(a_search_gene())){
@@ -2326,6 +2575,29 @@ shinyServer(function(input, output, session){
       a_bpf()
     } else{
       a_bpf_plus()
+    }
+  })
+  
+  output$Basic_Protein_Family_sp_prev <- renderPlotly({
+    validate(
+      need(input$a_file_pulldown_r != '', "Upload file")
+    )
+    d <- a_orig_pulldown()
+    d_col <- colnames(d)
+    validate(
+      need("rep1" %in% d_col & "rep2" %in% d_col, "")
+    )
+    a_bpf_sp_preview()
+  })
+  
+  output$Basic_Protein_Family_sp <- renderPlotly({
+    validate(
+      need(input$a_file_pulldown_r != '', "Upload file")
+    )
+    if(is.null(a_search_gene())){
+      a_bpf_sp()
+    } else{
+      a_bpf_plus_sp()
     }
   })
 
@@ -3369,7 +3641,7 @@ shinyServer(function(input, output, session){
   })
   
   output$c_genes_file <- renderUI({
-    fileInput('c_file_genes', 'File containing genes of interest with header, one HGNC symbol per line (e.g. TINMAN)',
+    fileInput('c_file_genes', 'File containing at least 2 genes with header, one HGNC symbol per line (e.g. TINMAN)',
               accept = c(
                 'text/csv',
                 'text/comma-separated-values',
@@ -6856,27 +7128,29 @@ shinyServer(function(input, output, session){
     d
   })
   
-  c_pf_db_search <- eventReactive(input$c_search_pf_db, {
-    pf_db <- input$c_pfam_db
+  c_pf_db <- reactive({
+    if(!is.null(input$c_pfam_db)){
+      pf_db <- input$c_pfam_db
+    }
+  })
+  
+  c_pf_db_search <- reactive({
+    pf_db <- c_pf_db()
     selected_pf <- prot_fam[grep(paste(pf_db,collapse='|'), names(prot_fam))]
     selected_pf <- lapply(selected_pf, function(x) x[!is.na(x)])
     selected_pf
   })
   
-  c_pf1_cleanup <- reactive({
-    validate(
-      need(input$c_file_pulldown1 != '', ""),
-      need(input$c_pfam_db != '', "")
-    )
-    d <- c_in_pd1()
-    prot_remove <- unique(unlist(c_pf_db_search()))  
-    prot_cleaned <- subset(d, gene %!in% prot_remove) 
-    prot_cleaned
-  })
-  
-  output$cleaned_up <- renderTable({
-    c_pf1_cleanup()
-  })
+  # c_pf1_cleanup <- reactive({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""),
+  #     need(input$c_pfam_db != '', "")
+  #   )
+  #   d <- c_in_pd1()
+  #   prot_remove <- unique(unlist(c_pf_db_search()))  
+  #   prot_cleaned <- subset(d, gene %!in% prot_remove) 
+  #   prot_cleaned
+  # })
   
   c_pf_db_vp1 <- reactive({
     validate(
@@ -6916,7 +7190,8 @@ shinyServer(function(input, output, session){
   
   c_vp1_pf_db_layer <- reactive({
     validate(
-      need(!is.null(c_pd1()), "")
+      need(!is.null(c_pd1()), ""),
+      need(!is.null(c_pf_db()), "")
     )
     d <- c_pd1()
     c1_pf_db <- c_pf_db_vp1()
@@ -6926,7 +7201,7 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -6940,7 +7215,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
@@ -6969,9 +7244,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-    # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
     if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
-      if(!is.null(c_pf_db_search())){
         df <- ldply(c1_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -6984,9 +7257,8 @@ shinyServer(function(input, output, session){
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
-      }
+      
     } else if(input$c_colorscheme == "cbf"){
-      if(!is.null(c_pf_db_search())){
         df <- ldply(c1_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -6999,7 +7271,7 @@ shinyServer(function(input, output, session){
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
-      }
+      
     }
     p <- p %>% 
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
@@ -7013,7 +7285,8 @@ shinyServer(function(input, output, session){
   
   c_vp2_pf_db_layer <- reactive({
     validate(
-      need(!is.null(c_pd2()), "")
+      need(!is.null(c_pd2()), ""),
+      need(!is.null(c_pf_db()), "")
     )
     d <- c_pd2()
     c2_pf_db <- c_pf_db_vp2()
@@ -7023,7 +7296,7 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -7037,7 +7310,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
@@ -7066,35 +7339,33 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
-      if(!is.null(c_pf_db_search())){
-        df <- ldply(c2_pf_db$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$c_marker_text_prot_fam_db == "yes_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          } else if(input$c_marker_text_prot_fam_db == "no_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
-          }
-          p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
-          p <- vp_layer_no_genes
+      df <- ldply(c2_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
         }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        p <- vp_layer_no_genes
       }
+      
     } else if(input$c_colorscheme == "cbf"){
-      if(!is.null(c_pf_db_search())){
-        df <- ldply(c2_pf_db$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$c_marker_text_prot_fam_db == "yes_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          } else if(input$c_marker_text_prot_fam_db == "no_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
-          }
-          p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- vp_layer_no_genes
+      df <- ldply(c2_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
         }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- vp_layer_no_genes
       }
+      
     }
     p <- p %>% 
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
@@ -7108,7 +7379,8 @@ shinyServer(function(input, output, session){
   
   c_vp3_pf_db_layer <- reactive({
     validate(
-      need(!is.null(c_pd3()), "")
+      need(!is.null(c_pd3()), ""),
+      need(!is.null(c_pf_db()), "")
     )
     d <- c_pd3()
     c3_pf_db <- c_pf_db_vp3()
@@ -7118,7 +7390,7 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -7132,7 +7404,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
                        opacity = 0.8, 
@@ -7161,35 +7433,33 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
-      if(!is.null(c_pf_db_search())){
-        df <- ldply(c3_pf_db$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$c_marker_text_prot_fam_db == "yes_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          } else if(input$c_marker_text_prot_fam_db == "no_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
-          }
-          p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
-          p <- vp_layer_no_genes
+      df <- ldply(c3_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
         }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        p <- vp_layer_no_genes
       }
+      
     } else if(input$c_colorscheme == "cbf"){
-      if(!is.null(c_pf_db_search())){
-        df <- ldply(c3_pf_db$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$c_marker_text_prot_fam_db == "yes_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          } else if(input$c_marker_text_prot_fam_db == "no_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
-          }
-          p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- vp_layer_no_genes
+      df <- ldply(c3_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
         }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- vp_layer_no_genes
       }
+      
     }
     p <- p %>% 
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
@@ -7233,10 +7503,14 @@ shinyServer(function(input, output, session){
     validate(
       need(input$c_file_pulldown1 != '', "Upload file")
     )
-    if(is.null(c_search_gene())){
-      c_vp1()
-    } else{
-      c_vp1_plus()
+    if(is.null(c_pf_db())){
+      if(is.null(c_search_gene())){
+        c_vp1()
+      } else{
+        c_vp1_plus()
+      }
+    } else if(!is.null(c_pf_db())){
+      c_vp1_pf_db_layer()
     }
   })
   
@@ -7278,10 +7552,14 @@ shinyServer(function(input, output, session){
     validate(
       need(input$c_file_pulldown2 != '', "Upload file")
     )
-    if(is.null(c_search_gene())){
-      c_vp2()
-    } else{
-      c_vp2_plus()
+    if(is.null(c_pf_db())){
+      if(is.null(c_search_gene())){
+        c_vp2()
+      } else{
+        c_vp2_plus()
+      }
+    } else if(!is.null(c_pf_db())){
+      c_vp2_pf_db_layer()
     }
   })
   
@@ -7322,10 +7600,14 @@ shinyServer(function(input, output, session){
     validate(
       need(input$c_file_pulldown3 != '', "Upload file")
     )
-    if(is.null(c_search_gene())){
-      c_vp3()
-    } else{
-      c_vp3_plus()
+    if(is.null(c_pf_db())){
+      if(is.null(c_search_gene())){
+        c_vp3()
+      } else{
+        c_vp3_plus()
+      }
+    } else if(!is.null(c_pf_db())){
+      c_vp3_pf_db_layer()
     }
   })
   
@@ -7407,7 +7689,7 @@ shinyServer(function(input, output, session){
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
-        need(input$filetype == "rep", "Must have rep1 and rep2 values.")
+        need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(c_search_gene())){
@@ -7433,7 +7715,7 @@ shinyServer(function(input, output, session){
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
-        need(input$filetype == "rep", "Must have rep1 and rep2 values.")
+        need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(c_search_gene())){
@@ -7459,7 +7741,7 @@ shinyServer(function(input, output, session){
       }
     } else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
       validate(
-        need(input$filetype == "rep", "Must have rep1 and rep2 values.")
+        need("rep1" %in% d_col & "rep2" %in% d_col, "Must have rep1 and rep2 values.")
       )
     } else if("rep1" %in% d_col & "rep2" %in% d_col){
       if(is.null(c_search_gene())){
@@ -7589,24 +7871,6 @@ shinyServer(function(input, output, session){
   },
   caption.placement = getOption("xtable.caption.placement", "top"), 
   caption.width = getOption("xtable.caption.width", NULL))
-  
-  output$VolcanoPlot_c1_pf_db <- renderPlotly({
-    if(!is.null(c_pf_db_vp1())){
-      c_vp1_pf_db_layer()
-    }
-  })
-  
-  output$VolcanoPlot_c2_pf_db <- renderPlotly({
-    if(!is.null(c_pf_db_vp2())){
-      c_vp2_pf_db_layer()
-    }
-  })
-  
-  output$VolcanoPlot_c3_pf_db <- renderPlotly({
-    if(!is.null(c_pf_db_vp3())){
-      c_vp3_pf_db_layer()
-    }
-  })
 
   output$c1_download_mapped_uniprot <- downloadHandler(
     filename = function() {

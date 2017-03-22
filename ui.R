@@ -113,7 +113,7 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("a_vd_SNP_MGL_text"))
                                                      )
                                             ),
-                                            tabPanel("Protein Family", value = "p4",
+                                            tabPanel("ProteinFam: VP", value = "p4",
                                                      br(),
                                                      fluidRow(
                                                        column(8, uiOutput("a_BPF_text"))
@@ -133,7 +133,27 @@ shinyUI(navbarPage("Genoppi",
                                                        column(12, plotlyOutput("Basic_Protein_Family"), height = "800px")
                                                      )
                                             ),
-                                            tabPanel("Download", value = "p5",
+                                            tabPanel("ProteinFam: SP", value = "p5",
+                                                     br(),
+                                                     fluidRow(
+                                                       column(8, uiOutput("a_BPF_text_sp"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(4, uiOutput("a_BPF_rep1_slider")),
+                                                       column(4, uiOutput("a_BPF_rep2_slider")),
+                                                       column(4, uiOutput("a_BPF_button_sp"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("a_BPF_marker_size_sp")), 
+                                                       column(4, uiOutput("a_BPF_freq_sp")),
+                                                       column(4, plotlyOutput("Basic_Protein_Family_sp_prev"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(12, plotlyOutput("Basic_Protein_Family_sp", width = "100%"))
+                                                     )
+                                                     ),
+                                            tabPanel("Download", value = "p6",
                                                      br(),
                                                      downloadButton("download_mapped_uniprot", "Converted identifiers"),
                                                      br(),
@@ -353,25 +373,7 @@ shinyUI(navbarPage("Genoppi",
                                                        column(9, plotlyOutput("comparison3_pf"))
                                                      )
                                                      ),
-                                            tabPanel("PF Search", value = "3_p7",
-                                                     br(),
-                                                     # fluidRow(
-                                                     #   column(4, uiOutput("c_prot_fam_db")),
-                                                     #   column(4, uiOutput("c_text_prot_fam_db")),
-                                                     #   column(4, uiOutput("c_prot_fam_db_button"))
-                                                     # ),
-                                                     br(),
-                                                     fluidRow(
-                                                       column(4, plotlyOutput("VolcanoPlot_c1_pf_db")),
-                                                       column(4, plotlyOutput("VolcanoPlot_c2_pf_db")),
-                                                       column(4, plotlyOutput("VolcanoPlot_c3_pf_db"))
-                                                     ),
-                                                     br(),
-                                                     fluidRow(
-                                                       column(5, tableOutput("cleaned_up"))
-                                                     )
-                                                     ),
-                                            tabPanel("Download", value = "3_p8",
+                                            tabPanel("Download", value = "3_p7",
                                                      br(),
                                                      fluidRow(
                                                        column(3, downloadButton("c1_download_mapped_uniprot", "Converted identifiers f1")),
