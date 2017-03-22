@@ -396,8 +396,7 @@ shinyServer(function(input, output, session){
     snp <- input$a_file_SNP_rep
     if(is.null(snp)){
       return(NULL)
-    }
-    else{
+    } else{
       df <- read.csv(snp$datapath, header = FALSE)
       df
     }
@@ -407,8 +406,7 @@ shinyServer(function(input, output, session){
     snp <- input$a_file_SNP_vennd
     if(is.null(snp)){
       return(NULL)
-    }
-    else{
+    } else{
       df <- read.csv(snp$datapath, header = FALSE)
       df
     }
@@ -418,8 +416,7 @@ shinyServer(function(input, output, session){
     genes <- input$a_file_genes_rep
     if (is.null(genes)){
       return(NULL)
-    }
-    else{
+    } else{
       df <- fread(genes$datapath, header = T, fill = T,
                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
@@ -437,8 +434,7 @@ shinyServer(function(input, output, session){
     genes <- input$a_file_genes_vennd
     if (is.null(genes)){
       return(NULL)
-    }
-    else{
+    } else{
       df <- fread(genes$datapath, header = T, fill = T,
                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
@@ -518,8 +514,7 @@ shinyServer(function(input, output, session){
     bait_in <- input$a_bait_rep
     if (is.null(bait_in) | bait_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       bait <- bait_in
       bait <- toupper(bait)
     }
@@ -529,8 +524,7 @@ shinyServer(function(input, output, session){
     bait_in <- input$a_bait_vennd
     if (is.null(bait_in) | bait_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       bait <- bait_in
       bait <- toupper(bait)
     }
@@ -540,8 +534,7 @@ shinyServer(function(input, output, session){
     gene_in <- input$a_goi_search_rep
     if (is.null(gene_in) | gene_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       gene <- gene_in
       gene <- toupper(gene)
     }
@@ -579,8 +572,7 @@ shinyServer(function(input, output, session){
                    })
       bait_interactors <- c(bait_inweb_im, bait_inweb3)
       bait_interactors <- unique(sort(bait_interactors))
-    }
-    else{
+    } else{
       return(NULL)
     }
   })
@@ -799,8 +791,7 @@ shinyServer(function(input, output, session){
         SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
       })
       snpList <- SNP_n_occur
-    }
-    else{
+    } else{
       return(NULL)
     }
   })
@@ -845,8 +836,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               plot.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d1 <- separate_to_groups_for_exac_bar(d)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +
@@ -859,8 +849,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +      
@@ -891,8 +880,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d1 <- separate_to_groups_for_exac_bar(d)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
@@ -905,8 +893,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
@@ -927,16 +914,14 @@ shinyServer(function(input, output, session){
       # data <- separate_to_groups_for_color(d, input$a_fdr_thresh)
       data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       p <- plot_volcano_qc(data)
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac(below_thresh, above_thresh, no_exist)
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_volcano_qc(data)
       }
@@ -1082,8 +1067,7 @@ shinyServer(function(input, output, session){
     if ("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
       cor <- signif(cor(input_file$rep1, input_file$rep2), 4)
       cor <- paste0("correlation coefficient: ", cor)
-    }
-    else if ("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    } else if ("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
       return(NULL)
     }
   })
@@ -1095,8 +1079,7 @@ shinyServer(function(input, output, session){
       d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       p <- plot_scatter_qc(d, d1)
       p
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -1147,8 +1130,7 @@ shinyServer(function(input, output, session){
                          opacity = 0.8, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -1170,8 +1152,7 @@ shinyServer(function(input, output, session){
                        opacity = 0.7, 
                        text = ~paste(gene), hoverinfo = "text")
       p
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -1235,48 +1216,41 @@ shinyServer(function(input, output, session){
       d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
       d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )  
       list(d_in=d_in, d_snp=d_snp, d_g2s=d_g2s)
-    }
-    # InWeb only 
-    else if(!is.null(a_bait_gene_layer()) & is.null(a_snp()) & is.null(a_upload_genes())){
+    } else if(!is.null(a_bait_gene_layer()) & is.null(a_snp()) & is.null(a_upload_genes())){
+      # InWeb only 
       inwebFile <- sample()
       bait <- a_bait_gene_layer()
       d_in <- subset(d, gene %in% inwebFile$gene & gene != bait)
       list(d_in=d_in)
-    }
-    # None
-    else if(is.null(a_bait_gene_layer()) & is.null(a_snp()) & is.null(a_upload_genes())){
-    }
-    # InWeb, and genes upload
-    else if(!is.null(a_bait_gene_layer()) & is.null(a_snp()) & !is.null(a_upload_genes())){
+    } else if(is.null(a_bait_gene_layer()) & is.null(a_snp()) & is.null(a_upload_genes())){
+      # None
+    } else if(!is.null(a_bait_gene_layer()) & is.null(a_snp()) & !is.null(a_upload_genes())){
+      # InWeb, and genes upload
       inwebFile <- sample()
       gene_interest <- a_genes_uploaded()
       bait <- a_bait_gene_layer()
       d_in <- subset(d, gene %in% inwebFile$gene & gene != bait)
       d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )  
       list(d_in=d_in, d_g2s=d_g2s)
-    }
-    # SNP to gene, and genes upload
-    else if(is.null(a_bait_gene_layer()) & !is.null(a_snp()) & !is.null(a_upload_genes())){
+    } else if(is.null(a_bait_gene_layer()) & !is.null(a_snp()) & !is.null(a_upload_genes())){
+      # SNP to gene, and genes upload
       gene_interest <- a_genes_uploaded()
       snp_interest <- SNP_to_gene()
       d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
       d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )
       list(d_snp=d_snp, d_g2s=d_g2s)
-    }
-    # Genes upload only
-    else if(is.null(a_bait_gene_layer()) & is.null(a_snp()) & !is.null(a_upload_genes())){
+    } else if(is.null(a_bait_gene_layer()) & is.null(a_snp()) & !is.null(a_upload_genes())){
+      # Genes upload only
       gene_interest <- a_genes_uploaded()
       d_g2s <- lapply(gene_interest, function(x) subset(d, gene %in% x) )  
       list(d_g2s=d_g2s)
-    }
-    # SNP to gene only 
-    else if(is.null(a_bait_gene_layer()) & !is.null(a_snp()) & is.null(a_upload_genes())){
+    } else if(is.null(a_bait_gene_layer()) & !is.null(a_snp()) & is.null(a_upload_genes())){
+      # SNP to gene only
       snp_interest <- SNP_to_gene()
       d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
       list(d_snp=d_snp)
-    }
-    # InWeb, and SNP to gene
-    else if(!is.null(a_bait_gene_layer()) & !is.null(a_snp()) & is.null(a_upload_genes())){
+    } else if(!is.null(a_bait_gene_layer()) & !is.null(a_snp()) & is.null(a_upload_genes())){
+      # InWeb, and SNP to gene
       inwebFile <- sample()
       snp_interest <- SNP_to_gene()
       bait <- a_bait_gene_layer()
@@ -1304,8 +1278,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               plot.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d1 <- separate_to_groups_for_exac_bar(d)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +
@@ -1318,8 +1291,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +      
@@ -1350,8 +1322,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d1 <- separate_to_groups_for_exac_bar(d)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
@@ -1364,8 +1335,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
@@ -1393,8 +1363,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -1413,10 +1382,8 @@ shinyServer(function(input, output, session){
                        marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
                        opacity = 0.8, 
                        text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550)
       for(i in nrow(data)){
@@ -1435,8 +1402,7 @@ shinyServer(function(input, output, session){
       if(!is.null(a_bait_gene_layer())){
         if(input$a_marker_text == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb(p, multi_vp$d_in)
-        }
-        else if(input$a_marker_text == "no_label"){
+        } else if(input$a_marker_text == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_no_text(p, multi_vp$d_in)
         }
         p <- vp_layer_inweb
@@ -1448,8 +1414,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$a_marker_text == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -1457,14 +1422,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$a_marker_text == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
           p <- vp_layer_no_snp2gene
         }
@@ -1474,26 +1437,22 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$a_marker_text == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$a_marker_text == "no_label"){
+          } else if(input$a_marker_text == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
       p
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       # InWeb, SNP to gene, and genes upload
       if(!is.null(a_bait_gene_layer())){
         if(input$a_marker_text == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, multi_vp$d_in)
-        }
-        else if(input$a_marker_text == "no_label"){
+        } else if(input$a_marker_text == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text(p, multi_vp$d_in)
         }
         p <- vp_layer_inweb
@@ -1505,8 +1464,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$a_marker_text == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -1514,14 +1472,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$a_marker_text == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
           p <- vp_layer_no_snp2gene
         }
@@ -1531,13 +1487,11 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$a_marker_text == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$a_marker_text == "no_label"){
+          } else if(input$a_marker_text == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -1660,8 +1614,7 @@ shinyServer(function(input, output, session){
                          opacity = 0.8, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
-    }
-    else if(input$colorscheme == "exac"){
+    } else if(input$colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -1684,8 +1637,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_scatter_exac(d, below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -1707,8 +1659,7 @@ shinyServer(function(input, output, session){
       if(!is.null(a_bait_gene_layer())){
         if(input$a_marker_text == "yes_label"){
           sp_layer_inweb <- sp_layer_for_inweb(p, multi_sp$d_in)
-        }
-        else if(input$a_marker_text == "no_label"){
+        } else if(input$a_marker_text == "no_label"){
           sp_layer_inweb <- sp_layer_for_inweb_no_text(p, multi_sp$d_in)
         }
         p <- sp_layer_inweb
@@ -1720,8 +1671,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$a_marker_text == "yes_label"){
               sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl(p, snp_sgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
             }
             p <- sp_layer_snp2gene_sgl
@@ -1729,14 +1679,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$a_marker_text == "yes_label"){
               sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl(p, snp_mgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
             }
             p <- sp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           sp_layer_no_snp2gene <- sp_layer_for_snp_to_gene_none(p, d)
           p <- sp_layer_no_snp2gene
         }
@@ -1746,26 +1694,22 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$a_marker_text == "yes_label"){
             sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$a_marker_text == "no_label"){
+          } else if(input$a_marker_text == "no_label"){
             sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- sp_layer_genes
-        }
-        else{
+        } else{
           sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
           p <- sp_layer_no_genes
         }
       }
       p
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       # InWeb, SNP to gene, and genes upload
       if(!is.null(a_bait_gene_layer())){
         if(input$a_marker_text == "yes_label"){
           sp_layer_inweb <- sp_layer_for_inweb_cbf(p, multi_sp$d_in)
-        }
-        else if(input$a_marker_text == "no_label"){
+        } else if(input$a_marker_text == "no_label"){
           sp_layer_inweb <- sp_layer_for_inweb_cbf_no_text(p, multi_sp$d_in)
         }
         p <- sp_layer_inweb
@@ -1777,8 +1721,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$a_marker_text == "yes_label"){
               sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
             }
             p <- sp_layer_snp2gene_sgl
@@ -1786,14 +1729,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$a_marker_text == "yes_label"){
               sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            }
-            else if(input$a_marker_text == "no_label"){
+            } else if(input$a_marker_text == "no_label"){
               sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
             }
             p <- sp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           sp_layer_no_snp2gene <- sp_layer_for_snp_to_gene_none_cbf(p, d)
           p <- sp_layer_no_snp2gene
         }
@@ -1803,13 +1744,11 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$a_marker_text == "yes_label"){
             sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$a_marker_text == "no_label"){
+          } else if(input$a_marker_text == "no_label"){
             sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- sp_layer_genes
-        }
-        else{
+        } else{
           sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- sp_layer_no_genes
         }
@@ -2103,8 +2042,7 @@ shinyServer(function(input, output, session){
     inBPFmarker <- input$a_BPF_option
     if (inBPFmarker == "change_m_BPF") {
       marker <- "change"
-    }
-    else {
+    } else {
       marker <- "no_change"
     }
   })
@@ -2177,9 +2115,7 @@ shinyServer(function(input, output, session){
                     marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
                     color = ~factor(family), 
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
-    }
-    
-    else{
+    } else{
       p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
         #background
         add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
@@ -2285,8 +2221,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(a_search_gene())){
       a_multi_vp_layer()
-    }
-    else{
+    } else{
       a_multi_vp_plus()
     }
   })
@@ -2389,8 +2324,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(a_search_gene())){
       a_bpf()
-    }
-    else{
+    } else{
       a_bpf_plus()
     }
   })
@@ -2426,8 +2360,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("download_venn_diagram_GOI_plot")
       shinyjs::disable("download_venn_diagram_SNP_plot")
       shinyjs::disable("download_mapped_uniprot")
-    }
-    else {
+    } else {
       shinyjs::enable("download_basic_plots")
     }
   })
@@ -2454,8 +2387,7 @@ shinyServer(function(input, output, session){
     if (input$a_make_bpf == 0 || is.null(input$a_make_bpf)){
       shinyjs::disable("download_bpf_plot")
       shinyjs::disable("download_enriched_families_bpf")
-    }
-    else {
+    } else {
       shinyjs::enable("download_bpf_plot")
       shinyjs::enable("download_enriched_families_bpf")
     }
@@ -2464,8 +2396,7 @@ shinyServer(function(input, output, session){
   observe({
     if (input$a_make_vennd_bait == 0 || is.null(input$a_make_vennd_bait)){
       shinyjs::disable("download_venn_diagram_plot")
-    }
-    else {
+    } else {
       shinyjs::enable("download_venn_diagram_plot")
     }
   })
@@ -2473,8 +2404,7 @@ shinyServer(function(input, output, session){
   observe({
     if (input$a_make_vennd_snp == 0 || is.null(input$a_make_vennd_snp)){
       shinyjs::disable("download_venn_diagram_SNP_plot")
-    }
-    else {
+    } else {
       shinyjs::enable("download_venn_diagram_SNP_plot")
     }
   })
@@ -2482,8 +2412,7 @@ shinyServer(function(input, output, session){
   observe({
     if (input$a_make_vennd_goi == 0 || is.null(input$a_make_vennd_goi)){
       shinyjs::disable("download_venn_diagram_GOI_plot")
-    }
-    else {
+    } else {
       shinyjs::enable("download_venn_diagram_GOI_plot")
     }
   })
@@ -2491,8 +2420,7 @@ shinyServer(function(input, output, session){
   observe({
     if (is.null(input$a_file_SNP_rep)){
       shinyjs::disable("download_snp_to_genes")
-    }
-    else {
+    } else {
       shinyjs::enable("download_snp_to_genes")
     }
   })
@@ -2500,8 +2428,7 @@ shinyServer(function(input, output, session){
   observe({
     if (input$a_make_plot == 0 || is.null(input$a_make_plot)){
       shinyjs::disable("download_layered_plots") 
-    }
-    else {
+    } else {
       shinyjs::enable("download_layered_plots") 
     }
   })
@@ -2549,16 +2476,13 @@ shinyServer(function(input, output, session){
       if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
         if(is.null(a_search_gene())){
           params <- list(a = a_vp(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        }
-        else{
+        } else{
           params <- list(a = a_vp_plus_rep(), c = a_vp_colorbar_dl(), d = a_vp_count())
         }
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
         if(is.null(a_search_gene())){
           params <- list(a = a_vp(), b = a_sp(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        }
-        else{
+        } else{
           params <- list(a = a_vp_plus_rep(), b = a_sp_plus(), c = a_vp_colorbar_dl(), d = a_vp_count())
         }
       }
@@ -2576,16 +2500,13 @@ shinyServer(function(input, output, session){
       if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
         if(is.null(a_search_gene())){
           params <- list(a = a_multi_vp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
-        }
-        else{
+        } else{
           params <- list(a = a_multi_vp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
         }
-      }
-      else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
         if(is.null(a_search_gene())){
           params <- list(a = a_multi_vp_layer(), b = a_multi_sp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
-        }
-        else{
+        } else{
           params <- list(a = a_multi_vp_plus(), b = a_multi_sp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
         }
       }
@@ -2644,8 +2565,7 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(is.null(a_search_gene())){
         params <- list(a = a_bpf())
-      }
-      else{
+      } else{
         params <- list(a = a_bpf_plus())
       }
       rmarkdown::render("scripts/pf.Rmd", 
@@ -2764,8 +2684,7 @@ shinyServer(function(input, output, session){
     gene_in <- input$b_goi_search
     if (is.null(gene_in) | gene_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       gene <- gene_in
       gene <- toupper(gene)
     }
@@ -2788,8 +2707,7 @@ shinyServer(function(input, output, session){
     inPFsort <- input$b_PF_sort_option
     if (inPFsort == "sort_alph") {
       marker <- "sort_a"
-    }
-    else {
+    } else {
       marker <- "sort_f"
     }
   })
@@ -2972,8 +2890,7 @@ shinyServer(function(input, output, session){
     bait_in <- input$b_bait_PF
     if (is.null(bait_in) | bait_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       bait <- bait_in
       bait <- toupper(bait)
     }
@@ -2983,8 +2900,7 @@ shinyServer(function(input, output, session){
     inBPFmarker <- input$b_PF_option
     if (inBPFmarker == "change_m_PF") {
       marker <- "change"
-    }
-    else {
+    } else {
       marker <- "no_change"
     }
   })
@@ -3077,8 +2993,7 @@ shinyServer(function(input, output, session){
       enM_families <- enM_families[order(-enM_families$frequency), ]
       if(nrow(enM_families)>=1){
         enM_families <- cbind(enM_families, new_f = paste0("(", enM_families$frequency, ") ", enM_families$family))
-      }
-      else {
+      } else {
         enM_families <- enM_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
                                "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
                                "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
@@ -3087,20 +3002,17 @@ shinyServer(function(input, output, session){
       enP_families <- enP_families[order(-enP_families$frequency), ]
       if(nrow(enP_families)>=1){
         enP_families <- cbind(enP_families, new_f = paste0("(", enP_families$frequency, ") ", enP_families$family))
-      }
-      else {
+      } else {
         enP_families <- enP_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
                                      "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
                                      "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
                                      "new_f" = character(0))
       }
-    }
-    else if(pfsort == "sort_a"){
+    } else if(pfsort == "sort_a"){
       enM_families 
       if(nrow(enM_families)>=1){
         enM_families <- cbind(enM_families, new_f = paste0(enM_families$family, " (", enM_families$frequency, ")"))
-      }
-      else {
+      } else {
         enM_families <- enM_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0),
                                "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
                                "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
@@ -3109,15 +3021,13 @@ shinyServer(function(input, output, session){
       enP_families 
       if(nrow(enP_families)>=1){
         enP_families <- cbind(enP_families, new_f = paste0(enP_families$family, " (", enP_families$frequency, ")"))
-      }
-      else {
+      } else {
         enP_families <- enP_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0),
                                      "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
                                      "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
                                      "new_f" = character(0))
       }
     }
-    
     
     enM_families$new_f <- paste(enM_families$new_f, " ", sep = '')
     enM_families$new_f <- factor(enM_families$new_f, levels = unique(enM_families$new_f))
@@ -3147,9 +3057,7 @@ shinyServer(function(input, output, session){
                     marker = list(size = ~frequency*increase_size, symbol = c('circle'), opacity = 0.8, line = list(width = 0.6, color = "black")), 
                     color = ~new_f,
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo="text")
-    }
-    
-    else{
+    } else{
       p <- plot_ly(colors = rainbow(howmany1+howmany2, start = 0, end = 0.85), width = 1300, height = 900) %>%
         #background
         add_markers(data = dpm, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
@@ -3202,8 +3110,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(b_search_gene())){
       b_pf()
-    }
-    else{
+    } else{
       b_pf_plus()
     }
   })
@@ -3213,8 +3120,7 @@ shinyServer(function(input, output, session){
     if (input$b_make_pf == 0 || is.null(input$b_make_pf)){
       shinyjs::disable("download_pf_plot")
       shinyjs::disable("download_enriched_families_pf")
-    }
-    else {
+    } else {
       shinyjs::enable("download_pf_plot")
       shinyjs::enable("download_enriched_families_pf")
     }
@@ -3225,8 +3131,7 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(is.null(b_search_gene())){
         params <- list(a = b_pf())
-      }
-      else{
+      } else{
         params <- list(a = b_pf_plus())
       }
       rmarkdown::render("scripts/pf.Rmd", 
@@ -3329,8 +3234,7 @@ shinyServer(function(input, output, session){
       combined_max <- max(-(min_logFC), max_logFC)
       numericInput("c_logfc_thresh_comb", "logFC threshold",
                    min = 0, max = combined_max, value = 1, step = 0.1)
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       min_logFC <- min(min(c1$logFC), min(c2$logFC))
@@ -3340,8 +3244,7 @@ shinyServer(function(input, output, session){
       combined_max <- max(-(min_logFC), max_logFC)
       numericInput("c_logfc_thresh_comb", "logFC threshold",
                    min = 0, max = combined_max, value = 1, step = 0.1)
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -3352,8 +3255,7 @@ shinyServer(function(input, output, session){
       combined_max <- max(-(min_logFC), max_logFC)
       numericInput("c_logfc_thresh_comb", "logFC threshold",
                    min = 0, max = combined_max, value = 1, step = 0.1)
-    }
-    else
+    } else
       numericInput("c_logfc_thresh_comb", "logFC threshold",
                   min = 0, max = 1, value = 0.1, step = 0.1)
   })
@@ -3655,8 +3557,7 @@ shinyServer(function(input, output, session){
     inPFmarker <- input$c_PF_option
     if (inPFmarker == "change_m_PF") {
       marker <- "change"
-    }
-    else {
+    } else {
       marker <- "no_change"
     }
   })
@@ -3677,8 +3578,7 @@ shinyServer(function(input, output, session){
     inPFsort <- input$c_PF_sort_option
     if (inPFsort == "sort_alph") {
       marker <- "sort_a"
-    }
-    else {
+    } else {
       marker <- "sort_f"
     }
   })
@@ -3730,8 +3630,7 @@ shinyServer(function(input, output, session){
       shinyjs::hide("c_fdr_thresh")
       shinyjs::hide("c_pval_thresh")
       shinyjs::hide("c_logfc_thresh_comb")
-    }
-    else {
+    } else {
       shinyjs::show("c_colorscheme")
       shinyjs::show("c_fdr_thresh")
       shinyjs::show("c_pval_thresh")
@@ -3743,8 +3642,7 @@ shinyServer(function(input, output, session){
     gene_in <- input$c_goi_search
     if (is.null(gene_in) | gene_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       gene <- gene_in
       gene <- toupper(gene)
     }
@@ -3754,8 +3652,7 @@ shinyServer(function(input, output, session){
     bait_in <- input$c_bait
     if (is.null(bait_in) | bait_in == "" ){
       return(NULL)
-    }
-    else{
+    } else{
       bait <- bait_in
       bait <- toupper(bait)
     }
@@ -3782,8 +3679,7 @@ shinyServer(function(input, output, session){
     genes <- input$c_file_genes
     if (is.null(genes)){
       return(NULL)
-    }
-    else{
+    } else{
       df <- fread(genes$datapath, header = T, fill = T,
                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
     }
@@ -3834,8 +3730,7 @@ shinyServer(function(input, output, session){
     snp <- input$c_file_SNP
     if(is.null(snp)){
       return(NULL)
-    }
-    else{
+    } else{
       df <- read.csv(snp$datapath, header = FALSE)
       df
     }
@@ -4090,13 +3985,11 @@ shinyServer(function(input, output, session){
     if(!is.null(c_in_pd1()) & is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       min_x_axis <- min(c1$logFC)
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       min_x_axis <- min(min(c1$logFC), min(c2$logFC))
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -4109,13 +4002,11 @@ shinyServer(function(input, output, session){
     if(!is.null(c_in_pd1()) & is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       max_x_axis <- max(c1$logFC)
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       max_x_axis <- max(max(c1$logFC), max(c2$logFC))
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -4128,13 +4019,11 @@ shinyServer(function(input, output, session){
     if(!is.null(c_in_pd1()) & is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       min_y_axis <- min(-log10(c1$pvalue))
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       min_y_axis <- min(min(-log10(c1$pvalue)), min(-log10(c2$pvalue)))
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -4147,13 +4036,11 @@ shinyServer(function(input, output, session){
     if(!is.null(c_in_pd1()) & is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       max_y_axis <- max(-log10(c1$pvalue))
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       max_y_axis <- max(max(-log10(c1$pvalue)), max(-log10(c2$pvalue)))
-    }
-    else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
+    } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -4178,8 +4065,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d1 <- separate_to_groups_for_exac_bar(d)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
@@ -4192,8 +4078,7 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               axis.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
@@ -4213,8 +4098,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4222,8 +4106,7 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
     }
@@ -4280,8 +4163,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4289,8 +4171,7 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
     }
@@ -4301,19 +4182,16 @@ shinyServer(function(input, output, session){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb(p, c1_multi_vp$d_in)
-        }
-        else if(input$c_marker_text_inweb == "no_label"){
+        } else if(input$c_marker_text_inweb == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c1_multi_vp$d_in)
         }
         p <- vp_layer_inweb
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c1_multi_vp$d_in)
-        }
-        else if(input$c_marker_text_inweb == "no_label"){
+        } else if(input$c_marker_text_inweb == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text(p, c1_multi_vp$d_in)
         }
         p <- vp_layer_inweb
@@ -4371,8 +4249,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4393,8 +4270,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p 
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -4415,31 +4291,26 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$c_marker_text_goi == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$c_marker_text_goi == "no_label"){
+          } else if(input$c_marker_text_goi == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c1_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_goi == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$c_marker_text_goi == "no_label"){
+          } else if(input$c_marker_text_goi == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -4497,8 +4368,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4519,8 +4389,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -4543,8 +4412,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -4552,20 +4420,17 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
           p <- vp_layer_no_snp2gene
         }
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_snp())){
         if(nrow(c1_snp$d_snp) != 0){
           snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
@@ -4573,8 +4438,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -4582,14 +4446,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
           p <- vp_layer_no_snp2gene
         }
@@ -4622,16 +4484,14 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
     }
@@ -4688,8 +4548,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4697,8 +4556,7 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
     }
@@ -4709,19 +4567,16 @@ shinyServer(function(input, output, session){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb(p, c2_multi_vp$d_in)
-        }
-        else if(input$c_marker_text_inweb == "no_label"){
+        } else if(input$c_marker_text_inweb == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c2_multi_vp$d_in)
         }
         p <- vp_layer_inweb
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c2_multi_vp$d_in)
-        }
-        else if(input$c_marker_text_inweb == "no_label"){
+        } else if(input$c_marker_text_inweb == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text(p, c2_multi_vp$d_in)
         }
         p <- vp_layer_inweb
@@ -4779,8 +4634,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4801,8 +4655,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -4823,31 +4676,26 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$c_marker_text_goi == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$c_marker_text_goi == "no_label"){
+          } else if(input$c_marker_text_goi == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c2_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_goi == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$c_marker_text_goi == "no_label"){
+          } else if(input$c_marker_text_goi == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -4906,8 +4754,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -4928,8 +4775,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -4952,8 +4798,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -4961,20 +4806,17 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
           p <- vp_layer_no_snp2gene
         }
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_snp())){
         if(nrow(c2_snp$d_snp) != 0){
           snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
@@ -4982,8 +4824,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -4991,14 +4832,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
           p <- vp_layer_no_snp2gene
         }
@@ -5031,16 +4870,14 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
     }
@@ -5097,8 +4934,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -5106,8 +4942,7 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
     }
@@ -5124,13 +4959,11 @@ shinyServer(function(input, output, session){
         }
         p <- vp_layer_inweb
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c3_multi_vp$d_in)
-        }
-        else if(input$c_marker_text_inweb == "no_label"){
+        } else if(input$c_marker_text_inweb == "no_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text(p, c3_multi_vp$d_in)
         }
         p <- vp_layer_inweb
@@ -5188,8 +5021,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -5210,8 +5042,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -5232,31 +5063,26 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$c_marker_text_goi == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$c_marker_text_goi == "no_label"){
+          } else if(input$c_marker_text_goi == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c3_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_goi == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$c_marker_text_goi == "no_label"){
+          } else if(input$c_marker_text_goi == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -5314,8 +5140,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -5336,8 +5161,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -5360,8 +5184,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -5369,20 +5192,17 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
           p <- vp_layer_no_snp2gene
         }
       }
-    }
-    else if(input$colorscheme == "cbf"){
+    } else if(input$colorscheme == "cbf"){
       if(!is.null(c_snp())){
         if(nrow(c3_snp$d_snp) != 0){
           snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
@@ -5390,8 +5210,7 @@ shinyServer(function(input, output, session){
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
             }
             p <- vp_layer_snp2gene_sgl
@@ -5399,14 +5218,12 @@ shinyServer(function(input, output, session){
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            }
-            else if(input$c_marker_text_snp == "no_label"){
+            } else if(input$c_marker_text_snp == "no_label"){
               vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
             }
             p <- vp_layer_snp2gene_mgl
           }
-        }
-        else{
+        } else{
           vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
           p <- vp_layer_no_snp2gene
         }
@@ -5439,8 +5256,7 @@ shinyServer(function(input, output, session){
     if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
       cor <- signif(cor(input_file$rep1, input_file$rep2), 4)
       cor <- paste0("correlation coefficient: ", cor)
-    }
-    else if ("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    } else if ("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
       return(NULL)
     }
   })
@@ -5451,8 +5267,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_scatter_multiple_cond(d, d1)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -5489,8 +5304,7 @@ shinyServer(function(input, output, session){
     if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
       cor <- signif(cor(input_file$rep1, input_file$rep2), 4)
       cor <- paste0("correlation coefficient: ", cor)
-    }
-    else if ("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+    } else if ("logFC" %in% colnames(input_file) & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
       return(NULL)
     }
   })
@@ -5501,8 +5315,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_scatter_multiple_cond(d, d1)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -5539,8 +5352,7 @@ shinyServer(function(input, output, session){
     if("rep1" %in% colnames(input_file) & "rep2" %in% colnames(input_file)){
       cor <- signif(cor(input_file$rep1, input_file$rep2), 4)
       cor <- paste0("correlation coefficient: ", cor)
-    }
-    else if ("gene" %in% colnames(input_file) & "logFC" %in% colnames(input_file) 
+    } else if ("gene" %in% colnames(input_file) & "logFC" %in% colnames(input_file) 
              & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
       return(NULL)
     }
@@ -5552,8 +5364,7 @@ shinyServer(function(input, output, session){
     if(input$c_colorscheme == "fdr"){
       d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
       p <- plot_scatter_multiple_cond(d, d1)
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -5636,8 +5447,7 @@ shinyServer(function(input, output, session){
       overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
       f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene)
       list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
       f1_subset <- c_f1()
       f2_subset <- c_f2()
@@ -5661,8 +5471,7 @@ shinyServer(function(input, output, session){
       overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
       f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene)
       list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- c_pd2()
       f1_subset <- c_f1()
       f2_subset <- c_f2()
@@ -5703,8 +5512,7 @@ shinyServer(function(input, output, session){
       overlap1_2 <- subset(f1_subset, gene %in% f2_subset$gene)
       f1_subset <- subset(f1_subset, gene %!in% (overlap1_2)$gene)
       list(f1=f1, f1_subset=f1_subset, overlap1_2=overlap1_2)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_pd1()
       f1_subset <- c_f1_pf()
       f2_subset <- c_f2_pf()
@@ -5728,8 +5536,7 @@ shinyServer(function(input, output, session){
       overlap2_1 <- subset(f2_subset, gene %in% f1_subset$gene)
       f2_subset <- subset(f2_subset, gene %!in% (overlap2_1)$gene)
       list(f2=f2, f2_subset=f2_subset, overlap2_1=overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- c_pd2()
       f1_subset <- c_f1_pf()
       f2_subset <- c_f2_pf()
@@ -5765,8 +5572,7 @@ shinyServer(function(input, output, session){
     d <- c_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       p1 <- compare_two_files_a(d$f1, d$f1_subset, d$overlap1_2)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       p1 <- compare_two_files_aa(d$f1, d$f1_subset, d$overlap1_2, d$overlap1_3, d$overlap1_2_3)
     }
   })
@@ -5787,8 +5593,7 @@ shinyServer(function(input, output, session){
     d <- c_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       p2 <- compare_two_files_b(d$f2, d$f2_subset, d$overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       p2 <- compare_two_files_bb(d$f2, d$f2_subset, d$overlap2_1, d$overlap2_3, d$overlap2_1_3)
     }
   })
@@ -5849,13 +5654,11 @@ shinyServer(function(input, output, session){
                      incProgress(0.9)
                      if (pfmsizing == "change"){
                        p1 <- compare_two_files_pf_a_size(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]], increase_size)
-                     }
-                     else if (pfmsizing == "no_change"){
+                     } else if (pfmsizing == "no_change"){
                        p1 <- compare_two_files_pf_a(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]])
                      }
                    })
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       withProgress(message = 'This may take a while', 
                    detail = 'Hold please', value = 0, {
                      pf_f1 <- d$f1
@@ -5888,8 +5691,7 @@ shinyServer(function(input, output, session){
                      if (pfmsizing == "change"){
                        p1 <- compare_two_files_pf_aa_size(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]],
                                                           overlap1_3[[1]], overlap1_3[[2]], overlap1_2_3[[1]], overlap1_2_3[[2]], increase_size)
-                     }
-                     else{
+                     } else{
                        p1 <- compare_two_files_pf_aa(pf_f1, f1_subset[[1]], f1_subset[[2]], overlap1_2[[1]], overlap1_2[[2]],
                                                      overlap1_3[[1]], overlap1_3[[2]], overlap1_2_3[[1]], overlap1_2_3[[2]])
                      }
@@ -5922,13 +5724,11 @@ shinyServer(function(input, output, session){
                      incProgress(0.9)
                      if (pfmsizing == "change"){
                        p1 <- compare_two_files_pf_b_size(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]], increase_size)
-                     }
-                     else if (pfmsizing == "no_change"){
+                     } else if (pfmsizing == "no_change"){
                        p1 <- compare_two_files_pf_b(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]])
                      }
                    })
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       withProgress(message = 'This may take a while', 
                    detail = 'Hold please', value = 0, {
                      pf_f2 <- d$f2
@@ -5961,8 +5761,7 @@ shinyServer(function(input, output, session){
                      if (pfmsizing == "change"){
                        p1 <- compare_two_files_pf_bb_size(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]],
                                                           overlap2_3[[1]], overlap2_3[[2]], overlap2_1_3[[1]], overlap2_1_3[[2]], increase_size)
-                     }
-                     else{
+                     } else{
                        p1 <- compare_two_files_pf_bb(pf_f2, f2_subset[[1]], f2_subset[[2]], overlap2_1[[1]], overlap2_1[[2]],
                                                      overlap2_3[[1]], overlap2_3[[2]], overlap2_1_3[[1]], overlap2_1_3[[2]])
                      }
@@ -6008,8 +5807,7 @@ shinyServer(function(input, output, session){
                      if (pfmsizing == "change"){
                        p1 <- compare_two_files_pf_cc_size(pf_f3, f3_subset[[1]], f3_subset[[2]], overlap3_1[[1]], overlap3_1[[2]],
                                                           overlap3_2[[1]], overlap3_2[[2]], overlap3_1_2[[1]], overlap3_1_2[[2]], increase_size)
-                     }
-                     else{
+                     } else{
                        p1 <- compare_two_files_pf_cc(pf_f3, f3_subset[[1]], f3_subset[[2]], overlap3_1[[1]], overlap3_1[[2]],
                                                      overlap3_2[[1]], overlap3_2[[2]], overlap3_1_2[[1]], overlap3_1_2[[2]])
                      }
@@ -6083,8 +5881,7 @@ shinyServer(function(input, output, session){
       length(f12) <- n
       d <- cbind(f1, f2, f12)
       d[is.na(d)] <- " "
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_f1_unique()
       f2 <- c_f2_unique()
       f12 <- c_f1_and_f2()
@@ -6121,8 +5918,7 @@ shinyServer(function(input, output, session){
                          sub = " ", sub.pos = c(0, 0), euler.d = F, scaled = F,
                          cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
                          fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1_subset <- c_f1()
       f2_subset <- c_f2()
       f3_subset <- c_f3()
@@ -6151,8 +5947,7 @@ shinyServer(function(input, output, session){
       f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC > input$c_logfc_thresh_comb)
       overlap1_2 <- subset(f1_inweb, gene %in% f2_inweb$gene)
       list(f1_inweb=f1_inweb, overlap1_2=overlap1_2)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
       f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC > input$c_logfc_thresh_comb)
       f2_inweb <- c_inweb_pd2()
@@ -6175,8 +5970,7 @@ shinyServer(function(input, output, session){
       f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC > input$c_logfc_thresh_comb)
       overlap2_1 <- subset(f2_inweb, gene %in% f1_inweb$gene)
       list(f2_inweb=f2_inweb, overlap2_1=overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
       f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC > input$c_logfc_thresh_comb)
       f2_inweb <- c_inweb_pd2()
@@ -6210,8 +6004,7 @@ shinyServer(function(input, output, session){
     d <- c_inweb_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_inweb, gene %!in% (d$overlap1_2)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_inweb, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
     }
     d1 <- data.frame(f1$gene)
@@ -6223,8 +6016,7 @@ shinyServer(function(input, output, session){
     d <- c_inweb_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_inweb, gene %!in% (d$overlap2_1)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_inweb, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
     }
     d1 <- data.frame(f2$gene)
@@ -6236,8 +6028,7 @@ shinyServer(function(input, output, session){
     d <- c_inweb_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- d$overlap2_1
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
     }
     d1 <- data.frame(f2$gene)
@@ -6295,8 +6086,7 @@ shinyServer(function(input, output, session){
       length(f12) <- n
       d <- cbind(f1, f2, f12)
       d[is.na(d)] <- " "
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_f1_unique_inweb()
       f2 <- c_f2_unique_inweb()
       f12 <- c_f1_and_f2_inweb()
@@ -6337,8 +6127,7 @@ shinyServer(function(input, output, session){
                            cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
                            fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
       }
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       if(!is.null(c_inweb_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       f1_inweb <- c_inweb_pd1()
       f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC > input$c_logfc_thresh_comb)
@@ -6447,8 +6236,7 @@ shinyServer(function(input, output, session){
                            cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
                            fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
       }
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       if(!is.null(c_pd1()) & !is.null(c_pd2()) & !is.null(c_pd3())){
         c1 <- c_pd1()
         c2 <- c_pd2()
@@ -6510,8 +6298,7 @@ shinyServer(function(input, output, session){
       f2_goi <-df1_c2[[list_num]]
       overlap1_2 <- subset(f1_goi, gene %in% f2_goi$gene)
       list(f1_goi=f1_goi, overlap1_2=overlap1_2)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -6564,8 +6351,7 @@ shinyServer(function(input, output, session){
       f2_goi <-df1_c2[[list_num]]
       overlap2_1 <- subset(f2_goi, gene %in% f1_goi$gene)
       list(f2_goi=f2_goi, overlap2_1=overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -6633,8 +6419,7 @@ shinyServer(function(input, output, session){
     d <- c_goi_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_goi, gene %!in% (d$overlap1_2)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_goi, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
     }
     d1 <- data.frame(f1$gene)
@@ -6646,8 +6431,7 @@ shinyServer(function(input, output, session){
     d <- c_goi_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_goi, gene %!in% (d$overlap2_1)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_goi, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
     }
     d1 <- data.frame(f2$gene)
@@ -6659,8 +6443,7 @@ shinyServer(function(input, output, session){
     d <- c_goi_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- d$overlap2_1
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
     }
     d1 <- data.frame(f2$gene)
@@ -6718,8 +6501,7 @@ shinyServer(function(input, output, session){
       length(f12) <- n
       d <- cbind(f1, f2, f12)
       d[is.na(d)] <- " "
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_f1_unique_goi()
       f2 <- c_f2_unique_goi()
       f12 <- c_f1_and_f2_goi()
@@ -6780,8 +6562,7 @@ shinyServer(function(input, output, session){
                            cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
                            fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
       }
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       if(!is.null(c_pd1()) & !is.null(c_pd2()) & !is.null(c_pd3())){
         c1 <- c_pd1()
         c2 <- c_pd2()
@@ -6846,8 +6627,7 @@ shinyServer(function(input, output, session){
       f2_snp <-df1_c2[[list_num]]
       overlap1_2 <- subset(f1_snp, gene %in% f2_snp$gene)
       list(f1_snp=f1_snp, overlap1_2=overlap1_2)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -6902,8 +6682,7 @@ shinyServer(function(input, output, session){
       f2_snp <-df1_c2[[list_num]]
       overlap2_1 <- subset(f2_snp, gene %in% f1_snp$gene)
       list(f2_snp=f2_snp, overlap2_1=overlap2_1)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       c1 <- c_pd1()
       c2 <- c_pd2()
       c3 <- c_pd3()
@@ -6973,8 +6752,7 @@ shinyServer(function(input, output, session){
     d <- c_snp_compare1()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
     }
     d1 <- data.frame(f1$gene)
@@ -6986,8 +6764,7 @@ shinyServer(function(input, output, session){
     d <- c_snp_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene)
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
     }
     d1 <- data.frame(f2$gene)
@@ -6999,8 +6776,7 @@ shinyServer(function(input, output, session){
     d <- c_snp_compare2()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f2 <- d$overlap2_1
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
     }
     d1 <- data.frame(f2$gene)
@@ -7058,8 +6834,7 @@ shinyServer(function(input, output, session){
       length(f12) <- n
       d <- cbind(f1, f2, f12)
       d[is.na(d)] <- " "
-    }
-    else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1 <- c_f1_unique_snp()
       f2 <- c_f2_unique_snp()
       f12 <- c_f1_and_f2_snp()
@@ -7159,8 +6934,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -7181,8 +6955,7 @@ shinyServer(function(input, output, session){
                        text = ~paste(gene), hoverinfo = "text")
       # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -7203,31 +6976,26 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$c_marker_text_prot_fam_db == "no_label"){
+          } else if(input$c_marker_text_prot_fam_db == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c1_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$c_marker_text_prot_fam_db == "no_label"){
+          } else if(input$c_marker_text_prot_fam_db == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -7263,8 +7031,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -7284,8 +7051,7 @@ shinyServer(function(input, output, session){
                        opacity = 0.8, 
                        text = ~paste(gene), hoverinfo = "text")
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -7305,31 +7071,26 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$c_marker_text_prot_fam_db == "no_label"){
+          } else if(input$c_marker_text_prot_fam_db == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c2_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$c_marker_text_prot_fam_db == "no_label"){
+          } else if(input$c_marker_text_prot_fam_db == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -7365,8 +7126,7 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
-    }
-    else if(input$c_colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -7386,8 +7146,7 @@ shinyServer(function(input, output, session){
                        opacity = 0.8, 
                        text = ~paste(gene), hoverinfo = "text")
       p
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
@@ -7407,31 +7166,26 @@ shinyServer(function(input, output, session){
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          }
-          else if(input$c_marker_text_prot_fam_db == "no_label"){
+          } else if(input$c_marker_text_prot_fam_db == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
           p <- vp_layer_no_genes
         }
       }
-    }
-    else if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_pf_db_search())){
         df <- ldply(c3_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          }
-          else if(input$c_marker_text_prot_fam_db == "no_label"){
+          } else if(input$c_marker_text_prot_fam_db == "no_label"){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        }
-        else{
+        } else{
           vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
           p <- vp_layer_no_genes
         }
@@ -7481,8 +7235,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp1()
-    }
-    else{
+    } else{
       c_vp1_plus()
     }
   })
@@ -7494,8 +7247,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp1_inweb_layer()
-    }
-    else{
+    } else{
       c_vp1_inweb_plus()
     }
   })
@@ -7506,8 +7258,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp1_goi_layer()
-    }
-    else{
+    } else{
       c_vp1_goi_plus()
     }
   })
@@ -7518,8 +7269,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp1_snp_layer()
-    }
-    else{
+    } else{
       c_vp1_snp_plus()
     }
   })
@@ -7530,8 +7280,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp2()
-    }
-    else{
+    } else{
       c_vp2_plus()
     }
   })
@@ -7542,8 +7291,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp2_inweb_layer()
-    }
-    else{
+    } else{
       c_vp2_inweb_plus()
     }
   })
@@ -7554,8 +7302,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp2_goi_layer()
-    }
-    else{
+    } else{
       c_vp2_goi_plus()
     }
   })
@@ -7566,8 +7313,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp2_snp_layer()
-    }
-    else{
+    } else{
       c_vp2_snp_plus()
     }
   })
@@ -7578,8 +7324,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp3()
-    }
-    else{
+    } else{
       c_vp3_plus()
     }
   })
@@ -7590,8 +7335,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp3_inweb_layer()
-    }
-    else{
+    } else{
       c_vp3_inweb_plus()
     }
   })
@@ -7602,8 +7346,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp3_goi_layer()
-    }
-    else{
+    } else{
       c_vp3_goi_plus()
     }
   })
@@ -7614,8 +7357,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_vp3_snp_layer()
-    }
-    else{
+    } else{
       c_vp3_snp_plus()
     }
   })
@@ -7743,8 +7485,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_compare1_plot()
-    }
-    else{
+    } else{
       c_compare1_plus()
     }
   })
@@ -7764,8 +7505,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_compare2_plot()
-    }
-    else{
+    } else{
       c_compare2_plus()
     }
   })
@@ -7786,8 +7526,7 @@ shinyServer(function(input, output, session){
     )
     if(is.null(c_search_gene())){
       c_compare3_plot()
-    }
-    else{
+    } else{
       c_compare3_plus()
     }
   })
@@ -7940,61 +7679,49 @@ shinyServer(function(input, output, session){
         if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), g = c_vp_colorbar_dl())
           }
         }
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         df <- c_in_pd1()
         df1 <- c_in_pd2()
         if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
            "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), c = c_vp2_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), g = c_vp_colorbar_dl())
           }
-        }  
-        else if("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
+        } else if("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
+        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = vp2_plus(), d = c_sp2_plus(), g = c_vp_colorbar_dl())
           }
         }  
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         df <- c_in_pd1()
         df1 <- c_in_pd2()
         df2 <- c_in_pd3()
@@ -8003,78 +7730,63 @@ shinyServer(function(input, output, session){
            "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), e = c_vp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
           }
-        }  
-        else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
+        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), e = c_vp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
+        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
+        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
           }
-        }
-        else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
+        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
                 "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
                 "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
-          }
-          else{
+          } else{
             params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
           }
         }
@@ -8092,16 +7804,13 @@ shinyServer(function(input, output, session){
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_compare1_plot(), b = c_compare2_plot(), d = c_venndiagram(), e = c_unique_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_compare1_plus(), b = c_compare2_plus(), d = c_venndiagram(), e = c_unique_dat())
         }
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_compare1_plot(), b = c_compare2_plot(), c = c_compare3_plot(), d = c_venndiagram(), e = c_unique_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_compare1_plus(), b = c_compare2_plus(), c = c_compare3_plus(), d = c_venndiagram(), e = c_unique_dat())
         }
       }
@@ -8118,16 +7827,13 @@ shinyServer(function(input, output, session){
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_vp1_inweb_layer(), b = c_vp2_inweb_layer(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_vp1_inweb_plus(), b = c_vp2_inweb_plus(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         }
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_vp1_inweb_layer(), b = c_vp2_inweb_layer(), c = c_vp3_inweb_layer(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_vp1_inweb_plus(), b = c_vp2_inweb_plus(), c = c_vp3_inweb_plus(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         }
       }
@@ -8144,16 +7850,13 @@ shinyServer(function(input, output, session){
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_vp1_goi_layer(), b = c_vp2_goi_layer(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_vp1_goi_plus(), b = c_vp2_goi_plus(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
         }
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_vp1_goi_layer(), b = c_vp2_goi_layer(), c = c_vp3_goi_layer(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_vp1_goi_plus(), b = c_vp2_goi_plus(), c = c_vp3_goi_plus(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
         }
       }
@@ -8170,16 +7873,13 @@ shinyServer(function(input, output, session){
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_vp1_snp_layer(), b = c_vp2_snp_layer(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_vp1_snp_plus(), b = c_vp2_snp_plus(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
         }
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
           params <- list(a = c_vp1_snp_layer(), b = c_vp2_snp_layer(), c = c_vp3_snp_layer(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
-        }
-        else{
+        } else{
           params <- list(a = c_vp1_snp_plus(), b = c_vp2_snp_plus(), c = c_vp3_snp_plus(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
         }
       }
@@ -8195,8 +7895,7 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         params <- list(a = c_compare1_pfe_plot(), b = c_compare2_pfe_plot())
-      }
-      else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         params <- list(a = c_compare1_pfe_plot(), b = c_compare2_pfe_plot(), c = c_compare3_pfe_plot())
       }
       rmarkdown::render("scripts/pf-mfc.Rmd", 
@@ -8325,8 +8024,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
       shinyjs::disable("c_download_protein_fams")
-    }
-    else {
+    } else {
       shinyjs::enable("c_download_basic_plots")
     }
   })
@@ -8341,8 +8039,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
       shinyjs::disable("c_download_protein_fams")
-    }
-    else {
+    } else {
       shinyjs::enable("c_download_protein_comparisons")
     }
   })
@@ -8363,8 +8060,7 @@ shinyServer(function(input, output, session){
     if (is.null(input$c_file_SNP)){
       shinyjs::disable("c_download_snp_to_genes")
       shinyjs::disable("c_download_snp")
-    }
-    else {
+    } else {
       shinyjs::enable("c_download_snp_to_genes")
       shinyjs::enable("c_download_snp")
     }
@@ -8373,8 +8069,7 @@ shinyServer(function(input, output, session){
   observe({
     if (is.null(input$c_file_genes)){
       shinyjs::disable("c_download_goi")
-    }
-    else {
+    } else {
       shinyjs::enable("c_download_goi")
     }
   })
@@ -8382,8 +8077,7 @@ shinyServer(function(input, output, session){
   observe({
     if (input$c_make_plot_inweb == 0 || is.null(input$c_make_plot_inweb)){
       shinyjs::disable("c_download_inweb")
-    }
-    else {
+    } else {
       shinyjs::enable("c_download_inweb")
     }
   })
@@ -8391,8 +8085,7 @@ shinyServer(function(input, output, session){
   observe({
     if (is.null(input$c_file_pulldown2)){
       shinyjs::disable("c_download_protein_fams")
-    }
-    else {
+    } else {
       if(!is.null(c_compare2_pfe_plot())){
         shinyjs::enable("c_download_protein_fams")
       }
