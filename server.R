@@ -1285,8 +1285,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(range=~c(min(logFC)-0.5, max(logFC)+0.5)),
-             yaxis = list(range=~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5)))
+      layout(xaxis = list(range=~c(min(d$logFC)-0.5, max(d$logFC)+0.5)),
+             yaxis = list(range=~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5)))
     if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
       df <- ldply(a_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
@@ -1315,8 +1315,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -2373,7 +2373,7 @@ shinyServer(function(input, output, session){
   
   a_bpf_sp_preview <- reactive({
     d <- a_pulldown()
-    p <- plot_ly(showlegend = FALSE, width = 250, height = 250) 
+    p <- plot_ly(showlegend = FALSE) 
     p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                    text = "x=y", hoverinfo = "text",
                    line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
@@ -2384,14 +2384,14 @@ shinyServer(function(input, output, session){
     p <- p %>%
       layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
              yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1))) %>%
-      add_lines(x = input$a_BPF_rep1_range[2], y = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), line = list(dash = "dash", width = 0.5, color = "#252525"), 
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_BPF_rep1_range[2]), showlegend = F) %>%
-      add_lines(x = (input$a_BPF_rep1_range[1]), y = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_BPF_rep1_range[1])), showlegend = F) %>%
-      add_lines(x = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), y = input$a_BPF_rep2_range[2], line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_BPF_rep2_range[2]), showlegend = F) %>%
-      add_lines(x = ~c(min(rep1, rep2)-1, max(rep1, rep2)+1), y = input$a_BPF_rep2_range[1], line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_BPF_rep2_range[1]), showlegend = F)
+      add_lines(x = input$a_BPF_rep1_range[2], y = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]), line = list(width = 0.7, color = "#e41a1c"), 
+                name = '', showlegend = F) %>%
+      add_lines(x = (input$a_BPF_rep1_range[1]), y = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]), line = list(width = 0.7, color = "#e41a1c"),
+                name = '', showlegend = F) %>%
+      add_lines(x = c(input$a_BPF_rep1_range[2], input$a_BPF_rep1_range[1]), y = input$a_BPF_rep2_range[2], line = list(width = 0.7, color = "#e41a1c"),
+                name = '', showlegend = F) %>%
+      add_lines(x = c(input$a_BPF_rep1_range[2], input$a_BPF_rep1_range[1]), y = input$a_BPF_rep2_range[1], line = list(width = 0.7, color = "#e41a1c"),
+                name = '', showlegend = F)
   })
   
   output$FDR_colorbar <- renderPlot({
@@ -3874,15 +3874,6 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', "")
     )
     selectInput('c_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
-  })
-  
-  output$c_prot_fam_db_button <- renderUI({
-    validate(
-      need(input$c_file_pulldown1 != '', "")
-    )
-    if(!is.null(input$c_pfam_db)){
-      actionButton("c_search_pf_db", "Find PFs")
-    }
   })
   
   output$c_text_prot_fam_db <- renderUI({

@@ -147,10 +147,11 @@ shinyUI(navbarPage("Genoppi",
                                                      fluidRow(
                                                        column(4, uiOutput("a_BPF_marker_size_sp")), 
                                                        column(4, uiOutput("a_BPF_freq_sp")),
-                                                       column(4, plotlyOutput("Basic_Protein_Family_sp_prev"))
+                                                       column(4, plotlyOutput("Basic_Protein_Family_sp_prev", width = "250px", height = "250px"))
                                                      ),
+                                                     # plotlyOutput("Basic_Protein_Family_sp", width = "100%", height = "750px")
                                                      fluidRow(
-                                                       column(12, plotlyOutput("Basic_Protein_Family_sp", width = "100%"))
+                                                       column(12, plotlyOutput("Basic_Protein_Family_sp", width = "100%", height = "750px"))
                                                      )
                                                      ),
                                             tabPanel("Download", value = "p6",
@@ -209,8 +210,7 @@ shinyUI(navbarPage("Genoppi",
                                                      fluidRow(
                                                        column(3, plotOutput("c_FDR_colorbar", height = "100px")),
                                                        column(3, uiOutput("c_prot_fam_db")),
-                                                       column(3, uiOutput("c_text_prot_fam_db")),
-                                                       column(3, uiOutput("c_prot_fam_db_button"))
+                                                       column(3, uiOutput("c_text_prot_fam_db"))
                                                      ),
                                                      fluidRow(
                                                        column(4, plotlyOutput("VolcanoPlot_c1")), #, height = "350px", width = "320px"
