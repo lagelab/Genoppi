@@ -1643,49 +1643,51 @@ shinyServer(function(input, output, session){
     
     # InWeb, SNP to gene, and genes upload
     if(!is.null(a_bait_gene_layer())){
-      inweb_pos <- nrow(subset(multi_vp$d_in, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh) & (pvalue < input$a_pval_thresh)))
-      inweb_neg <- nrow(subset(multi_vp$d_in, (FDR < input$a_fdr_thresh) & (logFC < -(input$a_logFC_thresh)) & (pvalue < input$a_pval_thresh)))
-      i_count <- data.frame(inweb_neg, inweb_pos) #, nrow(multi_vp$d_in)
-      row.names(i_count) <- c("InWeb")
-      colnames(i_count) <- c(paste0("logFC<", -(input$a_logFC_thresh)), paste0("logFC>", input$a_logFC_thresh))
-      orig_count <- do.call("rbind", list(orig_count, i_count))
+      if(nrow(multi_vp$d_in)>0){
+        inweb_pos <- nrow(subset(multi_vp$d_in, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh) & (pvalue < input$a_pval_thresh)))
+        inweb_neg <- nrow(subset(multi_vp$d_in, (FDR < input$a_fdr_thresh) & (logFC < -(input$a_logFC_thresh)) & (pvalue < input$a_pval_thresh)))
+        i_count <- data.frame(inweb_neg, inweb_pos) #, nrow(multi_vp$d_in)
+        row.names(i_count) <- c("InWeb")
+        colnames(i_count) <- c(paste0("logFC<", -(input$a_logFC_thresh)), paste0("logFC>", input$a_logFC_thresh))
+        orig_count <- do.call("rbind", list(orig_count, i_count))
+      } else {
+        orig_count
+      }
     }
     
     if(!is.null(a_snp())){
-      snp_pos <- nrow(subset(multi_vp$d_snp, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh) & (pvalue < input$a_pval_thresh)))
-      snp_neg <- nrow(subset(multi_vp$d_snp, (FDR < input$a_fdr_thresh) & (logFC < -(input$a_logFC_thresh)) & (pvalue < input$a_pval_thresh)))
-      s_count <- data.frame(snp_neg, snp_pos) #, nrow(multi_vp$d_snp)
-      row.names(s_count) <- c("SNP")
-      colnames(s_count) <- c(paste0("logFC<", -(input$a_logFC_thresh)), paste0("logFC>", input$a_logFC_thresh))
-      orig_count <- do.call("rbind", list(orig_count, s_count))
+      if(nrow(multi_vp$d_snp)>0){
+        snp_pos <- nrow(subset(multi_vp$d_snp, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh) & (pvalue < input$a_pval_thresh)))
+        snp_neg <- nrow(subset(multi_vp$d_snp, (FDR < input$a_fdr_thresh) & (logFC < -(input$a_logFC_thresh)) & (pvalue < input$a_pval_thresh)))
+        s_count <- data.frame(snp_neg, snp_pos) #, nrow(multi_vp$d_snp)
+        row.names(s_count) <- c("SNP")
+        colnames(s_count) <- c(paste0("logFC<", -(input$a_logFC_thresh)), paste0("logFC>", input$a_logFC_thresh))
+        orig_count <- do.call("rbind", list(orig_count, s_count))
+      } else {
+        orig_count
+      }
     }
     
     if(!is.null(a_upload_genes())){
-      df <- ldply(multi_vp$d_g2s, data.frame)
-      df1 <- split(df, df$.id)
-      gene_pos <- lapply(df1, function(x) subset(x, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh) & (pvalue < input$a_pval_thresh)))  
-      gene_neg <- lapply(df1, function(x) subset(x, (FDR < input$a_fdr_thresh) & (logFC < -(input$a_logFC_thresh)) & (pvalue < input$a_pval_thresh)))  
-      gene_pos1 <- lapply(gene_pos, function(x) nrow(x))
-      gene_neg1 <- lapply(gene_neg, function(x) nrow(x))
-      df1_count <- lapply(df1, function(x) nrow(x))
-      pos_count <- ldply(gene_pos1, data.frame)
-      neg_count <- ldply(gene_neg1, data.frame)
-      df1_total <- ldply(df1_count, data.frame)
-      g_count <- data.frame(neg_count$X..i.., pos_count$X..i..) #, df1_total$X..i..
-      row.names(g_count) <- df1_total$.id
-      colnames(g_count) <- c(paste0("logFC<", -(input$a_logFC_thresh)), paste0("logFC>", input$a_logFC_thresh))
-      orig_count <- do.call("rbind", list(orig_count, g_count))
+      if(length(multi_vp$d_g2s)>0){
+        df <- ldply(multi_vp$d_g2s, data.frame)
+        df1 <- split(df, df$.id)
+        gene_pos <- lapply(df1, function(x) subset(x, (FDR < input$a_fdr_thresh) & (logFC > input$a_logFC_thresh) & (pvalue < input$a_pval_thresh)))  
+        gene_neg <- lapply(df1, function(x) subset(x, (FDR < input$a_fdr_thresh) & (logFC < -(input$a_logFC_thresh)) & (pvalue < input$a_pval_thresh)))  
+        gene_pos1 <- lapply(gene_pos, function(x) nrow(x))
+        gene_neg1 <- lapply(gene_neg, function(x) nrow(x))
+        df1_count <- lapply(df1, function(x) nrow(x))
+        pos_count <- ldply(gene_pos1, data.frame)
+        neg_count <- ldply(gene_neg1, data.frame)
+        df1_total <- ldply(df1_count, data.frame)
+        g_count <- data.frame(neg_count$X..i.., pos_count$X..i..) #, df1_total$X..i..
+        row.names(g_count) <- df1_total$.id
+        colnames(g_count) <- c(paste0("logFC<", -(input$a_logFC_thresh)), paste0("logFC>", input$a_logFC_thresh))
+        orig_count <- do.call("rbind", list(orig_count, g_count))
+      } else {
+        orig_count
+      }
     }
-    # temprow3 <- matrix(c(rep.int("",length(orig_count))),nrow=1,ncol=length(orig_count))
-    # newrow3 <- data.frame(temprow3)
-    # colnames(newrow3) <- colnames(orig_count)
-    # row.names(newrow3) <- ""
-    # total <- nrow(vp_data)
-    # total_count <- matrix(c(total, ""),nrow=1,ncol=length(orig_count))
-    # colnames(total_count) <- colnames(orig_count)
-    # row.names(total_count) <- "total"
-    # orig_count <- rbind(orig_count, newrow3)
-    # orig_count <- rbind(orig_count, total_count)
     orig_count
   })
   
