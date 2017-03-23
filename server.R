@@ -1195,8 +1195,8 @@ shinyServer(function(input, output, session){
       p
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
              title = cc, titlefont = list(size=15))
   })
   
@@ -1293,8 +1293,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -1748,8 +1748,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
              title = cc, titlefont = list(size=15))
 
     if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
@@ -2333,8 +2333,8 @@ shinyServer(function(input, output, session){
                     text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)))
+      layout(xaxis = list(title = "rep1", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)), 
+             yaxis = list(title = "rep2", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)))
   })
   
   a_bpf_plus_sp <- reactive({
@@ -2360,8 +2360,8 @@ shinyServer(function(input, output, session){
                      opacity = 0.9, 
                      text = ~paste0(gene, ", rep1=", rep1, ", rep2=", rep2), hoverinfo = "text", name = "pull down")
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1))) %>%
+      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1))) %>%
       add_lines(x = input$a_BPF_rep1_range[2], y = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]), line = list(width = 0.7, color = "#e41a1c"), 
                 name = '', showlegend = F) %>%
       add_lines(x = (input$a_BPF_rep1_range[1]), y = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]), line = list(width = 0.7, color = "#e41a1c"),
@@ -5535,8 +5535,8 @@ shinyServer(function(input, output, session){
       p
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -5583,8 +5583,8 @@ shinyServer(function(input, output, session){
       p
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -5632,8 +5632,8 @@ shinyServer(function(input, output, session){
       p
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -7564,8 +7564,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -7650,8 +7650,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -7736,8 +7736,8 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      layout(xaxis = list(title = "logFC(rep1)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
-             yaxis = list(title = "logFC(rep2)", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
