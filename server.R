@@ -1140,11 +1140,11 @@ shinyServer(function(input, output, session){
       }
     }
     p <- p %>%
-      add_lines(x = ~c(min(logFC)-0.5, max(logFC)+0.5), y = ~-log10(input$a_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+      add_lines(x = ~c(min(d$logFC)-0.5, max(d$logFC)+0.5), y = ~-log10(input$a_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
                 name = '', hoverinfo = "text", text = paste0("pvalue = ", input$a_pval_thresh), showlegend = F) %>%
-      add_lines(x = input$a_logFC_thresh, y = ~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+      add_lines(x = input$a_logFC_thresh, y = ~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
                 name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh), showlegend = F) %>%
-      add_lines(x = -(input$a_logFC_thresh), y = ~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+      add_lines(x = -(input$a_logFC_thresh), y = ~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
                 name = '', hoverinfo = "text", text = paste0("logFC = ", -(input$a_logFC_thresh)), showlegend = F)
   })
   
