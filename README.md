@@ -14,13 +14,22 @@ biocLite("limma")
 install.packages(c("shiny", "shinyjs", "plotly", "stringr", "VennDiagram", "rmarkdown", "plyr", "data.table", "ggplot2", "RColorBrewer"))
 ```
 
-## Running Genoppi locally
-To modify the code to suit one's needs, the direct download link for Genoppi is https://github.com/lagelab/Genoppi/archive/master.zip
+## Running Genoppi 
+Genoppi can be 1. downloaded and ran locally or 2. run directly from Genoppi git repository. 
+
+1. To modify the code to suit one's needs, the direct download link for Genoppi is https://github.com/lagelab/Genoppi/archive/master.zip
 
 To start local version of Genoppi, begin RStudio and run the following commands.
 ```r
 library(shiny)
 runApp("/path/to/your/local/Genoppi/folder")
+```
+2. Genoppi has frequent updates and to always have access to the latest code, running directly from the git repo is highly suggested.
+
+To run directly from Genoppi repository, YOU DO NOT NEED TO DOWNLOAD THE CODE. Begin RStudio and run the following commands.
+```r
+library(shiny)
+runGitHub("Genoppi", "lagelab")
 ```
 
 ## Preparing your data
