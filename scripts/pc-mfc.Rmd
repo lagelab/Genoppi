@@ -6,10 +6,8 @@ https://github.com/lagelab/Genoppi
 <h4>MFC Additional Features</h4>
 <br>
 <br>
-```{r warning=FALSE, echo=FALSE, fig.width=2, fig.height=2, out.width='100px', fig.show='hold'}
+```{r warning = FALSE, echo = FALSE, comment=NA}
 params$a
-params$b
-params$c
 ```
 <br>
 <br>
