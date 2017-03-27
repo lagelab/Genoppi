@@ -6155,7 +6155,7 @@ shinyServer(function(input, output, session){
       d <- cbind(f1, f2, f12, f3, f13, f23, f123)
       d[is.na(d)] <- " "
     }
-    d
+    as.data.frame(d)
   })
 
   c_venndiagram <- reactive({
@@ -6360,7 +6360,7 @@ shinyServer(function(input, output, session){
       d <- cbind(f1, f2, f12, f3, f13, f23, f123)
       d[is.na(d)] <- " "
     }
-    d
+    as.data.frame(d)
   })
   
   c_venndiagram_inweb <- reactive({
@@ -6775,7 +6775,7 @@ shinyServer(function(input, output, session){
       d <- cbind(f1, f2, f12, f3, f13, f23, f123)
       d[is.na(d)] <- " "
     }
-    d
+    as.data.frame(d)
   })
   
   c_venndiagram_snp <- reactive({
@@ -7108,7 +7108,7 @@ shinyServer(function(input, output, session){
       d <- cbind(f1, f2, f12, f3, f13, f23, f123)
       d[is.na(d)] <- " "
     }
-    d
+    as.data.frame(d)
   })
   
   c_pf_db <- reactive({
@@ -8235,14 +8235,26 @@ shinyServer(function(input, output, session){
     filename = "quality-control_mfc.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        df <- c_in_pd1()
-        if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
+        df <- c_orig_pd1()
+        
+        d_all5 <- c("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+                      "rep1" %in% colnames(df) & "rep2" %in% colnames(df))
+        d_ttest <- c("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df))
+        d_reps <- c("rep1" %in% colnames(df) & "rep2" %in% colnames(df))
+        
+        if(d_all5){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), g = c_vp_colorbar_dl())
+            params <- list(a = c_vp1(), b = c_sp1(), g = c_vp_colorbar_dl())
+          } else{
+            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), g = c_vp_colorbar_dl())
+          }
+        } else if(d_ttest){
+          if(is.null(c_search_gene())){
+            params <- list(a = c_vp1(), b = c_sp_blank(), g = c_vp_colorbar_dl())
           } else{
             params <- list(a = c_vp1_plus(), g = c_vp_colorbar_dl())
           }
-        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+        } else if(d_reps){
           if(is.null(c_search_gene())){
             params <- list(a = c_vp1(), b = c_sp1(), g = c_vp_colorbar_dl())
           } else{
@@ -8250,104 +8262,155 @@ shinyServer(function(input, output, session){
           }
         }
       } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        df <- c_in_pd1()
-        df1 <- c_in_pd2()
-        if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-           "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1)){
+        df <- c_orig_pd1()
+        df1 <- c_orig_pd2()
+        
+        d_all5 <- c("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+                      "rep1" %in% colnames(df) & "rep2" %in% colnames(df))
+        d_ttest <- c("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df))
+        d_reps <- c("rep1" %in% colnames(df) & "rep2" %in% colnames(df))
+        
+        d1_all5 <- c("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
+                       "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1))
+        d1_ttest <- c("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1))
+        d1_reps <- c("rep1" %in% colnames(df1) & "rep2" %in% colnames(df1))
+        
+        if((d_all5 | d_reps) & (d1_all5 | d1_reps)){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), c = c_vp2(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), shareY = T) %>% layout(width = 640)
+            p1 <- subplot(c_sp1(), c_sp2(), shareY = T) %>% layout(width = 640, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), c = c_vp2_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), shareY = T) %>% layout(width = 640)
+            p1_plus <- subplot(c_sp1_plus(), c_sp1_plus(), shareY = T) %>% layout(width = 640, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-                "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1)){
+        } else if((d_all5 | d_reps) & d1_ttest){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), shareY = T) %>% layout(width = 640)
+            p1 <- subplot(c_sp1(), plot_scatter_white(c_pd1()), shareY = T) %>% layout(width = 640, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), shareY = T) %>% layout(width = 640)
+            p1_plus <- subplot(c_sp1_plus(), plot_scatter_white(c_pd1()), shareY = T) %>% layout(width = 640, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
-                "rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+        } else if(d_ttest & (d1_all5 | d1_reps)){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), shareY = T) %>% layout(width = 640)
+            p1 <- subplot(plot_scatter_white(c_pd2()), c_sp2(), shareY = T) %>% layout(width = 640, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), shareY = T) %>% layout(width = 640)
+            p1_plus <- subplot(plot_scatter_white(c_pd2()), c_sp2_plus(), shareY = T) %>% layout(width = 640, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
-                "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1)){
+        } else if(d_ttest & d1_ttest){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), shareY = T) %>% layout(width = 640)
+            params <- list(a = p, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = vp2_plus(), d = c_sp2_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), shareY = T) %>% layout(width = 640)
+            params <- list(a = p_plus, g = c_vp_colorbar_dl())
           }
-        }  
+        } 
       } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-        df <- c_in_pd1()
-        df1 <- c_in_pd2()
-        df2 <- c_in_pd3()
-        if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-           "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
-           "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
+        df <- c_orig_pd1()
+        df1 <- c_orig_pd2()
+        df2 <- c_orig_pd3()
+        
+        d_all5 <- c("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+                      "rep1" %in% colnames(df) & "rep2" %in% colnames(df))
+        d_ttest <- c("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df))
+        d_reps <- c("rep1" %in% colnames(df) & "rep2" %in% colnames(df))
+        
+        d1_all5 <- c("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
+                       "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1))
+        d1_ttest <- c("logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1))
+        d1_reps <- c("rep1" %in% colnames(df1) & "rep2" %in% colnames(df1))
+        
+        d2_all5 <- c("logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2) &
+                       "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2))
+        d2_ttest <- c("logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2))
+        d2_reps <- c("rep1" %in% colnames(df2) & "rep2" %in% colnames(df2))
+        
+        if((d_all5 | d_reps) & (d1_all5 | d1_reps) & (d2_all5 | d2_reps)){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), c = c_vp2(), e = c_vp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(c_sp1(), c_sp2(), c_sp3(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(c_sp1_plus(), c_sp2_plus(), c_sp3_plus(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-                "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
-                "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
+        } else if((d_all5 | d_reps) & (d1_all5 | d1_reps) & d2_ttest){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(c_sp1(), c_sp2(), plot_scatter_white(c_pd2()), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(c_sp1_plus(), c_sp2_plus(), plot_scatter_white(c_pd2()), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-                "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
-                "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
+        } else if((d_all5 | d_reps) & d1_ttest & (d2_all5 | d2_reps)){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), c = c_vp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(c_sp1(), plot_scatter_white(c_pd1()), c_sp3(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(c_sp1_plus(), plot_scatter_white(c_pd1()), c_sp3_plus(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
-                "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
-                "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
+        } else if((d_all5 | d_reps) & d1_ttest & d2_ttest){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), e = c_vp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(c_sp1(), plot_scatter_white(c_pd1()), plot_scatter_white(c_pd1()), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(c_sp1_plus(), plot_scatter_white(c_pd1()), plot_scatter_white(c_pd1()), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
-                "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
-                "logFC" %in% colnames(df2) & "FDR" %in% colnames(df2) & "pvalue" %in% colnames(df2)){
+        } else if(d_ttest & (d1_all5 | d1_reps) & (d2_all5 | d2_reps)){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(plot_scatter_white(c_pd2()), c_sp2(), c_sp3(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(plot_scatter_white(c_pd2()), c_sp2_plus(), c_sp3_plus(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
-                "logFC" %in% colnames(df1) & "FDR" %in% colnames(df1) & "pvalue" %in% colnames(df1) &
-                "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
+        } else if(d_ttest & (d1_all5 | d1_reps) & d2_ttest){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(plot_scatter_white(c_pd2()), c_sp2(), plot_scatter_white(c_pd2()), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(plot_scatter_white(c_pd2()), c_sp2_plus(), plot_scatter_white(c_pd2()), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-                "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
-                "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
+        } else if(d_ttest & d1_ttest & (d2_all5 | d2_reps)){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            p1 <- subplot(plot_scatter_white(c_pd3()), plot_scatter_white(c_pd3()), c_sp3(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p, b = p1, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            p1_plus <- subplot(plot_scatter_white(c_pd3()), plot_scatter_white(c_pd3()), c_sp3_plus(), shareY = T) %>% layout(width = 960, title = "")
+            params <- list(a = p_plus, b = p1_plus, g = c_vp_colorbar_dl())
           }
-        } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df) &
-                "rep1" %in% colnames(df1) & "rep2" %in% colnames(df1) &
-                "rep1" %in% colnames(df2) & "rep2" %in% colnames(df2)){
+        } else if(d_ttest & d1_ttest & d2_ttest){
           if(is.null(c_search_gene())){
-            params <- list(a = c_vp1(), b = c_sp1(), c = c_vp2(), d = c_sp2(), e = c_vp3(), f = c_sp3(), g = c_vp_colorbar_dl())
+            p <- subplot(c_vp1(), c_vp2(), c_vp3(), shareY = T) %>% layout(width = 960)
+            params <- list(a = p, g = c_vp_colorbar_dl())
           } else{
-            params <- list(a = c_vp1_plus(), b = c_sp1_plus(), c = c_vp2_plus(), d = c_sp2_plus(), e = c_vp3_plus(), f = c_sp3_plus(), g = c_vp_colorbar_dl())
+            p_plus <- subplot(c_vp1_plus(), c_vp2_plus(), c_vp3_plus(), shareY = T) %>% layout(width = 960)
+            params <- list(a = p_plus, g = c_vp_colorbar_dl())
           }
         }
       }
@@ -8363,15 +8426,19 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_compare1_plot(), b = c_compare2_plot(), d = c_venndiagram(), e = c_unique_dat())
+          p <- subplot(c_compare1_plot(), c_compare2_plot(), shareY = T) %>% layout(width = 640)
+          params <- list(a = p, d = c_venndiagram(), e = c_unique_dat())
         } else{
-          params <- list(a = c_compare1_plus(), b = c_compare2_plus(), d = c_venndiagram(), e = c_unique_dat())
+          p <- subplot(c_compare1_plus(), c_compare2_plus(), shareY = T) %>% layout(width = 640)
+          params <- list(a = p, d = c_venndiagram(), e = c_unique_dat())
         }
       } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_compare1_plot(), b = c_compare2_plot(), c = c_compare3_plot(), d = c_venndiagram(), e = c_unique_dat())
+          p <- subplot(c_compare1_plot(), c_compare2_plot(), c_compare3_plot(), shareY = T) %>% layout(width = 960)
+          params <- list(a = p, d = c_venndiagram(), e = c_unique_dat())
         } else{
-          params <- list(a = c_compare1_plus(), b = c_compare2_plus(), c = c_compare3_plus(), d = c_venndiagram(), e = c_unique_dat())
+          p <- subplot(c_compare1_plus(), c_compare2_plus(), c_compare3_plus(), shareY = T) %>% layout(width = 960)
+          params <- list(a = p, d = c_venndiagram(), e = c_unique_dat())
         }
       }
       rmarkdown::render("scripts/pc-mfc.Rmd", 

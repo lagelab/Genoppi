@@ -16,21 +16,6 @@ params$a
 ```{r warning = FALSE, echo = FALSE, comment = NA}
 params$b
 ```
-<br>
-<br>
-```{r warning = FALSE, echo = FALSE, comment = NA}
-params$c
-```
-```{r warning = FALSE, echo = FALSE, comment = NA}
-params$d
-```
-<br>
-<br>
-```{r warning = FALSE, echo = FALSE, comment = NA}
-params$e
-```
-```{r warning = FALSE, echo = FALSE, comment = NA}
-params$f
-```
+
 
 

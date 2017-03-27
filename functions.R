@@ -148,7 +148,7 @@ plot_volcano_qc <- function(d){
  
 #volcano - lower opacity to highlight different layers
 plot_volcano_multiple_cond <- function(d){
-  p <- plot_ly(showlegend = FALSE, height = 350, width = 320) 
+  p <- plot_ly(showlegend = FALSE, height = 320, width = 320) #
   for(i in nrow(d)){
     p <- add_markers(p, data = d, x = ~logFC, y = ~-log10(pvalue),
                      # marker = list(size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1, color = ~col),
@@ -246,6 +246,28 @@ plot_scatter_multiple_cond <- function(orig, d){
                      text = ~paste0(gene, ", rep1=", rep1, ", rep2=", rep2), hoverinfo = "text", name = "pull down")
   }
   p
+}
+
+#scatter - lower opacity to highlight different layers
+plot_scatter_white <- function(orig){
+  ax_x <- list(
+    title = "",
+    zeroline = FALSE,
+    showline = FALSE,
+    showticklabels = FALSE,
+    showgrid = FALSE,
+    fixedrange=TRUE
+  )
+  
+  ax_y <- list(
+    zeroline = FALSE,
+    showline = FALSE,
+    showticklabels = FALSE,
+    showgrid = FALSE,
+    fixedrange=TRUE
+  )
+  p <- plot_ly(data = orig, x = ~c(min(rep1), max(rep1)), y = 0, marker = list(color = "white"), hoverinfo = "none", showlegend = FALSE, width = 320, height = 320) 
+  p %>% layout(xaxis = list(fixedrange=TRUE), yaxis = list(fixedrange=TRUE), text = "correlation coefficient: NA")
 }
 
 #scatter - exac colorscale
