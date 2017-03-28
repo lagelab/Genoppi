@@ -2647,8 +2647,10 @@ shinyServer(function(input, output, session){
   observe({
     if (input$a_make_vennd_bait == 0 || is.null(input$a_make_vennd_bait)){
       shinyjs::disable("download_venn_diagram_plot")
+      shinyjs::hide("download_venn_diagram_inweb_genes")
     } else {
       shinyjs::enable("download_venn_diagram_plot")
+      shinyjs::show("download_venn_diagram_inweb_genes")
     }
   })
   
@@ -2791,6 +2793,15 @@ shinyServer(function(input, output, session){
                         params = params
                         # envir = new.env(parent = globalenv())
       )
+    }
+  )
+
+  output$download_venn_diagram_inweb_genes <- downloadHandler(
+    filename = function() {
+      paste("inweb-overlap-genes", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(hypergeometric_test_list(), file, sep = "\t", col.names = T, row.names = F, quote = F)
     }
   )
   

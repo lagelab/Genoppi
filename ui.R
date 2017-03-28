@@ -85,6 +85,11 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      br(),
                                                      fluidRow(
+                                                       column(8),
+                                                       column(4, downloadButton("download_venn_diagram_inweb_genes", "Genes in venn diagram regions"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
                                                        column(4),
                                                        column(4, uiOutput("a_goi_num_inputs"))
                                                      ),
@@ -172,7 +177,7 @@ shinyUI(navbarPage("Genoppi",
                                                      downloadButton("download_layered_plots", "Integrated plots report"),
                                                      br(),
                                                      br(),
-                                                     downloadButton("download_venn_diagram_plot", "Venn diagram - InWeb_IM report"),
+                                                     downloadButton("download_venn_diagram_plot", "Venn diagram - InWeb report"),
                                                      br(),
                                                      br(),
                                                      downloadButton("download_venn_diagram_GOI_plot", "Venn diagram - GOI report"),
