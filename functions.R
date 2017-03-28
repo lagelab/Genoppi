@@ -250,24 +250,8 @@ plot_scatter_multiple_cond <- function(orig, d){
 
 #scatter - lower opacity to highlight different layers
 plot_scatter_white <- function(orig){
-  ax_x <- list(
-    title = "",
-    zeroline = FALSE,
-    showline = FALSE,
-    showticklabels = FALSE,
-    showgrid = FALSE,
-    fixedrange=TRUE
-  )
-  
-  ax_y <- list(
-    zeroline = FALSE,
-    showline = FALSE,
-    showticklabels = FALSE,
-    showgrid = FALSE,
-    fixedrange=TRUE
-  )
   p <- plot_ly(data = orig, x = ~c(min(rep1), max(rep1)), y = 0, marker = list(color = "white"), hoverinfo = "none", showlegend = FALSE, width = 320, height = 320) 
-  p %>% layout(xaxis = list(fixedrange=TRUE), yaxis = list(fixedrange=TRUE), text = "correlation coefficient: NA")
+  p %>% layout(xaxis = list(fixedrange=TRUE), yaxis = list(fixedrange=TRUE))
 }
 
 #scatter - exac colorscale
