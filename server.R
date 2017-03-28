@@ -4097,6 +4097,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
+                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f1_res.txt")
                        d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
@@ -4161,6 +4162,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
+                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f2_res.txt")
                        d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
@@ -4225,6 +4227,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
+                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f3_res.txt")
                        d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
