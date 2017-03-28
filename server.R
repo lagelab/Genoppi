@@ -429,7 +429,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$a_file_pulldown_r)){
       pulldown <- input$a_file_pulldown_r
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -454,7 +454,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -516,7 +515,7 @@ shinyServer(function(input, output, session){
       return(NULL)
     } else{
       df <- fread(genes$datapath, header = T, fill = T,
-                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
     }
   })
   
@@ -534,7 +533,7 @@ shinyServer(function(input, output, session){
       return(NULL)
     } else{
       df <- fread(genes$datapath, header = T, fill = T,
-                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
     }
   })
   
@@ -2980,7 +2979,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$file_pfam1)){
       pulldown <- input$file_pfam1
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -3005,7 +3004,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -3038,7 +3036,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$file_pfam2)){
       pulldown <- input$file_pfam2
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -3063,7 +3061,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -3096,7 +3093,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$file_pfam3)){
       pulldown <- input$file_pfam3
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -3121,7 +3118,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -3936,7 +3932,7 @@ shinyServer(function(input, output, session){
       return(NULL)
     } else{
       df <- fread(genes$datapath, header = T, fill = T,
-                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
     }
   })
   
@@ -4045,7 +4041,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$c_file_pulldown1)){
       pulldown <- input$c_file_pulldown1
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -4070,7 +4066,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -4110,7 +4105,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$c_file_pulldown2)){
       pulldown <- input$c_file_pulldown2
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -4135,7 +4130,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -4175,7 +4169,7 @@ shinyServer(function(input, output, session){
     if(!is.null(input$c_file_pulldown3)){
       pulldown <- input$c_file_pulldown3
       d <- fread(pulldown$datapath, header = TRUE,
-                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
       d <- na.omit(d)
     }
   })
@@ -4200,7 +4194,6 @@ shinyServer(function(input, output, session){
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
-                       # names(df)[names(df) == 'gene.y'] <- 'gene'
                        incProgress(0.9)
                        df
                      })
@@ -8232,7 +8225,7 @@ shinyServer(function(input, output, session){
   )
   
   output$c_download_basic_plots <- downloadHandler(
-    filename = "quality-control_mfc.html",
+    filename = "quality-control-mfc.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         df <- c_orig_pd1()
