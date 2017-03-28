@@ -290,11 +290,13 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    d <- a_orig_pulldown()
+    d <- a_pulldown()
     d_col <- colnames(d)
     if("rep1" %in% d_col & "rep2" %in% d_col){
       min_rep1 <- min(d$rep1)
+      print(paste0("orig min rep1 ", min_rep1))
       min_rep1 <- signif(min_rep1-0.5, 1)
+      print(paste0("rounded min rep1 ", min_rep1))
       max_rep1 <- max(d$rep1)
       max_rep1 <- signif(max_rep1+0.5, 1)
       sliderInput("a_BPF_rep1_range", "rep1",
@@ -307,7 +309,7 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    d <- a_orig_pulldown()
+    d <- a_pulldown()
     d_col <- colnames(d)
     if("rep1" %in% d_col & "rep2" %in% d_col){
       min_rep2 <- min(d$rep2)
@@ -2657,16 +2659,20 @@ shinyServer(function(input, output, session){
   observe({
     if (input$a_make_vennd_snp == 0 || is.null(input$a_make_vennd_snp)){
       shinyjs::disable("download_venn_diagram_SNP_plot")
+      shinyjs::hide("download_venn_diagram_SNP_genes")
     } else {
       shinyjs::enable("download_venn_diagram_SNP_plot")
+      shinyjs::show("download_venn_diagram_SNP_genes")
     }
   })
   
   observe({
     if (input$a_make_vennd_goi == 0 || is.null(input$a_make_vennd_goi)){
       shinyjs::disable("download_venn_diagram_GOI_plot")
+      shinyjs::hide("download_venn_diagram_GOI_genes")
     } else {
       shinyjs::enable("download_venn_diagram_GOI_plot")
+      shinyjs::show("download_venn_diagram_GOI_genes")
     }
   })
   
@@ -2819,6 +2825,15 @@ shinyServer(function(input, output, session){
     }
   )
   
+  output$download_venn_diagram_GOI_genes <- downloadHandler(
+    filename = function() {
+      paste("GOI-overlap-genes", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(hypergeometric_test_list_GOI(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+    }
+  )
+  
   output$download_venn_diagram_SNP_plot <- downloadHandler(
     filename = "venn-diagram-SNP.html",
     content = function(file) {
@@ -2831,6 +2846,15 @@ shinyServer(function(input, output, session){
                         params = params
                         # envir = new.env(parent = globalenv())
       )
+    }
+  )
+  
+  output$download_venn_diagram_SNP_genes <- downloadHandler(
+    filename = function() {
+      paste("SNP-overlap-genes", ".txt", sep = "")
+    },
+    content = function(file) {
+      write.table(hypergeometric_test_list_SNP(), file, sep = "\t", col.names = T, row.names = F, quote = F)
     }
   )
   
