@@ -8453,15 +8453,19 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_vp1_inweb_layer(), b = c_vp2_inweb_layer(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
+          p <- subplot(c_vp1_inweb_layer(), c_vp2_inweb_layer(), shareY = T) %>% layout(width = 640, title = "")
+          params <- list(a = p, d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         } else{
-          params <- list(a = c_vp1_inweb_plus(), b = c_vp2_inweb_plus(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
+          p <- subplot(c_vp1_inweb_plus(), c_vp2_inweb_plus(), shareY = T) %>% layout(width = 640, title = "")
+          params <- list(a = p, d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         }
       } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_vp1_inweb_layer(), b = c_vp2_inweb_layer(), c = c_vp3_inweb_layer(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
+          p <- subplot(c_vp1_inweb_layer(), c_vp2_inweb_layer(), c_vp3_inweb_layer(), shareY = T) %>% layout(width = 960, title = "")
+          params <- list(a = p, d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         } else{
-          params <- list(a = c_vp1_inweb_plus(), b = c_vp2_inweb_plus(), c = c_vp3_inweb_plus(), d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
+          p <- subplot(c_vp1_inweb_plus(), c_vp2_inweb_plus(), c_vp3_inweb_plus(), shareY = T) %>% layout(width = 960, title = "")
+          params <- list(a = p, d = c_venndiagram_inweb(), e = c_unique_inweb_dat())
         }
       }
       rmarkdown::render("scripts/pc-mfc.Rmd", 
@@ -8476,15 +8480,19 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_vp1_goi_layer(), b = c_vp2_goi_layer(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
+          p <- subplot(c_vp1_goi_layer(), c_vp2_goi_layer(), shareY = T) %>% layout(width = 640, title = "")
+          params <- list(a = p, d = c_venndiagram_goi(), e = c_unique_goi_dat())
         } else{
-          params <- list(a = c_vp1_goi_plus(), b = c_vp2_goi_plus(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
+          p <- subplot(c_vp1_goi_plus(), c_vp2_goi_plus(), shareY = T) %>% layout(width = 640, title = "")
+          params <- list(a = p, d = c_venndiagram_goi(), e = c_unique_goi_dat())
         }
       } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_vp1_goi_layer(), b = c_vp2_goi_layer(), c = c_vp3_goi_layer(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
+          p <- subplot(c_vp1_goi_layer(), c_vp2_goi_layer(), c_vp3_goi_layer(), shareY = T) %>% layout(width = 960, title = "")
+          params <- list(a = p, d = c_venndiagram_goi(), e = c_unique_goi_dat())
         } else{
-          params <- list(a = c_vp1_goi_plus(), b = c_vp2_goi_plus(), c = c_vp3_goi_plus(), d = c_venndiagram_goi(), e = c_unique_goi_dat())
+          p <- subplot(c_vp1_goi_plus(), c_vp2_goi_plus(), c_vp3_goi_plus(), shareY = T) %>% layout(width = 960, title = "")
+          params <- list(a = p, d = c_venndiagram_goi(), e = c_unique_goi_dat())
         }
       }
       rmarkdown::render("scripts/pc-mfc.Rmd", 
@@ -8499,15 +8507,19 @@ shinyServer(function(input, output, session){
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_vp1_snp_layer(), b = c_vp2_snp_layer(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
+          p <- subplot(c_vp1_snp_layer(), c_vp2_snp_layer(), shareY = T) %>% layout(width = 640, title = "")
+          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
         } else{
-          params <- list(a = c_vp1_snp_plus(), b = c_vp2_snp_plus(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
+          p <- subplot(c_vp1_snp_plus(), c_vp2_snp_plus(), shareY = T) %>% layout(width = 640, title = "")
+          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
         }
       } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
         if(is.null(c_search_gene())){
-          params <- list(a = c_vp1_snp_layer(), b = c_vp2_snp_layer(), c = c_vp3_snp_layer(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
+          p <- subplot(c_vp1_snp_layer(), c_vp2_snp_layer(), c_vp3_snp_layer(), shareY = T) %>% layout(width = 960, title = "")
+          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
         } else{
-          params <- list(a = c_vp1_snp_plus(), b = c_vp2_snp_plus(), c = c_vp3_snp_plus(), d = c_venndiagram_snp(), e = c_unique_snp_dat())
+          p <- subplot(c_vp1_snp_plus(), c_vp2_snp_plus(), c_vp3_snp_plus(), shareY = T) %>% layout(width = 960, title = "")
+          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
         }
       }
       rmarkdown::render("scripts/pc-mfc.Rmd", 
