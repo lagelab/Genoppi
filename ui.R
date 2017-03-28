@@ -147,9 +147,8 @@ shinyUI(navbarPage("Genoppi",
                                                      fluidRow(
                                                        column(4, uiOutput("a_BPF_marker_size_sp")), 
                                                        column(4, uiOutput("a_BPF_freq_sp")),
-                                                       column(4, plotlyOutput("Basic_Protein_Family_sp_prev", width = "250px", height = "250px"))
+                                                       column(4, plotlyOutput("Basic_Protein_Family_sp_prev", width = "320px", height = "320px"))
                                                      ),
-                                                     # plotlyOutput("Basic_Protein_Family_sp", width = "100%", height = "750px")
                                                      fluidRow(
                                                        column(12, plotlyOutput("Basic_Protein_Family_sp", width = "100%", height = "750px"))
                                                      )
