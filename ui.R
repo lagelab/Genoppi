@@ -85,7 +85,8 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      br(),
                                                      fluidRow(
-                                                       column(8),
+                                                       column(4, downloadButton("download_venn_diagram_SNP_genes", "Genes in venn diagram regions")),
+                                                       column(4, downloadButton("download_venn_diagram_GOI_genes", "Genes in venn diagram regions")),
                                                        column(4, downloadButton("download_venn_diagram_inweb_genes", "Genes in venn diagram regions"))
                                                      ),
                                                      br(),
