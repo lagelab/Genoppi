@@ -451,8 +451,9 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+                       print(d1)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
@@ -3034,7 +3035,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
@@ -3091,7 +3092,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
@@ -3148,7 +3149,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
@@ -4096,7 +4097,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
@@ -4160,7 +4161,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
@@ -4224,7 +4225,7 @@ shinyServer(function(input, output, session){
                        incProgress(0.6)
                        system("python scripts/gene-tools-master/map/map.py")
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
+                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
