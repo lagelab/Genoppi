@@ -294,9 +294,7 @@ shinyServer(function(input, output, session){
     d_col <- colnames(d)
     if("rep1" %in% d_col & "rep2" %in% d_col){
       min_rep1 <- min(d$rep1)
-      print(paste0("orig min rep1 ", min_rep1))
       min_rep1 <- signif(min_rep1-0.5, 1)
-      print(paste0("rounded min rep1 ", min_rep1))
       max_rep1 <- max(d$rep1)
       max_rep1 <- signif(max_rep1+0.5, 1)
       sliderInput("a_BPF_rep1_range", "rep1",
@@ -453,7 +451,6 @@ shinyServer(function(input, output, session){
                        incProgress(0.8)
                        d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
                                    sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                       print(d1)
                        colnames(d1) <- c("uniprot_id", "gene", "method")
                        df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
                        df <- subset(df, select=-c(method))
