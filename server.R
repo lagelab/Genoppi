@@ -4461,7 +4461,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb(p, c1_multi_vp$d_in)
@@ -4470,7 +4470,7 @@ shinyServer(function(input, output, session){
         }
         p <- vp_layer_inweb
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c1_multi_vp$d_in)
@@ -4567,7 +4567,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
              # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c1_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -4582,7 +4582,7 @@ shinyServer(function(input, output, session){
           p <- vp_layer_no_genes
         }
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c1_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -4685,7 +4685,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
              #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_snp())){
         if(nrow(c1_snp$d_snp) != 0){
           snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
@@ -4711,7 +4711,7 @@ shinyServer(function(input, output, session){
           p <- vp_layer_no_snp2gene
         }
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_snp())){
         if(nrow(c1_snp$d_snp) != 0){
           snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
@@ -4845,7 +4845,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb(p, c2_multi_vp$d_in)
@@ -4854,7 +4854,7 @@ shinyServer(function(input, output, session){
         }
         p <- vp_layer_inweb
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c2_multi_vp$d_in)
@@ -4951,7 +4951,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F), 
              legend = list(orientation = 'h', y = -0.23))
     # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c2_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -4966,7 +4966,7 @@ shinyServer(function(input, output, session){
           p <- vp_layer_no_genes
         }
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c2_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -5070,7 +5070,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_snp())){
         if(nrow(c2_snp$d_snp) != 0){
           snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
@@ -5096,7 +5096,7 @@ shinyServer(function(input, output, session){
           p <- vp_layer_no_snp2gene
         }
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_snp())){
         if(nrow(c2_snp$d_snp) != 0){
           snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
@@ -5230,7 +5230,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb(p, c3_multi_vp$d_in)
@@ -5240,7 +5240,7 @@ shinyServer(function(input, output, session){
         }
         p <- vp_layer_inweb
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
           vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c3_multi_vp$d_in)
@@ -5337,7 +5337,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c3_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -5352,7 +5352,7 @@ shinyServer(function(input, output, session){
           p <- vp_layer_no_genes
         }
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c3_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -5455,7 +5455,7 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
       if(!is.null(c_snp())){
         if(nrow(c3_snp$d_snp) != 0){
           snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
@@ -5481,7 +5481,7 @@ shinyServer(function(input, output, session){
           p <- vp_layer_no_snp2gene
         }
       }
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_snp())){
         if(nrow(c3_snp$d_snp) != 0){
           snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
