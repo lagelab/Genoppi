@@ -151,8 +151,6 @@ plot_volcano_multiple_cond <- function(d){
   p <- plot_ly(showlegend = FALSE, height = 320, width = 320) #
   for(i in nrow(d)){
     p <- add_markers(p, data = d, x = ~logFC, y = ~-log10(pvalue),
-                     # marker = list(size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1, color = ~col),
-                     # opacity = 0.5, 
                      marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")), 
                      opacity = 0.8, 
                      text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text", name = "pull down")
@@ -165,8 +163,6 @@ plot_volcano_multiple_cond_for_goi <- function(d){
   p <- plot_ly(showlegend = TRUE, height = 350) #, height = 320
   for(i in nrow(d)){
     p <- add_markers(p, data = d, x = ~logFC, y = ~-log10(pvalue),
-                     # marker = list(size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1, color = ~col),
-                     # opacity = 0.5, 
                      marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")), 
                      opacity = 0.8, 
                      text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text", name = "pull down")
@@ -314,7 +310,6 @@ vp_layer_for_inweb_no_text <- function(p, d_in){
   add_markers(p, data = d_in, x = ~logFC, y= ~-log10(pvalue),
               marker = list(color = "#ffff33", size = 7, line = list(width=0.4, color = "black"), opacity = 1),
               mode = "markers+text", hoverinfo = "text", legendgroup = "group1",
-              # text = ~paste(gene), textposition =  ~ifelse(logFC>0,"middle right","middle left"), textfont = list(size = 11),
               name = "InWeb") 
 }
 
@@ -332,7 +327,6 @@ vp_layer_for_inweb_cbf_no_text <- function(p, d_in){
               marker = list(color = "#ffffff", size = 7, line = list(width=0.4, color = "black"), opacity = 1),
               # mode = "markers",
               mode = "markers+text", hoverinfo = "text", legendgroup = "group1",
-              # text = ~paste(gene), textposition = ~ifelse(logFC>0,"middle right","middle left"), textfont = list(size = 11),
               name = "InWeb") 
 }
 
@@ -364,7 +358,6 @@ vp_layer_for_snp_to_gene_sgl_cbf_no_text <- function(p, snp_sgl){
   add_markers(p, data = snp_sgl, x = ~logFC, y= ~-log10(pvalue),
               marker = list(color = "#ffffff", size = 7, line = list(width=0.4, color = "black"), opacity = 1, symbol = "square"), 
               mode = "markers+text", hoverinfo = "text", legendgroup = "group3",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "SGL gene")
 }
 
@@ -380,7 +373,6 @@ vp_layer_for_snp_to_gene_mgl_no_text <- function(p, snp_mgl){
   add_markers(p, data = snp_mgl, x = ~logFC, y= ~-log10(pvalue),
               marker = list(color = "#c2a5cf", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = 2
               mode = "markers+text", hoverinfo = "text", legendgroup = "group4",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "MGL gene")
 }
 
@@ -396,7 +388,6 @@ vp_layer_for_snp_to_gene_mgl_cbf_no_text <- function(p, snp_mgl){
   add_markers(p, data = snp_mgl, x = ~logFC, y= ~-log10(pvalue),
               marker = list(color = "#ffffff", size = 7, line = list(width=0.4, color = "black"), opacity = 1, symbol = 2), 
               mode = "markers+text", hoverinfo = "text", legendgroup = "group4",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "MGL gene")
 }
 
@@ -427,7 +418,6 @@ vp_layer_for_uploaded_genes_no_text <- function(p, d_g2s){
               marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 7), #symbol = 15, 
               color = ~factor(.id), 
               mode = "markers+text", hoverinfo = "text") 
-              # text = ~paste(gene), textposition = ~ifelse(logFC>0,'middle right','middle left'), textfont = list(size = 11))
 }
 
 vp_layer_for_uploaded_genes_cbf <- function(p, d_g2s){
@@ -472,7 +462,6 @@ sp_layer_for_inweb_no_text <- function(p, d_in){
   add_markers(p, data = d_in, x = ~rep1, y= ~rep2,
               marker = list(color = "#ffff33", size = 7, line = list(width=0.4, color = "black"), opacity = 1),
               mode = "markers+text", hoverinfo = "text", legendgroup = "group1",
-              # text = ~paste(gene), textposition = ~ifelse(logFC>0,"middle right","middle left"), textfont = list(size = 11),
               name = "InWeb") 
 }
 
@@ -488,7 +477,6 @@ sp_layer_for_inweb_cbf_no_text <- function(p, d_in){
   add_markers(p, data = d_in, x = ~rep1, y= ~rep2,
               marker = list(color = "#ffffff", size = 7, line = list(width=0.4, color = "black"), opacity = 1),
               mode = "markers+text", hoverinfo = "text", legendgroup = "group1",
-              # text = ~paste(gene), textposition = ~ifelse(logFC>0,"middle right","middle left"), textfont = list(size = 11),
               name = "InWeb") 
 }
 
@@ -504,7 +492,6 @@ sp_layer_for_snp_to_gene_sgl_no_text <- function(p, snp_sgl){
   add_markers(p, data = snp_sgl, x = ~rep1, y= ~rep2,
               marker = list(color = "#80cdc1", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = "square"
               mode = "markers+text", hoverinfo = "text", legendgroup = "group3",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "SGL gene")
 }
 
@@ -520,7 +507,6 @@ sp_layer_for_snp_to_gene_sgl_cbf_no_text <- function(p, snp_sgl){
   add_markers(p, data = snp_sgl, x = ~rep1, y= ~rep2,
               marker = list(color = "#ffffff", size = 7, line = list(width=0.4, color = "black"), opacity = 1, symbol = "square"), 
               mode = "markers+text", hoverinfo = "text", legendgroup = "group3",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "SGL gene")
 }
 
@@ -537,7 +523,6 @@ sp_layer_for_snp_to_gene_mgl_no_text <- function(p, snp_mgl){
   add_markers(p, data = snp_mgl, x = ~rep1, y= ~rep2,
               marker = list(color = "#c2a5cf", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = 2
               mode = "markers+text", hoverinfo = "text", legendgroup = "group4",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "MGL gene")
 }
 
@@ -553,7 +538,6 @@ sp_layer_for_snp_to_gene_mgl_cbf_no_text <- function(p, snp_mgl){
   add_markers(p, data = snp_mgl, x = ~rep1, y= ~rep2,
               marker = list(color = "#ffffff", size = 7, line = list(width=0.4, color = "black"), opacity = 1, symbol = 2), 
               mode = "markers+text", hoverinfo = "text", legendgroup = "group4",
-              # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "MGL gene")
 }
 
@@ -584,7 +568,6 @@ sp_layer_for_uploaded_genes_no_text <- function(p, d_g2s){
               marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 7), 
               color = ~factor(.id), colors = "Blues",
               mode = "markers+text", hoverinfo = "text") 
-              # text = ~paste(gene), textposition = ~ifelse(logFC>0,'middle right','middle left'), textfont = list(size = 11))
 }
 
 sp_layer_for_uploaded_genes_cbf <- function(p, d_g2s){
@@ -600,7 +583,6 @@ sp_layer_for_uploaded_genes_cbf_no_text <- function(p, d_g2s){
               marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 7, symbol = 15), 
               color = ~factor(.id), 
               mode = "markers+text", hoverinfo = "text") 
-              # text = ~paste(gene), textposition = ~ifelse(logFC>0,'middle right','middle left'), textfont = list(size = 11))
 }
 
 sp_layer_for_uploaded_genes_none <- function(p, d){
