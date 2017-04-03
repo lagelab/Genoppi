@@ -589,7 +589,7 @@ sp_layer_for_uploaded_genes_no_text <- function(p, d_g2s){
 
 sp_layer_for_uploaded_genes_cbf <- function(p, d_g2s){
   add_markers(p, data = d_g2s, x = ~rep1, y= ~rep2,
-              marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 11, symbol = 15), 
+              marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 7, symbol = 15), 
               color = ~factor(.id), 
               mode = "markers+text", hoverinfo = "text", 
               text = ~paste(gene), textposition = ~ifelse(logFC>0,'middle right','middle left'), textfont = list(size = 11))
@@ -597,7 +597,7 @@ sp_layer_for_uploaded_genes_cbf <- function(p, d_g2s){
 
 sp_layer_for_uploaded_genes_cbf_no_text <- function(p, d_g2s){
   add_markers(p, data = d_g2s, x = ~rep1, y= ~rep2,
-              marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 11, symbol = 15), 
+              marker = list(opacity = 1, line = list(width=0.6, color = "black"), size = 7, symbol = 15), 
               color = ~factor(.id), 
               mode = "markers+text", hoverinfo = "text") 
               # text = ~paste(gene), textposition = ~ifelse(logFC>0,'middle right','middle left'), textfont = list(size = 11))
