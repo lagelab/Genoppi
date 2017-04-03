@@ -1085,18 +1085,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
@@ -1240,17 +1239,17 @@ shinyServer(function(input, output, session){
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI<0.9 (", nrow(below_thresh), ")")
       p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI>=0.9 (", nrow(above_thresh), ")")
       p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text") #, name = paste0("not in ExAC (", nrow(no_exist), ")")
       p
     } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
@@ -1468,17 +1467,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
@@ -1723,18 +1722,17 @@ shinyServer(function(input, output, session){
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_scatter_exac(d, below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
@@ -4399,7 +4397,8 @@ shinyServer(function(input, output, session){
     max_x <- c_max_x()
     max_y <- c_max_y()
     p <- p %>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F), 
+             legend = list(orientation = 'h', y = -0.23)) %>%
       add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
                 name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
       add_lines(x = input$c_logfc_thresh_comb, y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
@@ -4461,7 +4460,7 @@ shinyServer(function(input, output, session){
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
-             title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+             title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
     if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
@@ -4541,18 +4540,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p 
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -4660,18 +4658,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -4784,7 +4781,8 @@ shinyServer(function(input, output, session){
     max_x <- c_max_x()
     max_y <- c_max_y()
     p <- p %>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F), 
+             legend = list(orientation = 'h', y = -0.23)) %>%
       add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
                 name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
       add_lines(x = input$c_logfc_thresh_comb, y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
@@ -4846,7 +4844,7 @@ shinyServer(function(input, output, session){
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
-             title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+             title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
     if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
@@ -4926,18 +4924,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -5046,18 +5043,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -5170,7 +5166,8 @@ shinyServer(function(input, output, session){
     max_x <- c_max_x()
     max_y <- c_max_y()
     p <- p %>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F), 
+             legend = list(orientation = 'h', y = -0.23)) %>%
       add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
                 name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
       add_lines(x = input$c_logfc_thresh_comb, y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
@@ -5232,7 +5229,7 @@ shinyServer(function(input, output, session){
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
-             title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+             title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
     if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
       if(!is.null(c_bait_in())){
         if(input$c_marker_text_inweb == "yes_label"){
@@ -5313,18 +5310,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -5432,18 +5428,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -7260,18 +7255,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
-      # p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -7355,17 +7349,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -7449,17 +7443,17 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
@@ -7522,7 +7516,7 @@ shinyServer(function(input, output, session){
     d <- c_pd1()
     c1_pf_db <- c_pf_db_vp1()
     cc <- c_sp1_cor()
-    if(input$colorscheme == "fdr"){
+    if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -7533,7 +7527,7 @@ shinyServer(function(input, output, session){
                          opacity = 0.8, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
-    } else if(input$colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -7543,19 +7537,19 @@ shinyServer(function(input, output, session){
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI<0.9 (", nrow(below_thresh), ")")
       p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI>=0.9 (", nrow(above_thresh), ")")
       p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text") #, name = paste0("not in ExAC (", nrow(no_exist), ")")
       p
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -7608,7 +7602,7 @@ shinyServer(function(input, output, session){
     d <- c_pd2()
     c2_pf_db <- c_pf_db_vp2()
     cc <- c_sp2_cor()
-    if(input$colorscheme == "fdr"){
+    if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -7619,7 +7613,7 @@ shinyServer(function(input, output, session){
                          opacity = 0.8, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
-    } else if(input$colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -7629,19 +7623,19 @@ shinyServer(function(input, output, session){
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -7694,7 +7688,7 @@ shinyServer(function(input, output, session){
     d <- c_pd3()
     c3_pf_db <- c_pf_db_vp3()
     cc <- c_sp3_cor()
-    if(input$colorscheme == "fdr"){
+    if(input$c_colorscheme == "fdr"){
       data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
@@ -7705,7 +7699,7 @@ shinyServer(function(input, output, session){
                          opacity = 0.8, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
-    } else if(input$colorscheme == "exac"){
+    } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
@@ -7715,19 +7709,19 @@ shinyServer(function(input, output, session){
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
       p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
       p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                        opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text")
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
       p
-    } else if(input$colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_ly(colors = "Greys", showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),

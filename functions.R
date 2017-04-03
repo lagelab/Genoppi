@@ -122,13 +122,13 @@ separate_to_groups_for_exac_bar <- function(vp_data){
   grp1 <- subset(vp_data, FDR <= 0.33)
   grp2 <- subset(vp_data, 0.33 < FDR & FDR <= 0.66)
   grp3 <- subset(vp_data, 0.66 < FDR & FDR <= 1)
-  a_col <- colorRampPalette(c('#fc8d59', '#fc8d59'))(nrow(grp1))
+  a_col <- colorRampPalette(c('#66c2a5', '#66c2a5'))(nrow(grp1))
   grp1 <- cbind(grp1, rev(a_col))
   names(grp1)[names(grp1) == 'rev(a_col)'] <- 'col'
-  b_col <- colorRampPalette(c("#99d594", "#99d594"))(nrow(grp2))
+  b_col <- colorRampPalette(c("#fc8d62", "#fc8d62"))(nrow(grp2))
   grp2 <- cbind(grp2, b_col)
   names(grp2)[names(grp2) == 'b_col'] <- 'col'
-  c_col <- colorRampPalette(c("#ffffbf", "#ffffbf"))(nrow(grp3))
+  c_col <- colorRampPalette(c("#8da0cb", "#8da0cb"))(nrow(grp3))
   grp3 <- cbind(grp3, c_col)
   names(grp3)[names(grp3) == 'c_col'] <- 'col'
   data <- rbind(grp1, grp2, grp3)
@@ -176,37 +176,39 @@ plot_volcano_multiple_cond_for_goi <- function(d){
 
 #volcano - exac colorscale
 plot_volcano_exac <- function(b, a, n){
-  p <- plot_ly(showlegend = FALSE, width = 550, height = 550)
+  p <- plot_ly(showlegend = T, width = 550, height = 550)
   p <- add_markers(p, data = b, x = ~logFC, y = ~-log10(pvalue),
-                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                    opacity = 0.8, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(b), ")"))
   p <- add_markers(p, data = a, x = ~logFC, y = ~-log10(pvalue),
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                    opacity = 0.8, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(a), ")"))
   p <- add_markers(p, data = n, x = ~logFC, y = ~-log10(pvalue),
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                    opacity = 0.8, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(n), ")"))
 }
 
 #volcano - exac colorscale
 plot_volcano_exac_multi <- function(b, a, n){
-  p <- plot_ly(showlegend = F, height = 320, width = 320) #, height = 320
+  p <- plot_ly(showlegend = T, width = 320, height = 390)
   p <- add_markers(p, data = b, x = ~logFC, y = ~-log10(pvalue),
-                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                    opacity = 0.8, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(b), ")"))
   p <- add_markers(p, data = a, x = ~logFC, y = ~-log10(pvalue),
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                    opacity = 0.8, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(a), ")"))
   p <- add_markers(p, data = n, x = ~logFC, y = ~-log10(pvalue),
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                    opacity = 0.8, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(n), ")"))
 }
+
+
 
 #volcano - search/found highlight
 search_volcano <- function(p, found){
@@ -260,17 +262,17 @@ plot_scatter_exac <- function(orig, b, a, n){
   p <- add_lines(p, data = orig, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                  line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
   p <- add_markers(p, data = b, x = ~rep1, y = ~rep2, 
-                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                    opacity = 0.7, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI<0.9 (", nrow(b), ")")
   p <- add_markers(p, data = a, x = ~rep1, y = ~rep2, 
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                    opacity = 0.7, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI>=0.9 (", nrow(a), ")")
   p <- add_markers(p, data = n, x = ~rep1, y = ~rep2, 
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                    opacity = 0.7, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text") #, name = paste0("not in ExAC (", nrow(n), ")")
 }
 
 plot_scatter_exac_multi <- function(orig, b, a, n){
@@ -278,17 +280,17 @@ plot_scatter_exac_multi <- function(orig, b, a, n){
   p <- add_lines(p, data = orig, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                  line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
   p <- add_markers(p, data = b, x = ~rep1, y = ~rep2, 
-                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#fc8d59"),
+                   marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                    opacity = 0.7, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI<0.9 (", nrow(b), ")")
   p <- add_markers(p, data = a, x = ~rep1, y = ~rep2, 
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#99d594"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
                    opacity = 0.7, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text") #, name = paste0("pLI>=0.9 (", nrow(a), ")")
   p <- add_markers(p, data = n, x = ~rep1, y = ~rep2, 
-                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#ffffbf"),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
                    opacity = 0.7, 
-                   text = ~paste(gene), hoverinfo = "text")
+                   text = ~paste(gene), hoverinfo = "text") #, name = paste0("not in ExAC (", nrow(n), ")")
 }
 
 search_scatter <- function(p, found){
