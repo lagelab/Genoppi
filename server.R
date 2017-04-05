@@ -7775,21 +7775,21 @@ shinyServer(function(input, output, session){
   
   output$c_inweb_colorbar <- renderPlot({
     validate(
-      need(!is.null(c_vp2_inweb()), "")
+      need(input$c_file_pulldown2 != '', "")
     )
     c_vp_colorbar_dl()
   })
   
   output$c_goi_colorbar <- renderPlot({
     validate(
-      need(!is.null(c_goi_vp2()), "")
+      need(input$c_file_pulldown2 != '', "")
     )
     c_vp_colorbar_dl()
   })
   
   output$c_snp_colorbar <- renderPlot({
     validate(
-      need(!is.null(c_snp_vp2()), "")
+      need(input$c_file_pulldown2 != '', "")
     )
     c_vp_colorbar_dl()
   })
