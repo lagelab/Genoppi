@@ -709,7 +709,7 @@ compare_two_files_a <- function(orig, subset, overlaps){
   p <- add_markers(p, data = overlaps, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#fdb462", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1 & 2")
+                   text = ~paste(gene), hoverinfo = "text", name = "f12")
   p <- p %>% layout(legend = list(orientation = 'h', y = -0.23))
 }
 
@@ -726,7 +726,7 @@ compare_two_files_b <- function(orig, subset, overlaps){
   p <- add_markers(p, data = overlaps, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#fdb462", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1 & 2")
+                   text = ~paste(gene), hoverinfo = "text", name = "f12")
   p <- p %>% layout(legend = list(orientation = 'h', y = -0.23))
 }
 
@@ -743,15 +743,15 @@ compare_two_files_aa <- function(orig, subset, overlaps1, overlaps2, overlaps3){
   p <- add_markers(p, data = overlaps1, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#fd8d3c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1 & 2")
+                   text = ~paste(gene), hoverinfo = "text", name = "f12")
   p <- add_markers(p, data = overlaps2, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#8c6bb1", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f13")
   p <- add_markers(p, data = overlaps3, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#d9d9d9", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1, 2 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f123")
   p <- p %>% layout(legend = list(orientation = 'h', y = -0.23))
 }
 
@@ -768,15 +768,15 @@ compare_two_files_bb <- function(orig, subset, overlaps1, overlaps2, overlaps3){
   p <- add_markers(p, data = overlaps1, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#fd8d3c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1 & 2")
+                   text = ~paste(gene), hoverinfo = "text", name = "f12")
   p <- add_markers(p, data = overlaps2, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#41ab5d", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "2 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f23")
   p <- add_markers(p, data = overlaps3, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#d9d9d9", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1, 2 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f123")
   p <- p %>% layout(legend = list(orientation = 'h', y = -0.23))
 }
 
@@ -793,15 +793,15 @@ compare_two_files_cc <- function(orig, subset, overlaps1, overlaps2, overlaps3){
   p <- add_markers(p, data = overlaps1, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#8c6bb1", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f13")
   p <- add_markers(p, data = overlaps2, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#41ab5d", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "2 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f23")
   p <- add_markers(p, data = overlaps3, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(color = "#d9d9d9", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9,
-                   text = ~paste(gene), hoverinfo = "text", name = "1, 2 & 3")
+                   text = ~paste(gene), hoverinfo = "text", name = "f123")
   p <- p %>% layout(legend = list(orientation = 'h', y = -0.23))
 }
 
@@ -818,7 +818,7 @@ compare_two_files_pf_a <- function(orig, subset, s_nga, overlaps, o_nga){
   p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text",
-                   name="f1&2 unassigned")
+                   name="f12 unassigned")
     p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue),
                      marker = list(color = "#e41a1c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                      opacity = 0.9, color = ~new_f,
@@ -841,7 +841,7 @@ compare_two_files_pf_a_size <- function(orig, subset, s_nga, overlaps, o_nga, in
   p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&2 unassigned") 
+                   name="f12 unassigned") 
     p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
                      marker = list(color = "#e41a1c", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
                                    opacity = 0.8), color = ~new_f,
@@ -865,7 +865,7 @@ compare_two_files__pf_b <- function(orig, subset, s_nga, overlaps, o_nga){
   p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&2 unassigned") 
+                   name="f12 unassigned") 
   p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(color = "#ffff33", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9, color = ~new_f,
@@ -888,7 +888,7 @@ compare_two_files_pf_b_size <- function(orig, subset, s_nga, overlaps, o_nga, in
   p <- add_markers(p, data = o_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&2 unassigned") 
+                   name="f12 unassigned") 
   p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(color = "#ffff33", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
                                  opacity = 0.8), color = ~new_f,
@@ -912,15 +912,15 @@ compare_two_files_pf_aa <- function(orig, subset, s_nga, o_12, o_12_nga, o_13, o
   p <- add_markers(p, data = o_12_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&2 unassigned") 
+                   name="f12 unassigned") 
   p <- add_markers(p, data = o_13_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#8c6bb1'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&3 unassigned") 
+                   name="f13 unassigned") 
   p <- add_markers(p, data = o_123_nga, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text",
-                   name="f12&3 unassigned")
+                   name="f123 unassigned")
   p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(color = "#e41a1c", size = 8, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1),
                    opacity = 0.9, color = ~new_f,
@@ -952,15 +952,15 @@ compare_two_files_pf_aa_size <- function(orig, subset, s_nga, o_12, o_12_nga, o_
   p <- add_markers(p, data = o_12_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#fdb462'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&2 unassigned") 
+                   name="f12 unassigned") 
   p <- add_markers(p, data = o_13_nga, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(size = 6, symbol = 2, color = c('#8c6bb1'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                   name="f1&3 unassigned") 
+                   name="f13 unassigned") 
   p <- add_markers(p, data = o_123_nga, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(size = 6, symbol = 2, color = c('#d9d9d9'), opacity = 0.4, line = list(width=0.9, color = "black")),
                    text = ~paste(gene, name, sep = "  "), hoverinfo="text",
-                   name="f12&3 unassigned")
+                   name="f123 unassigned")
   p <- add_markers(p, data = subset, x = ~logFC, y = ~-log10(pvalue), 
                    marker = list(color = "#e41a1c", size = ~increase*frequency, line = list(width=0.2, color = "black"), cmin = 0, cmax = 1,
                    opacity = 0.8), color = ~new_f,
