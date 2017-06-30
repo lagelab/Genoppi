@@ -7,6 +7,7 @@ shinyUI(navbarPage("Genoppi",
                                            uiOutput("a_file"),
                                            HTML('<hr style="border-color: #D6DBE0;">'),
                                            uiOutput("a_GOI_search"),
+                                           
                                            uiOutput("a_color_scheme"),
                                            uiOutput("FDR_thresh"),
                                            uiOutput("PVal_thresh"),
@@ -22,6 +23,11 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("a_text_prot_fam_db")),
                                                        column(4, downloadButton("download_pf_cleaned_input", "Remove selected PF from input"))
                                                      ),
+                                                     fluidRow(
+                                                       column(7),
+                                                       column(3, uiOutput("VP_count_text"))
+                                                     ),
+                                                     br(),
                                                      fluidRow(
                                                        column(1, plotOutput("FDR_colorbar", width = "50px")),
                                                        column(6, plotlyOutput("VolcanoPlot")), #, width = "550px", height = "550px"
@@ -49,17 +55,19 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("a_bait_layer"))
                                                      ),
                                                      fluidRow(
+                                                       column(4, uiOutput("a_SNP_extend1")),
                                                        column(2, uiOutput("a_text_label")),
                                                        column(2, uiOutput("a_plot_button"))  
                                                      ),
                                                      fluidRow(
+                                                       column(9),
+                                                       column(3, uiOutput("Multi_VP_count_text"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
                                                        column(1, plotOutput("multi_FDR_colorbar", width = "50px")),
                                                        column(8, plotlyOutput("Multi_VolcanoPlot")),
                                                        column(3, tableOutput("Multi_VP_count"))
-                                                     ),
-                                                     fluidRow(
-                                                       column(9),
-                                                       column(3, uiOutput("Multi_VP_count_text"))
                                                      )
                                             ),
                                             tabPanel("Venn Diagrams", value = "p3",
@@ -70,13 +78,16 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("a_bait_venndiagram"))
                                                      ),
                                                      fluidRow(
+                                                       column(4, uiOutput("a_SNP_extend2"))
+                                                     ),
+                                                     fluidRow(
                                                        column(8, uiOutput("a_VD_sig_text"))
                                                      ),
                                                      br(),
                                                      fluidRow(
                                                        column(4, uiOutput("a_FDR_slider")),
-                                                       column(4, uiOutput("a_logFC_slider")),
-                                                       column(4, uiOutput("a_pvalue_slider"))
+                                                       column(4, uiOutput("a_pvalue_slider")),
+                                                       column(4, uiOutput("a_logFC_slider"))
                                                      ),
                                                      fluidRow(
                                                        column(4, uiOutput("a_vennd_button1", width = "50px")),
@@ -95,9 +106,9 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("a_goi_num_inputs"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, plotOutput("Venn_Diagram_SNP")),
-                                                       column(4, plotOutput("Venn_Diagram_GOI")),
-                                                       column(4, plotOutput("Venn_Diagram_bait"))
+                                                       column(4, plotOutput("Venn_Diagram_SNP", width = "220px", height = "220px")),
+                                                       column(4, plotOutput("Venn_Diagram_GOI", width = "220px", height = "220px")),
+                                                       column(4, plotOutput("Venn_Diagram_bait", width = "220px", height = "220px"))
                                                      ),
                                                      fluidRow(
                                                        column(4, uiOutput("a_vd_SNP_text")),
@@ -127,8 +138,8 @@ shinyUI(navbarPage("Genoppi",
                                                      br(),
                                                      fluidRow(
                                                        column(4, uiOutput("a_BPF_FDR_slider")),
-                                                       column(4, uiOutput("a_BPF_logFC_slider")),
-                                                       column(4, uiOutput("a_BPF_pvalue_slider"))
+                                                       column(4, uiOutput("a_BPF_pvalue_slider")),
+                                                       column(4, uiOutput("a_BPF_logFC_slider"))
                                                      ),
                                                      fluidRow(
                                                        column(4, uiOutput("a_BPF_marker_size")), 
@@ -238,7 +249,14 @@ shinyUI(navbarPage("Genoppi",
                                             tabPanel("Protein Comparison", value = "3_p2",
                                                      br(),
                                                      fluidRow(
-                                                       column(8, uiOutput("c_comparison_text"))
+                                                       column(8, uiOutput("c_comparison_text")),
+                                                       column(4, uiOutput("c_pc_plot_button"))
+                                                     ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_comparison_text_f1")),
+                                                       column(4, uiOutput("c_comparison_text_f2")),
+                                                       column(4, uiOutput("c_comparison_text_f3"))
                                                      ),
                                                      br(),
                                                      fluidRow(
@@ -247,23 +265,24 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("c_comparison3_FDR_slider"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, uiOutput("c_comparison_logFC_slider1")),
-                                                       column(4, uiOutput("c_comparison_logFC_slider2")),
-                                                       column(4, uiOutput("c_comparison_logFC_slider3"))
-                                                     ),
-                                                     fluidRow(
                                                        column(4, uiOutput("c_comparison1_pvalue_slider")),
                                                        column(4, uiOutput("c_comparison2_pvalue_slider")),
                                                        column(4, uiOutput("c_comparison3_pvalue_slider"))
                                                      ),
-
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_comparison_logFC_slider1")),
+                                                       column(4, uiOutput("c_comparison_logFC_slider2")),
+                                                       column(4, uiOutput("c_comparison_logFC_slider3"))
+                                                     ),
                                                      br(),
                                                      fluidRow(
                                                        column(4, plotlyOutput("comparison1")),
                                                        column(4, plotlyOutput("comparison2")),
                                                        column(4, plotlyOutput("comparison3")) #, width = "370px", height = "300px")
                                                      ),
-                                                     br(),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_VennDiagram_legend"))
+                                                     ),
                                                      br(),
                                                      fluidRow(
                                                        column(4, plotOutput("c_VennDiagram", width = "220px", height = "220px")),
@@ -329,6 +348,9 @@ shinyUI(navbarPage("Genoppi",
                                                        column(2, uiOutput("c_text_snp")),
                                                        column(2, uiOutput("c_button_snp"))
                                                      ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_SNP_extend"))
+                                                     ),
                                                      br(),
                                                      fluidRow(
                                                        column(3, plotOutput("c_snp_colorbar", height = "100px"))
@@ -358,14 +380,14 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("c_pf_FDR_slider3"))
                                                      ),
                                                      fluidRow(
-                                                       column(4, uiOutput("c_pf_logFC_slider1")),
-                                                       column(4, uiOutput("c_pf_logFC_slider2")),
-                                                       column(4, uiOutput("c_pf_logFC_slider3"))
-                                                     ),
-                                                     fluidRow(
                                                        column(4, uiOutput("c_pf_pvalue_slider1")),
                                                        column(4, uiOutput("c_pf_pvalue_slider2")),
                                                        column(4, uiOutput("c_pf_pvalue_slider3"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_pf_logFC_slider1")),
+                                                       column(4, uiOutput("c_pf_logFC_slider2")),
+                                                       column(4, uiOutput("c_pf_logFC_slider3"))
                                                      ),
                                                      fluidRow(
                                                        column(3, uiOutput("c_PF_marker_size")), 
@@ -490,8 +512,19 @@ shinyUI(navbarPage("Genoppi",
                               )
                             )
                    ),
-                   tabPanel("Documentation",
-                            imageOutput("documentation")
+                   navbarMenu("Documentation",
+                              tabPanel("Single File",
+                                       tabsetPanel("sf",
+                                                   tabPanel("Basics", htmlOutput("basics")),
+                                                   tabPanel("Quality Control", htmlOutput("qc")),
+                                                   tabPanel("Integrated Plots", htmlOutput("overlay")),
+                                                   tabPanel("Venn Diagrams", htmlOutput("vd")),
+                                                   tabPanel("Protein Families", htmlOutput("pf")),
+                                                   tabPanel("Download", htmlOutput("download"))
+                                       )
+                              ),
+                              tabPanel("MFC", htmlOutput("mfc")),
+                              tabPanel("Advanced PFE", htmlOutput("aPFE"))
                    )
 )
 )
