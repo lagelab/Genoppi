@@ -52,6 +52,6 @@ Example dataset can be found in Genoppi/example.
 
 
 ## Documentation and Support
-Documentation may be accessed from within Genoppi interface using the "Documentation" tab or in the 'documentation' folder.
+Documentation may be accessed from within Genoppi interface using the "Documentation" tab.
 
 Please address comments and questions to April Kim at aprilkim@broadinstitute.org, Edyta Malolepsza at edytam@broadinstitute.org or Kasper Lage at lage.kasper@mgh.harvard.edu.
