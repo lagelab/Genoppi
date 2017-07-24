@@ -7,8 +7,9 @@ shinyUI(navbarPage("Genoppi",
                                            uiOutput("a_file"),
                                            HTML('<hr style="border-color: #D6DBE0;">'),
                                            uiOutput("a_GOI_search"),
-                                           
                                            uiOutput("a_color_scheme"),
+                                           uiOutput("a_color_style"),
+                                           uiOutput("a_file_color"),
                                            uiOutput("FDR_thresh"),
                                            uiOutput("PVal_thresh"),
                                            uiOutput("logFC_thresh")
@@ -19,9 +20,20 @@ shinyUI(navbarPage("Genoppi",
                                             tabPanel("Quality Control", value = "p1",
                                                      br(),
                                                      fluidRow(
-                                                       column(4, uiOutput("a_prot_fam_db")),
-                                                       column(4, uiOutput("a_text_prot_fam_db")),
-                                                       column(4, downloadButton("download_pf_cleaned_input", "Remove selected PF from input"))
+                                                       column(3, uiOutput("a_prot_fam_db")),
+                                                       column(2, uiOutput("a_text_prot_fam_db")),
+                                                       column(3, uiOutput("a_color_theme_pf")),
+                                                       column(3, downloadButton("download_pf_cleaned_input", "Remove selected PF from input"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("a_color_setting_indv_text"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(2, uiOutput("a_color_theme_indv_sig")),
+                                                       column(2, uiOutput("a_color_theme_indv_insig"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("a_color_theme"))
                                                      ),
                                                      fluidRow(
                                                        column(7),
@@ -58,6 +70,17 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("a_SNP_extend1")),
                                                        column(2, uiOutput("a_text_label")),
                                                        column(2, uiOutput("a_plot_button"))  
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("a_color_setting_text"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(2, uiOutput("a_color_theme_multi_sig")), 
+                                                       column(2, uiOutput("a_color_theme_multi_insig")),
+                                                       column(2, uiOutput("a_color_theme_integrated")),
+                                                       column(2, uiOutput("a_color_theme_snp")),
+                                                       column(2, uiOutput("a_color_theme_goi")),
+                                                       column(2, uiOutput("a_color_theme_inweb"))
                                                      ),
                                                      fluidRow(
                                                        column(9),
@@ -198,7 +221,10 @@ shinyUI(navbarPage("Genoppi",
                                                      downloadButton("download_venn_diagram_SNP_plot", "Venn diagram - SNP report"),
                                                      br(),
                                                      br(),
-                                                     downloadButton("download_bpf_plot", "Protein family report")
+                                                     downloadButton("download_bpf_vp_plot", "Protein family report - VP"),
+                                                     br(),
+                                                     br(),
+                                                     downloadButton("download_bpf_sp_plot", "Protein family report - SP")
                                                      
                                             )
                                 )
@@ -214,6 +240,8 @@ shinyUI(navbarPage("Genoppi",
                                            HTML('<hr style="border-color: #D6DBE0;">'),
                                            uiOutput("c_GOI_search"),
                                            uiOutput("c_color_scheme"),
+                                           uiOutput("c_color_style"),
+                                           uiOutput("c_file_color"),
                                            uiOutput("c_FDR_thresh"),
                                            uiOutput("c_PVal_thresh"),
                                            uiOutput("c_logFC_thresh_combined")
@@ -224,16 +252,29 @@ shinyUI(navbarPage("Genoppi",
                                             tabPanel("Quality Control", value = "3_p1",
                                                      br(),
                                                      fluidRow(
-                                                       column(3, plotOutput("c_FDR_colorbar", height = "100px")),
                                                        column(3, uiOutput("c_prot_fam_db")),
-                                                       column(3, uiOutput("c_text_prot_fam_db"))
+                                                       column(2, uiOutput("c_text_prot_fam_db")),
+                                                       column(3, uiOutput("c_color_theme_pf"))
                                                      ),
                                                      fluidRow(
                                                        column(4, downloadButton("download_c1_pf_cleaned_input", "Remove selected PF from f1")),
                                                        column(4, downloadButton("download_c2_pf_cleaned_input", "Remove selected PF from f2")),
                                                        column(4, downloadButton("download_c3_pf_cleaned_input", "Remove selected PF from f3"))
                                                      ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_color_setting_text"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_color_theme"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_color_theme_indv_sig")),
+                                                       column(4, uiOutput("c_color_theme_indv_insig"))
+                                                     ),
                                                      br(),
+                                                     fluidRow(
+                                                       column(3, plotOutput("c_FDR_colorbar", height = "100px"))
+                                                     ),
                                                      fluidRow(
                                                        column(4, plotlyOutput("VolcanoPlot_c1")),
                                                        column(4, plotlyOutput("VolcanoPlot_c2")),
@@ -296,6 +337,15 @@ shinyUI(navbarPage("Genoppi",
                                                        column(2, uiOutput("c_text_inweb")),
                                                        column(2, uiOutput("c_button_inweb"))
                                                      ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_color_setting_text_inweb"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(2, uiOutput("c_color_theme_inweb_sig")),
+                                                       column(2, uiOutput("c_color_theme_inweb_insig")),
+                                                       column(2, uiOutput("c_color_theme_tab3")),
+                                                       column(2, uiOutput("c_marker_theme_inweb"))
+                                                     ),
                                                      br(),
                                                      fluidRow(
                                                        column(3, plotOutput("c_inweb_colorbar", height = "100px"))
@@ -319,6 +369,16 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, uiOutput("c_genes_file")),
                                                        column(2, uiOutput("c_text_goi")),
                                                        column(2, uiOutput("c_button_goi"))
+                                                     ),
+                                                     
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_color_setting_text_goi"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(2, uiOutput("c_color_theme_goi_sig")),
+                                                       column(2, uiOutput("c_color_theme_goi_insig")),
+                                                       column(2, uiOutput("c_color_theme_tab4")),
+                                                       column(2, uiOutput("c_marker_theme_goi"))
                                                      ),
                                                      br(),
                                                      fluidRow(
@@ -350,6 +410,15 @@ shinyUI(navbarPage("Genoppi",
                                                      ),
                                                      fluidRow(
                                                        column(4, uiOutput("c_SNP_extend"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(4, uiOutput("c_color_setting_text_snp"))
+                                                     ),
+                                                     fluidRow(
+                                                       column(2, uiOutput("c_color_theme_snp_sig")),
+                                                       column(2, uiOutput("c_color_theme_snp_insig")),
+                                                       column(2, uiOutput("c_color_theme_tab5")),
+                                                       column(2, uiOutput("c_marker_theme_snp"))
                                                      ),
                                                      br(),
                                                      fluidRow(

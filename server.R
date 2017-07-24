@@ -43,12 +43,152 @@ shinyServer(function(input, output, session){
     radioButtons("colorscheme", "Color scheme:",
                  c("FDR" = "fdr", 
                    "ExAC" = "exac",
-                   "Grayscale" = "cbf"),
+                   "Grayscale" = "cbf",
+                   "User upload" = "user"),
                  inline = T)
   })
   
+  output$a_file_color <- renderUI({
+    validate(
+      need(input$colorscheme == "user", "")
+    )
+      fileInput('file_color', 'Upload user score input',
+                accept = c(
+                  'text/csv',
+                  'text/comma-separated-values',
+                  'text/tab-separated-values',
+                  'text/plain',
+                  '.csv',
+                  '.tsv')
+      )
+  })
+  
+  output$a_color_style <- renderUI({
+    validate(
+      need(input$colorscheme == "user", "")
+    )
+      radioButtons("colorscheme_style", "Color scale:",
+                   c("Continuous" = "cont", 
+                     "Discrete" = "disc"),
+                   inline = T)
+  })
+  
+  output$a_color_theme <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(input$colorscheme == "user", "")
+    )
+      selectInput("colorbrewer_theme", "", 
+                  c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                    "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                    "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$a_color_theme_integrated <- renderUI({
+    validate(
+      need(input$colorscheme == "user", "")
+    )
+    selectInput("colorbrewer_theme_integrated", "User score", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$a_color_theme_pf <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    selectInput("colorbrewer_theme_pf", "Protein families color", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$a_color_setting_indv_text <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(input$colorscheme == "fdr" || input$colorscheme == "user", "")
+    )
+    HTML("<b>Color selection for markers:</b>")
+  })
+  
+  output$a_color_theme_indv_sig <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(input$colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR<", input$a_fdr_thresh))
+    selectInput('a_color_indv_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  })
+  
+  output$a_color_theme_indv_insig <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(input$colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR≥", input$a_fdr_thresh))
+    selectInput('a_color_indv_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  })
+  
+  output$a_color_setting_text <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', "")
+    )
+    HTML("<b>Color selection for markers:</b>")
+  })
+  
+  output$a_color_theme_multi_sig <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(input$colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR<", input$a_fdr_thresh))
+    selectInput('a_color_multi_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  })
+  
+  output$a_color_theme_multi_insig <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(input$colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR≥", input$a_fdr_thresh))
+    selectInput('a_color_multi_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  })
+  
+  output$a_color_theme_goi <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""), 
+      need(!is.null(input$a_file_genes_rep) && input$a_file_genes_rep != "", "")
+    )
+    selectInput("colorbrewer_theme_goi", "Genes of interest", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"),
+                selected = "Set2")
+  })
+  
+  output$a_color_theme_snp <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""),
+      need(!is.null(input$a_file_SNP_rep) && input$a_file_SNP_rep != "", "")
+    )
+    selectInput("colorbrewer_theme_snp", "SNPs", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"),
+                selected = "PuOr")
+  })
+  
+  output$a_color_theme_inweb <- renderUI({
+    validate(
+      need(input$a_file_pulldown_r != '', ""), 
+      need(!is.null(input$a_bait_rep) && input$a_bait_rep != "", "")
+    )
+    selectInput('a_color_inweb', 'InWeb', add_marker_cols$V1, multiple=F, selectize=TRUE, selected = "yellow")
+  })
+  
   output$a_bait_layer <- renderUI({
-    textInput("a_bait_rep", "Input HGNC symbol to search for InWeb protein interactors (e.g. ZBTB7A)")
+    textInput("a_bait_rep", value = "", "Input HGNC symbol to search for InWeb protein interactors (e.g. ZBTB7A)")
   })
   
   output$a_bait_venndiagram <- renderUI({
@@ -151,7 +291,9 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-    if(!is.null(a_bait_gene_layer()) | !is.null(a_snp()) | !is.null(a_upload_genes())){
+    all_inputs <- c(input$a_file_SNP_rep, input$a_file_genes_rep, input$a_bait_rep)
+    
+    if(any(!is.null(all_inputs)) && any(all_inputs != "")){
       actionButton("a_make_plot", "Generate plots")
     }
   })
@@ -425,17 +567,19 @@ shinyServer(function(input, output, session){
   observe({
     if(input$basic == "p3" | input$basic == "p4" | input$basic == "p5"){
       shinyjs::hide("colorscheme")
+      shinyjs::hide("file_color")
       shinyjs::hide("a_fdr_thresh")
       shinyjs::hide("a_pval_thresh")
       shinyjs::hide("a_logFC_thresh")
     }else {
       shinyjs::show("colorscheme")
+      shinyjs::show("file_color")
       shinyjs::show("a_fdr_thresh")
       shinyjs::show("a_pval_thresh")
       shinyjs::show("a_logFC_thresh")
     }
   })
-  
+
   a_in_pulldown <- reactive({
     if(!is.null(input$a_file_pulldown_r)){
       pulldown <- input$a_file_pulldown_r
@@ -444,7 +588,7 @@ shinyServer(function(input, output, session){
       d <- na.omit(d)
     }
   })
-  
+
   a_orig_pulldown <- reactive({
     if(!is.null(a_in_pulldown())){
       d <- a_in_pulldown()
@@ -497,6 +641,16 @@ shinyServer(function(input, output, session){
     if(!is.null(a_orig_pulldown())){
       d <- fread("scripts/gene-tools-master/map/results.txt", header = TRUE,
                  sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
+    }
+  })
+  
+  
+  a_in_file_color <- reactive({
+    if(!is.null(input$file_color)){
+      color_file <- input$file_color
+      d <- fread(color_file$datapath, header = TRUE, 
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
+      d <- na.omit(d)
     }
   })
   
@@ -868,7 +1022,7 @@ shinyServer(function(input, output, session){
   })
   
   #snp to gene using LD r^2>0.6±user defined extension
-  SNP_to_gene <- reactive({
+  SNP_to_gene <- eventReactive(input$a_make_plot, {#reactive({
     if(!is.null(a_snp())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
@@ -966,7 +1120,8 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      req(input$a_color_indv_sig, input$a_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_indv_sig, input$a_color_indv_insig)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +      
         scale_y_continuous(trans = "reverse", breaks = seq(0, 1, 0.1)) +
@@ -1002,7 +1157,28 @@ shinyServer(function(input, output, session){
               panel.background=element_blank(),
               plot.title = element_text(size = rel(1))) + coord_fixed()
       bar
-    }
+    } #else if(input$colorscheme == "user"){
+    #   validate(
+    #     need(!is.null(input$file_color), "")
+    #   )
+    #   FDR <- seq(0, 1, (1/(nrow(dd))))
+    #   limit <- rep("FDR", (nrow(dd)+1))
+    #   d <- data.frame(limit, FDR)
+    #   dd <- a_in_file_color()
+    #   if(input$colorscheme_style == "cont"){
+    #     d1 <- separate_to_groups_for_color_continuous(d, dd)
+    #     mycol <- as.vector(d1$col)
+    #     bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +      
+    #       scale_y_continuous(trans = "reverse", breaks = seq(0, 1, 0.1)) +
+    #       labs(title = "FDR") +
+    #       theme(axis.title.x=element_blank(),
+    #             axis.text.x=element_blank(),
+    #             axis.ticks.x=element_blank(),
+    #             panel.background=element_blank(),
+    #             plot.title = element_text(size = rel(1))) + coord_fixed()
+    #     bar
+    #   }
+    # }
   })
   
   a_vp_colorbar_dl <- reactive({
@@ -1010,7 +1186,8 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      req(input$a_color_indv_sig, input$a_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_indv_sig, input$a_color_indv_insig)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -1052,8 +1229,8 @@ shinyServer(function(input, output, session){
   a_vp <- reactive({
     d <- a_pulldown()
     if(input$colorscheme == "fdr"){
-      # data <- separate_to_groups_for_color(d, input$a_fdr_thresh)
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      req(input$a_color_indv_sig, input$a_color_indv_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_indv_sig, input$a_color_indv_insig)
       p <- plot_volcano_qc(data)
     } else if(input$colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -1065,15 +1242,43 @@ shinyServer(function(input, output, session){
     } else if(input$colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_volcano_qc(data)
+    } else if(input$colorscheme == "user"){
+      validate(
+        need(!is.null(input$file_color), "Please upload file with gene and score")
+      )
+      d1 <- a_in_file_color()
+      col_theme <- input$colorbrewer_theme
+      if(input$colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
       }
+      p <- plot_ly(showlegend = T, width = 650, height = 550)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
+    }
     p <- p %>%
-      layout(xaxis = list(range=~c(min(logFC)-0.5, max(logFC)+0.5)),
-             yaxis = list(range=~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5))) %>% 
-      add_lines(x = ~c(min(logFC)-0.5, max(logFC)+0.5), y = ~-log10(input$a_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+      layout(xaxis = list(range=~c(min(d$logFC)-0.5, max(d$logFC)+0.5)),
+             yaxis = list(range=~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5))) %>% 
+      add_lines(x = ~c(min(d$logFC)-0.5, max(d$logFC)+0.5), y = ~-log10(input$a_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
                 name = '', hoverinfo = "text", text = paste0("pvalue = ", input$a_pval_thresh), showlegend = F) %>%
-      add_lines(x = input$a_logFC_thresh[1], y = ~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+      add_lines(x = input$a_logFC_thresh[1], y = ~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
                 name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh[1]), showlegend = F) %>%
-      add_lines(x = input$a_logFC_thresh[2], y = ~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+      add_lines(x = input$a_logFC_thresh[2], y = ~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
                 name = '', hoverinfo = "text", text = paste0("logFC = ", input$a_logFC_thresh[2]), showlegend = F)
   })
   
@@ -1108,9 +1313,11 @@ shinyServer(function(input, output, session){
     )
     d <- a_pulldown()
     a_pf_db <- a_pf_db_vp()
+    pf_col <- input$colorbrewer_theme_pf
     if(input$colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550)
+      req(input$a_color_indv_sig, input$a_color_indv_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_indv_sig, input$a_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 650, height = 550)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -1124,7 +1331,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 650, height = 550)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 650, height = 550)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -1147,11 +1354,39 @@ shinyServer(function(input, output, session){
                          opacity = 0.6, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
+    } else if(input$colorscheme == "user"){
+      validate(
+        need(!is.null(input$file_color), "Please upload file with gene and score")
+      )
+      d1 <- a_in_file_color()
+      col_theme <- input$colorbrewer_theme
+      if(input$colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 650, height = 550)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
-      layout(xaxis = list(range=~c(min(logFC)-0.5, max(logFC)+0.5)),
-             yaxis = list(range=~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5)))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      layout(xaxis = list(range=~c(min(d$logFC)-0.5, max(d$logFC)+0.5)),
+             yaxis = list(range=~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5)))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac" | input$colorscheme == "user"){
       df <- ldply(a_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$a_marker_text_prot_fam_db == "yes_label"){
@@ -1217,7 +1452,8 @@ shinyServer(function(input, output, session){
     d <- a_pulldown()
     cc <- a_sp_cor()
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      req(input$a_color_indv_sig, input$a_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_indv_sig, input$a_color_indv_insig)
       p <- plot_scatter_qc(d, d1)
       p
     } else if(input$colorscheme == "exac"){
@@ -1233,10 +1469,41 @@ shinyServer(function(input, output, session){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
       p <- plot_scatter_qc(d, d1)
       p
+    } else if(input$colorscheme == "user"){
+      validate(
+        need(!is.null(input$file_color), "Please upload file with gene and score")
+      )
+      d1 <- a_in_file_color()
+      col_theme <- input$colorbrewer_theme
+      if(input$colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = FALSE, width = 550, height = 550) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
-      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=15))
   })
   
@@ -1260,9 +1527,11 @@ shinyServer(function(input, output, session){
     d <- a_pulldown()
     a_pf_db <- a_pf_db_vp()
     cc <- a_sp_cor()
+    pf_col <- input$colorbrewer_theme_pf
     if(input$colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 550, height = 550) 
+      req(input$a_color_indv_sig, input$a_color_indv_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_indv_sig, input$a_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 550, height = 550) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       for(i in nrow(data)){
@@ -1277,7 +1546,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 550, height = 550) 
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 550, height = 550) 
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
@@ -1304,8 +1573,39 @@ shinyServer(function(input, output, session){
                          opacity = 0.6, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
+    } else if(input$colorscheme == "user"){
+      validate(
+        need(!is.null(input$file_color), "Please upload file with gene and score")
+      )
+      d1 <- a_in_file_color()
+      col_theme <- input$colorbrewer_theme
+      if(input$colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = FALSE, width = 550, height = 550) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac" | input$colorscheme == "user"){
       df <- ldply(a_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$a_marker_text_prot_fam_db == "yes_label"){
@@ -1405,7 +1705,8 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      req(input$a_color_multi_sig, input$a_color_multi_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_multi_sig, input$a_color_multi_insig)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = 0, xmax = 0.1, ymin = d1$FDR-0.01, ymax = d1$FDR)) + geom_rect(fill = mycol) +      
         scale_y_continuous(trans = "reverse", breaks = seq(0, 1, 0.1)) +
@@ -1449,7 +1750,8 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+      req(input$a_color_multi_sig, input$a_color_multi_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_multi_sig, input$a_color_multi_insig)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -1491,9 +1793,11 @@ shinyServer(function(input, output, session){
   a_multi_vp_layer <- reactive({
     multi_vp <- a_multi_vp()
     d <- a_pulldown()
+    p_col <- input$colorbrewer_theme_goi
     if(input$colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550)
+      req(input$a_color_multi_sig, input$a_color_multi_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$a_color_multi_sig, input$a_color_multi_insig)
+      p <- plot_ly(colors = p_col, showlegend = T, width = 650, height = 550)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -1507,7 +1811,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550)
+      p <- plot_ly(colors = p_col, showlegend = T, width = 650, height = 550)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -1531,37 +1835,70 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$colorscheme == "user"){
+      validate(
+        need(!is.null(input$file_color), "Please upload file with gene and score")
+      )
+      d1 <- a_in_file_color()
+      col_theme <- input$colorbrewer_theme_integrated
+      if(input$colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = p_col, showlegend = FALSE, width = 550, height = 550) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
-      layout(xaxis = list(range=~c(min(logFC)-0.5, max(logFC)+0.5)),
-             yaxis = list(range=~c(min(-log10(pvalue)-0.5), max(-log10(pvalue))+0.5)))
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+      layout(xaxis = list(range=~c(min(d$logFC)-0.5, max(d$logFC)+0.5)),
+             yaxis = list(range=~c(min(-log10(d$pvalue)-0.5), max(-log10(d$pvalue))+0.5)))
+    if(input$colorscheme == "fdr" | input$colorscheme == "exac" | input$colorscheme == "user"){
       # InWeb, SNP to gene, and genes upload
       if(!is.null(a_bait_gene_layer())){
+        col <- input$a_color_inweb
         if(input$a_marker_text == "yes_label"){
-          vp_layer_inweb <- vp_layer_for_inweb(p, multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb(p, multi_vp$d_in, col)
         } else if(input$a_marker_text == "no_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, multi_vp$d_in, col)
         }
         p <- vp_layer_inweb
       }
-      if(!is.null(a_snp())){
+      if(!is.null(SNP_to_gene())){
         if(nrow(multi_vp$d_snp) != 0){
           snp_sgl <- subset(multi_vp$d_snp, Freq == 1)
           snp_mgl <- subset(multi_vp$d_snp, Freq != 1)
+          col <- c(color = colorRampPalette(brewer.pal(3, input$colorbrewer_theme_snp))(2))
           if(nrow(snp_sgl) != 0){
             if(input$a_marker_text == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
             } else if(input$a_marker_text == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
             }
             p <- vp_layer_snp2gene_sgl
           }
           if(nrow(snp_mgl) != 0){
             if(input$a_marker_text == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
             } else if(input$a_marker_text == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
             }
             p <- vp_layer_snp2gene_mgl
           }
@@ -1595,7 +1932,7 @@ shinyServer(function(input, output, session){
         }
         p <- vp_layer_inweb
       }
-      if(!is.null(a_snp())){
+      if(!is.null(SNP_to_gene())){
         if(nrow(multi_vp$d_snp) != 0){
           snp_sgl <- subset(multi_vp$d_snp, Freq == 1)
           snp_mgl <- subset(multi_vp$d_snp, Freq != 1)
@@ -1689,7 +2026,7 @@ shinyServer(function(input, output, session){
       }
     }
     
-    if(!is.null(a_snp())){
+    if(!is.null(SNP_to_gene())){
       if(nrow(multi_vp$d_snp)>0){
         snp_count <- nrow(subset(multi_vp$d_snp, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2])))
         s_count <- data.frame(snp_count) 
@@ -1742,175 +2079,175 @@ shinyServer(function(input, output, session){
     }
   })
   
-  a_multi_sp_layer <- reactive({
-    multi_sp <- a_multi_vp()
-    d <- a_pulldown()
-    cc <- a_sp_cor()
-    if(input$colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550) 
-      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
-                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"),
-                         opacity = 0.8, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
-      }
-    } else if(input$colorscheme == "exac"){
-      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
-      d$s[is.na(d$s)] <- 2
-      below_thresh <- subset(d, s < 0.9)
-      above_thresh <- subset(d, s >= 0.9)
-      no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550) 
-      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
-                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
-      p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
-                       opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
-      p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
-                       opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
-      p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
-                       opacity = 0.7, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
-      p
-    } else if(input$colorscheme == "cbf"){
-      data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550) 
-      p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
-                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"), 
-                         opacity = 0.6, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
-      }
-    }
-    p <- p %>%
-      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             title = cc, titlefont = list(size=15))
-
-    if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
-      # InWeb, SNP to gene, and genes upload
-      if(!is.null(a_bait_gene_layer())){
-        if(input$a_marker_text == "yes_label"){
-          sp_layer_inweb <- sp_layer_for_inweb(p, multi_sp$d_in)
-        } else if(input$a_marker_text == "no_label"){
-          sp_layer_inweb <- sp_layer_for_inweb_no_text(p, multi_sp$d_in)
-        }
-        p <- sp_layer_inweb
-      }
-      if(!is.null(a_snp())){
-        if(nrow(multi_sp$d_snp) != 0){
-          snp_sgl <- subset(multi_sp$d_snp, Freq == 1)
-          snp_mgl <- subset(multi_sp$d_snp, Freq != 1)
-          if(nrow(snp_sgl) != 0){
-            if(input$a_marker_text == "yes_label"){
-              sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl(p, snp_sgl)
-            } else if(input$a_marker_text == "no_label"){
-              sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
-            }
-            p <- sp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$a_marker_text == "yes_label"){
-              sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl(p, snp_mgl)
-            } else if(input$a_marker_text == "no_label"){
-              sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
-            }
-            p <- sp_layer_snp2gene_mgl
-          }
-        } else{
-          sp_layer_no_snp2gene <- sp_layer_for_snp_to_gene_none(p, d)
-          p <- sp_layer_no_snp2gene
-        }
-      }
-      if(!is.null(a_upload_genes())){
-        df <- ldply(multi_sp$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$a_marker_text == "yes_label"){
-            sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
-          } else if(input$a_marker_text == "no_label"){
-            sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
-          }
-          p <- sp_layer_genes
-        } else{
-          sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
-          p <- sp_layer_no_genes
-        }
-      }
-      p
-    } else if(input$colorscheme == "cbf"){
-      # InWeb, SNP to gene, and genes upload
-      if(!is.null(a_bait_gene_layer())){
-        if(input$a_marker_text == "yes_label"){
-          sp_layer_inweb <- sp_layer_for_inweb_cbf(p, multi_sp$d_in)
-        } else if(input$a_marker_text == "no_label"){
-          sp_layer_inweb <- sp_layer_for_inweb_cbf_no_text(p, multi_sp$d_in)
-        }
-        p <- sp_layer_inweb
-      }
-      if(!is.null(a_snp())){
-        if(nrow(multi_sp$d_snp) != 0){
-          snp_sgl <- subset(multi_sp$d_snp, Freq == 1)
-          snp_mgl <- subset(multi_sp$d_snp, Freq != 1)
-          if(nrow(snp_sgl) != 0){
-            if(input$a_marker_text == "yes_label"){
-              sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            } else if(input$a_marker_text == "no_label"){
-              sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
-            }
-            p <- sp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$a_marker_text == "yes_label"){
-              sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            } else if(input$a_marker_text == "no_label"){
-              sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
-            }
-            p <- sp_layer_snp2gene_mgl
-          }
-        } else{
-          sp_layer_no_snp2gene <- sp_layer_for_snp_to_gene_none_cbf(p, d)
-          p <- sp_layer_no_snp2gene
-        }
-      }
-      if(!is.null(a_upload_genes())){
-        df <- ldply(multi_sp$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$a_marker_text == "yes_label"){
-            sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
-          } else if(input$a_marker_text == "no_label"){
-            sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
-          }
-          p <- sp_layer_genes
-        } else{
-          sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- sp_layer_no_genes
-        }
-      }
-      p
-    }
-    p
-  })
-  
-  a_multi_sp_plus <- reactive({
-    validate(
-      need(!is.null(a_search_gene()), "")
-    )
-    p <- a_multi_sp_layer()
-    goi <- a_search_gene()
-    orig_data <- a_pulldown()
-    searchgene <- orig_data[grepl(goi,orig_data$gene),]
-    p1 <- search_scatter(p, searchgene)
-    p1
-  })
+  # a_multi_sp_layer <- reactive({
+  #   multi_sp <- a_multi_vp()
+  #   d <- a_pulldown()
+  #   cc <- a_sp_cor()
+  #   if(input$colorscheme == "fdr"){
+  #     data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
+  #     p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550) 
+  #     p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+  #                    line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+  #     for(i in nrow(data)){
+  #       p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+  #                        marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"),
+  #                        opacity = 0.8, 
+  #                        text = ~paste(gene), hoverinfo = "text", name = "pull down")
+  #     }
+  #   } else if(input$colorscheme == "exac"){
+  #     d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+  #     d$s[is.na(d$s)] <- 2
+  #     below_thresh <- subset(d, s < 0.9)
+  #     above_thresh <- subset(d, s >= 0.9)
+  #     no_exist <- subset(d, s == 2)
+  #     p <- plot_ly(colors = "RdPu", showlegend = T, width = 650, height = 550) 
+  #     p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+  #                    line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+  #     p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
+  #                      marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
+  #                      opacity = 0.7, 
+  #                      text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
+  #     p <- add_markers(p, data = above_thresh, x = ~rep1, y = ~rep2, 
+  #                      marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
+  #                      opacity = 0.7, 
+  #                      text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
+  #     p <- add_markers(p, data = no_exist, x = ~rep1, y = ~rep2, 
+  #                      marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
+  #                      opacity = 0.7, 
+  #                      text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
+  #     p
+  #   } else if(input$colorscheme == "cbf"){
+  #     data <- separate_to_groups_for_cbf_integrated(d, input$a_fdr_thresh)
+  #     p <- plot_ly(colors = "Greys", showlegend = T, width = 650, height = 550) 
+  #     p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
+  #                    line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+  #     for(i in nrow(data)){
+  #       p <- add_markers(p, data = data, x = ~rep1, y = ~rep2, 
+  #                        marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), #line = list(width=0.1, color = "black"), 
+  #                        opacity = 0.6, 
+  #                        text = ~paste(gene), hoverinfo = "text", name = "pull down")
+  #     }
+  #   }
+  #   p <- p %>%
+  #     layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+  #            yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+  #            title = cc, titlefont = list(size=15))
+  # 
+  #   if(input$colorscheme == "fdr" | input$colorscheme == "exac"){
+  #     # InWeb, SNP to gene, and genes upload
+  #     if(!is.null(a_bait_gene_layer())){
+  #       if(input$a_marker_text == "yes_label"){
+  #         sp_layer_inweb <- sp_layer_for_inweb(p, multi_sp$d_in)
+  #       } else if(input$a_marker_text == "no_label"){
+  #         sp_layer_inweb <- sp_layer_for_inweb_no_text(p, multi_sp$d_in)
+  #       }
+  #       p <- sp_layer_inweb
+  #     }
+  #     if(!is.null(a_snp())){
+  #       if(nrow(multi_sp$d_snp) != 0){
+  #         snp_sgl <- subset(multi_sp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(multi_sp$d_snp, Freq != 1)
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$a_marker_text == "yes_label"){
+  #             sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl(p, snp_sgl)
+  #           } else if(input$a_marker_text == "no_label"){
+  #             sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
+  #           }
+  #           p <- sp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$a_marker_text == "yes_label"){
+  #             sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl(p, snp_mgl)
+  #           } else if(input$a_marker_text == "no_label"){
+  #             sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
+  #           }
+  #           p <- sp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         sp_layer_no_snp2gene <- sp_layer_for_snp_to_gene_none(p, d)
+  #         p <- sp_layer_no_snp2gene
+  #       }
+  #     }
+  #     if(!is.null(a_upload_genes())){
+  #       df <- ldply(multi_sp$d_g2s, data.frame)
+  #       if(nrow(df) != 0){
+  #         if(input$a_marker_text == "yes_label"){
+  #           sp_layer_genes <- sp_layer_for_uploaded_genes(p, df)
+  #         } else if(input$a_marker_text == "no_label"){
+  #           sp_layer_genes <- sp_layer_for_uploaded_genes_no_text(p, df)
+  #         }
+  #         p <- sp_layer_genes
+  #       } else{
+  #         sp_layer_no_genes <- sp_layer_for_uploaded_genes_none(p, d)
+  #         p <- sp_layer_no_genes
+  #       }
+  #     }
+  #     p
+  #   } else if(input$colorscheme == "cbf"){
+  #     # InWeb, SNP to gene, and genes upload
+  #     if(!is.null(a_bait_gene_layer())){
+  #       if(input$a_marker_text == "yes_label"){
+  #         sp_layer_inweb <- sp_layer_for_inweb_cbf(p, multi_sp$d_in)
+  #       } else if(input$a_marker_text == "no_label"){
+  #         sp_layer_inweb <- sp_layer_for_inweb_cbf_no_text(p, multi_sp$d_in)
+  #       }
+  #       p <- sp_layer_inweb
+  #     }
+  #     if(!is.null(a_snp())){
+  #       if(nrow(multi_sp$d_snp) != 0){
+  #         snp_sgl <- subset(multi_sp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(multi_sp$d_snp, Freq != 1)
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$a_marker_text == "yes_label"){
+  #             sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
+  #           } else if(input$a_marker_text == "no_label"){
+  #             sp_layer_snp2gene_sgl <- sp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
+  #           }
+  #           p <- sp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$a_marker_text == "yes_label"){
+  #             sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
+  #           } else if(input$a_marker_text == "no_label"){
+  #             sp_layer_snp2gene_mgl <- sp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
+  #           }
+  #           p <- sp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         sp_layer_no_snp2gene <- sp_layer_for_snp_to_gene_none_cbf(p, d)
+  #         p <- sp_layer_no_snp2gene
+  #       }
+  #     }
+  #     if(!is.null(a_upload_genes())){
+  #       df <- ldply(multi_sp$d_g2s, data.frame)
+  #       if(nrow(df) != 0){
+  #         if(input$a_marker_text == "yes_label"){
+  #           sp_layer_genes <- sp_layer_for_uploaded_genes_cbf(p, df)
+  #         } else if(input$a_marker_text == "no_label"){
+  #           sp_layer_genes <- sp_layer_for_uploaded_genes_cbf_no_text(p, df)
+  #         }
+  #         p <- sp_layer_genes
+  #       } else{
+  #         sp_layer_no_genes <- sp_layer_for_uploaded_genes_none_cbf(p, d)
+  #         p <- sp_layer_no_genes
+  #       }
+  #     }
+  #     p
+  #   }
+  #   p
+  # })
+  # 
+  # a_multi_sp_plus <- reactive({
+  #   validate(
+  #     need(!is.null(a_search_gene()), "")
+  #   )
+  #   p <- a_multi_sp_layer()
+  #   goi <- a_search_gene()
+  #   orig_data <- a_pulldown()
+  #   searchgene <- orig_data[grepl(goi,orig_data$gene),]
+  #   p1 <- search_scatter(p, searchgene)
+  #   p1
+  # })
   
   output$a_VD_sig_text <- renderUI({
     validate(
@@ -2343,7 +2680,7 @@ shinyServer(function(input, output, session){
     increase_size <- bpf_data[[6]]
     
     if (bpfmsizing == "change"){
-      p <- plot_ly(colors = rainbow(howmany)) #, width = 850, height = 800
+      p <- plot_ly(colors = rainbow(howmany), width = 950, height = 800) 
       p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      text = "x=y", hoverinfo = "text",
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
@@ -2397,6 +2734,11 @@ shinyServer(function(input, output, session){
   a_bpf_sp_preview <- reactive({
     d <- a_pulldown()
     p <- plot_ly(showlegend = FALSE) 
+    req(input$a_BPF_rep1_range[1], input$a_BPF_rep1_range[2], input$a_BPF_rep2_range[1], input$a_BPF_rep2_range[2])
+    line1 <- data.frame("a" = c(input$a_BPF_rep1_range[1], input$a_BPF_rep1_range[2], input$a_BPF_rep1_range[2]), 
+                        "b" = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]))
+    line2 <- data.frame("a" = c(input$a_BPF_rep1_range[1], input$a_BPF_rep1_range[1], input$a_BPF_rep1_range[2]), 
+                        "b" = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1], input$a_BPF_rep2_range[1]))
     p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                    text = "x=y", hoverinfo = "text",
                    line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
@@ -2404,17 +2746,14 @@ shinyServer(function(input, output, session){
                      marker = list(color = 'rgba(176,196,222,08)', size = 7, cmin = 0, cmax = 1, line = list(width=0.2, color = "grey89")), 
                      opacity = 0.9, 
                      text = ~paste0(gene, ", rep1=", rep1, ", rep2=", rep2), hoverinfo = "text", name = "pull down")
+    p <- add_lines(p, data = line1, x = ~a, y = ~b, line = list(width = 0.7, color = "#e41a1c"),
+                   name = '', showlegend = F)
+    p <- add_lines(p, data = line2, x = ~a, y = ~b, line = list(width = 0.7, color = "#e41a1c"),
+                   name = '', showlegend = F)
     p <- p %>%
-      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1))) %>%
-      add_lines(x = input$a_BPF_rep1_range[2], y = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]), line = list(width = 0.7, color = "#e41a1c"), 
-                name = '', showlegend = F) %>%
-      add_lines(x = (input$a_BPF_rep1_range[1]), y = c(input$a_BPF_rep2_range[2], input$a_BPF_rep2_range[1]), line = list(width = 0.7, color = "#e41a1c"),
-                name = '', showlegend = F) %>%
-      add_lines(x = c(input$a_BPF_rep1_range[2], input$a_BPF_rep1_range[1]), y = input$a_BPF_rep2_range[2], line = list(width = 0.7, color = "#e41a1c"),
-                name = '', showlegend = F) %>%
-      add_lines(x = c(input$a_BPF_rep1_range[2], input$a_BPF_rep1_range[1]), y = input$a_BPF_rep2_range[1], line = list(width = 0.7, color = "#e41a1c"),
-                name = '', showlegend = F)
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1))) 
+      
   })
   
   output$FDR_colorbar <- renderPlot({
@@ -2656,7 +2995,8 @@ shinyServer(function(input, output, session){
       shinyjs::disable("download_layered_plots")
       shinyjs::disable("download_venn_diagram_plot")
       shinyjs::disable("download_replications_calculated")
-      shinyjs::disable("download_bpf_plot")
+      shinyjs::disable("download_bpf_vp_plot")
+      shinyjs::disable("download_bpf_sp_plot")
       shinyjs::disable("download_enriched_families_bpf")
       shinyjs::disable("download_venn_diagram_hypergeometric")
       shinyjs::disable("download_snp_to_genes")
@@ -2688,11 +3028,19 @@ shinyServer(function(input, output, session){
   
   observe({
     if (input$a_make_bpf == 0 || is.null(input$a_make_bpf)){
-      shinyjs::disable("download_bpf_plot")
+      shinyjs::disable("download_bpf_vp_plot")
       shinyjs::disable("download_enriched_families_bpf")
     } else {
-      shinyjs::enable("download_bpf_plot")
+      shinyjs::enable("download_bpf_vp_plot")
       shinyjs::enable("download_enriched_families_bpf")
+    }
+  })
+  
+  observe({
+    if (input$a_make_bpf_sp == 0 || is.null(input$a_make_bpf_sp)){
+      shinyjs::disable("download_bpf_sp_plot")
+    } else {
+      shinyjs::enable("download_bpf_sp_plot")
     }
   })
   
@@ -2760,8 +3108,6 @@ shinyServer(function(input, output, session){
       shinyjs::hide("download_pf_cleaned_input")
     }
   })
-
-  
   
   output$download_pf_cleaned_input <- downloadHandler(
     filename = function() {
@@ -2794,7 +3140,14 @@ shinyServer(function(input, output, session){
     filename = "quality-control.html",
     content = function(file) {
       df <- a_in_pulldown()
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
+      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+         "rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+        if(is.null(a_search_gene())){
+          params <- list(a = a_vp(), b = a_sp(), c = a_vp_colorbar_dl(), d = a_vp_count())
+        } else{
+          params <- list(a = a_vp_plus_rep(), b = a_sp_plus(), c = a_vp_colorbar_dl(), d = a_vp_count())
+        }
+      } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
         if(is.null(a_search_gene())){
           params <- list(a = a_vp(), c = a_vp_colorbar_dl(), d = a_vp_count())
         } else{
@@ -2818,20 +3171,12 @@ shinyServer(function(input, output, session){
     filename = "integrated-plots.html",
     content = function(file) {
       df <- a_in_pulldown()
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        if(is.null(a_search_gene())){
-          params <- list(a = a_multi_vp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
-        } else{
-          params <- list(a = a_multi_vp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
-        }
-      } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
-        if(is.null(a_search_gene())){
-          params <- list(a = a_multi_vp_layer(), b = a_multi_sp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
-        } else{
-          params <- list(a = a_multi_vp_plus(), b = a_multi_sp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
-        }
+      if(is.null(a_search_gene())){
+        params <- list(a = a_multi_vp_layer(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
+      } else{
+        params <- list(a = a_multi_vp_plus(), c = a_multi_vp_colorbar_dl(), d = a_multi_vp_count())
       }
-      rmarkdown::render("scripts/basic.Rmd", 
+      rmarkdown::render("scripts/integrated.Rmd", 
                         output_file = file,
                         params = params
       )
@@ -2908,13 +3253,28 @@ shinyServer(function(input, output, session){
     }
   )
   
-  output$download_bpf_plot <- downloadHandler(
-    filename = "basic-protein-family.html",
+  output$download_bpf_vp_plot <- downloadHandler(
+    filename = "basic-protein-family-vp.html",
     content = function(file) {
       if(is.null(a_search_gene())){
         params <- list(a = a_bpf())
       } else{
         params <- list(a = a_bpf_plus())
+      }
+      rmarkdown::render("scripts/pf.Rmd", 
+                        output_file = file,
+                        params = params
+      )
+    }
+  )
+  
+  output$download_bpf_sp_plot <- downloadHandler(
+    filename = "basic-protein-family-sp.html",
+    content = function(file) {
+      if(is.null(a_search_gene())){
+        params <- list(a = a_bpf_sp())
+      } else{
+        params <- list(a = a_bpf_plus_sp())
       }
       rmarkdown::render("scripts/pf.Rmd", 
                         output_file = file,
@@ -3535,8 +3895,11 @@ shinyServer(function(input, output, session){
     )
   })
   
-  output$c_file4 <- renderUI({
-    fileInput('c_file_pulldown4', 'Upload user input file4',
+  output$c_file_color <- renderUI({
+    validate(
+      need(input$c_colorscheme == "user", "")
+    )
+    fileInput('c_file_color', 'Upload user score input',
               accept = c(
                 'text/csv',
                 'text/comma-separated-values',
@@ -3547,12 +3910,202 @@ shinyServer(function(input, output, session){
     )
   })
   
+  c_in_file_color <- reactive({
+    if(!is.null(input$c_file_color)){
+      color_file <- input$c_file_color
+      d <- fread(color_file$datapath, header = TRUE, 
+                 sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE, blank.lines.skip = T)
+      d <- na.omit(d)
+    }
+  })
+  
+  output$c_color_style <- renderUI({
+    validate(
+      need(input$c_colorscheme == "user", "")
+    )
+    radioButtons("c_colorscheme_style", "Color scale:",
+                 c("Continuous" = "cont", 
+                   "Discrete" = "disc"),
+                 inline = T)
+  })
+  
+  output$c_color_theme <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_colorscheme == "user", "")
+    )
+    selectInput("c_colorbrewer_theme", "User score", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$c_color_theme_tab3 <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "user", "")
+    )
+    selectInput("c_colorbrewer_theme_tab3", "User score", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$c_color_theme_tab4 <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "user", "")
+    )
+    selectInput("c_colorbrewer_theme_tab4", "User score", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$c_color_theme_tab5 <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "user", "")
+    )
+    selectInput("c_colorbrewer_theme_tab5", "User score", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+  })
+  
+  output$c_color_theme_indv_sig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR<", input$a_fdr_thresh))
+    selectInput('c_color_indv_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  })
+  
+  output$c_color_theme_indv_insig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR≥", input$a_fdr_thresh))
+    selectInput('c_color_indv_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  })
+  
+  output$c_color_theme_inweb_sig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR<", input$a_fdr_thresh))
+    selectInput('c_color_inweb_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  })
+  
+  output$c_color_theme_inweb_insig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR≥", input$a_fdr_thresh))
+    selectInput('c_color_inweb_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  })
+  
+  output$c_color_theme_snp_sig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR<", input$a_fdr_thresh))
+    selectInput('c_color_snp_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  })
+  
+  output$c_color_theme_snp_insig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR≥", input$a_fdr_thresh))
+    selectInput('c_color_snp_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  })
+  
+  output$c_color_theme_goi_sig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR<", input$a_fdr_thresh))
+    selectInput('c_color_goi_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  })
+  
+  output$c_color_theme_goi_insig <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr", "")
+    )
+    region <- c(paste0("FDR≥", input$a_fdr_thresh))
+    selectInput('c_color_goi_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  })
+  
+  output$c_marker_theme_goi <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""), 
+      need(input$c_file_pulldown2 != '', ""),
+      need(!is.null(input$c_file_genes) && input$c_file_genes != "", "")
+    )
+    selectInput("c_colorbrewer_theme_goi", "Genes of interest", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"),
+                selected = "Set2")
+  })
+  
+  output$c_marker_theme_snp <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""), 
+      need(input$c_file_pulldown2 != '', ""),
+      need(!is.null(input$c_file_SNP) && input$c_file_SNP != "", "")
+    )
+    selectInput("c_colorbrewer_theme_snp", "SNPs", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"),
+                selected = "PuOr")
+  })
+  
+  output$c_marker_theme_inweb <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_bait != "", "")
+    )
+    selectInput('c_color_inweb', 'InWeb', add_marker_cols$V1, multiple=F, selectize=TRUE, selected = "yellow")
+  })
+
   output$c_color_scheme <- renderUI({
     radioButtons("c_colorscheme", "Color scheme:",
                  c("FDR" = "fdr", 
                    "ExAC" = "exac",
-                   "Grayscale" = "cbf"),
+                   "Grayscale" = "cbf",
+                   "User upload" = "user"),
                  inline = T)
+  })
+  
+  output$c_color_theme_pf <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', "")
+    )
+    selectInput("c_colorbrewer_theme_pf", "Protein families color", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
   })
   
   output$c_GOI_search <- renderUI({
@@ -3755,16 +4308,42 @@ shinyServer(function(input, output, session){
   
   output$c_button_inweb <- renderUI({
     validate(
-      need(input$c_file_pulldown1 != '', "")
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', "")
     )
-    if(!is.null(c_bait_in())){
+    if(input$c_bait != ""){
       actionButton("c_make_plot_inweb", "Generate plots")
     }
   })
   
+  # c_bait_in <- reactive({
+  #   bait_in <- input$c_bait
+  #   if (bait_in == "" ){
+  #     return(NULL)
+  #   } else{
+  #     bait <- bait_in
+  #     bait <- toupper(bait)
+  #   }
+  # })
+  # 
+  # 
+  # output$a_plot_button <- renderUI({
+  #   validate(
+  #     need(input$a_file_pulldown_r != '', "")
+  #   )
+  #   all_inputs <- c(input$a_file_SNP_rep, input$a_file_genes_rep, input$a_bait_rep)
+  #   
+  #   if(any(!is.null(all_inputs)) && any(all_inputs != "")){
+  #     actionButton("a_make_plot", "Generate plots")
+  #   }
+  # })
+  
+  
+  
   output$c_button_goi <- renderUI({
     validate(
-      need(input$c_file_pulldown1 != '', "")
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', "")
     )
     if(!is.null(c_upload_genes())){
       actionButton("c_make_plot_goi", "Generate plots")
@@ -3773,7 +4352,8 @@ shinyServer(function(input, output, session){
   
   output$c_button_snp <- renderUI({
     validate(
-      need(input$c_file_pulldown1 != '', "")
+      need(input$c_file_pulldown1 != '', ""), 
+      need(input$c_file_pulldown2 != '', "")
     )
     if(!is.null(c_snp())){
       actionButton("c_make_plot_snp", "Generate plots")
@@ -3949,6 +4529,41 @@ shinyServer(function(input, output, session){
     selectInput('c_pfam_db', 'Protein families', colnames(prot_fam), multiple=TRUE, selectize=TRUE)
   })
   
+  output$c_color_setting_text <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_colorscheme == "fdr" || input$c_colorscheme == "user", "")
+    )
+    HTML("<b>Color selection for markers:</b>")
+  })
+  
+  output$c_color_setting_text_inweb <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr" || input$c_colorscheme == "user", "")
+    )
+    HTML("<b>Color selection for markers:</b>")
+  })
+  
+  output$c_color_setting_text_snp <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr" || input$c_colorscheme == "user", "")
+    )
+    HTML("<b>Color selection for markers:</b>")
+  })
+  
+  output$c_color_setting_text_goi <- renderUI({
+    validate(
+      need(input$c_file_pulldown1 != '', ""),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_colorscheme == "fdr" || input$c_colorscheme == "user", "")
+    )
+    HTML("<b>Color selection for markers:</b>")
+  })
+  
   output$c_text_prot_fam_db <- renderUI({
     validate(
       need(input$c_file_pulldown1 != '', "")
@@ -3986,7 +4601,7 @@ shinyServer(function(input, output, session){
   
   c_bait_in <- reactive({
     bait_in <- input$c_bait
-    if (is.null(bait_in) | bait_in == "" ){
+    if (bait_in == "" ){ #is.null(bait_in) | 
       return(NULL)
     } else{
       bait <- bait_in
@@ -4405,7 +5020,143 @@ shinyServer(function(input, output, session){
     limit <- rep("FDR", 101)
     d <- data.frame(limit, FDR)
     if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+        labs(x = "FDR") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    } else if(input$c_colorscheme == "exac"){
+      d1 <- separate_to_groups_for_exac_bar(d)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    } else if(input$c_colorscheme == "cbf"){
+      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+        labs(x = "FDR") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    }
+  })
+  
+  c_vp_colorbar_inweb <- reactive({
+    FDR <- seq(0, 1, 0.01)
+    limit <- rep("FDR", 101)
+    d <- data.frame(limit, FDR)
+    if(input$c_colorscheme == "fdr"){
+      req(input$c_color_inweb_sig, input$c_color_inweb_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_inweb_sig, input$c_color_inweb_insig)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+        labs(x = "FDR") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    } else if(input$c_colorscheme == "exac"){
+      d1 <- separate_to_groups_for_exac_bar(d)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    } else if(input$c_colorscheme == "cbf"){
+      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+        labs(x = "FDR") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    }
+  })
+  
+  c_vp_colorbar_goi <- reactive({
+    FDR <- seq(0, 1, 0.01)
+    limit <- rep("FDR", 101)
+    d <- data.frame(limit, FDR)
+    if(input$c_colorscheme == "fdr"){
+      req(input$c_color_goi_sig, input$c_color_goi_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_goi_sig, input$c_color_goi_insig)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+        labs(x = "FDR") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    } else if(input$c_colorscheme == "exac"){
+      d1 <- separate_to_groups_for_exac_bar(d)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              axis.text.x=element_blank(),
+              axis.ticks.x=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    } else if(input$c_colorscheme == "cbf"){
+      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      mycol <- as.vector(d1$col)
+      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+        labs(x = "FDR") +
+        theme(axis.title.y=element_blank(),
+              axis.text.y=element_blank(),
+              axis.ticks.y=element_blank(),
+              panel.background=element_blank(),
+              axis.title = element_text(size = rel(1))) + coord_fixed()
+      bar
+    }
+  })
+  
+  c_vp_colorbar_snp <- reactive({
+    FDR <- seq(0, 1, 0.01)
+    limit <- rep("FDR", 101)
+    d <- data.frame(limit, FDR)
+    if(input$c_colorscheme == "fdr"){
+      req(input$c_color_snp_sig, input$c_color_snp_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
       mycol <- as.vector(d1$col)
       bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
         scale_x_continuous(breaks = seq(0, 1, 0.1)) +
@@ -4447,7 +5198,8 @@ shinyServer(function(input, output, session){
   c_vp1 <- reactive({
     d <- c_pd1()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
       p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -4460,6 +5212,34 @@ shinyServer(function(input, output, session){
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     min_x <- c_min_x()
     min_y <- c_min_y()
@@ -4513,7 +5293,8 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     vp_title <- c_pd1_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_inweb_sig, input$c_color_inweb_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_inweb_sig, input$c_color_inweb_insig)
       p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -4526,16 +5307,45 @@ shinyServer(function(input, output, session){
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab3
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_bait_in())){
+        col <- input$c_color_inweb
         if(input$c_marker_text_inweb == "yes_label"){
-          vp_layer_inweb <- vp_layer_for_inweb(p, c1_multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb(p, c1_multi_vp$d_in, col)
         } else if(input$c_marker_text_inweb == "no_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c1_multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c1_multi_vp$d_in, col)
         }
         p <- vp_layer_inweb
       }
@@ -4590,10 +5400,12 @@ shinyServer(function(input, output, session){
     min_y <- c_min_y()
     max_x <- c_max_x()
     max_y <- c_max_y()
+    col_goi <- input$c_colorbrewer_theme_goi
     # vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      req(input$c_color_goi_sig, input$c_color_goi_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_goi_sig, input$c_color_goi_insig)
+      p <- plot_ly(colors = col_goi, showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -4607,7 +5419,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = col_goi, showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -4631,12 +5443,40 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab4
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(col = col_goi, showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
              # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c1_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -4710,68 +5550,72 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     # vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
-                         opacity = 0.8, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
-      }
-      p 
+      req(input$c_color_snp_sig, input$c_color_snp_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+      p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
-      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
-      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
-      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
+      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "Greys", showlegend = T, width = 300, height = 390)
+      p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab5
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
-                         opacity = 0.6, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
       }
-      p 
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
              #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_snp())){
         if(nrow(c1_snp$d_snp) != 0){
           snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
           snp_mgl <- subset(c1_snp$d_snp, Freq != 1)
+          col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
             } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
             }
             p <- vp_layer_snp2gene_sgl
           }
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
             } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
             }
             p <- vp_layer_snp2gene_mgl
           }
@@ -4832,7 +5676,8 @@ shinyServer(function(input, output, session){
   c_vp2 <- reactive({
     d <- c_pd2()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
       p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -4844,6 +5689,34 @@ shinyServer(function(input, output, session){
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     min_x <- c_min_x()
     min_y <- c_min_y()
@@ -4897,7 +5770,8 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     vp_title <- c_pd2_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_inweb_sig, input$c_color_inweb_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_inweb_sig, input$c_color_inweb_insig)
       p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -4910,16 +5784,45 @@ shinyServer(function(input, output, session){
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab3
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_bait_in())){
+        col <- input$c_color_inweb
         if(input$c_marker_text_inweb == "yes_label"){
-          vp_layer_inweb <- vp_layer_for_inweb(p, c2_multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb(p, c2_multi_vp$d_in, col)
         } else if(input$c_marker_text_inweb == "no_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c2_multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c2_multi_vp$d_in, col)
         }
         p <- vp_layer_inweb
       }
@@ -4974,10 +5877,12 @@ shinyServer(function(input, output, session){
     min_y <- c_min_y()
     max_x <- c_max_x()
     max_y <- c_max_y()
+    col_goi <- input$c_colorbrewer_theme_goi
     # vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      req(input$c_color_goi_sig, input$c_color_goi_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_goi_sig, input$c_color_goi_insig)
+      p <- plot_ly(colors = col_goi, showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -4991,7 +5896,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = col_goi, showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -5015,12 +5920,40 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab4
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(col = col_goi, showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F), 
              legend = list(orientation = 'h', y = -0.23))
     # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c2_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -5095,68 +6028,72 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     # vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(showlegend = T, width = 300, height = 390)
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
-                         opacity = 0.8, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
-      }
-      p 
+      req(input$c_color_snp_sig, input$c_color_snp_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+      p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
-      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
-      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
-      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
+      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(showlegend = T, width = 300, height = 390)
+      p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab5
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
-                         opacity = 0.6, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
       }
-      p 
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_snp())){
         if(nrow(c2_snp$d_snp) != 0){
           snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
           snp_mgl <- subset(c2_snp$d_snp, Freq != 1)
+          col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
             } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
             }
             p <- vp_layer_snp2gene_sgl
           }
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
             } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
             }
             p <- vp_layer_snp2gene_mgl
           }
@@ -5217,7 +6154,8 @@ shinyServer(function(input, output, session){
   c_vp3 <- reactive({
     d <- c_pd3()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
       p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -5229,6 +6167,34 @@ shinyServer(function(input, output, session){
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     min_x <- c_min_x()
     min_y <- c_min_y()
@@ -5282,7 +6248,8 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_inweb_sig, input$c_color_inweb_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_inweb_sig, input$c_color_inweb_insig)
       p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -5295,17 +6262,46 @@ shinyServer(function(input, output, session){
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab3
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_bait_in())){
+        col <- input$c_color_inweb
         if(input$c_marker_text_inweb == "yes_label"){
-          vp_layer_inweb <- vp_layer_for_inweb(p, c3_multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb(p, c3_multi_vp$d_in, col)
         }
         else if(input$c_marker_text_inweb == "no_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c3_multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c3_multi_vp$d_in, col)
         }
         p <- vp_layer_inweb
       }
@@ -5360,10 +6356,12 @@ shinyServer(function(input, output, session){
     min_y <- c_min_y()
     max_x <- c_max_x()
     max_y <- c_max_y()
+    col_goi <- input$c_colorbrewer_theme_goi
     # vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      req(input$c_color_goi_sig, input$c_color_goi_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_goi_sig, input$c_color_goi_insig)
+      p <- plot_ly(colors = col_goi, showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -5377,7 +6375,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = col_goi, showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -5401,12 +6399,40 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab4
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(col = col_goi, showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c3_goi$d_g2s, data.frame)
         if(nrow(df) != 0){
@@ -5480,68 +6506,72 @@ shinyServer(function(input, output, session){
     max_y <- c_max_y()
     # vp_title <- c_pd3_inweb_hypergeometric()
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(showlegend = T, width = 300, height = 390)
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
-                         opacity = 0.8, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
-      }
-      p 
+      req(input$c_color_snp_sig, input$c_color_snp_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+      p <- plot_volcano_multiple_cond(data)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
       d$s[is.na(d$s)] <- 2
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "RdPu", showlegend = T, width = 300, height = 390)
-      p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI<0.9 (", nrow(below_thresh), ")"))
-      p <- add_markers(p, data = above_thresh, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#fc8d62"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("pLI>=0.9 (", nrow(above_thresh), ")"))
-      p <- add_markers(p, data = no_exist, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#8da0cb"),
-                       opacity = 0.8, 
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("not in ExAC (", nrow(no_exist), ")"))
+      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
       p
     } else if(input$c_colorscheme == "cbf"){
       data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(showlegend = T, width = 300, height = 390)
+      p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab5
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
-                         opacity = 0.6, 
-                         text = ~paste(gene), hoverinfo = "text", name = "pull down")
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
       }
-      p 
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_snp())){
         if(nrow(c3_snp$d_snp) != 0){
           snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
           snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
+          col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
           if(nrow(snp_sgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
             } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl)
+              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
             }
             p <- vp_layer_snp2gene_sgl
           }
           if(nrow(snp_mgl) != 0){
             if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
             } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl)
+              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
             }
             p <- vp_layer_snp2gene_mgl
           }
@@ -5613,7 +6643,8 @@ shinyServer(function(input, output, session){
     d <- c_pd1()
     cc <- c_sp1_cor()
     if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
       p <- plot_scatter_multiple_cond(d, d1)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -5623,15 +6654,45 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_scatter_exac_multi(d, below_thresh, above_thresh, no_exist)
       p
-    }
-    if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_scatter_multiple_cond(d, d1)
       p
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = FALSE, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
-      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -5661,7 +6722,8 @@ shinyServer(function(input, output, session){
     d <- c_pd2()
     cc <- c_sp2_cor()
     if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
       p <- plot_scatter_multiple_cond(d, d1)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -5671,15 +6733,45 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_scatter_exac_multi(d, below_thresh, above_thresh, no_exist)
       p
-    }
-    if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_scatter_multiple_cond(d, d1)
       p
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = FALSE, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
-      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -5710,7 +6802,8 @@ shinyServer(function(input, output, session){
     d <- c_pd3()
     cc <- c_sp3_cor()
     if(input$c_colorscheme == "fdr"){
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
+      req(input$c_color_indv_sig, input$c_color_indv_insig)
+      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
       p <- plot_scatter_multiple_cond(d, d1)
     } else if(input$c_colorscheme == "exac"){
       d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
@@ -5720,15 +6813,45 @@ shinyServer(function(input, output, session){
       no_exist <- subset(d, s == 2)
       p <- plot_scatter_exac_multi(d, below_thresh, above_thresh, no_exist)
       p
-    }
-    if(input$c_colorscheme == "cbf"){
+    } else if(input$c_colorscheme == "cbf"){
       d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
       p <- plot_scatter_multiple_cond(d, d1)
       p
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = FALSE, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p %>%
-      layout(xaxis = list(title = "rep1", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
-             yaxis = list(title = "rep2", range=~c((min(rep1, rep2))-1, (max(rep1, rep2))+1)), 
+      layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
+             yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              title = cc, titlefont = list(size=12))
   })
   
@@ -7247,6 +8370,7 @@ shinyServer(function(input, output, session){
   
   c_pf_db_search <- reactive({
     pf_db <- c_pf_db()
+    pf_db <- paste0("^", pf_db, "$")
     selected_pf <- prot_fam[grep(paste(pf_db,collapse='|'), names(prot_fam))]
     selected_pf <- lapply(selected_pf, function(x) x[!is.na(x)])
     selected_pf
@@ -7341,9 +8465,11 @@ shinyServer(function(input, output, session){
     min_y <- c_min_y()
     max_x <- c_max_x()
     max_y <- c_max_y()
+    pf_col <- input$c_colorbrewer_theme_pf
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
+      req(input$c_color_indv_sig, input$c_color_indv_insig, input$c_colorbrewer_theme_pf)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -7357,7 +8483,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -7381,11 +8507,39 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
         df <- ldply(c1_pf_db$d_g2s, data.frame)
         if(nrow(df) != 0){
           if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -7435,9 +8589,11 @@ shinyServer(function(input, output, session){
     min_y <- c_min_y()
     max_x <- c_max_x()
     max_y <- c_max_y()
+    pf_col <- input$c_colorbrewer_theme_pf
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
+      req(input$c_color_indv_sig, input$c_color_indv_insig, input$c_colorbrewer_theme_pf)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -7451,7 +8607,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -7475,11 +8631,39 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       df <- ldply(c2_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -7529,9 +8713,11 @@ shinyServer(function(input, output, session){
     min_y <- c_min_y()
     max_x <- c_max_x()
     max_y <- c_max_y()
+    pf_col <- input$c_colorbrewer_theme_pf
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
+      req(input$c_color_indv_sig, input$c_color_indv_insig, input$c_colorbrewer_theme_pf)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 300, height = 390)
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 6, cmin = 0, cmax = 1, color = ~col), 
@@ -7545,7 +8731,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = T, width = 300, height = 390)
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 300, height = 390)
       p <- add_markers(p, data = below_thresh, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                        opacity = 0.8, 
@@ -7569,11 +8755,39 @@ shinyServer(function(input, output, session){
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
       p 
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = T, width = 320, height = 390)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       df <- ldply(c3_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -7620,9 +8834,11 @@ shinyServer(function(input, output, session){
     d <- c_pd1()
     c1_pf_db <- c_pf_db_vp1()
     cc <- c_sp1_cor()
+    pf_col <- input$c_colorbrewer_theme_pf
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      req(input$c_color_indv_sig, input$c_color_indv_insig, input$c_colorbrewer_theme_pf)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       for(i in nrow(data)){
@@ -7637,7 +8853,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
@@ -7664,8 +8880,39 @@ shinyServer(function(input, output, session){
                          opacity = 0.6, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = FALSE, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       df <- ldply(c1_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -7706,9 +8953,11 @@ shinyServer(function(input, output, session){
     d <- c_pd2()
     c2_pf_db <- c_pf_db_vp2()
     cc <- c_sp2_cor()
+    pf_col <- input$c_colorbrewer_theme_pf
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      req(input$c_color_indv_sig, input$c_color_indv_insig, input$c_colorbrewer_theme_pf)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       for(i in nrow(data)){
@@ -7723,7 +8972,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
@@ -7750,8 +8999,39 @@ shinyServer(function(input, output, session){
                          opacity = 0.6, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = FALSE, width = 320, height = 320) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       df <- ldply(c2_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -7792,9 +9072,11 @@ shinyServer(function(input, output, session){
     d <- c_pd3()
     c3_pf_db <- c_pf_db_vp3()
     cc <- c_sp3_cor()
+    pf_col <- input$c_colorbrewer_theme_pf
     if(input$c_colorscheme == "fdr"){
-      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      req(input$c_color_indv_sig, input$c_color_indv_insig, input$c_colorbrewer_theme_pf)
+      data <- separate_to_groups_for_color_integrated(d, input$a_fdr_thresh, input$c_color_indv_sig, input$c_color_indv_insig)
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))), y = ~c(ceiling(min(rep1, rep2)), floor(max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       for(i in nrow(data)){
@@ -7809,7 +9091,7 @@ shinyServer(function(input, output, session){
       below_thresh <- subset(d, s < 0.9)
       above_thresh <- subset(d, s >= 0.9)
       no_exist <- subset(d, s == 2)
-      p <- plot_ly(colors = "Purples", showlegend = F, width = 320, height = 320) 
+      p <- plot_ly(colors = pf_col, showlegend = F, width = 320, height = 320) 
       p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
                      line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
       p <- add_markers(p, data = below_thresh, x = ~rep1, y = ~rep2, 
@@ -7836,8 +9118,39 @@ shinyServer(function(input, output, session){
                          opacity = 0.6, 
                          text = ~paste(gene), hoverinfo = "text", name = "pull down")
       }
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(colors = pf_col, showlegend = FALSE, width = 550, height = 550) 
+      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                     text = "x=y", hoverinfo = "text",
+                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
+      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                       opacity = 0.8,
+                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      for(i in nrow(data)){
+        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                         opacity = 1,
+                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      }
+      p
     }
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac"){
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       df <- ldply(c3_pf_db$d_g2s, data.frame)
       if(nrow(df) != 0){
         if(input$c_marker_text_prot_fam_db == "yes_label"){
@@ -7882,7 +9195,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', ""),
       need(input$c_make_plot_inweb != 0, "")
     )
-    c_vp_colorbar_dl()
+    c_vp_colorbar_inweb()
   })
   
   output$c_goi_colorbar <- renderPlot({
@@ -7890,7 +9203,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', ""),
       need(input$c_make_plot_goi != 0, "")
     )
-    c_vp_colorbar_dl()
+    c_vp_colorbar_goi()
   })
   
   output$c_snp_colorbar <- renderPlot({
@@ -7898,7 +9211,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', ""),
       need(input$c_make_plot_snp != 0, "")
     )
-    c_vp_colorbar_dl()
+    c_vp_colorbar_snp()
   })
   
   output$VolcanoPlot_c1 <- renderPlotly({
@@ -9000,7 +10313,7 @@ shinyServer(function(input, output, session){
   getPage_qc<-function() {
     return(tags$iframe(src = "qc.html"
                        , style="width:100%;",  frameborder="0"
-                       , height = "2800px"))
+                       , height = "6100px"))
   }
   
   output$qc <- renderUI({
@@ -9010,7 +10323,7 @@ shinyServer(function(input, output, session){
   getPage_integrated<-function() {
     return(tags$iframe(src = "integrated.html"
                        , style="width:100%;",  frameborder="0"
-                       , height = "3650px"))
+                       , height = "5250px"))
   }
   
   output$overlay <- renderUI({
@@ -9050,7 +10363,7 @@ shinyServer(function(input, output, session){
   getPage_mfc<-function() {
     return(tags$iframe(src = "mfc.html"
                        , style="width:100%;",  frameborder="0"
-                       , height = "3000px"))
+                       , height = "3100px"))
   }
   
   output$mfc <- renderUI({
