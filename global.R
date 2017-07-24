@@ -9,3 +9,5 @@ exac <- read.table("data/constrained_cleaned_exac_with_pHI_Aug26.txt", header = 
 inweb_combined <- read.table("data/InWeb_pooled_all_genes.txt")
 prot_fam <- read.table("data/protFams_genes_cols.txt", 
                        sep = "\t", quote = "", na.strings=c("","NA"), header = T, check.names = F)
+marker_cols <- read.table("data/colors.txt")
+add_marker_cols <- read.table("data/colors_markers.txt")
