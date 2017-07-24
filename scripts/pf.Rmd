@@ -3,7 +3,7 @@ Report generated using Genoppi from Lage Lab
 https://github.com/lagelab/Genoppi
 <br>
 <br>
-<h4>protein family plot</h4>
+<h4>Protein Family</h4>
 <br/>
 <br/>
 ```{r warning = FALSE, echo = FALSE}
