@@ -1,3 +1,7 @@
+---
+title: "Basic report"
+output: html_document
+---
 Report generated using Genoppi from Lage Lab
 <br>
 https://github.com/lagelab/Genoppi
@@ -16,7 +20,7 @@ params$d
 ```
 <br>
 <br>
-```{r warning = FALSE, echo = FALSE}
+```{r,echo=FALSE, fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
 params$a
 ```
 
