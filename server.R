@@ -3137,7 +3137,7 @@ shinyServer(function(input, output, session){
   )
   
   output$download_basic_plots <- downloadHandler(
-    filename = "quality-control.html",
+    filename = "basic-plots.html",
     content = function(file) {
       df <- a_in_pulldown()
       if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
@@ -9715,7 +9715,7 @@ shinyServer(function(input, output, session){
   )
   
   output$c_download_basic_plots <- downloadHandler(
-    filename = "quality-control-mfc.html",
+    filename = "basic-plots-mfc.html",
     content = function(file) {
       if(!is.null(input$c_file_pulldown1) & is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
         df <- c_orig_pd1()
