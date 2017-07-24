@@ -14,6 +14,21 @@ biocLite("limma")
 install.packages(c("shiny", "shinyjs", "plotly", "stringr", "VennDiagram", "rmarkdown", "plyr", "data.table", "ggplot2", "RColorBrewer"))
 ```
 
+Genoppi is stable using the following versions of each packages:
+
+```r
+shiny 1.0.3
+shinyjs 0.9
+plotly 4.6.0
+stringr 1.2.0
+VennDiagram 1.6.17
+rmarkdown 1.5
+plyr 1.8.4
+data.table 1.10.4
+ggplot2 2.2.1
+RColorBrewer 1.1-2
+```
+
 ## Running Genoppi 
 Genoppi can be 1. downloaded and ran locally or 2. run directly from Genoppi git repository. 
 
