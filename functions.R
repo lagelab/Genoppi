@@ -25,77 +25,73 @@ calculate_moderated_ttest <- function(input_file){
   calculated
 }
 
-#Blue to green gradient
-separate_to_groups_for_color <- function(vp_data, threshold){
-  below_thresh <- subset(vp_data, FDR <= threshold)
-  above_thresh <- subset(vp_data, FDR > threshold+0.01)
-  thresh <- subset(vp_data, (FDR > threshold & FDR <= threshold+0.01))
-  below_thresh <- below_thresh[order(below_thresh$FDR), ]
-  above_thresh <- above_thresh[order(above_thresh$FDR), ]
-  thresh <- thresh[order(thresh$FDR), ]
-  a_col <- colorRampPalette(c('lightskyblue1', 'blue'))(nrow(below_thresh))
-  below_thresh <- cbind(below_thresh, rev(a_col))
-  names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
-  b_col <- colorRampPalette(c('grey100', "lightgreen", "darkgreen"))(nrow(above_thresh))
-  above_thresh <- cbind(above_thresh, b_col)
-  names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
-  c_col <- colorRampPalette(c('lightskyblue1', 'grey100'))(nrow(thresh))
-  thresh <- cbind(thresh, c_col)
-  names(thresh)[names(thresh) == 'c_col'] <- 'col'
-  data <- rbind(below_thresh, above_thresh, thresh)
+#Gradient for user upload color
+separate_to_groups_for_color_continuous <- function(vp_data, color_data, color_theme){
+  color_data$score_rounded <- round(color_data$score, 1)
+  col <- c(color = colorRampPalette(brewer.pal(11, color_theme))(((max(color_data$score_rounded)-min(color_data$score_rounded))*10 + 1)))
+  unique_col <- data.frame(cbind("unique_score"=seq(min(color_data$score_rounded), max(color_data$score_rounded), by=0.1), col))
+  color_d <- merge(unique_col, color_data, by.x = "unique_score", by.y = "score_rounded")
+  
+  vp_data$score <- color_data$score[match(vp_data$gene, color_data$gene)]
+  vp_data$score[is.na(vp_data$score)] <- "empty"
+  yes_exist <- subset(vp_data, score != "empty")
+  no_exist <- subset(vp_data, score == "empty")
+  
+  yes_exist$col <- color_d$col[match(yes_exist$gene, color_d$gene)]
+  df1 <- yes_exist
+  
+  list(df1=df1, no_exist=no_exist)
 }
 
-#Grayscale gradient
-separate_to_groups_for_cbf <- function(vp_data, threshold){
-  below_thresh <- subset(vp_data, FDR <= threshold)
-  above_thresh <- subset(vp_data, FDR > threshold+0.01)
-  thresh <- subset(vp_data, (FDR > threshold & FDR <= threshold+0.01))
-  below_thresh <- below_thresh[order(below_thresh$FDR), ]
-  above_thresh <- above_thresh[order(above_thresh$FDR), ]
-  thresh <- thresh[order(thresh$FDR), ]
-  a_col <- colorRampPalette(c('#737373', '#525252'))(nrow(below_thresh))
-  below_thresh <- cbind(below_thresh, rev(a_col))
-  names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
-  b_col <- colorRampPalette(c('#F2F2F2', '#AAAAAA'))(nrow(above_thresh))
-  above_thresh <- cbind(above_thresh, b_col)
-  names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
-  c_col <- colorRampPalette(c('#FCFCFC', '#ffffff'))(nrow(thresh))
-  thresh <- cbind(thresh, c_col)
-  names(thresh)[names(thresh) == 'c_col'] <- 'col'
-  data <- rbind(below_thresh, above_thresh, thresh)
+#Discrete for user upload color
+separate_to_groups_for_color_discrete <- function(vp_data, color_data, color_theme){
+  unique_score <- unique(sort(color_data$score))
+  col <- c(color = colorRampPalette(brewer.pal(3, color_theme))(length(unique_score)))
+  unique_col <- data.frame(cbind(unique_score, col))
+  color_d <- merge(unique_col, color_data, by.x = "unique_score", by.y = "score")
+  
+  vp_data$score <- color_data$score[match(vp_data$gene, color_data$gene)]
+  vp_data$score[is.na(vp_data$score)] <- "empty"
+  yes_exist <- subset(vp_data, score != "empty")
+  no_exist <- subset(vp_data, score == "empty")
+  
+  yes_exist$col <- color_d$col[match(yes_exist$gene, color_d$gene)]
+  df1 <- yes_exist
+  
+  list(df1=df1, no_exist=no_exist)
 }
 
-#Blue and green separate
-separate_to_groups_for_color_integrated <- function(vp_data, threshold){
-  below_thresh <- subset(vp_data, FDR <= threshold)
-  above_thresh <- subset(vp_data, FDR > threshold)
-  a_col <- colorRampPalette(c('seagreen3', 'seagreen3'))(nrow(below_thresh))
+#Marker colors based on FDR
+separate_to_groups_for_color_integrated <- function(vp_data, threshold, col1, col2){
+  below_thresh <- subset(vp_data, FDR < threshold)
+  above_thresh <- subset(vp_data, FDR >= threshold)
+  a_col <- colorRampPalette(c(col1, col1))(nrow(below_thresh))
   below_thresh <- cbind(below_thresh, rev(a_col))
   names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
-  b_col <- colorRampPalette(c("royalblue2", "royalblue2"))(nrow(above_thresh))
+  b_col <- colorRampPalette(c(col2, col2))(nrow(above_thresh))
   above_thresh <- cbind(above_thresh, b_col)
   names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
   data <- rbind(below_thresh, above_thresh)
 }
 
 #Blue and green separate, specifically in case plot opacity is low
-separate_to_groups_for_color_integrated_bar <- function(vp_data, threshold){
-  below_thresh <- subset(vp_data, FDR <= threshold)
-  above_thresh <- subset(vp_data, FDR > threshold)
-  #
-  a_col <- colorRampPalette(c('seagreen3', 'seagreen3'))(nrow(below_thresh))
-  below_thresh <- cbind(below_thresh, rev(a_col))
-  names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
-  b_col <- colorRampPalette(c("royalblue2", "royalblue2"))(nrow(above_thresh))
-  above_thresh <- cbind(above_thresh, b_col)
-  names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
-  data <- rbind(below_thresh, above_thresh)
-}
+# separate_to_groups_for_color_integrated_bar <- function(vp_data, threshold){
+#   below_thresh <- subset(vp_data, FDR <= threshold)
+#   above_thresh <- subset(vp_data, FDR > threshold)
+#   #
+#   a_col <- colorRampPalette(c('seagreen3', 'seagreen3'))(nrow(below_thresh))
+#   below_thresh <- cbind(below_thresh, rev(a_col))
+#   names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
+#   b_col <- colorRampPalette(c("royalblue2", "royalblue2"))(nrow(above_thresh))
+#   above_thresh <- cbind(above_thresh, b_col)
+#   names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
+#   data <- rbind(below_thresh, above_thresh)
+# }
 
 #Two gray tones
 separate_to_groups_for_cbf_integrated <- function(vp_data, threshold){
-  below_thresh <- subset(vp_data, FDR <= threshold)
-  above_thresh <- subset(vp_data, FDR > threshold)
+  below_thresh <- subset(vp_data, FDR < threshold)
+  above_thresh <- subset(vp_data, FDR >= threshold)
   a_col <- colorRampPalette(c('#525252', '#525252'))(nrow(below_thresh))
   below_thresh <- cbind(below_thresh, rev(a_col))
   names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
@@ -106,17 +102,17 @@ separate_to_groups_for_cbf_integrated <- function(vp_data, threshold){
 }
 
 #Two gray tones, specifically in case plot opacity is low
-separate_to_groups_for_cbf_integrated_bar <- function(vp_data, threshold){
-  below_thresh <- subset(vp_data, FDR <= threshold)
-  above_thresh <- subset(vp_data, FDR > threshold)
-  a_col <- colorRampPalette(c('#969696', '#969696'))(nrow(below_thresh))
-  below_thresh <- cbind(below_thresh, rev(a_col))
-  names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
-  b_col <- colorRampPalette(c("#d9d9d9", "#d9d9d9"))(nrow(above_thresh))
-  above_thresh <- cbind(above_thresh, b_col)
-  names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
-  data <- rbind(below_thresh, above_thresh)
-}
+# separate_to_groups_for_cbf_integrated_bar <- function(vp_data, threshold){
+#   below_thresh <- subset(vp_data, FDR <= threshold)
+#   above_thresh <- subset(vp_data, FDR > threshold)
+#   a_col <- colorRampPalette(c('#969696', '#969696'))(nrow(below_thresh))
+#   below_thresh <- cbind(below_thresh, rev(a_col))
+#   names(below_thresh)[names(below_thresh) == 'rev(a_col)'] <- 'col'
+#   b_col <- colorRampPalette(c("#d9d9d9", "#d9d9d9"))(nrow(above_thresh))
+#   above_thresh <- cbind(above_thresh, b_col)
+#   names(above_thresh)[names(above_thresh) == 'b_col'] <- 'col'
+#   data <- rbind(below_thresh, above_thresh)
+# }
 
 separate_to_groups_for_exac_bar <- function(vp_data){
   grp1 <- subset(vp_data, FDR <= 0.33)
@@ -142,6 +138,21 @@ plot_volcano_qc <- function(d){
                      marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")), 
                      opacity = 0.9, 
                      text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text", name = "pull down")
+  }
+  p
+}
+
+plot_volcano_user_color <- function(n_exist, y_exist){
+  p <- plot_ly(showlegend = T, width = 550, height = 550) 
+  p <- add_markers(p, data = n_exist, x = ~logFC, y = ~-log10(pvalue),
+                   marker = list(size = 8, line = list(width=0.1, color = "black"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                   opacity = 0.8, 
+                   text = ~paste(gene), hoverinfo = "text", name = paste0("not in data (", nrow(df$no_exist), ")"))
+  for(i in nrow(y_exist)){
+    p <- add_markers(p, data = y_exist, x = ~logFC, y = ~-log10(pvalue),
+                     marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")), 
+                     opacity = 0.9, 
+                     text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text") #, name = "pull down"
   }
   p
 }
@@ -172,7 +183,7 @@ plot_volcano_multiple_cond_for_goi <- function(d){
 
 #volcano - exac colorscale
 plot_volcano_exac <- function(b, a, n){
-  p <- plot_ly(showlegend = T, width = 550, height = 550)
+  p <- plot_ly(showlegend = T, width = 650, height = 550)
   p <- add_markers(p, data = b, x = ~logFC, y = ~-log10(pvalue),
                    marker = list(size = 8, line = list(width=0.1, color = 'black'), cmin = 0, cmax = 1, color = "#66c2a5"),
                    opacity = 0.8, 
@@ -298,17 +309,17 @@ search_scatter <- function(p, found){
               type = 'scatter', showlegend = FALSE)
 }
 
-vp_layer_for_inweb <- function(p, d_in){
+vp_layer_for_inweb <- function(p, d_in, marker_col){
   add_markers(p, data = d_in, x = ~logFC, y= ~-log10(pvalue),
-              marker = list(color = "#ffff33", size = 7, line = list(width=0.4, color = "black"), opacity = 1),
+              marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1),
               mode = "markers+text", hoverinfo = "text", legendgroup = "group1",
               text = ~paste(gene), textposition =  ~ifelse(logFC>0,"middle right","middle left"), textfont = list(size = 11),
               name = "InWeb") 
 }
 
-vp_layer_for_inweb_no_text <- function(p, d_in){
+vp_layer_for_inweb_no_text <- function(p, d_in, marker_col){
   add_markers(p, data = d_in, x = ~logFC, y= ~-log10(pvalue),
-              marker = list(color = "#ffff33", size = 7, line = list(width=0.4, color = "black"), opacity = 1),
+              marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1),
               mode = "markers+text", hoverinfo = "text", legendgroup = "group1",
               name = "InWeb") 
 }
@@ -330,17 +341,17 @@ vp_layer_for_inweb_cbf_no_text <- function(p, d_in){
               name = "InWeb") 
 }
 
-vp_layer_for_snp_to_gene_sgl <- function(p, snp_sgl){
+vp_layer_for_snp_to_gene_sgl <- function(p, snp_sgl, marker_col){
   add_markers(p, data = snp_sgl, x = ~logFC, y= ~-log10(pvalue),
-              marker = list(color = "#80cdc1", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = "square"
+              marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = "square"
               mode = "markers+text", hoverinfo = "text", legendgroup = "group3",
               text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "SGL gene")
 }
 
-vp_layer_for_snp_to_gene_sgl_no_text <- function(p, snp_sgl){
+vp_layer_for_snp_to_gene_sgl_no_text <- function(p, snp_sgl, marker_col){
   add_markers(p, data = snp_sgl, x = ~logFC, y= ~-log10(pvalue),
-              marker = list(color = "#80cdc1", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = "square"
+              marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = "square"
               mode = "markers+text", hoverinfo = "text", legendgroup = "group3",
               # text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "SGL gene")
@@ -361,17 +372,17 @@ vp_layer_for_snp_to_gene_sgl_cbf_no_text <- function(p, snp_sgl){
               name = "SGL gene")
 }
 
-vp_layer_for_snp_to_gene_mgl <- function(p, snp_mgl){
+vp_layer_for_snp_to_gene_mgl <- function(p, snp_mgl, marker_col){
   add_markers(p, data = snp_mgl, x = ~logFC, y= ~-log10(pvalue),
-              marker = list(color = "#c2a5cf", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = 2
+              marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = 2
               mode = "markers+text", hoverinfo = "text", legendgroup = "group4",
               text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
               name = "MGL gene")
 }
 
-vp_layer_for_snp_to_gene_mgl_no_text <- function(p, snp_mgl){
+vp_layer_for_snp_to_gene_mgl_no_text <- function(p, snp_mgl, marker_col){
   add_markers(p, data = snp_mgl, x = ~logFC, y= ~-log10(pvalue),
-              marker = list(color = "#c2a5cf", size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = 2
+              marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = 2
               mode = "markers+text", hoverinfo = "text", legendgroup = "group4",
               name = "MGL gene")
 }
