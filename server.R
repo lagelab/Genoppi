@@ -44,7 +44,7 @@ shinyServer(function(input, output, session){
                  c("FDR" = "fdr", 
                    "ExAC" = "exac",
                    "Grayscale" = "cbf",
-                   "User upload" = "user"),
+                   "User score" = "user"),
                  inline = T)
   })
   
@@ -4094,7 +4094,7 @@ shinyServer(function(input, output, session){
                  c("FDR" = "fdr", 
                    "ExAC" = "exac",
                    "Grayscale" = "cbf",
-                   "User upload" = "user"),
+                   "User score" = "user"),
                  inline = T)
   })
   
