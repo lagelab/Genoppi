@@ -1247,6 +1247,7 @@ shinyServer(function(input, output, session){
         need(!is.null(input$file_color), "Please upload file with gene and score")
       )
       d1 <- a_in_file_color()
+      req(input$colorbrewer_theme)
       col_theme <- input$colorbrewer_theme
       if(input$colorscheme_style == "cont"){
         df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
@@ -1474,6 +1475,7 @@ shinyServer(function(input, output, session){
         need(!is.null(input$file_color), "Please upload file with gene and score")
       )
       d1 <- a_in_file_color()
+      req(input$colorbrewer_theme)
       col_theme <- input$colorbrewer_theme
       if(input$colorscheme_style == "cont"){
         df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
