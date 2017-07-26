@@ -1850,16 +1850,13 @@ shinyServer(function(input, output, session){
         data <- df$df1
         data1 <- df$no_exist
       }
-      p <- plot_ly(colors = p_col, showlegend = FALSE, width = 550, height = 550) 
-      p <- add_lines(p, data = d, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
-                     text = "x=y", hoverinfo = "text",
-                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE)
-      p <- add_markers(p, data = data1, x = ~rep1, y = ~rep2,
+      p <- plot_ly(colors = col_theme, showlegend = T, width = 650, height = 550)
+      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
                        opacity = 0.8,
                        text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
       for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~rep1, y = ~rep2,
+        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
                          opacity = 1,
                          text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
