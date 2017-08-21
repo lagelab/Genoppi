@@ -1874,9 +1874,9 @@ shinyServer(function(input, output, session){
       if(!is.null(a_bait_gene_layer())){
         col <- input$a_color_inweb
         if(input$a_marker_text == "yes_label"){
-          vp_layer_inweb <- vp_layer_for_inweb(p, multi_vp$d_in, col)
+          vp_layer_inweb <- vp_layer_for_inweb_sf(p, multi_vp$d_in, col)
         } else if(input$a_marker_text == "no_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, multi_vp$d_in, col)
+          vp_layer_inweb <- vp_layer_for_inweb_no_text_sf(p, multi_vp$d_in, col)
         }
         p <- vp_layer_inweb
       }
@@ -1925,9 +1925,9 @@ shinyServer(function(input, output, session){
       # InWeb, SNP to gene, and genes upload
       if(!is.null(a_bait_gene_layer())){
         if(input$a_marker_text == "yes_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_cbf(p, multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb_cbf_sf(p, multi_vp$d_in)
         } else if(input$a_marker_text == "no_label"){
-          vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text(p, multi_vp$d_in)
+          vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text_sf(p, multi_vp$d_in)
         }
         p <- vp_layer_inweb
       }
@@ -2020,7 +2020,7 @@ shinyServer(function(input, output, session){
         row.names(i_count) <- c("InWeb")
         colnames(i_count) <- c(paste0("FDR<", input$a_fdr_thresh, ", pvalue<", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "<logFC<", input$a_logFC_thresh[2]))
         orig_count <- do.call("rbind", list(orig_count, i_count))
-      } else {
+      } else if(nrow(multi_vp$d_in)==0){
         orig_count
       }
     }
@@ -2581,36 +2581,99 @@ shinyServer(function(input, output, session){
     increase_size <- bpf_data[[6]]
     
     if (bpfmsizing == "change"){
-      p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
-        #background
-        add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
-                    marker = list(color = 'rgba(176,196,222,08)'),
-                    text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
-        add_markers(data = enM_gna, x = ~logFC, y = ~-log10(pvalue), 
-                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
-                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                    name="Unassigned genes") %>%
-        add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue),
-                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
-                    color = ~factor(family), 
-                    text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+      if(nrow(enM_families)==0 & nrow(enM_gna)==0){
+        validate(
+          need(nrow(enM_families)>0 & nrow(enM_gna)>0, "No match in protein families assignment")
+        )
+      } else if(nrow(enM_families)>0 | nrow(enM_gna)>0){
+        p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
+          #background
+          add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
+                      marker = list(color = 'rgba(176,196,222,08)'),
+                      text = ~paste(gene), hoverinfo = "text", showlegend = FALSE)
+        if(nrow(enM_gna)>0){
+          p <- add_markers(p, data = enM_gna, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                           text = ~paste(gene, name, sep = "  "), hoverinfo="text",
+                           name="Unassigned genes")
+        }
+        if(nrow(enM_families)>0){
+          p <- add_markers(p, data = enM_families, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
+                           color = ~factor(family),
+                           text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+        }
+        p
+      }
     } else{
-      p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
-        #background
-        add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
-                    marker = list(color = 'rgba(176,196,222,08)'),
-                    text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
-        add_markers(data = enM_gna, x = ~logFC, y = ~-log10(pvalue), 
-                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
-                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                    name="Unassigned genes") %>%
-        add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue),
-                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = 12),
-                    color = ~factor(family), 
-                    text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+      if(nrow(enM_families)==0 & nrow(enM_gna)==0){
+        validate(
+          need(nrow(enM_families)>0 & nrow(enM_gna)>0, "No match in protein families assignment")
+        )
+      } else if(nrow(enM_families)>0 | nrow(enM_gna)>0){
+        p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
+          #background
+          add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
+                      marker = list(color = 'rgba(176,196,222,08)'),
+                      text = ~paste(gene), hoverinfo = "text", showlegend = FALSE)
+        if(nrow(enM_gna)>0){
+          p <- add_markers(p, data = enM_gna, x = ~logFC, y = ~-log10(pvalue), 
+                           marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                           text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                           name="Unassigned genes")
+        }
+        if(nrow(enM_families)>0){
+          p <- add_markers(p, data = enM_families, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = 12),
+                           color = ~factor(family), 
+                           text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+        }
+        p
+      }
     }
     p
   })
+  
+  # a_bpf <- reactive({
+  #   bpf_data <- a_bpf_data()
+  #   bpf <- bpf_data[[1]]
+  #   enM_families <- bpf_data[[2]]
+  #   enM_gna <- bpf_data[[3]]
+  #   howmany <- bpf_data[[4]]
+  #   bpfmsizing <- bpf_data[[5]]
+  #   increase_size <- bpf_data[[6]]
+  #   
+  #   if (bpfmsizing == "change"){
+  #     p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
+  #       #background
+  #       add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
+  #                   marker = list(color = 'rgba(176,196,222,08)'),
+  #                   text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
+  #       add_markers(data = enM_gna, x = ~logFC, y = ~-log10(pvalue), 
+  #                   marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+  #                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+  #                   name="Unassigned genes") %>%
+  #       add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue),
+  #                   marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
+  #                   color = ~factor(family), 
+  #                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  #   } else{
+  #     p <- plot_ly(colors = rainbow(howmany), width = 1200, height = 800) %>%
+  #       #background
+  #       add_markers(data = bpf, x = ~logFC, y = ~-log10(pvalue), opacity = 0.6,
+  #                   marker = list(color = 'rgba(176,196,222,08)'),
+  #                   text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
+  #       add_markers(data = enM_gna, x = ~logFC, y = ~-log10(pvalue), 
+  #                   marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+  #                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+  #                   name="Unassigned genes") %>%
+  #       add_markers(data = enM_families, x = ~logFC, y = ~-log10(pvalue),
+  #                   marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = 12),
+  #                   color = ~factor(family), 
+  #                   text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+  #   }
+  #   p
+  # })
   
   a_bpf_plus <- reactive({
     validate(
@@ -2679,39 +2742,60 @@ shinyServer(function(input, output, session){
     increase_size <- bpf_data[[6]]
     
     if (bpfmsizing == "change"){
-      p <- plot_ly(colors = rainbow(howmany), width = 950, height = 800) 
-      p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
-                     text = "x=y", hoverinfo = "text",
-                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
-        #background
-        add_markers(data = bpf, x = ~rep1, y = ~rep2, opacity = 0.6,
-                    marker = list(color = 'rgba(176,196,222,08)'),
-                    text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
-        add_markers(data = enM_gna, x = ~rep1, y = ~rep2, 
-                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
-                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                    name="Unassigned genes") %>%
-        add_markers(data = enM_families, x = ~rep1, y = ~rep2,
-                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
-                    color = ~factor(family), 
-                    text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+      if(nrow(enM_families)==0 & nrow(enM_gna)==0){
+        validate(
+          need(nrow(enM_families)>0 & nrow(enM_gna)>0, "No match in protein families assignment")
+        )
+      } else if(nrow(enM_families)>0 | nrow(enM_gna)>0){
+        p <- plot_ly(colors = rainbow(howmany), width = 950, height = 800)
+        p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                       text = "x=y", hoverinfo = "text",
+                       line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
+          add_markers(data = bpf, x = ~rep1, y = ~rep2, opacity = 0.6,
+                      marker = list(color = 'rgba(176,196,222,08)'),
+                      text = ~paste(gene), hoverinfo = "text", showlegend = FALSE)
+        if(nrow(enM_gna)>0){
+          p <- add_markers(p, data = enM_gna, x = ~rep1, y = ~rep2, 
+                           marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                           text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                           name="Unassigned genes")
+        }
+        if(nrow(enM_families)>0){
+          p <- add_markers(p, data = enM_families, x = ~rep1, y = ~rep2,
+                           marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = ~increase_size*frequency),
+                           color = ~factor(family), 
+                           text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+        }
+        p
+      }
     } else{
-      p <- plot_ly(colors = rainbow(howmany)) #, width = 850, height = 800
-      p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
-                     text = "x=y", hoverinfo = "text",
-                     line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
-        #background
-        add_markers(data = bpf, x = ~rep1, y = ~rep2, opacity = 0.6,
-                    marker = list(color = 'rgba(176,196,222,08)'),
-                    text = ~paste(gene), hoverinfo = "text", showlegend = FALSE) %>%
-        add_markers(data = enM_gna, x = ~rep1, y = ~rep2, 
-                    marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
-                    text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                    name="Unassigned genes") %>%
-        add_markers(data = enM_families, x = ~rep1, y = ~rep2,
-                    marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = 12),
-                    color = ~factor(family), 
-                    text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+      if(nrow(enM_families)==0 & nrow(enM_gna)==0){
+        validate(
+          need(nrow(enM_families)>0 & nrow(enM_gna)>0, "No match in protein families assignment")
+        )
+      } else if(nrow(enM_families)>0 | nrow(enM_gna)>0){
+        p <- plot_ly(colors = rainbow(howmany)) #, width = 850, height = 800
+        p <- add_lines(p, data = bpf, x = ~c((min(rep1, rep2)), (max(rep1, rep2))), y = ~c((min(rep1, rep2)), (max(rep1, rep2))),
+                       text = "x=y", hoverinfo = "text",
+                       line = list(dash = "dash", width = 1, color = "#252525"), showlegend = FALSE) %>%
+          #background
+          add_markers(data = bpf, x = ~rep1, y = ~rep2, opacity = 0.6,
+                      marker = list(color = 'rgba(176,196,222,08)'),
+                      text = ~paste(gene), hoverinfo = "text", showlegend = FALSE)
+        if(nrow(enM_gna)>0){
+          p <- add_markers(p, data = enM_gna, x = ~rep1, y = ~rep2, 
+                                   marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                                   name="Unassigned genes")
+        }
+        if(nrow(enM_families)>0){
+          p <- add_markers(p, data = enM_families, x = ~rep1, y = ~rep2,
+                           marker = list(symbol = c('square'), opacity = 0.8, line = list(width=0.6, color = "black"), size = 12),
+                           color = ~factor(family), 
+                           text = ~paste(gene, family, frequency, sep = "  "), hoverinfo = "text")
+        }
+        p
+      }
     }
     p <- p %>%
       layout(xaxis = list(title = "rep1", range=c((min(bpf$rep1, bpf$rep2))-1, (max(bpf$rep1, bpf$rep2))+1)), 
@@ -4310,7 +4394,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', ""),
       need(input$c_file_pulldown2 != '', "")
     )
-    if(input$c_bait != ""){
+    if(any(input$c_bait != "") | !is.null(input$c_bait)){
       actionButton("c_make_plot_inweb", "Generate plots")
     }
   })
@@ -5322,16 +5406,20 @@ shinyServer(function(input, output, session){
         data1 <- df$no_exist
       }
       p <- plot_ly(showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -5457,17 +5545,21 @@ shinyServer(function(input, output, session){
         data <- df$df1
         data1 <- df$no_exist
       }
-      p <- plot_ly(col = col_goi, showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -5485,10 +5577,10 @@ shinyServer(function(input, output, session){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
-          p <- vp_layer_no_genes
-        }
+        } #else{
+        #   vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        #   p <- vp_layer_no_genes
+        # }
       }
     } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
@@ -5500,10 +5592,10 @@ shinyServer(function(input, output, session){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- vp_layer_no_genes
-        }
+        } #else{
+        #   vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        #   p <- vp_layer_no_genes
+        # }
       }
     }
     p <- p %>% 
@@ -5579,16 +5671,20 @@ shinyServer(function(input, output, session){
         data1 <- df$no_exist
       }
       p <- plot_ly(showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -5799,16 +5895,20 @@ shinyServer(function(input, output, session){
         data1 <- df$no_exist
       }
       p <- plot_ly(showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -5934,17 +6034,21 @@ shinyServer(function(input, output, session){
         data <- df$df1
         data1 <- df$no_exist
       }
-      p <- plot_ly(col = col_goi, showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -5962,10 +6066,10 @@ shinyServer(function(input, output, session){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
-          p <- vp_layer_no_genes
-        }
+        } #else{
+        #   vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        #   p <- vp_layer_no_genes
+        # }
       }
     } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
@@ -5977,10 +6081,10 @@ shinyServer(function(input, output, session){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- vp_layer_no_genes
-        }
+        } #else{
+        #   vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        #   p <- vp_layer_no_genes
+        # }
       }
     }
     p <- p %>% 
@@ -6057,16 +6161,20 @@ shinyServer(function(input, output, session){
         data1 <- df$no_exist
       }
       p <- plot_ly(showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -6277,16 +6385,20 @@ shinyServer(function(input, output, session){
         data1 <- df$no_exist
       }
       p <- plot_ly(showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -6413,17 +6525,21 @@ shinyServer(function(input, output, session){
         data <- df$df1
         data1 <- df$no_exist
       }
-      p <- plot_ly(col = col_goi, showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -6441,10 +6557,10 @@ shinyServer(function(input, output, session){
             vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
           }
           p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
-          p <- vp_layer_no_genes
-        }
+        } #else{
+        #   vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        #   p <- vp_layer_no_genes
+        # }
       }
     } else if(input$c_colorscheme == "cbf"){
       if(!is.null(c_upload_genes())){
@@ -6456,10 +6572,10 @@ shinyServer(function(input, output, session){
             vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
           }
           p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- vp_layer_no_genes
-        }
+        } #else{
+        #   vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        #   p <- vp_layer_no_genes
+        # }
       }
     }
     p <- p %>% 
@@ -6535,16 +6651,20 @@ shinyServer(function(input, output, session){
         data1 <- df$no_exist
       }
       p <- plot_ly(showlegend = T, width = 320, height = 390)
-      p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                       marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                       opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      for(i in nrow(data)){
-        p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                         opacity = 1,
-                         text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                         name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
       }
       p
     }
@@ -10302,7 +10422,7 @@ shinyServer(function(input, output, session){
   getPage_basics<-function() {
     return(tags$iframe(src = "basics.html"
                        , style="width:100%;",  frameborder="0"
-                       ,height = "2800px"))
+                       ,height = "3000px"))
   }
   
   output$basics <- renderUI({
