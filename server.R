@@ -3083,6 +3083,7 @@ shinyServer(function(input, output, session){
       shinyjs::disable("download_enriched_families_bpf")
       shinyjs::disable("download_venn_diagram_hypergeometric")
       shinyjs::disable("download_snp_to_genes")
+      shinyjs::disable("download_goi_overlap")
       shinyjs::disable("download_venn_diagram_GOI_plot")
       shinyjs::disable("download_venn_diagram_SNP_plot")
       shinyjs::disable("download_mapped_uniprot")
@@ -3162,6 +3163,14 @@ shinyServer(function(input, output, session){
       shinyjs::disable("download_snp_to_genes")
     } else {
       shinyjs::enable("download_snp_to_genes")
+    }
+  })
+  
+  observe({
+    if (is.null(input$a_file_genes_rep)){
+      shinyjs::disable("download_goi_overlap")
+    } else {
+      shinyjs::enable("download_goi_overlap")
     }
   })
   
@@ -3372,6 +3381,18 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       write.table(SNP_to_gene(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+    }
+  )
+  
+##START HERE FOR GOI OVERLAP DOWNLOAD##
+  output$download_goi_overlap <- downloadHandler(
+    filename = function() {
+      paste("goi-overlap", ".txt", sep = "")
+    },
+    content = function(file) {
+      multi_vp <- a_multi_vp()
+      df <- ldply(multi_vp$d_g2s, data.frame)
+      write.table(df, file, sep = "\t", col.names = T, row.names = F, quote = F)
     }
   )
   
