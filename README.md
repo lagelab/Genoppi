@@ -2,7 +2,7 @@
 Genoppi is an interactive web application for analyzing and visualizing integrated experimental human proteomics data with genetics. It provides a visual interface for generating a variety of interactive plots to quality control raw data, integrate with GWAS dataset, identify known protein interacting partners, determine protein families present and offer easy visualization.
 
 ## Installation
-Genoppi requires R and RStudio. For best results, use the latest version of R.<br>
+Genoppi requires R and RStudio. For best results, use the R version 3.3.2.<br>
 R is available at https://www.r-project.org/<br>
 RStudio is available at https://www.rstudio.com/products/rstudio/download/<br>
 
