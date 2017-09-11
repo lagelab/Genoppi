@@ -11,16 +11,11 @@ Genoppi depends on several R packages. Run the following command from within RSt
 ```r
 source("https://bioconductor.org/biocLite.R")
 biocLite("limma")
+install.packages(c("shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest", 
+                   "htmltools", "R6", "sourcetools", "ggplot2", "scales", "httr", "magrittr", "viridisLite", "base64enc", 
+                   "htmlwidgets", "tidyr", "hexbin", "RColorBrewer", "dplyr", "tibble", "lazyeval", "crosstalk", "purrr", "data.table"))
 install.packages("https://cran.r-project.org/src/contrib/Archive/shiny/shiny_1.0.3.tar.gz", repos = NULL, type = "source")
 install.packages("https://cran.r-project.org/src/contrib/plotly_4.7.1.tar.gz", repos=NULL, type="source")
-install.packages(c("shinyjs", 
-                   "stringr", 
-                   "VennDiagram", 
-                   "rmarkdown", 
-                   "plyr", 
-                   "data.table", 
-                   "ggplot2", 
-                   "RColorBrewer"))
 ```
 
 Genoppi is stable using the following versions of each packages:
