@@ -44,7 +44,7 @@ shinyServer(function(input, output, session){
                  c("FDR" = "fdr", 
                    "ExAC" = "exac",
                    "Grayscale" = "cbf",
-                   "User score" = "user"),
+                   "User value" = "user"),
                  inline = T)
   })
   
@@ -88,7 +88,7 @@ shinyServer(function(input, output, session){
     validate(
       need(input$colorscheme == "user", "")
     )
-    selectInput("colorbrewer_theme_integrated", "User score", 
+    selectInput("colorbrewer_theme_integrated", "User value", 
                 c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
                   "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
                   "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
@@ -730,6 +730,8 @@ shinyServer(function(input, output, session){
   population_bait <- reactive({
     present_in_inweb <- a_pulldown()
     population_bait <- subset(present_in_inweb, present_in_inweb$gene %in% inweb_combined$V1)
+    population_bait <- population_bait[!duplicated(population_bait[,c("gene")]),]
+    population_bait
   })
   
   population_GOI <- reactive({
@@ -747,27 +749,28 @@ shinyServer(function(input, output, session){
   #success in population_bait -- within user FDR and logFC cutoff in population_bait
   success_population_bait <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range, {
     pullDown_in_inweb <- population_bait()
-    success_population <- subset(pullDown_in_inweb, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
-                                   FDR < input$a_FDR_range[2] & FDR > input$a_FDR_range[1] &
-                                     pvalue < input$a_pvalue_range[2] & pvalue > input$a_pvalue_range[1])
+    success_population <- subset(pullDown_in_inweb, logFC <= input$a_logFC_range[2] & logFC >= input$a_logFC_range[1] &
+                                   FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
+                                     pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
     rownames(success_population) <- NULL 
+    success_population <- success_population[!duplicated(success_population[,c("gene")]),]
     success_population
   })
   
   success_population_GOI <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range, {
     pullDown_in_hum_genome <- population_GOI()
-    success_population <- subset(pullDown_in_hum_genome, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
-                                        FDR < input$a_FDR_range[2] & FDR > input$a_FDR_range[1] &
-                                       pvalue < input$a_pvalue_range[2] & pvalue > input$a_pvalue_range[1])
+    success_population <- subset(pullDown_in_hum_genome, logFC <= input$a_logFC_range[2] & logFC >= input$a_logFC_range[1] &
+                                        FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
+                                       pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
     rownames(success_population) <- NULL 
     success_population
   })
   
   success_population_SNP <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range | input$a_pvalue_range, {
     pullDown_in_hum_genome <- population_SNP()
-    success_population <- subset(pullDown_in_hum_genome, logFC < input$a_logFC_range[2] & logFC > input$a_logFC_range[1] &
-                                       FDR < input$a_FDR_range[2] & FDR > input$a_FDR_range[1] &
-                                       pvalue < input$a_pvalue_range[2] & pvalue > input$a_pvalue_range[1])
+    success_population <- subset(pullDown_in_hum_genome, logFC <= input$a_logFC_range[2] & logFC >= input$a_logFC_range[1] &
+                                       FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
+                                       pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
     rownames(success_population) <- NULL 
     success_population
   })
@@ -808,7 +811,7 @@ shinyServer(function(input, output, session){
                    detail = 'Hold please', value = 0, {
                      bait <- a_bait_gene_layer()
                      bait_inweb3 <-
-                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | sed -e 's/(//g' | tr '\t' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
                      incProgress(0.5)
                      bait_inweb_im <- 
                        system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
@@ -826,7 +829,7 @@ shinyServer(function(input, output, session){
                    detail = 'Hold please', value = 0, {
                      bait <- a_bait_gene_vennd()
                      bait_inweb3 <-
-                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | sed -e 's/(//g' | tr '\t' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
                      incProgress(0.5)
                      bait_inweb_im <- 
                        system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
@@ -1434,7 +1437,7 @@ shinyServer(function(input, output, session){
   
   a_vp_count_text <- reactive({
     if(!is.null(a_vp_count())){
-      enriched <- c(paste0("FDR&lt;", input$a_fdr_thresh, ", pvalue&lt;", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "&lt;logFC&lt;", input$a_logFC_thresh[2]))
+      enriched <- c(paste0("FDR&le;", input$a_fdr_thresh, ", pvalue&le;", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "&le;logFC&le;", input$a_logFC_thresh[2]))
       enriched
     }
   })
@@ -1996,7 +1999,7 @@ shinyServer(function(input, output, session){
   a_multi_vp_count <- reactive({
     multi_vp <- a_multi_vp()
     vp_data <- a_pulldown()
-    current_subset <- nrow(subset(vp_data, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2])))
+    current_subset <- nrow(subset(vp_data, (FDR <= input$a_fdr_thresh) & (pvalue <= input$a_pval_thresh) & (logFC >= input$a_logFC_thresh[1]) & (logFC <= input$a_logFC_thresh[2])))
     orig_count <- data.frame(paste0(current_subset, " (total = ", nrow(vp_data), ")"))
     row.names(orig_count) <- c("pull down")
     colnames(orig_count) <- c(paste0("FDR<", input$a_fdr_thresh, ", pvalue<", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "<logFC<", input$a_logFC_thresh[2]))
@@ -2006,8 +2009,8 @@ shinyServer(function(input, output, session){
       if(nrow(multi_vp$d_in)>0){
         pop <- subset(vp_data, vp_data$gene %in% inweb_combined$V1)
         sample <- sample() 
-        inweb_count <- nrow(subset(multi_vp$d_in, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2])))
-        success_pop <- subset(pop, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2]))
+        inweb_count <- nrow(subset(multi_vp$d_in, (FDR <= input$a_fdr_thresh) & (pvalue <= input$a_pval_thresh) & (logFC >= input$a_logFC_thresh[1]) & (logFC <= input$a_logFC_thresh[2])))
+        success_pop <- subset(pop, (FDR <= input$a_fdr_thresh) & (pvalue <= input$a_pval_thresh) & (logFC >= input$a_logFC_thresh[1]) & (logFC <= input$a_logFC_thresh[2]))
         success_samp <- subset(sample, sample$gene %in% success_pop$gene)
         rownames(success_samp) <- NULL
         samp_l <- length(unique(sample$gene))
@@ -2027,7 +2030,7 @@ shinyServer(function(input, output, session){
     
     if(!is.null(SNP_to_gene())){
       if(nrow(multi_vp$d_snp)>0){
-        snp_count <- nrow(subset(multi_vp$d_snp, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2])))
+        snp_count <- nrow(subset(multi_vp$d_snp, (FDR <= input$a_fdr_thresh) & (pvalue <= input$a_pval_thresh) & (logFC >= input$a_logFC_thresh[1]) & (logFC <= input$a_logFC_thresh[2])))
         s_count <- data.frame(snp_count) 
         row.names(s_count) <- c("SNP")
         colnames(s_count) <- c(paste0("FDR<", input$a_fdr_thresh, ", pvalue<", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "<logFC<", input$a_logFC_thresh[2]))
@@ -2043,7 +2046,7 @@ shinyServer(function(input, output, session){
         df1 <- split(df, df$.id)
         pop <- subset(vp_data, vp_data$gene %in% toupper(human_genome$HGNCsymbol)) 
         sample <- lapply(a_genes_uploaded(), function(x) subset(pop, gene %in% x) )  
-        success_pop <- subset(pop, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2]))
+        success_pop <- subset(pop, (FDR <= input$a_fdr_thresh) & (pvalue <= input$a_pval_thresh) & (logFC >= input$a_logFC_thresh[1]) & (logFC <= input$a_logFC_thresh[2]))
         success_samp <- lapply(sample, function(x) subset(x, gene %in% success_pop$gene))
         rownames(success_samp) <- NULL
         samp_l <- lapply(sample, function(x) length(unique(x$gene)))
@@ -2054,7 +2057,7 @@ shinyServer(function(input, output, session){
         sp_l <- rep(list(success_pop_l), length(samp_l))
         pvalue <- mapply(function(p, sp, s, ss) {signif(phyper((ss-1), s, (p-s), sp, lower.tail = F), 4)}, p=p_l, sp=sp_l, s=samp_l, ss=success_samp_l)
         
-        gene_count <- lapply(df1, function(x) subset(x, (FDR < input$a_fdr_thresh) & (pvalue < input$a_pval_thresh) & (logFC > input$a_logFC_thresh[1]) & (logFC < input$a_logFC_thresh[2])))  
+        gene_count <- lapply(df1, function(x) subset(x, (FDR <= input$a_fdr_thresh) & (pvalue <= input$a_pval_thresh) & (logFC >= input$a_logFC_thresh[1]) & (logFC <= input$a_logFC_thresh[2])))  
         gene_count1 <- lapply(gene_count, function(x) nrow(x))
         df1_count <- lapply(df1, function(x) nrow(x))
         gene_count_fin <- ldply(gene_count1, data.frame)
@@ -2073,7 +2076,7 @@ shinyServer(function(input, output, session){
   
   a_multi_vp_count_text <- reactive({
     if(!is.null(a_multi_vp_count())){
-    enriched <- c(paste0("FDR&lt;", input$a_fdr_thresh, ", pvalue&lt;", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "&lt;logFC&lt;", input$a_logFC_thresh[2]))
+    enriched <- c(paste0("FDR&le;", input$a_fdr_thresh, ", pvalue&le;", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "&le;logFC&le;", input$a_logFC_thresh[2]))
     enriched
     }
   })
@@ -2291,12 +2294,12 @@ shinyServer(function(input, output, session){
     pop <- population_bait()
     success_pop <- success_population_bait()
     samp <- sample_bait()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
-                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
-                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&le;FDR&le;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&le;logFC&le;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&le;pvalue&le;", input$a_pvalue_range[2],
                            " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
-    inweb_name <- paste0("B = InWeb_IM interactors of ", bait, " &#40;", nrow(samp), "&#41;")
-    total <- paste0("pull down &cap; InWeb_IM database &#40;", nrow(pop), "&#41;")
+    inweb_name <- paste0("B = InWeb_IM interactors of ", bait, " &#40;", length(unique(sort(samp$gene))), "&#41;")
+    total <- paste0("pull down &cap; InWeb_IM database &#40;", length(unique(sort(pop$gene))), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
   })
   
@@ -2349,12 +2352,12 @@ shinyServer(function(input, output, session){
     samp_total <- as.data.frame(data.table::rbindlist(samp))
     samp <- c(samp, list(total = samp_total))
     list_num <- input$a_goi_num_inputs
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
-                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
-                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&le;FDR&le;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&le;logFC&le;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&le;pvalue&le;", input$a_pvalue_range[2],
                            " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
-    inweb_name <- paste0("B = Genes of interest in HGNC database", " &#40;", nrow(samp[[list_num]]), "&#41;")
-    total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
+    inweb_name <- paste0("B = Genes of interest in HGNC database", " &#40;", length(unique(sort(samp[[list_num]]$gene))), "&#41;") #   nrow(samp[[list_num]])
+    total <- paste0("pull down &cap; HGNC database &#40;", length(unique(sort(pop$gene))), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
   })
   
@@ -2399,12 +2402,12 @@ shinyServer(function(input, output, session){
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_SNP()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
-                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
-                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&le;FDR&le;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&le;logFC&le;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&le;pvalue&le;", input$a_pvalue_range[2],
                            " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
-    inweb_name <- paste0("B = SNPs in 1K Genome database", " &#40;", nrow(samp), "&#41;")
-    total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
+    inweb_name <- paste0("B = SNPs in 1K Genome database", " &#40;", length(unique(sort(samp$gene))), "&#41;")
+    total <- paste0("pull down &cap; HGNC database &#40;", length(unique(sort(pop$gene))), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
   })
   
@@ -2449,12 +2452,12 @@ shinyServer(function(input, output, session){
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_SNP_SGL()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
-                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
-                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&le;FDR&le;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&le;logFC&le;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&le;pvalue&le;", input$a_pvalue_range[2],
                            " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
-    inweb_name <- paste0("B = SGL SNPs in 1K Genome database", " &#40;", nrow(samp), "&#41;")
-    total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
+    inweb_name <- paste0("B = SGL SNPs in 1K Genome database", " &#40;", length(unique(sort(samp$gene))), "&#41;")
+    total <- paste0("pull down &cap; HGNC database &#40;", length(unique(sort(pop$gene))), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
   })
   
@@ -2499,12 +2502,12 @@ shinyServer(function(input, output, session){
     pop <- population_GOI()
     success_pop <- success_population_GOI()
     samp <- sample_SNP_MGL()
-    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&lt;FDR&lt;", input$a_FDR_range[2], 
-                           ", ", input$a_logFC_range[1], "&lt;logFC&lt;", input$a_logFC_range[2], 
-                           " and ", input$a_pvalue_range[1], "&lt;pvalue&lt;", input$a_pvalue_range[2],
+    subset_limit <- paste0("A = pull down subset of ", input$a_FDR_range[1], "&le;FDR&le;", input$a_FDR_range[2], 
+                           ", ", input$a_logFC_range[1], "&le;logFC&le;", input$a_logFC_range[2], 
+                           " and ", input$a_pvalue_range[1], "&le;pvalue&le;", input$a_pvalue_range[2],
                            " &#40;", length(unique(sort(success_pop$gene))), "&#41;")
-    inweb_name <- paste0("B = MGL SNPs in 1K Genome database", " &#40;", nrow(samp), "&#41;")
-    total <- paste0("pull down &cap; HGNC database &#40;", nrow(pop), "&#41;")
+    inweb_name <- paste0("B = MGL SNPs in 1K Genome database", " &#40;", length(unique(sort(samp$gene))), "&#41;")
+    total <- paste0("pull down &cap; HGNC database &#40;", length(unique(sort(pop$gene))), "&#41;")
     list(a=subset_limit, b=inweb_name, c=total)
   })
   
@@ -2536,9 +2539,9 @@ shinyServer(function(input, output, session){
                    
                    makePlotFamilies_1quadrant <- function(data, bait){
                      im <- subset(data, 
-                                  (pvalue < input$a_BPF_pvalue_range[2] & pvalue > input$a_BPF_pvalue_range[1]) & 
-                                    (FDR < input$a_BPF_FDR_range[2] & FDR > input$a_BPF_FDR_range[1]) &
-                                    (logFC < input$a_BPF_logFC_range[2] & logFC > input$a_BPF_logFC_range[1]))
+                                  (pvalue <= input$a_BPF_pvalue_range[2] & pvalue >= input$a_BPF_pvalue_range[1]) & 
+                                    (FDR <= input$a_BPF_FDR_range[2] & FDR >= input$a_BPF_FDR_range[1]) &
+                                    (logFC <= input$a_BPF_logFC_range[2] & logFC >= input$a_BPF_logFC_range[1]))
                      incProgress(0.6)
                      enM_families <- assignFamily_inc_doubles(im)
                      enM_gna <- addNames(im)
@@ -2706,8 +2709,8 @@ shinyServer(function(input, output, session){
                    
                    makePlotFamilies_1quadrant <- function(data, bait){
                      im <- subset(data, 
-                                  (rep1 < input$a_BPF_rep1_range[2] & rep1 > input$a_BPF_rep1_range[1]) & 
-                                    (rep2 < input$a_BPF_rep2_range[2] & rep2 > input$a_BPF_rep2_range[1]))
+                                  (rep1 <= input$a_BPF_rep1_range[2] & rep1 >= input$a_BPF_rep1_range[1]) & 
+                                    (rep2 <= input$a_BPF_rep2_range[2] & rep2 >= input$a_BPF_rep2_range[1]))
                      incProgress(0.6)
                      enM_families <- assignFamily_inc_doubles(im)
                      enM_gna <- addNames(im)
@@ -3725,13 +3728,13 @@ shinyServer(function(input, output, session){
                    
                    makePlotFamilies <- function(dim, dip, dpm, increase_size = input$b_PF_marker_freq){ #, bait
                      im <- subset(dim, 
-                                  (pvalue < input$b_PF_pvalue_range[2] & pvalue > input$b_PF_pvalue_range[1]) & 
-                                    (FDR < input$b_PF_FDR_range[2] & FDR > input$b_PF_FDR_range[1]) &
-                                    (logFC < input$b_PF_logFC_range[2] & logFC > input$b_PF_logFC_range[1]))
+                                  (pvalue <= input$b_PF_pvalue_range[2] & pvalue >= input$b_PF_pvalue_range[1]) & 
+                                    (FDR <= input$b_PF_FDR_range[2] & FDR >= input$b_PF_FDR_range[1]) &
+                                    (logFC <= input$b_PF_logFC_range[2] & logFC >= input$b_PF_logFC_range[1]))
                      ip <- subset(dip, 
-                                  (pvalue < input$b_PF_pvalue_range[2] & pvalue > input$b_PF_pvalue_range[1]) & 
-                                    (FDR < input$b_PF_FDR_range[2] & FDR > input$b_PF_FDR_range[1]) &
-                                    (logFC < input$b_PF_logFC_range[2] & logFC > input$b_PF_logFC_range[1]))
+                                  (pvalue <= input$b_PF_pvalue_range[2] & pvalue >= input$b_PF_pvalue_range[1]) & 
+                                    (FDR <= input$b_PF_FDR_range[2] & FDR >= input$b_PF_FDR_range[1]) &
+                                    (logFC <= input$b_PF_logFC_range[2] & logFC >= input$b_PF_logFC_range[1]))
                      pm <- dpm
                      
                      enM <- subset(im, gene %!in% ip$gene)
@@ -4038,7 +4041,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown1 != '', ""),
       need(input$c_colorscheme == "user", "")
     )
-    selectInput("c_colorbrewer_theme", "User score", 
+    selectInput("c_colorbrewer_theme", "User value", 
                 c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
                   "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
                   "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
@@ -4050,7 +4053,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', ""),
       need(input$c_colorscheme == "user", "")
     )
-    selectInput("c_colorbrewer_theme_tab3", "User score", 
+    selectInput("c_colorbrewer_theme_tab3", "User value", 
                 c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
                   "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
                   "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
@@ -4062,7 +4065,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', ""),
       need(input$c_colorscheme == "user", "")
     )
-    selectInput("c_colorbrewer_theme_tab4", "User score", 
+    selectInput("c_colorbrewer_theme_tab4", "User value", 
                 c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
                   "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
                   "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
@@ -4074,7 +4077,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', ""),
       need(input$c_colorscheme == "user", "")
     )
-    selectInput("c_colorbrewer_theme_tab5", "User score", 
+    selectInput("c_colorbrewer_theme_tab5", "User value", 
                 c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
                   "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
                   "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
@@ -4198,7 +4201,7 @@ shinyServer(function(input, output, session){
                  c("FDR" = "fdr", 
                    "ExAC" = "exac",
                    "Grayscale" = "cbf",
-                   "User score" = "user"),
+                   "User value" = "user"),
                  inline = T)
   })
   
@@ -4719,7 +4722,7 @@ shinyServer(function(input, output, session){
                    detail = 'Hold please', value = 0, {
                      bait <- c_bait_in()
                      bait_inweb3 <-
-                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | sed -e 's/(//g' | tr '\t' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
                      incProgress(0.5)
                      bait_inweb_im <- 
                        system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
@@ -7018,46 +7021,46 @@ shinyServer(function(input, output, session){
   # c_f1 <- reactive({
   c_f1 <- eventReactive(input$c_pc_make_plot, {
     f1 <- c_pd1()
-    f1_subset <- subset(f1, FDR < input$c_compare1_FDR_range[2] & FDR > input$c_compare1_FDR_range[1]
-                        & pvalue < input$c_compare1_pvalue_range[2] & pvalue > input$c_compare1_pvalue_range[1]
-                        & logFC < input$c_f1_logFC_range[2] & logFC > input$c_f1_logFC_range[1])
+    f1_subset <- subset(f1, FDR <= input$c_compare1_FDR_range[2] & FDR >= input$c_compare1_FDR_range[1]
+                        & pvalue <= input$c_compare1_pvalue_range[2] & pvalue >= input$c_compare1_pvalue_range[1]
+                        & logFC <= input$c_f1_logFC_range[2] & logFC >= input$c_f1_logFC_range[1])
   })
   
   # c_f2 <- reactive({
   c_f2 <- eventReactive(input$c_pc_make_plot, {
     f2 <- c_pd2()
-    f2_subset <- subset(f2, FDR < input$c_compare2_FDR_range[2] & FDR > input$c_compare2_FDR_range[1]
-                        & pvalue < input$c_compare2_pvalue_range[2] & pvalue > input$c_compare2_pvalue_range[1]
-                        & logFC < input$c_f2_logFC_range[2] & logFC > input$c_f2_logFC_range[1])
+    f2_subset <- subset(f2, FDR <= input$c_compare2_FDR_range[2] & FDR >= input$c_compare2_FDR_range[1]
+                        & pvalue <= input$c_compare2_pvalue_range[2] & pvalue >= input$c_compare2_pvalue_range[1]
+                        & logFC <= input$c_f2_logFC_range[2] & logFC >= input$c_f2_logFC_range[1])
   })
   
   # c_f3 <- reactive({
   c_f3 <- eventReactive(input$c_pc_make_plot, {
     f3 <- c_pd3()
-    f3_subset <- subset(f3, FDR < input$c_compare3_FDR_range[2] & FDR > input$c_compare3_FDR_range[1]
-                        & pvalue < input$c_compare3_pvalue_range[2] & pvalue > input$c_compare3_pvalue_range[1]
-                        & logFC < input$c_f3_logFC_range[2] & logFC > input$c_f3_logFC_range[1])
+    f3_subset <- subset(f3, FDR <= input$c_compare3_FDR_range[2] & FDR >= input$c_compare3_FDR_range[1]
+                        & pvalue <= input$c_compare3_pvalue_range[2] & pvalue >= input$c_compare3_pvalue_range[1]
+                        & logFC <= input$c_f3_logFC_range[2] & logFC >= input$c_f3_logFC_range[1])
   })
   
   c_f1_pf <- reactive({
     f1 <- c_pd1()
-    f1_subset <- subset(f1, FDR < input$c_f1_pf_FDR[2] & FDR > input$c_f1_pf_FDR[1]
-                        & pvalue < input$c_f1_pf_pvalue[2] & pvalue > input$c_f1_pf_pvalue[1]
-                        & logFC < input$c_f1_pf_logFC_range[2] & logFC > input$c_f1_pf_logFC_range[1])
+    f1_subset <- subset(f1, FDR <= input$c_f1_pf_FDR[2] & FDR >= input$c_f1_pf_FDR[1]
+                        & pvalue <= input$c_f1_pf_pvalue[2] & pvalue >= input$c_f1_pf_pvalue[1]
+                        & logFC <= input$c_f1_pf_logFC_range[2] & logFC >= input$c_f1_pf_logFC_range[1])
   })
   
   c_f2_pf <- reactive({
     f2 <- c_pd2()
-    f2_subset <- subset(f2, FDR < input$c_f2_pf_FDR[2] & FDR > input$c_f2_pf_FDR[1]
-                        & pvalue < input$c_f2_pf_pvalue[2] & pvalue > input$c_f2_pf_pvalue[1]
-                        & logFC < input$c_f2_pf_logFC_range[2] & logFC > input$c_f2_pf_logFC_range[1])
+    f2_subset <- subset(f2, FDR <= input$c_f2_pf_FDR[2] & FDR >= input$c_f2_pf_FDR[1]
+                        & pvalue <= input$c_f2_pf_pvalue[2] & pvalue >= input$c_f2_pf_pvalue[1]
+                        & logFC <= input$c_f2_pf_logFC_range[2] & logFC >= input$c_f2_pf_logFC_range[1])
   })
   
   c_f3_pf <- reactive({
     f3 <- c_pd3()
-    f3_subset <- subset(f3, FDR < input$c_f3_pf_FDR[2] & FDR > input$c_f3_pf_FDR[1]
-                        & pvalue < input$c_f3_pf_pvalue[2] & pvalue > input$c_f3_pf_pvalue[1]
-                        & logFC < input$c_f3_pf_logFC_range[2] & logFC > input$c_f3_pf_logFC_range[1])
+    f3_subset <- subset(f3, FDR <= input$c_f3_pf_FDR[2] & FDR >= input$c_f3_pf_FDR[1]
+                        & pvalue <= input$c_f3_pf_pvalue[2] & pvalue >= input$c_f3_pf_pvalue[1]
+                        & logFC <= input$c_f3_pf_logFC_range[2] & logFC >= input$c_f3_pf_logFC_range[1])
   })
   
   #comparison for file1
@@ -7585,18 +7588,18 @@ shinyServer(function(input, output, session){
   c_inweb_compare1 <- reactive({
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       overlap1_2 <- subset(f1_inweb, gene %in% f2_inweb$gene)
       list(f1_inweb=f1_inweb, overlap1_2=overlap1_2)
     } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f3_inweb <- c_inweb_pd3()
-      f3_inweb <- subset(f3_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f3_inweb <- subset(f3_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       overlap1_2 <- subset(f1_inweb, gene %in% f2_inweb$gene)
       overlap1_3 <- subset(f1_inweb, gene %in% f3_inweb$gene)
       overlap1_2_3 <- subset(f1_inweb, gene %in% f2_inweb$gene & gene %in% f3_inweb$gene)
@@ -7608,18 +7611,18 @@ shinyServer(function(input, output, session){
   c_inweb_compare2 <- reactive({
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       overlap2_1 <- subset(f2_inweb, gene %in% f1_inweb$gene)
       list(f2_inweb=f2_inweb, overlap2_1=overlap2_1)
     } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f3_inweb <- c_inweb_pd3()
-      f3_inweb <- subset(f3_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f3_inweb <- subset(f3_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       overlap2_1 <- subset(f2_inweb, gene %in% f1_inweb$gene)
       overlap2_3 <- subset(f2_inweb, gene %in% f3_inweb$gene)
       overlap2_1_3 <- subset(f2_inweb, gene %in% f1_inweb$gene & gene %in% f3_inweb$gene)
@@ -7631,11 +7634,11 @@ shinyServer(function(input, output, session){
   c_inweb_compare3 <- reactive({
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f3_inweb <- c_inweb_pd3()
-      f3_inweb <- subset(f3_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f3_inweb <- subset(f3_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       overlap3_1 <- subset(f3_inweb, gene %in% f1_inweb$gene)
       overlap3_2 <- subset(f3_inweb, gene %in% f2_inweb$gene)
       overlap3_1_2 <- subset(f3_inweb, gene %in% f1_inweb$gene & gene %in% f2_inweb$gene)
@@ -7755,9 +7758,9 @@ shinyServer(function(input, output, session){
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       if(!is.null(c_inweb_pd1()) & !is.null(c_in_pd2())){
         f1_inweb <- c_inweb_pd1()
-        f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+        f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
         f2_inweb <- c_inweb_pd2()
-        f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+        f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
         x <- list()
         x[["File1"]] <- f1_inweb$gene
         x[["File2"]] <- f2_inweb$gene
@@ -7773,11 +7776,11 @@ shinyServer(function(input, output, session){
     } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       if(!is.null(c_inweb_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       f3_inweb <- c_inweb_pd3()
-      f3_inweb <- subset(f3_inweb, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+      f3_inweb <- subset(f3_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
       x <- list()
       x[["File1"]] <- f1_inweb$gene
       x[["File2"]] <- f2_inweb$gene
@@ -7800,7 +7803,7 @@ shinyServer(function(input, output, session){
     pop <- subset(d, d$gene %in% inweb_combined$V1)
     sample <- inweb
     # sample <- subset(pop, pop$gene %in% inweb$gene)
-    success_pop <- subset(pop, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+    success_pop <- subset(pop, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
     success_samp <- subset(sample, sample$gene %in% success_pop$gene)
     rownames(success_samp) <- NULL
     samp_l <- nrow(sample)
@@ -7817,7 +7820,7 @@ shinyServer(function(input, output, session){
     pop <- subset(d, d$gene %in% inweb_combined$V1)
     sample <- inweb
     # sample <- subset(pop, pop$gene %in% inweb$gene)
-    success_pop <- subset(pop, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+    success_pop <- subset(pop, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
     success_samp <- subset(sample, sample$gene %in% success_pop$gene)
     rownames(success_samp) <- NULL
     samp_l <- nrow(sample)
@@ -7834,7 +7837,7 @@ shinyServer(function(input, output, session){
     pop <- subset(d, d$gene %in% inweb_combined$V1)
     sample <- inweb
     # sample <- subset(pop, pop$gene %in% inweb$gene)
-    success_pop <- subset(pop, pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1])
+    success_pop <- subset(pop, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
     success_samp <- subset(sample, sample$gene %in% success_pop$gene)
     rownames(success_samp) <- NULL
     samp_l <- nrow(sample)
@@ -7857,9 +7860,9 @@ shinyServer(function(input, output, session){
         c2 <- c_pd2()
         gene_interest <- c_genes_uploaded()
         df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                             pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                             pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
         df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                             pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                             pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         
         total1 <- as.data.frame(data.table::rbindlist(df1_c1))
         total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -7889,11 +7892,11 @@ shinyServer(function(input, output, session){
         c3 <- c_pd3()
         gene_interest <- c_genes_uploaded()
         df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                             pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                             pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                             pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                             pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         df1_c3 <- lapply(gene_interest, function(x) subset(c3, gene %in% x & 
-                                                             pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                             pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         
         total1 <- as.data.frame(data.table::rbindlist(df1_c1))
         total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -7929,9 +7932,9 @@ shinyServer(function(input, output, session){
       c2 <- c_pd2()
       gene_interest <- c_genes_uploaded()
       df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -7950,11 +7953,11 @@ shinyServer(function(input, output, session){
       c3 <- c_pd3()
       gene_interest <- c_genes_uploaded()
       df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c3 <- lapply(gene_interest, function(x) subset(c3, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -7982,9 +7985,9 @@ shinyServer(function(input, output, session){
       c2 <- c_pd2()
       gene_interest <- c_genes_uploaded()
       df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8003,11 +8006,11 @@ shinyServer(function(input, output, session){
       c3 <- c_pd3()
       gene_interest <- c_genes_uploaded()
       df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c3 <- lapply(gene_interest, function(x) subset(c3, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8036,11 +8039,11 @@ shinyServer(function(input, output, session){
       c3 <- c_pd3()
       gene_interest <- c_genes_uploaded()
       df1_c1 <- lapply(gene_interest, function(x) subset(c1, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(gene_interest, function(x) subset(c2, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c3 <- lapply(gene_interest, function(x) subset(c3, gene %in% x & 
-                                                           pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8183,9 +8186,9 @@ shinyServer(function(input, output, session){
         snp_interest <- split(snp2gene$gene, snp2gene$snpid)
 
         df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                            pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                            pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         
         total1 <- as.data.frame(data.table::rbindlist(df1_c1))
         total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8216,11 +8219,11 @@ shinyServer(function(input, output, session){
         snp2gene <- c_SNP_to_gene()
         snp_interest <- split(snp2gene$gene, snp2gene$snpid)
         df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                            pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                            pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                            pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         
         total1 <- as.data.frame(data.table::rbindlist(df1_c1))
         total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8258,9 +8261,9 @@ shinyServer(function(input, output, session){
       snp2gene <- c_SNP_to_gene()
       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8280,11 +8283,11 @@ shinyServer(function(input, output, session){
       snp2gene <- c_SNP_to_gene()
       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8313,9 +8316,9 @@ shinyServer(function(input, output, session){
       snp2gene <- c_SNP_to_gene()
       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8335,11 +8338,11 @@ shinyServer(function(input, output, session){
       snp2gene <- c_SNP_to_gene()
       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) ) 
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
@@ -8369,11 +8372,11 @@ shinyServer(function(input, output, session){
       snp2gene <- c_SNP_to_gene()
       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                          pvalue < input$c_pval_thresh & FDR < input$c_fdr_thresh & logFC < input$c_logfc_thresh_comb[2] & logFC > input$c_logfc_thresh_comb[1]) )  
+                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
       
       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
