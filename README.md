@@ -2,7 +2,7 @@
 Genoppi is an interactive web application for analyzing and visualizing integrated experimental human proteomics data with genetics. It provides a visual interface for generating a variety of interactive plots to quality control raw data, integrate with GWAS dataset, identify known protein interacting partners, determine protein families present and offer easy visualization.
 
 ## Installation
-Genoppi requires R and RStudio. For best results, use the R version 3.3.2.<br>
+Genoppi requires R and RStudio. For best results, use the latest R version.<br>
 R is available at https://www.r-project.org/<br>
 RStudio is available at https://www.rstudio.com/products/rstudio/download/<br>
 
@@ -11,17 +11,16 @@ Genoppi depends on several R packages. Run the following command from within RSt
 ```r
 source("https://bioconductor.org/biocLite.R")
 biocLite("limma")
-install.packages(c("shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest", 
+install.packages(c("shiny", "shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest", 
                    "htmltools", "R6", "sourcetools", "ggplot2", "scales", "httr", "magrittr", "viridisLite", "base64enc", 
                    "htmlwidgets", "tidyr", "hexbin", "RColorBrewer", "dplyr", "tibble", "lazyeval", "crosstalk", "purrr", "data.table"))
-install.packages("https://cran.r-project.org/src/contrib/Archive/shiny/shiny_1.0.3.tar.gz", repos = NULL, type = "source")
 install.packages("https://cran.r-project.org/src/contrib/plotly_4.7.1.tar.gz", repos=NULL, type="source")
 ```
 
 Genoppi is stable using the following versions of each packages:
 
 ```r
-shiny 1.0.3
+shiny 1.0.5
 shinyjs 0.9
 plotly 4.7.1
 stringr 1.2.0
