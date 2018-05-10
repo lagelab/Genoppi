@@ -324,6 +324,12 @@ shinyUI(navbarPage("Genoppi",
                                                        column(4, plotlyOutput("comparison2")),
                                                        column(4, plotlyOutput("comparison3")) #, width = "370px", height = "300px")
                                                      ),
+                                                     br(),
+                                                     fluidRow(
+                                                       column(4, plotlyOutput("comparison1_scatter")),
+                                                       column(4, plotlyOutput("comparison2_scatter")),
+                                                       column(4, plotlyOutput("comparison3_scatter")) #, width = "370px", height = "300px")
+                                                     ),
                                                      fluidRow(
                                                        column(4, uiOutput("c_VennDiagram_legend"))
                                                      ),

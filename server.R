@@ -25,7 +25,7 @@ shinyServer(function(input, output, session){
     input$filetype
     updateTabsetPanel(session, "basic", selected = "p1")
   })
- 
+  
   ##### VISUALIZATIONS START ##### 
   output$a_file <- renderUI({
     fileInput('a_file_pulldown_r', 'Upload user input file',
@@ -52,25 +52,25 @@ shinyServer(function(input, output, session){
     validate(
       need(input$colorscheme == "user", "")
     )
-      fileInput('file_color', 'Upload user score input',
-                accept = c(
-                  'text/csv',
-                  'text/comma-separated-values',
-                  'text/tab-separated-values',
-                  'text/plain',
-                  '.csv',
-                  '.tsv')
-      )
+    fileInput('file_color', 'Upload user score input',
+              accept = c(
+                'text/csv',
+                'text/comma-separated-values',
+                'text/tab-separated-values',
+                'text/plain',
+                '.csv',
+                '.tsv')
+    )
   })
   
   output$a_color_style <- renderUI({
     validate(
       need(input$colorscheme == "user", "")
     )
-      radioButtons("colorscheme_style", "Color scale:",
-                   c("Continuous" = "cont", 
-                     "Discrete" = "disc"),
-                   inline = T)
+    radioButtons("colorscheme_style", "Color scale:",
+                 c("Continuous" = "cont", 
+                   "Discrete" = "disc"),
+                 inline = T)
   })
   
   output$a_color_theme <- renderUI({
@@ -78,10 +78,10 @@ shinyServer(function(input, output, session){
       need(input$a_file_pulldown_r != '', ""),
       need(input$colorscheme == "user", "")
     )
-      selectInput("colorbrewer_theme", "", 
-                  c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
-                    "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
-                    "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
+    selectInput("colorbrewer_theme", "", 
+                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"))
   })
   
   output$a_color_theme_integrated <- renderUI({
@@ -208,7 +208,7 @@ shinyServer(function(input, output, session){
     sliderInput("a_pval_thresh", "p-value threshold",
                 min = 0, max = 1, value = 0.05, step = 0.001)
   })
-
+  
   # based on a_pulldown(), create slider for logFC
   output$logFC_thresh <- renderUI({
     if(!is.null(input$a_file_pulldown_r)){
@@ -348,8 +348,8 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-      sliderInput("a_FDR_range", "FDR",
-                  min = 0, max = 1, value = c(0, 0.1), step = 0.01)
+    sliderInput("a_FDR_range", "FDR",
+                min = 0, max = 1, value = c(0, 0.1), step = 0.01)
   })
   
   # based on a_pulldown(), create slider for logFC
@@ -366,8 +366,8 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-      sliderInput("a_BPF_FDR_range", "FDR",
-                  min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+    sliderInput("a_BPF_FDR_range", "FDR",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
     
   })
   
@@ -376,8 +376,8 @@ shinyServer(function(input, output, session){
     validate(
       need(input$a_file_pulldown_r != '', "")
     )
-      sliderInput("a_BPF_pvalue_range", "pvalue",
-                  min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+    sliderInput("a_BPF_pvalue_range", "pvalue",
+                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
     
   })
   
@@ -579,7 +579,7 @@ shinyServer(function(input, output, session){
       shinyjs::show("a_logFC_thresh")
     }
   })
-
+  
   a_in_pulldown <- reactive({
     if(!is.null(input$a_file_pulldown_r)){
       pulldown <- input$a_file_pulldown_r
@@ -588,7 +588,7 @@ shinyServer(function(input, output, session){
       d <- na.omit(d)
     }
   })
-
+  
   a_orig_pulldown <- reactive({
     if(!is.null(a_in_pulldown())){
       d <- a_in_pulldown()
@@ -599,6 +599,8 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
+                       system("rm in.txt")
+                       system("rm results.txt")
                        write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
@@ -630,7 +632,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -751,7 +753,7 @@ shinyServer(function(input, output, session){
     pullDown_in_inweb <- population_bait()
     success_population <- subset(pullDown_in_inweb, logFC <= input$a_logFC_range[2] & logFC >= input$a_logFC_range[1] &
                                    FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
-                                     pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
+                                   pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
     rownames(success_population) <- NULL 
     success_population <- success_population[!duplicated(success_population[,c("gene")]),]
     success_population
@@ -760,8 +762,8 @@ shinyServer(function(input, output, session){
   success_population_GOI <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range, {
     pullDown_in_hum_genome <- population_GOI()
     success_population <- subset(pullDown_in_hum_genome, logFC <= input$a_logFC_range[2] & logFC >= input$a_logFC_range[1] &
-                                        FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
-                                       pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
+                                   FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
+                                   pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
     rownames(success_population) <- NULL 
     success_population
   })
@@ -769,8 +771,8 @@ shinyServer(function(input, output, session){
   success_population_SNP <- reactive({ #eventReactive(input$a_logFC_range | input$a_FDR_range | input$a_pvalue_range, {
     pullDown_in_hum_genome <- population_SNP()
     success_population <- subset(pullDown_in_hum_genome, logFC <= input$a_logFC_range[2] & logFC >= input$a_logFC_range[1] &
-                                       FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
-                                       pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
+                                   FDR <= input$a_FDR_range[2] & FDR >= input$a_FDR_range[1] &
+                                   pvalue <= input$a_pvalue_range[2] & pvalue >= input$a_pvalue_range[1])
     rownames(success_population) <- NULL 
     success_population
   })
@@ -1029,27 +1031,27 @@ shinyServer(function(input, output, session){
     if(!is.null(a_snp())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
-        snp_data <- a_snp()
-        ext <- (input$a_SNP_ext1)*1000
-        incProgress(0.2)
-        write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-        write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-        incProgress(0.6)
-        system("scripts/genes_in_loci.sh")
-        incProgress(0.8)
-        SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
-        if(nrow(SNPgeneList) >= 1){
-          n_occur <- data.frame(table(SNPgeneList$snpid))
-          incProgress(0.9)
-          SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-        } else if(nrow(SNPgeneList) == 0){
-          place_holder <- data.frame("rs0", "0", "0", "x", "0", "0")
-          names(place_holder) <- names(SNPgeneList)
-          SNPgeneList <- rbind(SNPgeneList, place_holder)
-          n_occur <- data.frame(table(SNPgeneList$snpid))
-          SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-        }
-      })
+                     snp_data <- a_snp()
+                     ext <- (input$a_SNP_ext1)*1000
+                     incProgress(0.2)
+                     write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+                     write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+                     incProgress(0.6)
+                     system("scripts/genes_in_loci.sh")
+                     incProgress(0.8)
+                     SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
+                     if(nrow(SNPgeneList) >= 1){
+                       n_occur <- data.frame(table(SNPgeneList$snpid))
+                       incProgress(0.9)
+                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
+                     } else if(nrow(SNPgeneList) == 0){
+                       place_holder <- data.frame("rs0", "0", "0", "x", "0", "0")
+                       names(place_holder) <- names(SNPgeneList)
+                       SNPgeneList <- rbind(SNPgeneList, place_holder)
+                       n_occur <- data.frame(table(SNPgeneList$snpid))
+                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
+                     }
+                   })
       snpList <- SNP_n_occur
     }
   })
@@ -1064,27 +1066,27 @@ shinyServer(function(input, output, session){
     if(!is.null(a_snp_vennd())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
-        snp_data <- a_snp_vennd()
-        ext <- (input$a_SNP_ext2)*1000
-        incProgress(0.2)
-        write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-        write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-        incProgress(0.6)
-        system("scripts/genes_in_loci.sh")
-        incProgress(0.8)
-        SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
-        if(nrow(SNPgeneList) >= 1){
-          n_occur <- data.frame(table(SNPgeneList$snpid))
-          incProgress(0.9)
-          SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-        } else if(nrow(SNPgeneList) == 0){
-          place_holder <- data.frame("rs0", "0", "0", "x", "0", "0")
-          names(place_holder) <- names(SNPgeneList)
-          SNPgeneList <- rbind(SNPgeneList, place_holder)
-          n_occur <- data.frame(table(SNPgeneList$snpid))
-          SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-        }
-      })
+                     snp_data <- a_snp_vennd()
+                     ext <- (input$a_SNP_ext2)*1000
+                     incProgress(0.2)
+                     write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+                     write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+                     incProgress(0.6)
+                     system("scripts/genes_in_loci.sh")
+                     incProgress(0.8)
+                     SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
+                     if(nrow(SNPgeneList) >= 1){
+                       n_occur <- data.frame(table(SNPgeneList$snpid))
+                       incProgress(0.9)
+                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
+                     } else if(nrow(SNPgeneList) == 0){
+                       place_holder <- data.frame("rs0", "0", "0", "x", "0", "0")
+                       names(place_holder) <- names(SNPgeneList)
+                       SNPgeneList <- rbind(SNPgeneList, place_holder)
+                       n_occur <- data.frame(table(SNPgeneList$snpid))
+                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
+                     }
+                   })
       snpList <- SNP_n_occur
     } else{
       return(NULL)
@@ -1648,7 +1650,7 @@ shinyServer(function(input, output, session){
       need(!is.null(a_pulldown()), "")
     )
     d <- a_pulldown()
-
+    
     # InWeb, SNP to gene, and genes upload
     if(!is.null(a_bait_gene_layer()) & !is.null(a_snp()) & !is.null(a_upload_genes())){
       inwebFile <- sample()
@@ -1794,7 +1796,7 @@ shinyServer(function(input, output, session){
       bar
     }
   })
-
+  
   a_multi_vp_layer <- reactive({
     multi_vp <- a_multi_vp()
     d <- a_pulldown()
@@ -2076,8 +2078,8 @@ shinyServer(function(input, output, session){
   
   a_multi_vp_count_text <- reactive({
     if(!is.null(a_multi_vp_count())){
-    enriched <- c(paste0("FDR&le;", input$a_fdr_thresh, ", pvalue&le;", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "&le;logFC&le;", input$a_logFC_thresh[2]))
-    enriched
+      enriched <- c(paste0("FDR&le;", input$a_fdr_thresh, ", pvalue&le;", input$a_pval_thresh, ", ", input$a_logFC_thresh[1], "&le;logFC&le;", input$a_logFC_thresh[2]))
+      enriched
     }
   })
   
@@ -2434,7 +2436,7 @@ shinyServer(function(input, output, session){
     samp_l <- length(s)
     success_samp_l <- length(s_s)
     mycolours3 = c("cornflowerblue", "#80cdc1")
-
+    
     x <- list()
     x[["A"]] <- success_pop$gene
     x[["B"]] <- samp$gene
@@ -2787,9 +2789,9 @@ shinyServer(function(input, output, session){
                       text = ~paste(gene), hoverinfo = "text", showlegend = FALSE)
         if(nrow(enM_gna)>0){
           p <- add_markers(p, data = enM_gna, x = ~rep1, y = ~rep2, 
-                                   marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
-                                   text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
-                                   name="Unassigned genes")
+                           marker = list(size = 6, symbol = 2, color = c('white'), opacity = 0.8, line = list(width=0.9, color = "black")),
+                           text = ~paste(gene, name, sep = "  "), hoverinfo="text", 
+                           name="Unassigned genes")
         }
         if(nrow(enM_families)>0){
           p <- add_markers(p, data = enM_families, x = ~rep1, y = ~rep2,
@@ -2839,7 +2841,7 @@ shinyServer(function(input, output, session){
     p <- p %>%
       layout(xaxis = list(title = "rep1", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1)), 
              yaxis = list(title = "rep2", range=~c((min(d$rep1, d$rep2))-1, (max(d$rep1, d$rep2))+1))) 
-      
+    
   })
   
   output$FDR_colorbar <- renderPlot({
@@ -2990,7 +2992,7 @@ shinyServer(function(input, output, session){
     v0 <- a_venndiagram_GOI()
     grid.newpage()
     grid.draw(v0)
-
+    
   })
   
   output$Venn_Diagram_SNP <- renderPlot({
@@ -3056,7 +3058,7 @@ shinyServer(function(input, output, session){
       a_bpf_plus_sp()
     }
   })
-
+  
   observe({
     if(!is.null(input$a_file_pulldown_r)){
       df <- a_in_pulldown()
@@ -3184,7 +3186,7 @@ shinyServer(function(input, output, session){
       shinyjs::enable("download_layered_plots") 
     }
   })
-
+  
   observe({
     if(!is.null(a_pf_db())){
       if(!is.null(a_pulldown())){
@@ -3291,7 +3293,7 @@ shinyServer(function(input, output, session){
       )
     }
   )
-
+  
   output$download_venn_diagram_inweb_genes <- downloadHandler(
     filename = function() {
       paste("inweb-overlap-genes", ".txt", sep = "")
@@ -3387,7 +3389,7 @@ shinyServer(function(input, output, session){
     }
   )
   
-##START HERE FOR GOI OVERLAP DOWNLOAD##
+  ##START HERE FOR GOI OVERLAP DOWNLOAD##
   output$download_goi_overlap <- downloadHandler(
     filename = function() {
       paste("goi-overlap", ".txt", sep = "")
@@ -3463,7 +3465,7 @@ shinyServer(function(input, output, session){
                  inline = T
     )
   })
-
+  
   output$b_PF_freq <- renderUI({
     validate(
       need(input$file_pfam1 != '', ""),
@@ -3473,8 +3475,8 @@ shinyServer(function(input, output, session){
     if(!is.null(input$b_PF_option)){
       inBPFmarker <- input$b_PF_option
       if (inBPFmarker == "change_m_PF") {
-    sliderInput("b_PF_marker_freq", "Marker size",
-                min = 1, max = 40, value = 1, step = 1)
+        sliderInput("b_PF_marker_freq", "Marker size",
+                    min = 1, max = 40, value = 1, step = 1)
       }
     }
   })
@@ -3577,7 +3579,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -3634,7 +3636,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -3691,7 +3693,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -3800,16 +3802,16 @@ shinyServer(function(input, output, session){
     howmany2 <- pf_data[[7]]
     pfmsizing <- pf_data[[8]]
     increase_size <- pf_data[[9]]
-
+    
     if(pfsort == "sort_f"){
       enM_families <- enM_families[order(-enM_families$frequency), ]
       if(nrow(enM_families)>=1){
         enM_families <- cbind(enM_families, new_f = paste0("(", enM_families$frequency, ") ", enM_families$family))
       } else {
         enM_families <- enM_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0), 
-                               "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
-                               "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
-                               "new_f" = character(0))
+                                     "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0), 
+                                     "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                                     "new_f" = character(0))
       }
       enP_families <- enP_families[order(-enP_families$frequency), ]
       if(nrow(enP_families)>=1){
@@ -3826,9 +3828,9 @@ shinyServer(function(input, output, session){
         enM_families <- cbind(enM_families, new_f = paste0(enM_families$family, " (", enM_families$frequency, ")"))
       } else {
         enM_families <- enM_families("id" = character(0), "rep1" = numeric(0), "rep2" = numeric(0),
-                               "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
-                               "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
-                               "new_f" = character(0))
+                                     "logFC" = numeric(0), "pvalue" = numeric(0), "FDR" = numeric(0),
+                                     "gene" = character(0), "family" = character(0), "frequency" = numeric(0),
+                                     "new_f" = character(0))
       }
       enP_families 
       if(nrow(enP_families)>=1){
@@ -3844,7 +3846,7 @@ shinyServer(function(input, output, session){
     enM_families$new_f <- paste(enM_families$new_f, " ", sep = '')
     enM_families$new_f <- factor(enM_families$new_f, levels = unique(enM_families$new_f))
     enP_families$new_f <- factor(enP_families$new_f, levels = unique(enP_families$new_f))
-
+    
     if (pfmsizing == "change"){
       p <- plot_ly(colors = rainbow(howmany1+howmany2, start = 0, end = 0.85), width = 1300, height = 900) %>% # ,visible='legendonly'
         #background
@@ -3965,7 +3967,7 @@ shinyServer(function(input, output, session){
   ##### ADVANCED FEATURES END ##### 
   
   ##### MULTIPLE PD COMPARISONS START #####
-
+  
   output$c_file1 <- renderUI({
     fileInput('c_file_pulldown1', 'Upload user input file1',
               accept = c(
@@ -3989,7 +3991,7 @@ shinyServer(function(input, output, session){
                 '.tsv')
     )
   })
-
+  
   output$c_file3 <- renderUI({
     fileInput('c_file_pulldown3', 'Upload user input file3',
               accept = c(
@@ -4195,7 +4197,7 @@ shinyServer(function(input, output, session){
     )
     selectInput('c_color_inweb', 'InWeb', add_marker_cols$V1, multiple=F, selectize=TRUE, selected = "yellow")
   })
-
+  
   output$c_color_scheme <- renderUI({
     radioButtons("c_colorscheme", "Color scheme:",
                  c("FDR" = "fdr", 
@@ -4238,7 +4240,7 @@ shinyServer(function(input, output, session){
       max_logFC <- signif(max_logFC+0.5, 1)
       # combined_max <- max(-(min_logFC), max_logFC)
       sliderInput("c_logfc_thresh_comb", "logFC threshold",
-                   min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
+                  min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
     } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
@@ -4248,7 +4250,7 @@ shinyServer(function(input, output, session){
       max_logFC <- signif(max_logFC+0.5, 1)
       # combined_max <- max(-(min_logFC), max_logFC)
       sliderInput("c_logfc_thresh_comb", "logFC threshold",
-                   min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
+                  min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
     } else if(!is.null(c_in_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
       c1 <- c_pd1()
       c2 <- c_pd2()
@@ -4259,10 +4261,10 @@ shinyServer(function(input, output, session){
       max_logFC <- signif(max_logFC+0.5, 1)
       # combined_max <- max(-(min_logFC), max_logFC)
       sliderInput("c_logfc_thresh_comb", "logFC threshold",
-                   min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
+                  min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
     } else
       sliderInput("c_logfc_thresh_comb", "logFC threshold",
-                   min = -1, max = 1, value = c(0, 1), step = 0.1)
+                  min = -1, max = 1, value = c(0, 1), step = 0.1)
   })
   
   #create slider for FDR f1
@@ -4271,7 +4273,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', "")
     )
     sliderInput("c_compare1_FDR_range", "FDR",
-                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+                min = 0, max = 1, value = c(0, 1), step = 0.01, sep = '', pre = NULL, post = NULL)
   })
   
   #create slider for FDR f2
@@ -4280,7 +4282,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown2 != '', "")
     )
     sliderInput("c_compare2_FDR_range", "FDR",
-                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+                min = 0, max = 1, value = c(0, 1), step = 0.01, sep = '', pre = NULL, post = NULL)
   })
   
   #create slider for FDR f3
@@ -4289,7 +4291,7 @@ shinyServer(function(input, output, session){
       need(input$c_file_pulldown3 != '', "")
     )
     sliderInput("c_compare3_FDR_range", "FDR",
-                min = 0, max = 1, value = c(0, 1), step = 0.05, sep = '', pre = NULL, post = NULL)
+                min = 0, max = 1, value = c(0, 1), step = 0.01, sep = '', pre = NULL, post = NULL)
   })
   
   #create slider for pvalue f1
@@ -4798,7 +4800,7 @@ shinyServer(function(input, output, session){
     sliderInput("c_SNP_ext", "Gene extension (±Kb)",
                 min = 0, max = 100, value = 50, step = 10)
   })
-
+  
   #snp to gene using LD r^2>0.6±user defined extension
   c_SNP_to_gene <- reactive({
     if(!is.null(c_snp())){
@@ -4858,7 +4860,7 @@ shinyServer(function(input, output, session){
       d_subset
     }
   })
-
+  
   c_in_pd1 <-reactive({
     if(!is.null(input$c_file_pulldown1)){
       pulldown <- input$c_file_pulldown1
@@ -4878,6 +4880,9 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
+                       system("rm in.txt")
+                       system("rm results.txt")
+                       system("rm f1_res.txt")
                        write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
@@ -4910,7 +4915,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -4943,6 +4948,9 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
+                       system("rm in.txt")
+                       system("rm results.txt")
+                       system("rm f2_res.txt")
                        write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
@@ -4964,7 +4972,7 @@ shinyServer(function(input, output, session){
       df
     }
   })
-
+  
   c_pd2 <- reactive({
     if(!is.null(c_orig_pd2())){
       d <- c_orig_pd2()
@@ -4975,7 +4983,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -5008,6 +5016,9 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
+                       system("rm in.txt")
+                       system("rm results.txt")
+                       system("rm f3_res.txt")
                        write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
                                    row.names = F, col.names = F)
                        incProgress(0.6)
@@ -5040,7 +5051,7 @@ shinyServer(function(input, output, session){
       }else if("logFC" %in% d_col & "FDR" %in% d_col & "pvalue" %in% d_col){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
-        df <- d[,c("gene","rep1","rep2")]
+        df <- d
         df1 <- calculate_moderated_ttest(df)
       }
       df1
@@ -5500,7 +5511,7 @@ shinyServer(function(input, output, session){
       list(d_g2s=d_g2s)
     }
   })
-    
+  
   c_vp1_goi_layer <- reactive({
     validate(
       need(!is.null(c_pd1()), "")
@@ -5590,7 +5601,7 @@ shinyServer(function(input, output, session){
     p <- p %>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-             # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+    # title = paste0("p-value = ", vp_title), titlefont = list(size=15))
     if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_upload_genes())){
         df <- ldply(c1_goi$d_g2s, data.frame)
@@ -5631,7 +5642,7 @@ shinyServer(function(input, output, session){
       add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
                 name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
   })
-    
+  
   c_vp1_goi_plus <- reactive({
     validate(
       need(!is.null(c_search_gene()), "")
@@ -5715,7 +5726,7 @@ shinyServer(function(input, output, session){
     p <- p%>%
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
-             #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+    #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
     if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
       if(!is.null(c_snp())){
         if(nrow(c1_snp$d_snp) != 0){
@@ -6936,7 +6947,7 @@ shinyServer(function(input, output, session){
       cor <- signif(cor(input_file$rep1, input_file$rep2), 4)
       cor <- paste0("correlation coefficient: ", cor)
     } else if ("gene" %in% colnames(input_file) & "logFC" %in% colnames(input_file) 
-             & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
+               & "FDR" %in% colnames(input_file) & "pvalue" %in% colnames(input_file)){
       return(NULL)
     }
   })
@@ -7210,6 +7221,23 @@ shinyServer(function(input, output, session){
     }
   })
   
+  c_compare1_plot_scatter <- eventReactive(input$c_pc_make_plot, { #reactive({
+    d <- c_compare1()
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      f1 <- d$f1
+      f1_subset <- d$f1_subset
+      overlap1_2 <- d$overlap1_2
+      p1 <- compare_two_files_a_scatter(f1, f1_subset, overlap1_2)
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f1 <- d$f1
+      f1_subset <- d$f1_subset
+      overlap1_2 <- d$overlap1_2
+      overlap1_3 <- d$overlap1_3
+      overlap1_2_3 <- d$overlap1_2_3
+      p1 <- compare_two_files_aa_scatter(f1, f1_subset, overlap1_2, overlap1_3, overlap1_2_3)
+    }
+  })
+  
   c_compare1_plus <- reactive({
     validate(
       need(!is.null(c_search_gene()), "")
@@ -7219,6 +7247,18 @@ shinyServer(function(input, output, session){
     orig_data <- c_pd1()
     searchgene <- orig_data[grepl(goi,orig_data$gene),]
     p1 <- search_volcano(p, searchgene)
+    p1
+  })
+  
+  c_compare1_plus_scatter <- reactive({
+    validate(
+      need(!is.null(c_search_gene()), "")
+    )
+    p <- c_compare1_plot_scatter()
+    goi <- c_search_gene()
+    orig_data <- c_pd1()
+    searchgene <- orig_data[grepl(goi,orig_data$gene),]
+    p1 <- search_scatter(p, searchgene)
     p1
   })
   
@@ -7239,6 +7279,23 @@ shinyServer(function(input, output, session){
     }
   })
   
+  c_compare2_plot_scatter <- eventReactive(input$c_pc_make_plot, { #reactive({
+    d <- c_compare2()
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+      f2 <- d$f2
+      f2_subset <- d$f2_subset
+      overlap2_1 <- d$overlap2_1
+      p2 <- compare_two_files_b_scatter(f2, f2_subset, overlap2_1)
+    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f2 <- d$f2
+      f2_subset <- d$f2_subset
+      overlap2_1 <- d$overlap2_1
+      overlap2_3 <- d$overlap2_3
+      overlap2_1_3 <- d$overlap2_1_3
+      p2 <- compare_two_files_bb_scatter(f2, f2_subset, overlap2_1, overlap2_3, overlap2_1_3)
+    }
+  })
+  
   c_compare2_plus <- reactive({
     validate(
       need(!is.null(c_search_gene()), "")
@@ -7250,7 +7307,19 @@ shinyServer(function(input, output, session){
     p2 <- search_volcano(p, searchgene)
     p2
   })
-
+  
+  c_compare2_plus_scatter <- reactive({
+    validate(
+      need(!is.null(c_search_gene()), "")
+    )
+    p <- c_compare2_plot_scatter()
+    goi <- c_search_gene()
+    orig_data <- c_pd2()
+    searchgene <- orig_data[grepl(goi,orig_data$gene),]
+    p2 <- search_scatter(p, searchgene)
+    p2
+  })
+  
   c_compare3_plot <- eventReactive(input$c_pc_make_plot, { #reactive({
     d <- c_compare3()
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
@@ -7263,6 +7332,18 @@ shinyServer(function(input, output, session){
     }
   })
   
+  c_compare3_plot_scatter <- eventReactive(input$c_pc_make_plot, { #reactive({
+    d <- c_compare3()
+    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+      f3 <- d$f3
+      f3_subset <- d$f3_subset
+      overlap3_1 <- d$overlap3_1
+      overlap3_2 <- d$overlap3_2
+      overlap3_1_2 <- d$overlap3_1_2
+      p3 <- compare_two_files_cc_scatter(f3, f3_subset, overlap3_1, overlap3_2, overlap3_1_2)
+    }
+  })
+  
   c_compare3_plus <- reactive({
     validate(
       need(!is.null(c_search_gene()), "")
@@ -7272,6 +7353,18 @@ shinyServer(function(input, output, session){
     orig_data <- c_pd3()
     searchgene <- orig_data[grepl(goi,orig_data$gene),]
     p3 <- search_volcano(p, searchgene)
+    p3
+  })
+  
+  c_compare3_plus_scatter <- reactive({
+    validate(
+      need(!is.null(c_search_gene()), "")
+    )
+    p <- c_compare3_plot_scatter()
+    goi <- c_search_gene()
+    orig_data <- c_pd3()
+    searchgene <- orig_data[grepl(goi,orig_data$gene),]
+    p3 <- search_scatter(p, searchgene)
     p3
   })
   
@@ -7548,7 +7641,7 @@ shinyServer(function(input, output, session){
     }
     as.data.frame(d)
   })
-
+  
   c_venndiagram <- eventReactive(input$c_pc_make_plot, { #reactive({
     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
       f1_subset <- c_f1()
@@ -7775,24 +7868,24 @@ shinyServer(function(input, output, session){
       }
     } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
       if(!is.null(c_inweb_pd1()) & !is.null(c_in_pd2()) & !is.null(c_in_pd3())){
-      f1_inweb <- c_inweb_pd1()
-      f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
-      f2_inweb <- c_inweb_pd2()
-      f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
-      f3_inweb <- c_inweb_pd3()
-      f3_inweb <- subset(f3_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
-      x <- list()
-      x[["File1"]] <- f1_inweb$gene
-      x[["File2"]] <- f2_inweb$gene
-      x[["File3"]] <- f3_inweb$gene
-      
-      colors3 = c("gray", "gray", "gray")
-      
-      v0 <- venn.diagram(x, 
-                         fill = colors3, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
-                         sub = " ", sub.pos = c(0, 0, 0), euler.d = F, scaled = F,
-                         # cat.cex = 1.1, cex = 2, cat.pos = c(180,180,0), cat.dist = c(0.05,0.05,0.05),
-                         fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
+        f1_inweb <- c_inweb_pd1()
+        f1_inweb <- subset(f1_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
+        f2_inweb <- c_inweb_pd2()
+        f2_inweb <- subset(f2_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
+        f3_inweb <- c_inweb_pd3()
+        f3_inweb <- subset(f3_inweb, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
+        x <- list()
+        x[["File1"]] <- f1_inweb$gene
+        x[["File2"]] <- f2_inweb$gene
+        x[["File3"]] <- f3_inweb$gene
+        
+        colors3 = c("gray", "gray", "gray")
+        
+        v0 <- venn.diagram(x, 
+                           fill = colors3, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
+                           sub = " ", sub.pos = c(0, 0, 0), euler.d = F, scaled = F,
+                           # cat.cex = 1.1, cex = 2, cat.pos = c(180,180,0), cat.dist = c(0.05,0.05,0.05),
+                           fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
       }
     }
   })
@@ -7871,7 +7964,7 @@ shinyServer(function(input, output, session){
         df1_c2 <- c(df1_c2, list(total = total2))
         
         list_num <- input$c_goi_num_inputs
-
+        
         x <- list()
         x[["File1"]] <-df1_c1[[list_num]]$gene
         x[["File2"]] <-df1_c2[[list_num]]$gene
@@ -8184,7 +8277,7 @@ shinyServer(function(input, output, session){
         c2 <- c_pd2()
         snp2gene <- c_SNP_to_gene()
         snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-
+        
         df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
                                                             pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
         df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
@@ -8195,9 +8288,9 @@ shinyServer(function(input, output, session){
         
         df1_c1 <- c(df1_c1, list(total = total1))
         df1_c2 <- c(df1_c2, list(total = total2))
-
+        
         list_num <- input$c_snp_num_inputs
-
+        
         x <- list()
         x[["File1"]] <-df1_c1[[list_num]]$gene
         x[["File2"]] <-df1_c2[[list_num]]$gene
@@ -8683,32 +8776,32 @@ shinyServer(function(input, output, session){
       layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
              legend = list(orientation = 'h', y = -0.23))
     if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
-        df <- ldply(c1_pf_db$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$c_marker_text_prot_fam_db == "yes_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
-          } else if(input$c_marker_text_prot_fam_db == "no_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
-          }
-          p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
-          p <- vp_layer_no_genes
+      df <- ldply(c1_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_no_text(p, df)
         }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none(p, d)
+        p <- vp_layer_no_genes
+      }
       
     } else if(input$c_colorscheme == "cbf"){
-        df <- ldply(c1_pf_db$d_g2s, data.frame)
-        if(nrow(df) != 0){
-          if(input$c_marker_text_prot_fam_db == "yes_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
-          } else if(input$c_marker_text_prot_fam_db == "no_label"){
-            vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
-          }
-          p <- vp_layer_genes
-        } else{
-          vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
-          p <- vp_layer_no_genes
+      df <- ldply(c1_pf_db$d_g2s, data.frame)
+      if(nrow(df) != 0){
+        if(input$c_marker_text_prot_fam_db == "yes_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf(p, df)
+        } else if(input$c_marker_text_prot_fam_db == "no_label"){
+          vp_layer_genes <- vp_layer_for_uploaded_genes_cbf_no_text(p, df)
         }
+        p <- vp_layer_genes
+      } else{
+        vp_layer_no_genes <- vp_layer_for_uploaded_genes_none_cbf(p, d)
+        p <- vp_layer_no_genes
+      }
       
     }
     p <- p %>% 
@@ -9679,6 +9772,18 @@ shinyServer(function(input, output, session){
     }
   })
   
+  output$comparison1_scatter <- renderPlotly({
+    validate(
+      need(input$c_file_pulldown1 != '', "Upload file"),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    if(is.null(c_search_gene())){
+      c_compare1_plot_scatter()
+    } else{
+      c_compare1_plus_scatter()
+    }
+  })
+  
   output$comparison1_pf <- renderPlotly({
     validate(
       need(input$c_file_pulldown1 != '', "Upload file"),
@@ -9696,6 +9801,18 @@ shinyServer(function(input, output, session){
       c_compare2_plot()
     } else{
       c_compare2_plus()
+    }
+  })
+  
+  output$comparison2_scatter <- renderPlotly({
+    validate(
+      need(input$c_file_pulldown1 != '', "Upload file"),
+      need(input$c_file_pulldown2 != '', "")
+    )
+    if(is.null(c_search_gene())){
+      c_compare2_plot_scatter()
+    } else{
+      c_compare2_plus_scatter()
     }
   })
   
@@ -9717,6 +9834,19 @@ shinyServer(function(input, output, session){
       c_compare3_plot()
     } else{
       c_compare3_plus()
+    }
+  })
+  
+  output$comparison3_scatter <- renderPlotly({
+    validate(
+      need(input$c_file_pulldown1 != '', "Upload file"),
+      need(input$c_file_pulldown2 != '', ""),
+      need(input$c_file_pulldown3 != '', "")
+    )
+    if(is.null(c_search_gene())){
+      c_compare3_plot_scatter()
+    } else{
+      c_compare3_plus_scatter()
     }
   })
   
@@ -9793,7 +9923,7 @@ shinyServer(function(input, output, session){
   },
   caption.placement = getOption("xtable.caption.placement", "top"), 
   caption.width = getOption("xtable.caption.width", NULL))
-
+  
   output$c1_download_mapped_uniprot <- downloadHandler(
     filename = function() {
       paste("protein-to-gene-names1", ".txt", sep = "")
@@ -10440,7 +10570,7 @@ shinyServer(function(input, output, session){
       }
     }
   })
-
+  
   ##### GENERAL #####
   #documentation
   getPage_basics<-function() {
@@ -10523,7 +10653,7 @@ shinyServer(function(input, output, session){
     getPage_PFE()
   })
   
-
+  
   # output$documentation <- renderUI({
   #   return(includeHTML("documentation/doc_0316.html")
   #   )
