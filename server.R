@@ -633,7 +633,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -3580,7 +3585,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -3637,7 +3647,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -3694,7 +3709,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -4916,7 +4936,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -4984,7 +5009,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -5052,7 +5082,12 @@ shinyServer(function(input, output, session){
         df1 <- d
       }else if("rep1" %in% d_col & "rep2" %in% d_col){
         df <- d
-        df1 <- calculate_moderated_ttest(df)
+        if("accession_number" %in% d_col){
+          df1 <- calculate_moderated_ttest_uniprot(df)
+        }
+        else if("accession_number" %!in% d_col){
+          df1 <- calculate_moderated_ttest_hgnc(df) 
+        }
       }
       df1
     }
@@ -5501,6 +5536,98 @@ shinyServer(function(input, output, session){
     searchgene <- orig_data[grepl(goi,orig_data$gene),]
     p1 <- search_volcano(p, searchgene)
     p1
+  })
+  
+  c_sp1_inweb_layer <- reactive({
+    validate(
+      need(!is.null(c_pd1()), "")
+    )
+    d <- c_pd1()
+    c1_multi_vp <- c_vp1_inweb()
+    min_x <- c_min_x()
+    min_y <- c_min_y()
+    max_x <- c_max_x()
+    max_y <- c_max_y()
+    vp_title <- c_pd1_inweb_hypergeometric()
+    if(input$c_colorscheme == "fdr"){
+      req(input$c_color_inweb_sig, input$c_color_inweb_insig)
+      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_inweb_sig, input$c_color_inweb_insig)
+      p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "exac"){
+      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+      d$s[is.na(d$s)] <- 2
+      below_thresh <- subset(d, s < 0.9)
+      above_thresh <- subset(d, s >= 0.9)
+      no_exist <- subset(d, s == 2)
+      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+      p
+    } else if(input$c_colorscheme == "cbf"){
+      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+      p <- plot_volcano_multiple_cond(data)
+    } else if(input$c_colorscheme == "user"){
+      validate(
+        need(!is.null(input$c_file_color), "Please upload file with gene and score")
+      )
+      d1 <- c_in_file_color()
+      col_theme <- input$c_colorbrewer_theme_tab3
+      if(input$c_colorscheme_style == "cont"){
+        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      } else if(input$c_colorscheme_style == "disc"){
+        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+        data <- df$df1
+        data1 <- df$no_exist
+      }
+      p <- plot_ly(showlegend = T, width = 320, height = 390)
+      if(nrow(data1)>0){
+        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+                         opacity = 0.8,
+                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+      }
+      if(nrow(data)>0){
+        for(i in nrow(data)){
+          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+                           opacity = 1,
+                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+        }
+      }
+      p
+    }
+    p <- p%>%
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+             title = paste0("p-value = ", vp_title), titlefont = list(size=15), legend = list(orientation = 'h', y = -0.23))
+    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
+      if(!is.null(c_bait_in())){
+        col <- input$c_color_inweb
+        if(input$c_marker_text_inweb == "yes_label"){
+          vp_layer_inweb <- vp_layer_for_inweb(p, c1_multi_vp$d_in, col)
+        } else if(input$c_marker_text_inweb == "no_label"){
+          vp_layer_inweb <- vp_layer_for_inweb_no_text(p, c1_multi_vp$d_in, col)
+        }
+        p <- vp_layer_inweb
+      }
+    } else if(input$c_colorscheme == "cbf"){
+      if(!is.null(c_bait_in())){
+        if(input$c_marker_text_inweb == "yes_label"){
+          vp_layer_inweb <- vp_layer_for_inweb_cbf(p, c1_multi_vp$d_in)
+        } else if(input$c_marker_text_inweb == "no_label"){
+          vp_layer_inweb <- vp_layer_for_inweb_cbf_no_text(p, c1_multi_vp$d_in)
+        }
+        p <- vp_layer_inweb
+      }
+    }
+    p <- p %>% 
+      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"), 
+                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+      add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
+      add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"), 
+                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
   })
   
   c_goi_vp1 <- eventReactive(input$c_make_plot_goi, {
