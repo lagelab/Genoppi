@@ -817,15 +817,16 @@ shinyServer(function(input, output, session){
       withProgress(message = 'Finding bait interactors in InWeb', 
                    detail = 'Hold please', value = 0, {
                      bait <- a_bait_gene_layer()
-                     bait_inweb3 <-
-                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
-                     incProgress(0.5)
-                     bait_inweb_im <- 
-                       system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                     bait_interactors <- inweb_im_hash[[bait]]
+                     # bait_inweb3 <-
+                     #   system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                     # incProgress(0.5)
+                     # bait_inweb_im <- 
+                     #   system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
                      incProgress(0.8)
                    })
-      bait_interactors <- c(bait_inweb_im, bait_inweb3)
-      bait_interactors <- unique(sort(bait_interactors))
+      # bait_interactors <- c(bait_inweb_im, bait_inweb3)
+      # bait_interactors <- unique(sort(bait_interactors))
       bait_interactors
     }
   })
@@ -835,15 +836,17 @@ shinyServer(function(input, output, session){
       withProgress(message = 'Finding bait interactors in InWeb', 
                    detail = 'Hold please', value = 0, {
                      bait <- a_bait_gene_vennd()
-                     bait_inweb3 <-
-                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
-                     incProgress(0.5)
-                     bait_inweb_im <- 
-                       system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                     bait_interactors <- inweb_im_hash[[bait]]
+                     # bait_inweb3 <-
+                     #   system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                     # incProgress(0.5)
+                     # bait_inweb_im <- 
+                     #   system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
                      incProgress(0.8)
                    })
-      bait_interactors <- c(bait_inweb_im, bait_inweb3)
-      bait_interactors <- unique(sort(bait_interactors))
+      # bait_interactors <- c(bait_inweb_im, bait_inweb3)
+      # bait_interactors <- unique(sort(bait_interactors))
+      bait_interactors
     } else{
       return(NULL)
     }
@@ -4743,15 +4746,17 @@ shinyServer(function(input, output, session){
       withProgress(message = 'Finding bait interactors in InWeb', 
                    detail = 'Hold please', value = 0, {
                      bait <- c_bait_in()
-                     bait_inweb3 <-
-                       system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
-                     incProgress(0.5)
-                     bait_inweb_im <- 
-                       system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                     bait_interactors <- inweb_im_hash[[bait]]
+                     # bait_inweb3 <-
+                     #   system(paste("grep -w", bait, "data/InWeb3_interactions.txt | awk -F\"\t\" '{print $1, $2}' | tr ' ' '\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
+                     # incProgress(0.5)
+                     # bait_inweb_im <- 
+                     #   system(paste("zgrep -w", bait, "data/core.psimitab.gz | awk -v FS=\"(uniprotkb:|gene name)\" '{print $6, $9}' | sed -e 's/(//g' | tr ' ' '\\n' | sort -u | grep -v", bait, sep = " "), intern = TRUE)
                      incProgress(0.8)
                    })
-      bait_interactors <- c(bait_inweb_im, bait_inweb3)
-      bait_interactors <- unique(sort(bait_interactors))
+      # bait_interactors <- c(bait_inweb_im, bait_inweb3)
+      # bait_interactors <- unique(sort(bait_interactors))
+      bait_interactors
     }
   })
   
@@ -8021,15 +8026,19 @@ shinyServer(function(input, output, session){
     d <- c_pd1()
     inweb <- c_inweb_pd1()
     pop <- subset(d, d$gene %in% inweb_combined$V1)
+    pop1 <- unique(sort(pop$gene))
     sample <- inweb
+    sample1 <- unique(sort(inweb$gene))
     # sample <- subset(pop, pop$gene %in% inweb$gene)
     success_pop <- subset(pop, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
+    success_pop1 <- unique(sort(success_pop$gene))
     success_samp <- subset(sample, sample$gene %in% success_pop$gene)
+    success_samp1 <- unique(sort(success_samp$gene))
     rownames(success_samp) <- NULL
-    samp_l <- nrow(sample)
-    pop_l <- nrow(pop)
-    success_pop_l <- nrow(success_pop)
-    success_samp_l <- nrow(success_samp)
+    samp_l <- length(sample1)
+    pop_l <- length(pop1)
+    success_pop_l <- length(success_pop1)
+    success_samp_l <- length(success_samp1)
     pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
     pvalue <- signif(pvalue, 4)
   })
@@ -8038,15 +8047,19 @@ shinyServer(function(input, output, session){
     d <- c_pd2()
     inweb <- c_inweb_pd2()
     pop <- subset(d, d$gene %in% inweb_combined$V1)
+    pop1 <- unique(sort(pop$gene))
     sample <- inweb
+    sample1 <- unique(sort(inweb$gene))
     # sample <- subset(pop, pop$gene %in% inweb$gene)
     success_pop <- subset(pop, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
+    success_pop1 <- unique(sort(success_pop$gene))
     success_samp <- subset(sample, sample$gene %in% success_pop$gene)
+    success_samp1 <- unique(sort(success_samp$gene))
     rownames(success_samp) <- NULL
-    samp_l <- nrow(sample)
-    pop_l <- nrow(pop)
-    success_pop_l <- nrow(success_pop)
-    success_samp_l <- nrow(success_samp)
+    samp_l <- length(sample1)
+    pop_l <- length(pop1)
+    success_pop_l <- length(success_pop1)
+    success_samp_l <- length(success_samp1)
     pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
     pvalue <- signif(pvalue, 4)
   })
@@ -8055,15 +8068,19 @@ shinyServer(function(input, output, session){
     d <- c_pd3()
     inweb <- c_inweb_pd3()
     pop <- subset(d, d$gene %in% inweb_combined$V1)
+    pop1 <- unique(sort(pop$gene))
     sample <- inweb
+    sample1 <- unique(sort(inweb$gene))
     # sample <- subset(pop, pop$gene %in% inweb$gene)
     success_pop <- subset(pop, pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1])
+    success_pop1 <- unique(sort(success_pop$gene))
     success_samp <- subset(sample, sample$gene %in% success_pop$gene)
+    success_samp1 <- unique(sort(success_samp$gene))
     rownames(success_samp) <- NULL
-    samp_l <- nrow(sample)
-    pop_l <- nrow(pop)
-    success_pop_l <- nrow(success_pop)
-    success_samp_l <- nrow(success_samp)
+    samp_l <- length(sample1)
+    pop_l <- length(pop1)
+    success_pop_l <- length(success_pop1)
+    success_samp_l <- length(success_samp1)
     pvalue <- phyper((success_samp_l-1), samp_l, (pop_l-samp_l), success_pop_l, lower.tail = F)
     pvalue <- signif(pvalue, 4)
   })
