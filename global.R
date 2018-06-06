@@ -3,6 +3,7 @@
 library(shiny)
 library(shinyjs)
 library(plotly)
+library(hash)
 
 load("data/InWeb.RData")
 human_genome <- read.table("data/ensembl_homo_sapiens_genes.txt", header = T)
