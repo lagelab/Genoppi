@@ -78,7 +78,7 @@ def getHGNCName(gene):
         return -1
 
 def queryUniProt(to, queryString):
-    url = 'http://www.uniprot.org/uploadlists/'
+    url = 'https://www.uniprot.org/uploadlists/'
     params = {
         'from':'ACC',
         'to': to,
