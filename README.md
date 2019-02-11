@@ -11,10 +11,10 @@ Genoppi depends on several R packages. Run the following command from within RSt
 ```r
 source("https://bioconductor.org/biocLite.R")
 biocLite("limma")
-install.packages(c("shiny", "shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest", 
-                   "htmltools", "R6", "sourcetools", "ggplot2", "scales", "httr", "magrittr", "viridisLite", "base64enc", 
+install.packages(c("shiny", "shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest",
+                   "htmltools", "R6", "sourcetools", "ggplot2", "scales", "httr", "magrittr", "viridisLite", "base64enc",
                    "htmlwidgets", "tidyr", "hexbin", "RColorBrewer", "dplyr", "tibble", "lazyeval", "crosstalk", "purrr", "data.table", "hash"))
-install.packages("https://cran.r-project.org/src/contrib/plotly_4.7.1.tar.gz", repos=NULL, type="source")
+install.packages("https://cran.r-project.org/src/contrib/Archive/plotly/plotly_4.7.1.tar.gz", repos=NULL, type="source")
 ```
 
 Genoppi is stable using the following versions of each packages:
@@ -32,8 +32,8 @@ ggplot2 2.2.1
 RColorBrewer 1.1-2
 ```
 
-## Running Genoppi 
-Genoppi can be 1. downloaded and ran locally or 2. run directly from Genoppi git repository. 
+## Running Genoppi
+Genoppi can be 1. downloaded and ran locally or 2. run directly from Genoppi git repository.
 
 1. To modify the code to suit one's needs, the direct download link for Genoppi is https://github.com/lagelab/Genoppi/archive/master.zip
 
