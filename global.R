@@ -7,7 +7,7 @@ library(shinydashboard)
 library(hash)
 library(gplots)
 
-load("data/InWeb_combined_Oct2019.RData")
+load("data/InWeb_combined_Oct2018.RData")
 load("data/proteinfam_loc_May2019.RData")
 human_genome <- read.table("data/ensembl_homo_sapiens_genes.txt", header = T)
 exac <- read.table("data/constrained_cleaned_exac_with_pHI_Aug26.txt", header = T, sep = "\t")
