@@ -78,17 +78,33 @@ def getHGNCName(gene):
         return -1
 
 def queryUniProt(to, queryString):
+    # url = 'https://www.uniprot.org/uploadlists/'
+    # params = {
+    #     'from':'ACC',
+    #     'to': to,
+    #     'format':'tab',
+    #     'query': queryString
+    # }
+    #
+    # data = urllib.urlencode(params)
+    # request = urllib2.Request(url, data)
+    # contact = ""
+    # request.add_header('User-Agent', 'Python %s' % contact)
+    # response = urllib2.urlopen(request)
+    # page = response.read(200000).splitlines()
     url = 'https://www.uniprot.org/uploadlists/'
+
     params = {
-        'from':'ACC',
-        'to': to,
-        'format':'tab',
-        'query': queryString
+    'from':'ACC',
+    'to': to,
+    'format':'tab',
+    'query': queryString
+    # 'query': 'Q13698'
     }
 
     data = urllib.urlencode(params)
     request = urllib2.Request(url, data)
-    contact = ""
+    contact = "" # Please set a contact email address here to help us debug in case of problems (see https://www.uniprot.org/help/privacy).
     request.add_header('User-Agent', 'Python %s' % contact)
     response = urllib2.urlopen(request)
     page = response.read(200000).splitlines()
@@ -210,7 +226,7 @@ def answerQueries():
             numObsolete += 1
             toRemove.append(ID)
         else:
-            site = "http://www.uniprot.org/uniprot/?query=id:" + ID + "&sort=score&columns=id,version,protein%20names&format=tab"
+            site = "https://www.uniprot.org/uniprot/?query=id:" + ID + "&sort=score&columns=id,version,protein%20names&format=tab"
             data = urllib2.urlopen(site)
             page = data.read(2000000).splitlines()
             data.close()
@@ -221,7 +237,7 @@ def answerQueries():
                         print "Weird, check query for " + ID
                         break
                     if (len(entry) > 1 and entry[1].strip() == '') or len(entry) == 1:
-                        history_site = "http://www.uniprot.org/uniprot/" + ID + "?version=*"
+                        history_site = "https://www.uniprot.org/uniprot/" + ID + "?version=*"
                         history_data = urllib2.urlopen(history_site)
                         soup = BeautifulSoup(history_data)
                         for link in soup.findAll('a'):
@@ -230,7 +246,7 @@ def answerQueries():
                                 possible_prefix = possible_site.split('=')
                                 match = './' + ID + '.txt?version'
                                 if possible_prefix[0] == match:
-                                    correct_site = "http://www.uniprot.org/uniprot"+possible_site[1:]
+                                    correct_site = "https://www.uniprot.org/uniprot"+possible_site[1:]
                                     correct_data = urllib2.urlopen(correct_site)
                                     correct_page = correct_data.read(200000).splitlines()
                                     MAP[ID] = []
