@@ -406,53 +406,53 @@ body <- dashboardBody(
                                    column(8, tableOutput("c_unique_goi"))
                                  )
                         ),
-                        tabPanel("SNP", value = "3_p5",
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_SNP_file")),
-                                   column(2, uiOutput("c_text_snp")),
-                                   column(2, uiOutput("c_button_snp"))
-                                 ),
-                                 fluidRow(
-                                   column(4)
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_color_setting_text_snp"))
-                                 ),
-                                 fluidRow(
-                                   column(2, uiOutput("c_color_theme_snp_sig")),
-                                   column(2, uiOutput("c_color_theme_snp_insig")),
-                                   column(2, uiOutput("c_color_theme_tab5")),
-                                   column(2, uiOutput("c_marker_theme_snp"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, plotOutput("c_snp_colorbar", height = "100px"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(1, myDownloadButton("download_c_vp1_snp_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp2_snp_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp3_snp_gg", "Volcano"))
-                                 ),
-                                 fluidRow(
-                                   column(4, plotlyOutput("VolcanoPlot_c1_snp")),
-                                   column(4, plotlyOutput("VolcanoPlot_c2_snp")),
-                                   column(4, plotlyOutput("VolcanoPlot_c3_snp"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("snp_num_inputs"))
-                                 ),
-                                 br(),
-                                 br(),
-                                 fluidRow(
-                                   column(4, plotOutput("c_VennDiagram_snp", width = "220px", height = "220px")),
-                                   column(8, tableOutput("c_unique_snp"))
-                                 )
-                        ),
+                        # tabPanel("SNP", value = "3_p5",
+                        #          br(),
+                        #          fluidRow(
+                        #            column(4, uiOutput("c_SNP_file")),
+                        #            column(2, uiOutput("c_text_snp")),
+                        #            column(2, uiOutput("c_button_snp"))
+                        #          ),
+                        #          fluidRow(
+                        #            column(4)
+                        #          ),
+                        #          fluidRow(
+                        #            column(4, uiOutput("c_color_setting_text_snp"))
+                        #          ),
+                        #          fluidRow(
+                        #            column(2, uiOutput("c_color_theme_snp_sig")),
+                        #            column(2, uiOutput("c_color_theme_snp_insig")),
+                        #            column(2, uiOutput("c_color_theme_tab5")),
+                        #            column(2, uiOutput("c_marker_theme_snp"))
+                        #          ),
+                        #          br(),
+                        #          fluidRow(
+                        #            column(3, plotOutput("c_snp_colorbar", height = "100px"))
+                        #          ),
+                        #          br(),
+                        #          fluidRow(
+                        #            column(1, myDownloadButton("download_c_vp1_snp_gg", "Volcano")),
+                        #            column(3),
+                        #            column(1, myDownloadButton("download_c_vp2_snp_gg", "Volcano")),
+                        #            column(3),
+                        #            column(1, myDownloadButton("download_c_vp3_snp_gg", "Volcano"))
+                        #          ),
+                        #          fluidRow(
+                        #            column(4, plotlyOutput("VolcanoPlot_c1_snp")),
+                        #            column(4, plotlyOutput("VolcanoPlot_c2_snp")),
+                        #            column(4, plotlyOutput("VolcanoPlot_c3_snp"))
+                        #          ),
+                        #          br(),
+                        #          fluidRow(
+                        #            column(4, uiOutput("snp_num_inputs"))
+                        #          ),
+                        #          br(),
+                        #          br(),
+                        #          fluidRow(
+                        #            column(4, plotOutput("c_VennDiagram_snp", width = "220px", height = "220px")),
+                        #            column(8, tableOutput("c_unique_snp"))
+                        #          )
+                        # ),
                         tabPanel("Protein Family", value = "3_p6",
                                  br(),
                                  fluidRow(
@@ -522,10 +522,10 @@ body <- dashboardBody(
                                    column(3, downloadButton("c2_download_replications_calculated", "Calculated mod ttest f2")),
                                    column(3, downloadButton("c3_download_replications_calculated", "Calculated mod ttest f3"))
                                  ),
-                                 br(),
-                                 fluidRow(
-                                   column(2, downloadButton("c_download_snp_to_genes", "SNP to gene"))
-                                 ),
+                                 # br(),
+                                 # fluidRow(
+                                 #   column(2, downloadButton("c_download_snp_to_genes", "SNP to gene"))
+                                 # ),
                                  hr(),
                                  fluidRow(
                                    column(3, downloadButton("c_download_basic_plots", "Basic Plots"))
@@ -542,10 +542,10 @@ body <- dashboardBody(
                                  fluidRow(
                                    column(3, downloadButton("c_download_goi", "GOI comparisons"))
                                  ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c_download_snp", "SNP comparisons"))
-                                 ),
+                                 # br(),
+                                 # fluidRow(
+                                 #   column(3, downloadButton("c_download_snp", "SNP comparisons"))
+                                 # ),
                                  br(),
                                  fluidRow(
                                    column(3, downloadButton("c_download_protein_fams", "Protein families"))

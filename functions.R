@@ -27,7 +27,7 @@ calculate_moderated_ttest_hgnc <- function(input_file){
 
 
 calculate_moderated_ttest_uniprot <- function(input_file){
-  tmp <- data.frame(input_file$gene, rownames(input_file), input_file$accession_number)
+  tmp <- data.frame(input_file$gene, rownames(input_file), input_file$accession_number, input_file$all_gene_names)
   calculated <- data.frame(rownames(input_file), input_file$rep1, input_file$rep2)
   ### apply median normalization
   medianNorm <- function(d){return(d - median(d, na.rm = TRUE))}
@@ -47,7 +47,7 @@ calculate_moderated_ttest_uniprot <- function(input_file){
   tmp_g[is.na(tmp_g$input_file.gene),] <- "NotAssigned"
   # calculated$gene <- tmp_g$input_file.gene
   calculated <- merge(calculated, tmp_g, by.x = "id", by.y = "rownames.input_file.")
-  colnames(calculated) <- c("id", "rep1", "rep2","logFC","pvalue","FDR","gene","accession_number")
+  colnames(calculated) <- c("id", "rep1", "rep2","logFC","pvalue","FDR","gene","accession_number", "all_gene_names")
   calculated
 }
 
@@ -269,7 +269,7 @@ plot_volcano_qc <- function(d){
     p <- add_markers(p, data = d, x = ~logFC, y = ~-log10(pvalue),
                      marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
                      opacity = 0.9,
-                     text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text", name = "pull down")
+                     text = ~paste0(all_gene_names, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text", name = "pull down")
   }
   p
 }
@@ -659,7 +659,7 @@ vp_layer_for_snp_to_gene_sgl <- function(p, snp_sgl, marker_col){
     p <- add_markers(p, data = snp_sgl, x = ~logFC, y= ~-log10(pvalue),
                 marker = list(color = marker_col, size = 7, line = list(width=0.4, color = "black"), opacity = 1), #, symbol = "square"
                 mode = "markers+text", hoverinfo = "text", legendgroup = "group3",
-                text = ~paste(gene, '</br>', snpid), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
+                text = ~paste(gene, snpid, sep = "<br>"), textposition = ~ifelse(logFC>0,"top right","top left"), textfont = list(size = 11),
                 name = "SGL gene")
   }
   p

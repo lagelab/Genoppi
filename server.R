@@ -15,6 +15,8 @@ library(data.table)
 library(ggplot2)
 library(RColorBrewer)
 library(ggrepel)
+library(purrr)
+
 source("functions.R")
 
 shinyServer(function(input, output, session){
@@ -603,18 +605,13 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       system("rm in.txt")
-                       system("rm results.txt")
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
-                                   row.names = F, col.names = F)
+                       d$uniprot_new <- vapply(strsplit(d$accession_number,"-"), `[`, 1, FUN.VALUE=character(1))
                        incProgress(0.6)
-                       system("python scripts/gene-tools-master/map/map.py")
+                       df <- join(d, up_to_hgnc, type="left")
+                       df$gene[is.na(df$gene)] <- df$accession_number[is.na(df$gene)]
+                       df$all_gene_names[is.na(df$all_gene_names)] <- df$accession_number[is.na(df$all_gene_names)]
                        incProgress(0.8)
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
-                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                       colnames(d1) <- c("uniprot_id", "gene", "method")
-                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(method))
+                       df <- df[ , !(names(df) %in% c("uniprot_new"))]
                        incProgress(0.9)
                        df
                      })
@@ -1028,25 +1025,27 @@ shinyServer(function(input, output, session){
     if(!is.null(a_snp())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
+                     d <- a_pulldown()
                      snp_data <- a_snp()
-                     ext <- 50*1000
                      incProgress(0.2)
-                     write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-                     write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+                     res <- lapply(d$gene, function(s) {c(s, subset(snp_data, V1 %in%genes_snps[[s]]))})
+                     # Convert each list to a data.table
+                     dt_list <- map(res, as.data.table)
+                     # Harness the power of rbind list
+                     dt <- rbindlist(dt_list, fill = TRUE)
+                     if(ncol(dt)<2){
+                       dt$V2 <- NA
+                     }
+                     names(dt) <- c("gene", "snpid")
+                     dt <- dt[!is.na(dt$snpid)]
                      incProgress(0.6)
-                     system("scripts/genes_in_loci.sh")
                      incProgress(0.8)
-                     SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
-                     if(nrow(SNPgeneList) >= 1){
-                       n_occur <- data.frame(table(SNPgeneList$snpid))
+                     if(nrow(dt) >= 1){
+                       n_occur <- data.frame(table(dt$snpid))
                        incProgress(0.9)
-                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-                     } else if(nrow(SNPgeneList) == 0){
-                       place_holder <- data.frame("rs0", "0", "0", "x", "0", "0")
-                       names(place_holder) <- names(SNPgeneList)
-                       SNPgeneList <- rbind(SNPgeneList, place_holder)
-                       n_occur <- data.frame(table(SNPgeneList$snpid))
-                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
+                       SNP_n_occur <- merge(dt, n_occur, by.x = 'snpid', by.y = 'Var1')
+                     } else if(nrow(dt) == 0){
+                       SNP_n_occur <- data.frame(snpid = character(), gene = character(), Freq = integer())
                      }
                    })
       snpList <- SNP_n_occur
@@ -1063,25 +1062,27 @@ shinyServer(function(input, output, session){
     if(!is.null(a_snp_vennd())){
       withProgress(message = 'Finding genes in SNPs loci', 
                    detail = "Hold please", value = 0, {
+                     d <- a_pulldown()
                      snp_data <- a_snp_vennd()
-                     ext <- 50*1000
                      incProgress(0.2)
-                     write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-                     write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
+                     res <- lapply(d$gene, function(s) {c(s, subset(snp_data, V1 %in%genes_snps[[s]]))})
+                     # Convert each list to a data.table
+                     dt_list <- map(res, as.data.table)
+                     # Harness the power of rbind list
+                     dt <- rbindlist(dt_list, fill = TRUE)
+                     if(ncol(dt)<2){
+                       dt$V2 <- NA
+                     }
+                     names(dt) <- c("gene", "snpid")
+                     dt <- dt[!is.na(dt$snpid)]
                      incProgress(0.6)
-                     system("scripts/genes_in_loci.sh")
                      incProgress(0.8)
-                     SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
-                     if(nrow(SNPgeneList) >= 1){
-                       n_occur <- data.frame(table(SNPgeneList$snpid))
+                     if(nrow(dt) >= 1){
+                       n_occur <- data.frame(table(dt$snpid))
                        incProgress(0.9)
-                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-                     } else if(nrow(SNPgeneList) == 0){
-                       place_holder <- data.frame("rs0", "0", "0", "x", "0", "0")
-                       names(place_holder) <- names(SNPgeneList)
-                       SNPgeneList <- rbind(SNPgeneList, place_holder)
-                       n_occur <- data.frame(table(SNPgeneList$snpid))
-                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
+                       SNP_n_occur <- merge(dt, n_occur, by.x = 'snpid', by.y = 'Var1')
+                     } else if(nrow(dt) == 0){
+                       SNP_n_occur <- data.frame(snpid = character(), gene = character(), Freq = integer())
                      }
                    })
       snpList <- SNP_n_occur
@@ -1515,7 +1516,7 @@ shinyServer(function(input, output, session){
       p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
                        marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
                        opacity = 0.8,
-                       text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+                       text = ~paste(all_gene_names), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
       for(i in nrow(data)){
         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
                          marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
@@ -4535,25 +4536,25 @@ shinyServer(function(input, output, session){
     selectInput('c_color_inweb_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
   })
   
-  output$c_color_theme_snp_sig <- renderUI({
-    validate(
-      need(input$c_file_pulldown1 != '', ""),
-      need(input$c_file_pulldown2 != '', ""),
-      need(input$c_colorscheme == "fdr", "")
-    )
-    region <- c(paste0("FDR<", input$a_fdr_thresh))
-    selectInput('c_color_snp_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
-  })
-  
-  output$c_color_theme_snp_insig <- renderUI({
-    validate(
-      need(input$c_file_pulldown1 != '', ""),
-      need(input$c_file_pulldown2 != '', ""),
-      need(input$c_colorscheme == "fdr", "")
-    )
-    region <- c(paste0("FDR≥", input$a_fdr_thresh))
-    selectInput('c_color_snp_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
-  })
+  # output$c_color_theme_snp_sig <- renderUI({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""),
+  #     need(input$c_file_pulldown2 != '', ""),
+  #     need(input$c_colorscheme == "fdr", "")
+  #   )
+  #   region <- c(paste0("FDR<", input$a_fdr_thresh))
+  #   selectInput('c_color_snp_sig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "seagreen3")
+  # })
+  # 
+  # output$c_color_theme_snp_insig <- renderUI({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""),
+  #     need(input$c_file_pulldown2 != '', ""),
+  #     need(input$c_colorscheme == "fdr", "")
+  #   )
+  #   region <- c(paste0("FDR≥", input$a_fdr_thresh))
+  #   selectInput('c_color_snp_insig', region, marker_cols$V1, multiple=F, selectize=TRUE, selected = "royalblue2")
+  # })
   
   output$c_color_theme_goi_sig <- renderUI({
     validate(
@@ -4588,18 +4589,18 @@ shinyServer(function(input, output, session){
                 selected = "Set2")
   })
   
-  output$c_marker_theme_snp <- renderUI({
-    validate(
-      need(input$c_file_pulldown1 != '', ""), 
-      need(input$c_file_pulldown2 != '', ""),
-      need(!is.null(input$c_file_SNP) && input$c_file_SNP != "", "")
-    )
-    selectInput("c_colorbrewer_theme_snp", "SNPs", 
-                c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
-                  "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
-                  "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"),
-                selected = "PuOr")
-  })
+  # output$c_marker_theme_snp <- renderUI({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""), 
+  #     need(input$c_file_pulldown2 != '', ""),
+  #     need(!is.null(input$c_file_SNP) && input$c_file_SNP != "", "")
+  #   )
+  #   selectInput("c_colorbrewer_theme_snp", "SNPs", 
+  #               c("YlOrRd", "YlOrBr", "YlGnBu", "YlGn", "Reds", "RdPu", "Purples", "PuRd", "PuBuGn", "PuBu", "OrRd", 
+  #                 "Oranges", "Greys", "Greens", "GnBu", "BuPu", "BuGn", "Blues", "Set3", "Set2", "Set1", "Pastel2", "Pastel1",
+  #                 "Paired", "Dark2", "Accent", "Spectral", "RdYlGn", "RdYlBu", "RdGy", "RdBu", "PuOr", "PRGn", "PiYG", "BrBG"),
+  #               selected = "PuOr")
+  # })
   
   output$c_marker_theme_inweb <- renderUI({
     validate(
@@ -4799,17 +4800,17 @@ shinyServer(function(input, output, session){
     )
   })
   
-  output$c_SNP_file <- renderUI({
-    fileInput('c_file_SNP', 'File containing list of SNPs, one ID per line (e.g. rs12493885)',
-              accept = c(
-                'text/csv',
-                'text/comma-separated-values',
-                'text/tab-separated-values',
-                'text/plain',
-                '.csv',
-                '.tsv')
-    )
-  })
+  # output$c_SNP_file <- renderUI({
+  #   fileInput('c_file_SNP', 'File containing list of SNPs, one ID per line (e.g. rs12493885)',
+  #             accept = c(
+  #               'text/csv',
+  #               'text/comma-separated-values',
+  #               'text/tab-separated-values',
+  #               'text/plain',
+  #               '.csv',
+  #               '.tsv')
+  #   )
+  # })
   
   output$c_text_goi <- renderUI({
     radioButtons('c_marker_text_goi', 'Turn on/off labels',
@@ -4819,13 +4820,13 @@ shinyServer(function(input, output, session){
     )
   })
   
-  output$c_text_snp <- renderUI({
-    radioButtons('c_marker_text_snp', 'Turn on/off labels',
-                 c(On = 'yes_label',
-                   Off = 'no_label'),
-                 inline = T
-    )
-  })
+  # output$c_text_snp <- renderUI({
+  #   radioButtons('c_marker_text_snp', 'Turn on/off labels',
+  #                c(On = 'yes_label',
+  #                  Off = 'no_label'),
+  #                inline = T
+  #   )
+  # })
   
   output$c_button_inweb <- renderUI({
     validate(
@@ -4871,15 +4872,15 @@ shinyServer(function(input, output, session){
     }
   })
   
-  output$c_button_snp <- renderUI({
-    validate(
-      need(input$c_file_pulldown1 != '', ""), 
-      need(input$c_file_pulldown2 != '', "")
-    )
-    if(!is.null(c_snp())){
-      actionButton("c_make_plot_snp", "Generate plots")
-    }
-  })
+  # output$c_button_snp <- renderUI({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""), 
+  #     need(input$c_file_pulldown2 != '', "")
+  #   )
+  #   if(!is.null(c_snp())){
+  #     actionButton("c_make_plot_snp", "Generate plots")
+  #   }
+  # })
   
   #create slider for FDR
   output$c_pf_FDR_slider1 <- renderUI({
@@ -5085,14 +5086,14 @@ shinyServer(function(input, output, session){
     HTML("<b>Color selection for markers:</b>")
   })
   
-  output$c_color_setting_text_snp <- renderUI({
-    validate(
-      need(input$c_file_pulldown1 != '', ""),
-      need(input$c_file_pulldown2 != '', ""),
-      need(input$c_colorscheme == "fdr" || input$c_colorscheme == "user", "")
-    )
-    HTML("<b>Color selection for markers:</b>")
-  })
+  # output$c_color_setting_text_snp <- renderUI({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""),
+  #     need(input$c_file_pulldown2 != '', ""),
+  #     need(input$c_colorscheme == "fdr" || input$c_colorscheme == "user", "")
+  #   )
+  #   HTML("<b>Color selection for markers:</b>")
+  # })
   
   output$c_color_setting_text_goi <- renderUI({
     validate(
@@ -5202,31 +5203,53 @@ shinyServer(function(input, output, session){
     }
   })
   
-  output$snp_num_inputs <- renderUI({
-    validate(
-      need(!is.null(c_vp1_snp_layer()), ""),
-      need(!is.null(c_vp2_snp_layer()), "")
-    )
-    snp2gene <- c_SNP_to_gene()
-    snp_interest <- split(snp2gene, snp2gene$snpid)
-    choices <- names(snp_interest)
-    choices <- append(choices, "total")
-    list_count <- length(snp_interest)
-    if(list_count>0){
-      selectInput("c_snp_num_inputs", "SNP input",
-                  choices = choices, multiple = F)
-    }
-  })
-  
-  c_snp <- reactive({
-    snp <- input$c_file_SNP
-    if(is.null(snp)){
-      return(NULL)
-    } else{
-      df <- read.csv(snp$datapath, header = FALSE)
-      df
-    }
-  })
+  # output$snp_num_inputs <- renderUI({
+  #   validate(
+  #     need(!is.null(c_vp1_snp_layer()), ""),
+  #     need(!is.null(c_vp2_snp_layer()), "")
+  #   )
+  #   print("this is starting")
+  #   c1 <- c_snp_vp1()
+  #   c2 <- c_snp_vp2()
+  #   c_total <- data.frame(rbind(c1$d_snp, c2$d_snp))
+  #   i <- sapply(c_total, is.factor)
+  #   c_total[i] <- lapply(c_total[i], as.character)
+  #   print(str(c_total))
+  #   # c_total <- rbind(c_pd1(), c_pd2())
+  #   # if(is.null(c_vp3_snp_layer())){
+  #   #   print("i am here")
+  #   #   c_total <- rbind(c_pd1(), c_pd2())
+  #   # } else {
+  #   #   print("or here")
+  #   #   c_total <- rbind(c_pd1(), c_pd2(), c_pd3())
+  #   # }
+  #   # snp2gene <- c_SNP_to_gene(c_total)
+  #   print("is this working")
+  #   # print(snp2gene)
+  #   # snp_interest <- split(snp2gene, snp2gene$snpid)
+  #   choices <- c_total$snpid
+  #   # choices <- names(snp_interest)
+  #   choices <- append(choices, "total")
+  #   print("these are choices")
+  #   print(choices)
+  #   list_count <- length(unique(c_total$snpid))
+  #   print("list count")
+  #   print(list_count)
+  #   if(list_count>0){
+  #     selectInput("c_snp_num_inputs", "SNP input",
+  #                 choices = choices, multiple = F)
+  #   }
+  # })
+  # 
+  # c_snp <- reactive({
+  #   snp <- input$c_file_SNP
+  #   if(is.null(snp)){
+  #     return(NULL)
+  #   } else{
+  #     df <- read.table(snp$datapath, header = FALSE, stringsAsFactors = F)
+  #     df
+  #   }
+  # })
   
   # output$c_SNP_extend <- renderUI({
   #   sliderInput("c_SNP_ext", "Gene extension (±Kb)",
@@ -5234,34 +5257,35 @@ shinyServer(function(input, output, session){
   # })
   
   #snp to gene using LD r^2>0.6±user defined extension
-  c_SNP_to_gene <- reactive({
-    if(!is.null(c_snp())){
-      withProgress(message = 'Finding genes in SNPs loci', 
-                   detail = "Hold please", value = 0, {
-                     snp_data <- c_snp()
-                     ext <- 50*1000
-                     incProgress(0.2)
-                     write.table(snp_data, file = "data/snp.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-                     write.table(ext, file = "data/ext_val.txt", quote = FALSE, row.names = FALSE, col.names = FALSE)
-                     incProgress(0.6)
-                     system("scripts/genes_in_loci.sh")
-                     incProgress(0.8)
-                     SNPgeneList <- read.table("data/snp_to_gene.txt", header = TRUE)
-                     if(nrow(SNPgeneList) >= 1){
-                       n_occur <- data.frame(table(SNPgeneList$snpid))
-                       incProgress(0.9)
-                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-                     } else if(nrow(SNPgeneList) == 0){
-                       place_holder <- data.frame("rs000000", "0", "0", "x", "0", "0")
-                       names(place_holder) <- names(SNPgeneList)
-                       SNPgeneList <- rbind(SNPgeneList, place_holder)
-                       n_occur <- data.frame(table(SNPgeneList$snpid))
-                       SNP_n_occur <- merge(SNPgeneList, n_occur, by.x = 'snpid', by.y = 'Var1')
-                     }
-                   })
-      snpList <- SNP_n_occur
-    }
-  })
+  # c_SNP_to_gene <- function(d){
+  #   if(!is.null(c_snp())){
+  #     withProgress(message = 'Finding genes in SNPs loci', 
+  #                  detail = "Hold please", value = 0, {
+  #                    snp_data <- c_snp()
+  #                    incProgress(0.2)
+  #                    res <- lapply(d$gene, function(s) {c(s, subset(snp_data, V1 %in%genes_snps[[s]]))})
+  #                    # Convert each list to a data.table
+  #                    dt_list <- map(res, as.data.table)
+  #                    # Harness the power of rbind list
+  #                    dt <- rbindlist(dt_list, fill = TRUE)
+  #                    if(ncol(dt)<2){
+  #                      dt$V2 <- NA
+  #                    }
+  #                    names(dt) <- c("gene", "snpid")
+  #                    dt <- dt[!is.na(dt$snpid)]
+  #                    incProgress(0.6)
+  #                    incProgress(0.8)
+  #                    if(nrow(dt) >= 1){
+  #                      n_occur <- data.frame(table(dt$snpid))
+  #                      incProgress(0.9)
+  #                      SNP_n_occur <- merge(dt, n_occur, by.x = 'snpid', by.y = 'Var1')
+  #                    } else if(nrow(dt) == 0){
+  #                      SNP_n_occur <- data.frame(snpid = character(), gene = character(), Freq = integer())
+  #                    }
+  #                  })
+  #     snpList <- SNP_n_occur
+  #   }
+  # }
   
   c_inweb_pd1 <- eventReactive(input$c_make_plot_inweb, {
     if(!is.null(c_bait_friends())){
@@ -5312,20 +5336,13 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       system("rm in.txt")
-                       system("rm results.txt")
-                       system("rm f1_res.txt")
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
-                                   row.names = F, col.names = F)
+                       d$uniprot_new <- vapply(strsplit(d$accession_number,"-"), `[`, 1, FUN.VALUE=character(1))
                        incProgress(0.6)
-                       system("python scripts/gene-tools-master/map/map.py")
+                       df <- join(d, up_to_hgnc, type="left")
+                       df$gene[is.na(df$gene)] <- df$accession_number[is.na(df$gene)]
+                       df$all_gene_names[is.na(df$all_gene_names)] <- df$accession_number[is.na(df$all_gene_names)]
                        incProgress(0.8)
-                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f1_res.txt")
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
-                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                       colnames(d1) <- c("uniprot_id", "gene", "method")
-                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(method))
+                       df <- df[ , !(names(df) %in% c("uniprot_new"))]
                        incProgress(0.9)
                        df
                      })
@@ -5385,20 +5402,13 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       system("rm in.txt")
-                       system("rm results.txt")
-                       system("rm f2_res.txt")
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
-                                   row.names = F, col.names = F)
+                       d$uniprot_new <- vapply(strsplit(d$accession_number,"-"), `[`, 1, FUN.VALUE=character(1))
                        incProgress(0.6)
-                       system("python scripts/gene-tools-master/map/map.py")
+                       df <- join(d, up_to_hgnc, type="left")
+                       df$gene[is.na(df$gene)] <- df$accession_number[is.na(df$gene)]
+                       df$all_gene_names[is.na(df$all_gene_names)] <- df$accession_number[is.na(df$all_gene_names)]
                        incProgress(0.8)
-                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f2_res.txt")
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
-                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                       colnames(d1) <- c("uniprot_id", "gene", "method")
-                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(method))
+                       df <- df[ , !(names(df) %in% c("uniprot_new"))]
                        incProgress(0.9)
                        df
                      })
@@ -5458,20 +5468,13 @@ shinyServer(function(input, output, session){
       } else if("accession_number" %in% d_col){
         withProgress(message = 'Mapping UniProt IDs to HGNC symbols',
                      detail = 'Hold please', value = 0, {
-                       system("rm in.txt")
-                       system("rm results.txt")
-                       system("rm f3_res.txt")
-                       write.table(d$accession_number, "scripts/gene-tools-master/map/in.txt", append = F, quote = F,
-                                   row.names = F, col.names = F)
+                       d$uniprot_new <- vapply(strsplit(d$accession_number,"-"), `[`, 1, FUN.VALUE=character(1))
                        incProgress(0.6)
-                       system("python scripts/gene-tools-master/map/map.py")
+                       df <- join(d, up_to_hgnc, type="left")
+                       df$gene[is.na(df$gene)] <- df$accession_number[is.na(df$gene)]
+                       df$all_gene_names[is.na(df$all_gene_names)] <- df$accession_number[is.na(df$all_gene_names)]
                        incProgress(0.8)
-                       system("cp scripts/gene-tools-master/map/results.txt scripts/gene-tools-master/map/f3_res.txt")
-                       d1 <- fread("scripts/gene-tools-master/map/results.txt", header = FALSE,
-                                   sep="auto", na.strings=c(""," ","NA"), stringsAsFactors = FALSE, data.table = FALSE)
-                       colnames(d1) <- c("uniprot_id", "gene", "method")
-                       df <- merge(d, d1, by.x = "accession_number", by.y = "uniprot_id")
-                       df <- subset(df, select=-c(method))
+                       df <- df[ , !(names(df) %in% c("uniprot_new"))]
                        incProgress(0.9)
                        df
                      })
@@ -5962,50 +5965,50 @@ shinyServer(function(input, output, session){
     }
   })
   
-  c_vp_colorbar_snp <- reactive({
-    FDR <- seq(0, 1, 0.01)
-    limit <- rep("FDR", 101)
-    d <- data.frame(limit, FDR)
-    if(input$c_colorscheme == "fdr"){
-      req(input$c_color_snp_sig, input$c_color_snp_insig)
-      d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    } else if(input$c_colorscheme == "exac"){
-      d1 <- separate_to_groups_for_exac_bar(d)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              axis.text.x=element_blank(),
-              axis.ticks.x=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    } else if(input$c_colorscheme == "cbf"){
-      d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      mycol <- as.vector(d1$col)
-      bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
-        scale_x_continuous(breaks = seq(0, 1, 0.1)) +
-        labs(x = "FDR") +
-        theme(axis.title.y=element_blank(),
-              axis.text.y=element_blank(),
-              axis.ticks.y=element_blank(),
-              panel.background=element_blank(),
-              axis.title = element_text(size = rel(1))) + coord_fixed()
-      bar
-    }
-  })
+  # c_vp_colorbar_snp <- reactive({
+  #   FDR <- seq(0, 1, 0.01)
+  #   limit <- rep("FDR", 101)
+  #   d <- data.frame(limit, FDR)
+  #   if(input$c_colorscheme == "fdr"){
+  #     req(input$c_color_snp_sig, input$c_color_snp_insig)
+  #     d1 <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+  #     mycol <- as.vector(d1$col)
+  #     bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+  #       scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+  #       labs(x = "FDR") +
+  #       theme(axis.title.y=element_blank(),
+  #             axis.text.y=element_blank(),
+  #             axis.ticks.y=element_blank(),
+  #             panel.background=element_blank(),
+  #             axis.title = element_text(size = rel(1))) + coord_fixed()
+  #     bar
+  #   } else if(input$c_colorscheme == "exac"){
+  #     d1 <- separate_to_groups_for_exac_bar(d)
+  #     mycol <- as.vector(d1$col)
+  #     bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+  #       labs(x = " pLI < 0.9          pLI >= 0.9       not in ExAC") +
+  #       theme(axis.title.y=element_blank(),
+  #             axis.text.y=element_blank(),
+  #             axis.ticks.y=element_blank(),
+  #             axis.text.x=element_blank(),
+  #             axis.ticks.x=element_blank(),
+  #             panel.background=element_blank(),
+  #             axis.title = element_text(size = rel(1))) + coord_fixed()
+  #     bar
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     d1 <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+  #     mycol <- as.vector(d1$col)
+  #     bar <- ggplot(d1, aes(xmin = d1$FDR-0.01, xmax = d1$FDR, ymin = 0, ymax = 0.1)) + geom_rect(fill = mycol) +
+  #       scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+  #       labs(x = "FDR") +
+  #       theme(axis.title.y=element_blank(),
+  #             axis.text.y=element_blank(),
+  #             axis.ticks.y=element_blank(),
+  #             panel.background=element_blank(),
+  #             axis.title = element_text(size = rel(1))) + coord_fixed()
+  #     bar
+  #   }
+  # })
   
   c_vp <- function(d){
     if(input$c_colorscheme == "fdr"){
@@ -6345,153 +6348,153 @@ shinyServer(function(input, output, session){
     p1
   })
   
-  c_snp_vp1 <- eventReactive(input$c_make_plot_snp, {
-    if(!is.null(c_snp())){
-      d <- c_pd1()
-      snp_interest <- c_SNP_to_gene()
-      d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
-      list(d_snp=d_snp)
-    }
-  })
+  # c_snp_vp1 <- eventReactive(input$c_make_plot_snp, {
+  #   if(!is.null(c_snp())){
+  #     d <- c_pd1()
+  #     snp_interest <- c_SNP_to_gene(d)
+  #     d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
+  #     list(d_snp=d_snp)
+  #   }
+  # })
   
-  c_vp1_snp_layer <- reactive({
-    validate(
-      need(!is.null(c_pd1()), "")
-    )
-    d <- c_pd1()
-    c1_snp <- c_snp_vp1()
-    min_x <- c_min_x()
-    min_y <- c_min_y()
-    max_x <- c_max_x()
-    max_y <- c_max_y()
-    # vp_title <- c_pd3_inweb_hypergeometric()
-    if(input$c_colorscheme == "fdr"){
-      req(input$c_color_snp_sig, input$c_color_snp_insig)
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
-      p <- plot_volcano_multiple_cond(data)
-    } else if(input$c_colorscheme == "exac"){
-      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
-      d$s[is.na(d$s)] <- 2
-      below_thresh <- subset(d, s < 0.9)
-      above_thresh <- subset(d, s >= 0.9)
-      no_exist <- subset(d, s == 2)
-      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
-      p
-    } else if(input$c_colorscheme == "cbf"){
-      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      p <- plot_volcano_multiple_cond(data)
-    } else if(input$c_colorscheme == "user"){
-      validate(
-        need(!is.null(input$c_file_color), "Please upload file with gene and score")
-      )
-      d1 <- c_in_file_color()
-      col_theme <- input$c_colorbrewer_theme_tab5
-      if(input$c_colorscheme_style == "cont"){
-        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
-        data <- df$df1
-        data1 <- df$no_exist
-      } else if(input$c_colorscheme_style == "disc"){
-        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
-        data <- df$df1
-        data1 <- df$no_exist
-      }
-      p <- plot_ly(showlegend = T, width = 320, height = 390)
-      if(nrow(data1)>0){
-        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                         opacity = 0.8,
-                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      }
-      if(nrow(data)>0){
-        for(i in nrow(data)){
-          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                           opacity = 1,
-                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
-        }
-      }
-      p
-    }
-    p <- p%>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
-             legend = list(orientation = 'h', y = -0.23))
-    #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
-      if(!is.null(c_snp())){
-        if(nrow(c1_snp$d_snp) != 0){
-          snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
-          snp_mgl <- subset(c1_snp$d_snp, Freq != 1)
-          col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
-          if(nrow(snp_sgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
-            }
-            p <- vp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
-            }
-            p <- vp_layer_snp2gene_mgl
-          }
-        } else{
-          vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
-          p <- vp_layer_no_snp2gene
-        }
-      }
-    } else if(input$c_colorscheme == "cbf"){
-      if(!is.null(c_snp())){
-        if(nrow(c1_snp$d_snp) != 0){
-          snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
-          snp_mgl <- subset(c1_snp$d_snp, Freq != 1)
-          if(nrow(snp_sgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
-            }
-            p <- vp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
-            }
-            p <- vp_layer_snp2gene_mgl
-          }
-        } else{
-          vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
-          p <- vp_layer_no_snp2gene
-        }
-      }
-    }
-    p <- p %>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
-      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"),
-                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
-      add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
-      add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
-  })
-  
-  c_vp1_snp_plus <- reactive({
-    validate(
-      need(!is.null(c_search_gene()), "")
-    )
-    p <- c_vp1_snp_layer()
-    goi <- c_search_gene()
-    orig_data <- c_pd1()
-    searchgene <- orig_data[grepl(goi,orig_data$gene),]
-    p1 <- search_volcano(p, searchgene)
-    p1
-  })
+  # c_vp1_snp_layer <- reactive({
+  #   validate(
+  #     need(!is.null(c_pd1()), "")
+  #   )
+  #   d <- c_pd1()
+  #   c1_snp <- c_snp_vp1()
+  #   min_x <- c_min_x()
+  #   min_y <- c_min_y()
+  #   max_x <- c_max_x()
+  #   max_y <- c_max_y()
+  #   # vp_title <- c_pd3_inweb_hypergeometric()
+  #   if(input$c_colorscheme == "fdr"){
+  #     req(input$c_color_snp_sig, input$c_color_snp_insig)
+  #     data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+  #     p <- plot_volcano_multiple_cond(data)
+  #   } else if(input$c_colorscheme == "exac"){
+  #     d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+  #     d$s[is.na(d$s)] <- 2
+  #     below_thresh <- subset(d, s < 0.9)
+  #     above_thresh <- subset(d, s >= 0.9)
+  #     no_exist <- subset(d, s == 2)
+  #     p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+  #     p
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+  #     p <- plot_volcano_multiple_cond(data)
+  #   } else if(input$c_colorscheme == "user"){
+  #     validate(
+  #       need(!is.null(input$c_file_color), "Please upload file with gene and score")
+  #     )
+  #     d1 <- c_in_file_color()
+  #     col_theme <- input$c_colorbrewer_theme_tab5
+  #     if(input$c_colorscheme_style == "cont"){
+  #       df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+  #       data <- df$df1
+  #       data1 <- df$no_exist
+  #     } else if(input$c_colorscheme_style == "disc"){
+  #       df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+  #       data <- df$df1
+  #       data1 <- df$no_exist
+  #     }
+  #     p <- plot_ly(showlegend = T, width = 320, height = 390)
+  #     if(nrow(data1)>0){
+  #       p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+  #                        marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+  #                        opacity = 0.8,
+  #                        text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+  #     }
+  #     if(nrow(data)>0){
+  #       for(i in nrow(data)){
+  #         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+  #                          marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+  #                          opacity = 1,
+  #                          text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+  #                          name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+  #       }
+  #     }
+  #     p
+  #   }
+  #   p <- p%>%
+  #     layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+  #            legend = list(orientation = 'h', y = -0.23))
+  #   #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+  #   if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
+  #     if(!is.null(c_snp())){
+  #       if(nrow(c1_snp$d_snp) != 0){
+  #         snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(c1_snp$d_snp, Freq != 1)
+  #         col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
+  #           }
+  #           p <- vp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
+  #           }
+  #           p <- vp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
+  #         p <- vp_layer_no_snp2gene
+  #       }
+  #     }
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     if(!is.null(c_snp())){
+  #       if(nrow(c1_snp$d_snp) != 0){
+  #         snp_sgl <- subset(c1_snp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(c1_snp$d_snp, Freq != 1)
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
+  #           }
+  #           p <- vp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
+  #           }
+  #           p <- vp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
+  #         p <- vp_layer_no_snp2gene
+  #       }
+  #     }
+  #   }
+  #   p <- p %>%
+  #     layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+  #     add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"),
+  #               name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+  #     add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
+  #               name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
+  #     add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
+  #               name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
+  # })
+  # 
+  # c_vp1_snp_plus <- reactive({
+  #   validate(
+  #     need(!is.null(c_search_gene()), "")
+  #   )
+  #   p <- c_vp1_snp_layer()
+  #   goi <- c_search_gene()
+  #   orig_data <- c_pd1()
+  #   searchgene <- orig_data[grepl(goi,orig_data$gene),]
+  #   p1 <- search_volcano(p, searchgene)
+  #   p1
+  # })
   
   c_vp2 <- reactive({
     d <- c_pd2()
@@ -6752,154 +6755,155 @@ shinyServer(function(input, output, session){
     p1
   })
   
-  
-  c_snp_vp2 <- eventReactive(input$c_make_plot_snp, {
-    if(!is.null(c_snp())){
-      d <- c_pd2()
-      snp_interest <- c_SNP_to_gene()
-      d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
-      list(d_snp=d_snp)
-    }
-  })
-  
-  c_vp2_snp_layer <- reactive({
-    validate(
-      need(!is.null(c_pd2()), "")
-    )
-    d <- c_pd2()
-    c2_snp <- c_snp_vp2()
-    min_x <- c_min_x()
-    min_y <- c_min_y()
-    max_x <- c_max_x()
-    max_y <- c_max_y()
-    # vp_title <- c_pd3_inweb_hypergeometric()
-    if(input$c_colorscheme == "fdr"){
-      req(input$c_color_snp_sig, input$c_color_snp_insig)
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
-      p <- plot_volcano_multiple_cond(data)
-    } else if(input$c_colorscheme == "exac"){
-      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
-      d$s[is.na(d$s)] <- 2
-      below_thresh <- subset(d, s < 0.9)
-      above_thresh <- subset(d, s >= 0.9)
-      no_exist <- subset(d, s == 2)
-      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
-      p
-    } else if(input$c_colorscheme == "cbf"){
-      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      p <- plot_volcano_multiple_cond(data)
-    } else if(input$c_colorscheme == "user"){
-      validate(
-        need(!is.null(input$c_file_color), "Please upload file with gene and score")
-      )
-      d1 <- c_in_file_color()
-      col_theme <- input$c_colorbrewer_theme_tab5
-      if(input$c_colorscheme_style == "cont"){
-        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
-        data <- df$df1
-        data1 <- df$no_exist
-      } else if(input$c_colorscheme_style == "disc"){
-        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
-        data <- df$df1
-        data1 <- df$no_exist
-      }
-      p <- plot_ly(showlegend = T, width = 320, height = 390)
-      if(nrow(data1)>0){
-        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                         opacity = 0.8,
-                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      }
-      if(nrow(data)>0){
-        for(i in nrow(data)){
-          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                           opacity = 1,
-                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
-        }
-      }
-      p
-    }
-    p <- p%>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
-             legend = list(orientation = 'h', y = -0.23))
-    #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
-      if(!is.null(c_snp())){
-        if(nrow(c2_snp$d_snp) != 0){
-          snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
-          snp_mgl <- subset(c2_snp$d_snp, Freq != 1)
-          col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
-          if(nrow(snp_sgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
-            }
-            p <- vp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
-            }
-            p <- vp_layer_snp2gene_mgl
-          }
-        } else{
-          vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
-          p <- vp_layer_no_snp2gene
-        }
-      }
-    } else if(input$c_colorscheme == "cbf"){
-      if(!is.null(c_snp())){
-        if(nrow(c2_snp$d_snp) != 0){
-          snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
-          snp_mgl <- subset(c2_snp$d_snp, Freq != 1)
-          if(nrow(snp_sgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
-            }
-            p <- vp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
-            }
-            p <- vp_layer_snp2gene_mgl
-          }
-        } else{
-          vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
-          p <- vp_layer_no_snp2gene
-        }
-      }
-    }
-    p <- p %>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
-      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"),
-                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
-      add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
-      add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
-  })
-  
-  c_vp2_snp_plus <- reactive({
-    validate(
-      need(!is.null(c_search_gene()), "")
-    )
-    p <- c_vp2_snp_layer()
-    goi <- c_search_gene()
-    orig_data <- c_pd2()
-    searchgene <- orig_data[grepl(goi,orig_data$gene),]
-    p1 <- search_volcano(p, searchgene)
-    p1
-  })
+  # 
+  # c_snp_vp2 <- eventReactive(input$c_make_plot_snp, {
+  #   if(!is.null(c_snp())){
+  #     d <- c_pd2()
+  #     snp_interest <- c_SNP_to_gene(d)
+  #     print(snp_interest)
+  #     d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
+  #     list(d_snp=d_snp)
+  #   }
+  # })
+  # 
+  # c_vp2_snp_layer <- reactive({
+  #   validate(
+  #     need(!is.null(c_pd2()), "")
+  #   )
+  #   d <- c_pd2()
+  #   c2_snp <- c_snp_vp2()
+  #   min_x <- c_min_x()
+  #   min_y <- c_min_y()
+  #   max_x <- c_max_x()
+  #   max_y <- c_max_y()
+  #   # vp_title <- c_pd3_inweb_hypergeometric()
+  #   if(input$c_colorscheme == "fdr"){
+  #     req(input$c_color_snp_sig, input$c_color_snp_insig)
+  #     data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+  #     p <- plot_volcano_multiple_cond(data)
+  #   } else if(input$c_colorscheme == "exac"){
+  #     d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+  #     d$s[is.na(d$s)] <- 2
+  #     below_thresh <- subset(d, s < 0.9)
+  #     above_thresh <- subset(d, s >= 0.9)
+  #     no_exist <- subset(d, s == 2)
+  #     p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+  #     p
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+  #     p <- plot_volcano_multiple_cond(data)
+  #   } else if(input$c_colorscheme == "user"){
+  #     validate(
+  #       need(!is.null(input$c_file_color), "Please upload file with gene and score")
+  #     )
+  #     d1 <- c_in_file_color()
+  #     col_theme <- input$c_colorbrewer_theme_tab5
+  #     if(input$c_colorscheme_style == "cont"){
+  #       df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+  #       data <- df$df1
+  #       data1 <- df$no_exist
+  #     } else if(input$c_colorscheme_style == "disc"){
+  #       df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+  #       data <- df$df1
+  #       data1 <- df$no_exist
+  #     }
+  #     p <- plot_ly(showlegend = T, width = 320, height = 390)
+  #     if(nrow(data1)>0){
+  #       p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+  #                        marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+  #                        opacity = 0.8,
+  #                        text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+  #     }
+  #     if(nrow(data)>0){
+  #       for(i in nrow(data)){
+  #         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+  #                          marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+  #                          opacity = 1,
+  #                          text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+  #                          name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+  #       }
+  #     }
+  #     p
+  #   }
+  #   p <- p%>%
+  #     layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+  #            legend = list(orientation = 'h', y = -0.23))
+  #   #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+  #   if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
+  #     if(!is.null(c_snp())){
+  #       if(nrow(c2_snp$d_snp) != 0){
+  #         snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(c2_snp$d_snp, Freq != 1)
+  #         col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
+  #           }
+  #           p <- vp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
+  #           }
+  #           p <- vp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
+  #         p <- vp_layer_no_snp2gene
+  #       }
+  #     }
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     if(!is.null(c_snp())){
+  #       if(nrow(c2_snp$d_snp) != 0){
+  #         snp_sgl <- subset(c2_snp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(c2_snp$d_snp, Freq != 1)
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
+  #           }
+  #           p <- vp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
+  #           }
+  #           p <- vp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
+  #         p <- vp_layer_no_snp2gene
+  #       }
+  #     }
+  #   }
+  #   p <- p %>%
+  #     layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+  #     add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"),
+  #               name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+  #     add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
+  #               name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
+  #     add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
+  #               name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
+  # })
+  # 
+  # c_vp2_snp_plus <- reactive({
+  #   validate(
+  #     need(!is.null(c_search_gene()), "")
+  #   )
+  #   p <- c_vp2_snp_layer()
+  #   goi <- c_search_gene()
+  #   orig_data <- c_pd2()
+  #   searchgene <- orig_data[grepl(goi,orig_data$gene),]
+  #   p1 <- search_volcano(p, searchgene)
+  #   p1
+  # })
   
   c_vp3 <- reactive({
     d <- c_pd3()
@@ -7160,153 +7164,153 @@ shinyServer(function(input, output, session){
     p1
   })
   
-  c_snp_vp3 <- eventReactive(input$c_make_plot_snp, {
-    if(!is.null(c_snp())){
-      d <- c_pd3()
-      snp_interest <- c_SNP_to_gene()
-      d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
-      list(d_snp=d_snp)
-    }
-  })
-  
-  c_vp3_snp_layer <- reactive({
-    validate(
-      need(!is.null(c_pd3()), "")
-    )
-    d <- c_pd3()
-    c3_snp <- c_snp_vp3()
-    min_x <- c_min_x()
-    min_y <- c_min_y()
-    max_x <- c_max_x()
-    max_y <- c_max_y()
-    # vp_title <- c_pd3_inweb_hypergeometric()
-    if(input$c_colorscheme == "fdr"){
-      req(input$c_color_snp_sig, input$c_color_snp_insig)
-      data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
-      p <- plot_volcano_multiple_cond(data)
-    } else if(input$c_colorscheme == "exac"){
-      d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
-      d$s[is.na(d$s)] <- 2
-      below_thresh <- subset(d, s < 0.9)
-      above_thresh <- subset(d, s >= 0.9)
-      no_exist <- subset(d, s == 2)
-      p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
-      p
-    } else if(input$c_colorscheme == "cbf"){
-      data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
-      p <- plot_volcano_multiple_cond(data)
-    } else if(input$c_colorscheme == "user"){
-      validate(
-        need(!is.null(input$c_file_color), "Please upload file with gene and score")
-      )
-      d1 <- c_in_file_color()
-      col_theme <- input$c_colorbrewer_theme_tab5
-      if(input$c_colorscheme_style == "cont"){
-        df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
-        data <- df$df1
-        data1 <- df$no_exist
-      } else if(input$c_colorscheme_style == "disc"){
-        df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
-        data <- df$df1
-        data1 <- df$no_exist
-      }
-      p <- plot_ly(showlegend = T, width = 320, height = 390)
-      if(nrow(data1)>0){
-        p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
-                         marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
-                         opacity = 0.8,
-                         text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
-      }
-      if(nrow(data)>0){
-        for(i in nrow(data)){
-          p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
-                           marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
-                           opacity = 1,
-                           text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
-                           name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
-        }
-      }
-      p
-    }
-    p <- p%>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
-             legend = list(orientation = 'h', y = -0.23))
-    #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
-    if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
-      if(!is.null(c_snp())){
-        if(nrow(c3_snp$d_snp) != 0){
-          snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
-          snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
-          col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
-          if(nrow(snp_sgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
-            }
-            p <- vp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
-            }
-            p <- vp_layer_snp2gene_mgl
-          }
-        } else{
-          vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
-          p <- vp_layer_no_snp2gene
-        }
-      }
-    } else if(input$c_colorscheme == "cbf"){
-      if(!is.null(c_snp())){
-        if(nrow(c3_snp$d_snp) != 0){
-          snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
-          snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
-          if(nrow(snp_sgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
-            }
-            p <- vp_layer_snp2gene_sgl
-          }
-          if(nrow(snp_mgl) != 0){
-            if(input$c_marker_text_snp == "yes_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
-            } else if(input$c_marker_text_snp == "no_label"){
-              vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
-            }
-            p <- vp_layer_snp2gene_mgl
-          }
-        } else{
-          vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
-          p <- vp_layer_no_snp2gene
-        }
-      }
-    }
-    p <- p %>%
-      layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
-      add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"),
-                name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
-      add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
-      add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
-                name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
-  })
-  
-  c_vp3_snp_plus <- reactive({
-    validate(
-      need(!is.null(c_search_gene()), "")
-    )
-    p <- c_vp3_snp_layer()
-    goi <- c_search_gene()
-    orig_data <- c_pd3()
-    searchgene <- orig_data[grepl(goi,orig_data$gene),]
-    p1 <- search_volcano(p, searchgene)
-    p1
-  })
+  # c_snp_vp3 <- eventReactive(input$c_make_plot_snp, {
+  #   if(!is.null(c_snp())){
+  #     d <- c_pd3()
+  #     snp_interest <- c_SNP_to_gene(d)
+  #     d_snp <- merge(d, snp_interest, by.x = 'gene', by.y = 'gene')
+  #     list(d_snp=d_snp)
+  #   }
+  # })
+  # 
+  # c_vp3_snp_layer <- reactive({
+  #   validate(
+  #     need(!is.null(c_pd3()), "")
+  #   )
+  #   d <- c_pd3()
+  #   c3_snp <- c_snp_vp3()
+  #   min_x <- c_min_x()
+  #   min_y <- c_min_y()
+  #   max_x <- c_max_x()
+  #   max_y <- c_max_y()
+  #   # vp_title <- c_pd3_inweb_hypergeometric()
+  #   if(input$c_colorscheme == "fdr"){
+  #     req(input$c_color_snp_sig, input$c_color_snp_insig)
+  #     data <- separate_to_groups_for_color_integrated(d, input$c_fdr_thresh, input$c_color_snp_sig, input$c_color_snp_insig)
+  #     p <- plot_volcano_multiple_cond(data)
+  #   } else if(input$c_colorscheme == "exac"){
+  #     d$s <- exac$em_p_hi[match(d$gene, exac$GENE_NAME)]
+  #     d$s[is.na(d$s)] <- 2
+  #     below_thresh <- subset(d, s < 0.9)
+  #     above_thresh <- subset(d, s >= 0.9)
+  #     no_exist <- subset(d, s == 2)
+  #     p <- plot_volcano_exac_multi(below_thresh, above_thresh, no_exist)
+  #     p
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     data <- separate_to_groups_for_cbf_integrated(d, input$c_fdr_thresh)
+  #     p <- plot_volcano_multiple_cond(data)
+  #   } else if(input$c_colorscheme == "user"){
+  #     validate(
+  #       need(!is.null(input$c_file_color), "Please upload file with gene and score")
+  #     )
+  #     d1 <- c_in_file_color()
+  #     col_theme <- input$c_colorbrewer_theme_tab5
+  #     if(input$c_colorscheme_style == "cont"){
+  #       df <- separate_to_groups_for_color_continuous(d, d1, col_theme)
+  #       data <- df$df1
+  #       data1 <- df$no_exist
+  #     } else if(input$c_colorscheme_style == "disc"){
+  #       df <- separate_to_groups_for_color_discrete(d, d1, col_theme)
+  #       data <- df$df1
+  #       data1 <- df$no_exist
+  #     }
+  #     p <- plot_ly(showlegend = T, width = 320, height = 390)
+  #     if(nrow(data1)>0){
+  #       p <- add_markers(p, data = data1, x = ~logFC, y = ~-log10(pvalue),
+  #                        marker = list(size = 7, line = list(width=0.1, color = "grey89"), cmin = 0, cmax = 1, color = "#f7f7f7"),
+  #                        opacity = 0.8,
+  #                        text = ~paste(gene), hoverinfo = "text", name = paste0("Not in user data (", nrow(df$no_exist), ")"))
+  #     }
+  #     if(nrow(data)>0){
+  #       for(i in nrow(data)){
+  #         p <- add_markers(p, data = data, x = ~logFC, y = ~-log10(pvalue),
+  #                          marker = list(size = 7, cmin = 0, cmax = 1, color = ~col, line = list(width=0.2, color = "grey89")),
+  #                          opacity = 1,
+  #                          text = ~paste0(gene, ", FDR=", signif(FDR, digits = 3)), hoverinfo = "text",
+  #                          name = paste0("Found in user data (", nrow(data), ")")) #, name = "pull down"
+  #       }
+  #     }
+  #     p
+  #   }
+  #   p <- p%>%
+  #     layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F),
+  #            legend = list(orientation = 'h', y = -0.23))
+  #   #title = paste0("p-value = ", vp_title), titlefont = list(size=15))
+  #   if(input$c_colorscheme == "fdr" | input$c_colorscheme == "exac" | input$c_colorscheme == "user"){
+  #     if(!is.null(c_snp())){
+  #       if(nrow(c3_snp$d_snp) != 0){
+  #         snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
+  #         col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl(p, snp_sgl, col[1])
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_no_text(p, snp_sgl, col[1])
+  #           }
+  #           p <- vp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl(p, snp_mgl, col[2])
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_no_text(p, snp_mgl, col[2])
+  #           }
+  #           p <- vp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none(p, d)
+  #         p <- vp_layer_no_snp2gene
+  #       }
+  #     }
+  #   } else if(input$c_colorscheme == "cbf"){
+  #     if(!is.null(c_snp())){
+  #       if(nrow(c3_snp$d_snp) != 0){
+  #         snp_sgl <- subset(c3_snp$d_snp, Freq == 1)
+  #         snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
+  #         if(nrow(snp_sgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf(p, snp_sgl)
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_sgl <- vp_layer_for_snp_to_gene_sgl_cbf_no_text(p, snp_sgl)
+  #           }
+  #           p <- vp_layer_snp2gene_sgl
+  #         }
+  #         if(nrow(snp_mgl) != 0){
+  #           if(input$c_marker_text_snp == "yes_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf(p, snp_mgl)
+  #           } else if(input$c_marker_text_snp == "no_label"){
+  #             vp_layer_snp2gene_mgl <- vp_layer_for_snp_to_gene_mgl_cbf_no_text(p, snp_mgl)
+  #           }
+  #           p <- vp_layer_snp2gene_mgl
+  #         }
+  #       } else{
+  #         vp_layer_no_snp2gene <- vp_layer_for_snp_to_gene_none_cbf(p, d)
+  #         p <- vp_layer_no_snp2gene
+  #       }
+  #     }
+  #   }
+  #   p <- p %>%
+  #     layout(xaxis = list(range=c(min_x-0.5, max_x+0.5), showgrid = F), yaxis = list(range=c(min_y-0.5, max_y+0.5), showgrid = F)) %>%
+  #     add_lines(x = c(min_x-0.5, max_x+0.5), y = -log10(input$c_pval_thresh), line = list(dash = "dash", width = 0.5, color = "#2b333e"),
+  #               name = '', hoverinfo = "text", text = paste0("pvalue = ", input$c_pval_thresh), showlegend = F) %>%
+  #     add_lines(x = input$c_logfc_thresh_comb[1], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
+  #               name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[1]), showlegend = F) %>%
+  #     add_lines(x = input$c_logfc_thresh_comb[2], y = c(min_y-0.5, max_y+0.5), line = list(dash = "dash", width = 0.5, color = "#252525"),
+  #               name = '', hoverinfo = "text", text = paste0("logFC = ", input$c_logfc_thresh_comb[2]), showlegend = F)
+  # })
+  # 
+  # c_vp3_snp_plus <- reactive({
+  #   validate(
+  #     need(!is.null(c_search_gene()), "")
+  #   )
+  #   p <- c_vp3_snp_layer()
+  #   goi <- c_search_gene()
+  #   orig_data <- c_pd3()
+  #   searchgene <- orig_data[grepl(goi,orig_data$gene),]
+  #   p1 <- search_volcano(p, searchgene)
+  #   p1
+  # })
   
   c1_vp_inweb_gg <- function(){
     validate(
@@ -7541,136 +7545,136 @@ shinyServer(function(input, output, session){
     }
   )
   
-  c1_vp_snp_gg <- function(){
-    validate(
-      need(!is.null(c_pd1()), ""),
-      need(!is.null(c_snp()), "")
-    )
-    data <- c_pd1()
-    p <- c_vp_gg(data, input$c_color_snp_sig, input$c_color_snp_insig)
-    c_snp <- c_snp_vp1()
-    label <- input$c_marker_text_snp
-    if(nrow(c_snp$d_snp) != 0){
-      snp_sgl <- subset(c_snp$d_snp, Freq == 1)
-      snp_mgl <- subset(c_snp$d_snp, Freq != 1)
-      col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
-      if(nrow(snp_sgl) != 0){
-        p <- vp_layer_for_snp_to_gene_sgl_gg(p, snp_sgl, col[1], label)
-      }
-      if(nrow(snp_mgl) != 0){
-        p <- vp_layer_for_snp_to_gene_mgl_gg(p, snp_mgl, col[2], label)
-      }
-    } else{
-      p
-    }
-    p
-  }
-  
-  
-  
-  c2_vp_snp_gg <- function(){
-    validate(
-      need(!is.null(c_pd2()), ""),
-      need(!is.null(c_snp()), "")
-    )
-    data <- c_pd2()
-    p <- c_vp_gg(data, input$c_color_snp_sig, input$c_color_snp_insig)
-    c_snp <- c_snp_vp2()
-    label <- input$c_marker_text_snp
-    if(nrow(c_snp$d_snp) != 0){
-      snp_sgl <- subset(c_snp$d_snp, Freq == 1)
-      snp_mgl <- subset(c_snp$d_snp, Freq != 1)
-      col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
-      if(nrow(snp_sgl) != 0){
-        p <- vp_layer_for_snp_to_gene_sgl_gg(p, snp_sgl, col[1], label)
-      }
-      if(nrow(snp_mgl) != 0){
-        p <- vp_layer_for_snp_to_gene_mgl_gg(p, snp_mgl, col[2], label)
-      }
-    } else{
-      p
-    }
-    p}
-  
-  c3_vp_snp_gg <- function(){
-    validate(
-      need(!is.null(c_pd3()), ""),
-      need(!is.null(c_snp()), "")
-    )
-    data <- c_pd3()
-    p <- c_vp_gg(data, input$c_color_snp_sig, input$c_color_snp_insig)
-    c_snp <- c_snp_vp3()
-    label <- input$c_marker_text_snp
-    if(nrow(c_snp$d_snp) != 0){
-      snp_sgl <- subset(c_snp$d_snp, Freq == 1)
-      snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
-      col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
-      if(nrow(snp_sgl) != 0){
-        p <- vp_layer_for_snp_to_gene_sgl_gg(p, snp_sgl, col[1], label)
-      }
-      if(nrow(snp_mgl) != 0){
-        p <- vp_layer_for_snp_to_gene_mgl_gg(p, snp_mgl, col[2], label)
-      }
-    } else{
-      p
-    }
-    p
-  }
-  
-  c1_vp_snp_plus_rep_gg <- function(){
-    vp <- c1_vp_snp_gg()
-    d <- c_pd1()
-    p <- c_vp_plus_rep_gg(vp, d)
-    p
-  }
-  
-  c2_vp_snp_plus_rep_gg <- function(){
-    vp <- c2_vp_snp_gg()
-    d <- c_pd2()
-    p <- c_vp_plus_rep_gg(vp, d)
-    p
-  }
-  
-  c3_vp_snp_plus_rep_gg <- function(){
-    vp <- c3_vp_snp_gg()
-    d <- c_pd3()
-    p <- c_vp_plus_rep_gg(vp, d)
-    p
-  }
-  
-  output$download_c_vp1_snp_gg <- downloadHandler(
-    filename = function() { paste("vp1_snp_gg", '.png', sep='') },
-    content = function(file) {
-      if(is.null(c_search_gene())){
-        ggsave(file, plot = c1_vp_snp_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
-      } else {
-        ggsave(file, plot = c1_vp_snp_plus_rep_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
-      }
-    }
-  )
-  
-  output$download_c_vp2_snp_gg <- downloadHandler(
-    filename = function() { paste("vp2_snp_gg", '.png', sep='') },
-    content = function(file) {
-      if(is.null(c_search_gene())){
-        ggsave(file, plot = c2_vp_snp_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
-      } else {
-        ggsave(file, plot = c2_vp_snp_plus_rep_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
-      }
-    }
-  )
-  
-  
-  output$download_c_vp3_snp_gg <- downloadHandler(
-    filename = function() { paste("vp3_snp_gg", '.png', sep='') },
-    content = function(file) {
-      if(is.null(c_search_gene())){
-        ggsave(file, plot = c3_vp_snp_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
-      } else {
-        ggsave(file, plot = c3_vp_snp_plus_rep_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
-      }
-    }
-  )
+  # c1_vp_snp_gg <- function(){
+  #   validate(
+  #     need(!is.null(c_pd1()), ""),
+  #     need(!is.null(c_snp()), "")
+  #   )
+  #   data <- c_pd1()
+  #   p <- c_vp_gg(data, input$c_color_snp_sig, input$c_color_snp_insig)
+  #   c_snp <- c_snp_vp1()
+  #   label <- input$c_marker_text_snp
+  #   if(nrow(c_snp$d_snp) != 0){
+  #     snp_sgl <- subset(c_snp$d_snp, Freq == 1)
+  #     snp_mgl <- subset(c_snp$d_snp, Freq != 1)
+  #     col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
+  #     if(nrow(snp_sgl) != 0){
+  #       p <- vp_layer_for_snp_to_gene_sgl_gg(p, snp_sgl, col[1], label)
+  #     }
+  #     if(nrow(snp_mgl) != 0){
+  #       p <- vp_layer_for_snp_to_gene_mgl_gg(p, snp_mgl, col[2], label)
+  #     }
+  #   } else{
+  #     p
+  #   }
+  #   p
+  # }
+  # 
+  # 
+  # 
+  # c2_vp_snp_gg <- function(){
+  #   validate(
+  #     need(!is.null(c_pd2()), ""),
+  #     need(!is.null(c_snp()), "")
+  #   )
+  #   data <- c_pd2()
+  #   p <- c_vp_gg(data, input$c_color_snp_sig, input$c_color_snp_insig)
+  #   c_snp <- c_snp_vp2()
+  #   label <- input$c_marker_text_snp
+  #   if(nrow(c_snp$d_snp) != 0){
+  #     snp_sgl <- subset(c_snp$d_snp, Freq == 1)
+  #     snp_mgl <- subset(c_snp$d_snp, Freq != 1)
+  #     col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
+  #     if(nrow(snp_sgl) != 0){
+  #       p <- vp_layer_for_snp_to_gene_sgl_gg(p, snp_sgl, col[1], label)
+  #     }
+  #     if(nrow(snp_mgl) != 0){
+  #       p <- vp_layer_for_snp_to_gene_mgl_gg(p, snp_mgl, col[2], label)
+  #     }
+  #   } else{
+  #     p
+  #   }
+  #   p}
+  # 
+  # c3_vp_snp_gg <- function(){
+  #   validate(
+  #     need(!is.null(c_pd3()), ""),
+  #     need(!is.null(c_snp()), "")
+  #   )
+  #   data <- c_pd3()
+  #   p <- c_vp_gg(data, input$c_color_snp_sig, input$c_color_snp_insig)
+  #   c_snp <- c_snp_vp3()
+  #   label <- input$c_marker_text_snp
+  #   if(nrow(c_snp$d_snp) != 0){
+  #     snp_sgl <- subset(c_snp$d_snp, Freq == 1)
+  #     snp_mgl <- subset(c3_snp$d_snp, Freq != 1)
+  #     col <- c(color = colorRampPalette(brewer.pal(3, input$c_colorbrewer_theme_snp))(2))
+  #     if(nrow(snp_sgl) != 0){
+  #       p <- vp_layer_for_snp_to_gene_sgl_gg(p, snp_sgl, col[1], label)
+  #     }
+  #     if(nrow(snp_mgl) != 0){
+  #       p <- vp_layer_for_snp_to_gene_mgl_gg(p, snp_mgl, col[2], label)
+  #     }
+  #   } else{
+  #     p
+  #   }
+  #   p
+  # }
+  # 
+  # c1_vp_snp_plus_rep_gg <- function(){
+  #   vp <- c1_vp_snp_gg()
+  #   d <- c_pd1()
+  #   p <- c_vp_plus_rep_gg(vp, d)
+  #   p
+  # }
+  # 
+  # c2_vp_snp_plus_rep_gg <- function(){
+  #   vp <- c2_vp_snp_gg()
+  #   d <- c_pd2()
+  #   p <- c_vp_plus_rep_gg(vp, d)
+  #   p
+  # }
+  # 
+  # c3_vp_snp_plus_rep_gg <- function(){
+  #   vp <- c3_vp_snp_gg()
+  #   d <- c_pd3()
+  #   p <- c_vp_plus_rep_gg(vp, d)
+  #   p
+  # }
+  # 
+  # output$download_c_vp1_snp_gg <- downloadHandler(
+  #   filename = function() { paste("vp1_snp_gg", '.png', sep='') },
+  #   content = function(file) {
+  #     if(is.null(c_search_gene())){
+  #       ggsave(file, plot = c1_vp_snp_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
+  #     } else {
+  #       ggsave(file, plot = c1_vp_snp_plus_rep_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
+  #     }
+  #   }
+  # )
+  # 
+  # output$download_c_vp2_snp_gg <- downloadHandler(
+  #   filename = function() { paste("vp2_snp_gg", '.png', sep='') },
+  #   content = function(file) {
+  #     if(is.null(c_search_gene())){
+  #       ggsave(file, plot = c2_vp_snp_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
+  #     } else {
+  #       ggsave(file, plot = c2_vp_snp_plus_rep_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
+  #     }
+  #   }
+  # )
+  # 
+  # 
+  # output$download_c_vp3_snp_gg <- downloadHandler(
+  #   filename = function() { paste("vp3_snp_gg", '.png', sep='') },
+  #   content = function(file) {
+  #     if(is.null(c_search_gene())){
+  #       ggsave(file, plot = c3_vp_snp_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
+  #     } else {
+  #       ggsave(file, plot = c3_vp_snp_plus_rep_gg(), device = "png", width = 4, height = 4, units = "in", dpi = 300)
+  #     }
+  #   }
+  # )
   
   output$download_c_vp3_goi_gg <- downloadHandler(
     filename = function() { paste("vp3_goi_gg", '.png', sep='') },
@@ -9326,338 +9330,348 @@ shinyServer(function(input, output, session){
     as.data.frame(d)
   })
   
-  c_venndiagram_snp <- reactive({
-    validate(
-      need(!is.null(c_snp()), ""),
-      need(!is.null(c_vp1_snp_layer()), ""),
-      need(!is.null(c_vp2_snp_layer()), "")
-    )
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      if(!is.null(c_pd1()) & !is.null(c_pd2())){
-        c1 <- c_pd1()
-        c2 <- c_pd2()
-        snp2gene <- c_SNP_to_gene()
-        snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-        
-        df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
-        df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
-        
-        total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-        total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-        
-        df1_c1 <- c(df1_c1, list(total = total1))
-        df1_c2 <- c(df1_c2, list(total = total2))
-        
-        list_num <- input$c_snp_num_inputs
-        
-        x <- list()
-        x[["File1"]] <-df1_c1[[list_num]]$gene
-        x[["File2"]] <-df1_c2[[list_num]]$gene
-        
-        vd_title <- list_num
-        colors2 = c("gray", "gray")
-        
-        v0 <- venn.diagram(x,
-                           fill = colors2, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
-                           sub = " ", sub.pos = c(0, 0), euler.d = F, scaled = F, main = vd_title,
-                           cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
-                           fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
-      }
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      if(!is.null(c_pd1()) & !is.null(c_pd2()) & !is.null(c_pd3())){
-        c1 <- c_pd1()
-        c2 <- c_pd2()
-        c3 <- c_pd3()
-        snp2gene <- c_SNP_to_gene()
-        snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-        df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
-        df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
-        df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                            pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
-        
-        total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-        total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-        total3 <- as.data.frame(data.table::rbindlist(df1_c3))
-        
-        df1_c1 <- c(df1_c1, list(total = total1))
-        df1_c2 <- c(df1_c2, list(total = total2))
-        df1_c3 <- c(df1_c3, list(total = total3))
-        
-        
-        list_num <- input$c_snp_num_inputs
-        
-        x <- list()
-        x[["File1"]] <-df1_c1[[list_num]]$gene
-        x[["File2"]] <-df1_c2[[list_num]]$gene
-        x[["File3"]] <-df1_c3[[list_num]]$gene
-        
-        vd_title <- list_num
-        colors3 = c("gray", "gray", "gray")
-        
-        v0 <- venn.diagram(x, 
-                           fill = colors3, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
-                           sub = " ", sub.pos = c(0, 0, 0), euler.d = F, scaled = F, main = vd_title,
-                           # cat.cex = 1.1, cex = 2, cat.pos = c(180,180,0), cat.dist = c(0.05,0.05,0.05),
-                           fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
-      }
-    }
-  })
+  # c_venndiagram_snp <- reactive({
+  #   validate(
+  #     need(!is.null(c_snp()), ""),
+  #     need(!is.null(c_vp1_snp_layer()), ""),
+  #     need(!is.null(c_vp2_snp_layer()), "")
+  #   )
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     if(!is.null(c_pd1()) & !is.null(c_pd2())){
+  #       c1 <- c_pd1()
+  #       c2 <- c_pd2()
+  #       c_total <- rbind(c1, c2)
+  #       snp2gene <- c_SNP_to_gene(c_total)
+  #       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  # 
+  #       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
+  #       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
+  #       
+  #       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #       
+  #       df1_c1 <- c(df1_c1, list(total = total1))
+  #       df1_c2 <- c(df1_c2, list(total = total2))
+  #       
+  #       list_num <- input$c_snp_num_inputs
+  # 
+  #       x <- list()
+  #       x[["File1"]] <-df1_c1[[list_num]]$gene
+  #       x[["File2"]] <-df1_c2[[list_num]]$gene
+  #       
+  #       vd_title <- list_num
+  #       colors2 = c("gray", "gray")
+  #       
+  #       v0 <- venn.diagram(x,
+  #                          fill = colors2, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
+  #                          sub = " ", sub.pos = c(0, 0), euler.d = F, scaled = F, main = vd_title,
+  #                          cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
+  #                          fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
+  #     }
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     if(!is.null(c_pd1()) & !is.null(c_pd2()) & !is.null(c_pd3())){
+  #       c1 <- c_pd1()
+  #       c2 <- c_pd2()
+  #       c3 <- c_pd3()
+  #       c_total <- rbind(c1, c2, c3)
+  #       snp2gene <- c_SNP_to_gene(c_total)
+  #       snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  #       df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
+  #       df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
+  #       df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
+  #                                                           pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
+  #       
+  #       total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #       total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #       total3 <- as.data.frame(data.table::rbindlist(df1_c3))
+  #       
+  #       df1_c1 <- c(df1_c1, list(total = total1))
+  #       df1_c2 <- c(df1_c2, list(total = total2))
+  #       df1_c3 <- c(df1_c3, list(total = total3))
+  #       
+  #       
+  #       list_num <- input$c_snp_num_inputs
+  #       
+  #       x <- list()
+  #       x[["File1"]] <-df1_c1[[list_num]]$gene
+  #       x[["File2"]] <-df1_c2[[list_num]]$gene
+  #       x[["File3"]] <-df1_c3[[list_num]]$gene
+  #       
+  #       vd_title <- list_num
+  #       colors3 = c("gray", "gray", "gray")
+  #       
+  #       v0 <- venn.diagram(x, 
+  #                          fill = colors3, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
+  #                          sub = " ", sub.pos = c(0, 0, 0), euler.d = F, scaled = F, main = vd_title,
+  #                          # cat.cex = 1.1, cex = 2, cat.pos = c(180,180,0), cat.dist = c(0.05,0.05,0.05),
+  #                          fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
+  #     }
+  #   }
+  # })
   
   #comparison for file1 snp
-  c_snp_compare1 <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      c1 <- c_pd1()
-      c2 <- c_pd2()
-      snp2gene <- c_SNP_to_gene()
-      snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-      df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      
-      total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-      total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-      
-      df1_c1 <- c(df1_c1, list(total = total1))
-      df1_c2 <- c(df1_c2, list(total = total2))
-      
-      list_num <- input$c_snp_num_inputs
-      f1_snp <-df1_c1[[list_num]]
-      f2_snp <-df1_c2[[list_num]]
-      overlap1_2 <- subset(f1_snp, gene %in% f2_snp$gene)
-      list(f1_snp=f1_snp, overlap1_2=overlap1_2)
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      c1 <- c_pd1()
-      c2 <- c_pd2()
-      c3 <- c_pd3()
-      snp2gene <- c_SNP_to_gene()
-      snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-      df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      
-      total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-      total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-      total3 <- as.data.frame(data.table::rbindlist(df1_c3))
-      
-      df1_c1 <- c(df1_c1, list(total = total1))
-      df1_c2 <- c(df1_c2, list(total = total2))
-      df1_c3 <- c(df1_c3, list(total = total3))
-      
-      list_num <- input$c_snp_num_inputs
-      f1_snp <-df1_c1[[list_num]]
-      f2_snp <-df1_c2[[list_num]]
-      f3_snp <-df1_c3[[list_num]]
-      overlap1_2 <- subset(f1_snp, gene %in% f2_snp$gene)
-      overlap1_3 <- subset(f1_snp, gene %in% f3_snp$gene)
-      overlap1_2_3 <- subset(f1_snp, gene %in% f2_snp$gene & gene %in% f3_snp$gene)
-      list(f1_snp=f1_snp, overlap1_2=overlap1_2, overlap1_3=overlap1_3, overlap1_2_3=overlap1_2_3)
-    }
-  })
-  
-  #comparison for file2 snp
-  c_snp_compare2 <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      c1 <- c_pd1()
-      c2 <- c_pd2()
-      snp2gene <- c_SNP_to_gene()
-      snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-      df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      
-      total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-      total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-      
-      df1_c1 <- c(df1_c1, list(total = total1))
-      df1_c2 <- c(df1_c2, list(total = total2))
-      
-      list_num <- input$c_snp_num_inputs
-      f1_snp <-df1_c1[[list_num]]
-      f2_snp <-df1_c2[[list_num]]
-      overlap2_1 <- subset(f2_snp, gene %in% f1_snp$gene)
-      list(f2_snp=f2_snp, overlap2_1=overlap2_1)
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      c1 <- c_pd1()
-      c2 <- c_pd2()
-      c3 <- c_pd3()
-      snp2gene <- c_SNP_to_gene()
-      snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-      df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
-      
-      total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-      total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-      total3 <- as.data.frame(data.table::rbindlist(df1_c3))
-      
-      df1_c1 <- c(df1_c1, list(total = total1))
-      df1_c2 <- c(df1_c2, list(total = total2))
-      df1_c3 <- c(df1_c3, list(total = total3))
-      
-      list_num <- input$c_snp_num_inputs
-      f1_snp <-df1_c1[[list_num]]
-      f2_snp <-df1_c2[[list_num]]
-      f3_snp <-df1_c3[[list_num]]
-      overlap2_1 <- subset(f2_snp, gene %in% f1_snp$gene)
-      overlap2_3 <- subset(f2_snp, gene %in% f3_snp$gene)
-      overlap2_1_3 <- subset(f2_snp, gene %in% f1_snp$gene & gene %in% f3_snp$gene)
-      list(f2_snp=f2_snp, overlap2_1=overlap2_1, overlap2_3=overlap2_3, overlap2_1_3=overlap2_1_3)
-    }
-  })
-  
-  #comparison for file3 snp
-  c_snp_compare3 <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      c1 <- c_pd1()
-      c2 <- c_pd2()
-      c3 <- c_pd3()
-      snp2gene <- c_SNP_to_gene()
-      snp_interest <- split(snp2gene$gene, snp2gene$snpid)
-      df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
-                                                          pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
-      
-      total1 <- as.data.frame(data.table::rbindlist(df1_c1))
-      total2 <- as.data.frame(data.table::rbindlist(df1_c2))
-      total3 <- as.data.frame(data.table::rbindlist(df1_c3))
-      
-      df1_c1 <- c(df1_c1, list(total = total1))
-      df1_c2 <- c(df1_c2, list(total = total2))
-      df1_c3 <- c(df1_c3, list(total = total3))
-      
-      list_num <- input$c_snp_num_inputs
-      f1_snp <-df1_c1[[list_num]]
-      f2_snp <-df1_c2[[list_num]]
-      f3_snp <-df1_c3[[list_num]]
-      overlap3_1 <- subset(f3_snp, gene %in% f1_snp$gene)
-      overlap3_2 <- subset(f3_snp, gene %in% f2_snp$gene)
-      overlap3_1_2 <- subset(f3_snp, gene %in% f1_snp$gene & gene %in% f2_snp$gene)
-      list(f3_snp=f3_snp, overlap3_1=overlap3_1, overlap3_2=overlap3_2, overlap3_1_2=overlap3_1_2)
-    }
-  })
-  
-  c_f1_unique_snp <- reactive({
-    d <- c_snp_compare1()
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene)
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
-    }
-    d1 <- data.frame(f1$gene)
-    colnames(d1) <- c("f1")    
-    d1 <- unique(sort(d1$f1))
-  })
-  
-  c_f2_unique_snp <- reactive({
-    d <- c_snp_compare2()
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene)
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
-    }
-    d1 <- data.frame(f2$gene)
-    colnames(d1) <- c("f2")    
-    d1 <- unique(sort(d1$f2))
-  })
-  
-  c_f1_and_f2_snp <- reactive({
-    d <- c_snp_compare2()
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f2 <- d$overlap2_1
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
-    }
-    d1 <- data.frame(f2$gene)
-    colnames(d1) <- c("f12")    
-    d1 <- unique(sort(d1$f12))
-  })
-  
-  c_f3_unique_snp <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_snp_compare3()
-      f3 <- subset(d$f3_snp, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
-      d1 <- data.frame(f3$gene)
-      colnames(d1) <- c("f3")    
-      d1 <- unique(sort(d1$f3))
-    }
-  })
-  
-  c_f1_and_f3_snp <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_snp_compare3()
-      f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
-      d1 <- data.frame(f3$gene)
-      colnames(d1) <- c("f13")    
-      d1 <- unique(sort(d1$f13))
-    }
-  })
-  
-  c_f2_and_f3_snp <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_snp_compare3()
-      f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
-      d1 <- data.frame(f3$gene)
-      colnames(d1) <- c("f23")    
-      d1 <- unique(sort(d1$f23))
-    }
-  })
-  
-  c_f1_f2_and_f3_snp <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      d <- c_snp_compare3()
-      d1 <- data.frame((d$overlap3_1_2)$gene)
-      colnames(d1) <- c("f123")    
-      d1 <- unique(sort(d1$f123))
-    }
-  })
-  
-  c_unique_snp_dat <- reactive({
-    if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-      f1 <- c_f1_unique_snp()
-      f2 <- c_f2_unique_snp()
-      f12 <- c_f1_and_f2_snp()
-      n <- max(length(f1), length(f2), length(f12))
-      length(f1) <- n
-      length(f2) <- n
-      length(f12) <- n
-      d <- cbind(f1, f2, f12)
-      d[is.na(d)] <- " "
-    } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-      f1 <- c_f1_unique_snp()
-      f2 <- c_f2_unique_snp()
-      f12 <- c_f1_and_f2_snp()
-      f3 <- c_f3_unique_snp()
-      f13 <- c_f1_and_f3_snp()
-      f23 <- c_f2_and_f3_snp()
-      f123 <- c_f1_f2_and_f3_snp()
-      n <- max(length(f1), length(f2), length(f12), length(f3), length(f13), length(f23), length(f123))
-      length(f1) <- n
-      length(f2) <- n
-      length(f12) <- n
-      length(f3) <- n
-      length(f13) <- n
-      length(f23) <- n
-      length(f123) <- n
-      d <- cbind(f1, f2, f12, f3, f13, f23, f123)
-      d[is.na(d)] <- " "
-    }
-    as.data.frame(d)
-  })
+  # c_snp_compare1 <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     c1 <- c_pd1()
+  #     c2 <- c_pd2()
+  #     c_total <- rbind(c1, c2)
+  #     snp2gene <- c_SNP_to_gene(c_total)
+  # 
+  #     snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  #     df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     
+  #     total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #     total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #     
+  #     df1_c1 <- c(df1_c1, list(total = total1))
+  #     df1_c2 <- c(df1_c2, list(total = total2))
+  #     
+  #     list_num <- input$c_snp_num_inputs
+  #     print("i am printing")
+  #     print(list_num)
+  #     f1_snp <-df1_c1[[list_num]]
+  #     f2_snp <-df1_c2[[list_num]]
+  #     overlap1_2 <- subset(f1_snp, gene %in% f2_snp$gene)
+  #     list(f1_snp=f1_snp, overlap1_2=overlap1_2)
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     c1 <- c_pd1()
+  #     c2 <- c_pd2()
+  #     c3 <- c_pd3()
+  #     c_total <- rbind(c1, c2, c3)
+  #     snp2gene <- c_SNP_to_gene(c_total)
+  #     snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  #     df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     
+  #     total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #     total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #     total3 <- as.data.frame(data.table::rbindlist(df1_c3))
+  #     
+  #     df1_c1 <- c(df1_c1, list(total = total1))
+  #     df1_c2 <- c(df1_c2, list(total = total2))
+  #     df1_c3 <- c(df1_c3, list(total = total3))
+  #     
+  #     list_num <- input$c_snp_num_inputs
+  #     f1_snp <-df1_c1[[list_num]]
+  #     f2_snp <-df1_c2[[list_num]]
+  #     f3_snp <-df1_c3[[list_num]]
+  #     overlap1_2 <- subset(f1_snp, gene %in% f2_snp$gene)
+  #     overlap1_3 <- subset(f1_snp, gene %in% f3_snp$gene)
+  #     overlap1_2_3 <- subset(f1_snp, gene %in% f2_snp$gene & gene %in% f3_snp$gene)
+  #     list(f1_snp=f1_snp, overlap1_2=overlap1_2, overlap1_3=overlap1_3, overlap1_2_3=overlap1_2_3)
+  #   }
+  # })
+  # 
+  # #comparison for file2 snp
+  # c_snp_compare2 <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     c1 <- c_pd1()
+  #     c2 <- c_pd2()
+  #     c_total <- rbind(c1, c2)
+  #     snp2gene <- c_SNP_to_gene(c_total)
+  #     snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  #     df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     
+  #     total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #     total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #     
+  #     df1_c1 <- c(df1_c1, list(total = total1))
+  #     df1_c2 <- c(df1_c2, list(total = total2))
+  #     
+  #     list_num <- input$c_snp_num_inputs
+  #     f1_snp <-df1_c1[[list_num]]
+  #     f2_snp <-df1_c2[[list_num]]
+  #     overlap2_1 <- subset(f2_snp, gene %in% f1_snp$gene)
+  #     list(f2_snp=f2_snp, overlap2_1=overlap2_1)
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     c1 <- c_pd1()
+  #     c2 <- c_pd2()
+  #     c3 <- c_pd3()
+  #     c_total <- rbind(c1, c2, c3)
+  #     snp2gene <- c_SNP_to_gene(c_total)
+  #     snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  #     df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) ) 
+  #     
+  #     total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #     total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #     total3 <- as.data.frame(data.table::rbindlist(df1_c3))
+  #     
+  #     df1_c1 <- c(df1_c1, list(total = total1))
+  #     df1_c2 <- c(df1_c2, list(total = total2))
+  #     df1_c3 <- c(df1_c3, list(total = total3))
+  #     
+  #     list_num <- input$c_snp_num_inputs
+  #     f1_snp <-df1_c1[[list_num]]
+  #     f2_snp <-df1_c2[[list_num]]
+  #     f3_snp <-df1_c3[[list_num]]
+  #     overlap2_1 <- subset(f2_snp, gene %in% f1_snp$gene)
+  #     overlap2_3 <- subset(f2_snp, gene %in% f3_snp$gene)
+  #     overlap2_1_3 <- subset(f2_snp, gene %in% f1_snp$gene & gene %in% f3_snp$gene)
+  #     list(f2_snp=f2_snp, overlap2_1=overlap2_1, overlap2_3=overlap2_3, overlap2_1_3=overlap2_1_3)
+  #   }
+  # })
+  # 
+  # #comparison for file3 snp
+  # c_snp_compare3 <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     c1 <- c_pd1()
+  #     c2 <- c_pd2()
+  #     c3 <- c_pd3()
+  #     c_total <- rbind(c1, c2, c3)
+  #     snp2gene <- c_SNP_to_gene(c_total)
+  #     snp_interest <- split(snp2gene$gene, snp2gene$snpid)
+  #     df1_c1 <- lapply(snp_interest, function(x) subset(c1, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c2 <- lapply(snp_interest, function(x) subset(c2, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     df1_c3 <- lapply(snp_interest, function(x) subset(c3, gene %in% x & 
+  #                                                         pvalue <= input$c_pval_thresh & FDR <= input$c_fdr_thresh & logFC <= input$c_logfc_thresh_comb[2] & logFC >= input$c_logfc_thresh_comb[1]) )  
+  #     
+  #     total1 <- as.data.frame(data.table::rbindlist(df1_c1))
+  #     total2 <- as.data.frame(data.table::rbindlist(df1_c2))
+  #     total3 <- as.data.frame(data.table::rbindlist(df1_c3))
+  #     
+  #     df1_c1 <- c(df1_c1, list(total = total1))
+  #     df1_c2 <- c(df1_c2, list(total = total2))
+  #     df1_c3 <- c(df1_c3, list(total = total3))
+  #     
+  #     list_num <- input$c_snp_num_inputs
+  #     f1_snp <-df1_c1[[list_num]]
+  #     f2_snp <-df1_c2[[list_num]]
+  #     f3_snp <-df1_c3[[list_num]]
+  #     overlap3_1 <- subset(f3_snp, gene %in% f1_snp$gene)
+  #     overlap3_2 <- subset(f3_snp, gene %in% f2_snp$gene)
+  #     overlap3_1_2 <- subset(f3_snp, gene %in% f1_snp$gene & gene %in% f2_snp$gene)
+  #     list(f3_snp=f3_snp, overlap3_1=overlap3_1, overlap3_2=overlap3_2, overlap3_1_2=overlap3_1_2)
+  #   }
+  # })
+  # 
+  # c_f1_unique_snp <- reactive({
+  #   d <- c_snp_compare1()
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene)
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f1 <- subset(d$f1_snp, gene %!in% (d$overlap1_2)$gene & gene %!in% (d$overlap1_3)$gene & gene %!in% (d$overlap1_2_3)$gene)
+  #   }
+  #   d1 <- data.frame(f1$gene)
+  #   colnames(d1) <- c("f1")    
+  #   d1 <- unique(sort(d1$f1))
+  # })
+  # 
+  # c_f2_unique_snp <- reactive({
+  #   d <- c_snp_compare2()
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene)
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f2 <- subset(d$f2_snp, gene %!in% (d$overlap2_1)$gene & gene %!in% (d$overlap2_3)$gene & gene %!in% (d$overlap2_1_3)$gene)
+  #   }
+  #   d1 <- data.frame(f2$gene)
+  #   colnames(d1) <- c("f2")    
+  #   d1 <- unique(sort(d1$f2))
+  # })
+  # 
+  # c_f1_and_f2_snp <- reactive({
+  #   d <- c_snp_compare2()
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f2 <- d$overlap2_1
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f2 <- subset(d$overlap2_1, gene %!in% (d$overlap2_1_3)$gene)
+  #   }
+  #   d1 <- data.frame(f2$gene)
+  #   colnames(d1) <- c("f12")    
+  #   d1 <- unique(sort(d1$f12))
+  # })
+  # 
+  # c_f3_unique_snp <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_snp_compare3()
+  #     f3 <- subset(d$f3_snp, gene %!in% (d$overlap3_1)$gene & gene %!in% (d$overlap3_2)$gene & gene %!in% (d$overlap3_1_2)$gene)
+  #     d1 <- data.frame(f3$gene)
+  #     colnames(d1) <- c("f3")    
+  #     d1 <- unique(sort(d1$f3))
+  #   }
+  # })
+  # 
+  # c_f1_and_f3_snp <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_snp_compare3()
+  #     f3 <- subset(d$overlap3_1, gene %!in% (d$overlap3_1_2)$gene)
+  #     d1 <- data.frame(f3$gene)
+  #     colnames(d1) <- c("f13")    
+  #     d1 <- unique(sort(d1$f13))
+  #   }
+  # })
+  # 
+  # c_f2_and_f3_snp <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_snp_compare3()
+  #     f3 <- subset(d$overlap3_2, gene %!in% (d$overlap3_1_2)$gene)
+  #     d1 <- data.frame(f3$gene)
+  #     colnames(d1) <- c("f23")    
+  #     d1 <- unique(sort(d1$f23))
+  #   }
+  # })
+  # 
+  # c_f1_f2_and_f3_snp <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     d <- c_snp_compare3()
+  #     d1 <- data.frame((d$overlap3_1_2)$gene)
+  #     colnames(d1) <- c("f123")    
+  #     d1 <- unique(sort(d1$f123))
+  #   }
+  # })
+  # 
+  # c_unique_snp_dat <- reactive({
+  #   if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #     f1 <- c_f1_unique_snp()
+  #     f2 <- c_f2_unique_snp()
+  #     f12 <- c_f1_and_f2_snp()
+  #     n <- max(length(f1), length(f2), length(f12))
+  #     length(f1) <- n
+  #     length(f2) <- n
+  #     length(f12) <- n
+  #     d <- cbind(f1, f2, f12)
+  #     d[is.na(d)] <- " "
+  #   } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #     f1 <- c_f1_unique_snp()
+  #     f2 <- c_f2_unique_snp()
+  #     f12 <- c_f1_and_f2_snp()
+  #     f3 <- c_f3_unique_snp()
+  #     f13 <- c_f1_and_f3_snp()
+  #     f23 <- c_f2_and_f3_snp()
+  #     f123 <- c_f1_f2_and_f3_snp()
+  #     n <- max(length(f1), length(f2), length(f12), length(f3), length(f13), length(f23), length(f123))
+  #     length(f1) <- n
+  #     length(f2) <- n
+  #     length(f12) <- n
+  #     length(f3) <- n
+  #     length(f13) <- n
+  #     length(f23) <- n
+  #     length(f123) <- n
+  #     d <- cbind(f1, f2, f12, f3, f13, f23, f123)
+  #     d[is.na(d)] <- " "
+  #   }
+  #   as.data.frame(d)
+  # })
   
   c_pf_db <- reactive({
     if(!is.null(input$c_pfam_db)){
@@ -10503,13 +10517,13 @@ shinyServer(function(input, output, session){
     c_vp_colorbar_goi()
   })
   
-  output$c_snp_colorbar <- renderPlot({
-    validate(
-      need(input$c_file_pulldown1 != '', ""),
-      need(input$c_make_plot_snp != 0, "")
-    )
-    c_vp_colorbar_snp()
-  })
+  # output$c_snp_colorbar <- renderPlot({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', ""),
+  #     need(input$c_make_plot_snp != 0, "")
+  #   )
+  #   c_vp_colorbar_snp()
+  # })
   
   output$VolcanoPlot_c1 <- renderPlotly({
     validate(
@@ -10549,16 +10563,16 @@ shinyServer(function(input, output, session){
     }
   })
   
-  output$VolcanoPlot_c1_snp <- renderPlotly({
-    validate(
-      need(input$c_file_pulldown1 != '', "Upload file")
-    )
-    if(is.null(c_search_gene())){
-      c_vp1_snp_layer()
-    } else{
-      c_vp1_snp_plus()
-    }
-  })
+  # output$VolcanoPlot_c1_snp <- renderPlotly({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', "Upload file")
+  #   )
+  #   if(is.null(c_search_gene())){
+  #     c_vp1_snp_layer()
+  #   } else{
+  #     c_vp1_snp_plus()
+  #   }
+  # })
   
   output$VolcanoPlot_c2 <- renderPlotly({
     validate(
@@ -10597,17 +10611,17 @@ shinyServer(function(input, output, session){
     }
   })
   
-  output$VolcanoPlot_c2_snp <- renderPlotly({
-    validate(
-      need(input$c_file_pulldown2 != '', "Upload file")
-    )
-    if(is.null(c_search_gene())){
-      c_vp2_snp_layer()
-    } else{
-      c_vp2_snp_plus()
-    }
-  })
-  
+  # output$VolcanoPlot_c2_snp <- renderPlotly({
+  #   validate(
+  #     need(input$c_file_pulldown2 != '', "Upload file")
+  #   )
+  #   if(is.null(c_search_gene())){
+  #     c_vp2_snp_layer()
+  #   } else{
+  #     c_vp2_snp_plus()
+  #   }
+  # })
+  # 
   output$VolcanoPlot_c3 <- renderPlotly({
     validate(
       need(input$c_file_pulldown3 != '', "Upload file")
@@ -10644,17 +10658,17 @@ shinyServer(function(input, output, session){
       c_vp3_goi_plus()
     }
   })
-  
-  output$VolcanoPlot_c3_snp <- renderPlotly({
-    validate(
-      need(input$c_file_pulldown3 != '', "Upload file")
-    )
-    if(is.null(c_search_gene())){
-      c_vp3_snp_layer()
-    } else{
-      c_vp3_snp_plus()
-    }
-  })
+  # 
+  # output$VolcanoPlot_c3_snp <- renderPlotly({
+  #   validate(
+  #     need(input$c_file_pulldown3 != '', "Upload file")
+  #   )
+  #   if(is.null(c_search_gene())){
+  #     c_vp3_snp_layer()
+  #   } else{
+  #     c_vp3_snp_plus()
+  #   }
+  # })
   
   output$c_VennDiagram_inweb <- renderPlot({
     validate(
@@ -10676,15 +10690,15 @@ shinyServer(function(input, output, session){
     grid.draw(v0)
   })
   
-  output$c_VennDiagram_snp <- renderPlot({
-    validate(
-      need(input$c_file_pulldown1 != '', "Upload file"),
-      need(input$c_file_pulldown2 != '', "")
-    )
-    v0 <- c_venndiagram_snp()
-    grid.newpage()
-    grid.draw(v0)
-  })
+  # output$c_VennDiagram_snp <- renderPlot({
+  #   validate(
+  #     need(input$c_file_pulldown1 != '', "Upload file"),
+  #     need(input$c_file_pulldown2 != '', "")
+  #   )
+  #   v0 <- c_venndiagram_snp()
+  #   grid.newpage()
+  #   grid.draw(v0)
+  # })
   
   output$ScatterPlot_c1 <- renderPlotly({
     validate(
@@ -10975,15 +10989,15 @@ shinyServer(function(input, output, session){
   caption.placement = getOption("xtable.caption.placement", "top"), 
   caption.width = getOption("xtable.caption.width", NULL))
   
-  output$c_unique_snp <- renderTable({
-    validate(
-      need(!is.null(c_vp1_snp_layer()), ""),
-      need(!is.null(c_vp2_snp_layer()), "")
-    )
-    c_unique_snp_dat()
-  },
-  caption.placement = getOption("xtable.caption.placement", "top"), 
-  caption.width = getOption("xtable.caption.width", NULL))
+  # output$c_unique_snp <- renderTable({
+  #   validate(
+  #     need(!is.null(c_vp1_snp_layer()), ""),
+  #     need(!is.null(c_vp2_snp_layer()), "")
+  #   )
+  #   c_unique_snp_dat()
+  # },
+  # caption.placement = getOption("xtable.caption.placement", "top"), 
+  # caption.width = getOption("xtable.caption.width", NULL))
   
   output$c1_download_mapped_uniprot <- downloadHandler(
     filename = function() {
@@ -11039,14 +11053,14 @@ shinyServer(function(input, output, session){
     }
   )
   
-  output$c_download_snp_to_genes <- downloadHandler(
-    filename = function() {
-      paste("snp-to-gene_mfc", ".txt", sep = "")
-    },
-    content = function(file) {
-      write.table(c_SNP_to_gene(), file, sep = "\t", col.names = T, row.names = F, quote = F)
-    }
-  )
+  # output$c_download_snp_to_genes <- downloadHandler(
+  #   filename = function() {
+  #     paste("snp-to-gene_mfc", ".txt", sep = "")
+  #   },
+  #   content = function(file) {
+  #     write.table(c_SNP_to_gene(), file, sep = "\t", col.names = T, row.names = F, quote = F)
+  #   }
+  # )
   
   output$c_download_basic_plots <- downloadHandler(
     filename = "basic-plots-mfc.html",
@@ -11319,32 +11333,32 @@ shinyServer(function(input, output, session){
     }
   )
   
-  output$c_download_snp <- downloadHandler(
-    filename = "MFC-snp.html",
-    content = function(file) {
-      if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
-        if(is.null(c_search_gene())){
-          p <- subplot(c_vp1_snp_layer(), c_vp2_snp_layer(), shareY = T) %>% layout(width = 640, title = "")
-          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
-        } else{
-          p <- subplot(c_vp1_snp_plus(), c_vp2_snp_plus(), shareY = T) %>% layout(width = 640, title = "")
-          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
-        }
-      } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
-        if(is.null(c_search_gene())){
-          p <- subplot(c_vp1_snp_layer(), c_vp2_snp_layer(), c_vp3_snp_layer(), shareY = T) %>% layout(width = 960, title = "")
-          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
-        } else{
-          p <- subplot(c_vp1_snp_plus(), c_vp2_snp_plus(), c_vp3_snp_plus(), shareY = T) %>% layout(width = 960, title = "")
-          params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
-        }
-      }
-      rmarkdown::render("scripts/pc-mfc.Rmd", 
-                        output_file = file,
-                        params = params
-      )
-    }
-  )
+  # output$c_download_snp <- downloadHandler(
+  #   filename = "MFC-snp.html",
+  #   content = function(file) {
+  #     if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & is.null(input$c_file_pulldown3)){
+  #       if(is.null(c_search_gene())){
+  #         p <- subplot(c_vp1_snp_layer(), c_vp2_snp_layer(), shareY = T) %>% layout(width = 640, title = "")
+  #         params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
+  #       } else{
+  #         p <- subplot(c_vp1_snp_plus(), c_vp2_snp_plus(), shareY = T) %>% layout(width = 640, title = "")
+  #         params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
+  #       }
+  #     } else if(!is.null(input$c_file_pulldown1) & !is.null(input$c_file_pulldown2) & !is.null(input$c_file_pulldown3)){
+  #       if(is.null(c_search_gene())){
+  #         p <- subplot(c_vp1_snp_layer(), c_vp2_snp_layer(), c_vp3_snp_layer(), shareY = T) %>% layout(width = 960, title = "")
+  #         params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
+  #       } else{
+  #         p <- subplot(c_vp1_snp_plus(), c_vp2_snp_plus(), c_vp3_snp_plus(), shareY = T) %>% layout(width = 960, title = "")
+  #         params <- list(a = p, d = c_venndiagram_snp(), e = c_unique_snp_dat())
+  #       }
+  #     }
+  #     rmarkdown::render("scripts/pc-mfc.Rmd", 
+  #                       output_file = file,
+  #                       params = params
+  #     )
+  #   }
+  # )
   
   output$c_download_protein_fams <- downloadHandler(
     filename = "MFC-prot-fam.html",
@@ -11618,10 +11632,10 @@ shinyServer(function(input, output, session){
     if (is.null(input$c_file_pulldown1)){
       shinyjs::disable("c1_download_mapped_uniprot")
       shinyjs::disable("c1_download_replications_calculated")
-      shinyjs::disable("c_download_snp_to_genes")
+      # shinyjs::disable("c_download_snp_to_genes")
       shinyjs::disable("c_download_basic_plots")
       shinyjs::disable("c_download_protein_comparisons")
-      shinyjs::disable("c_download_snp")
+      # shinyjs::disable("c_download_snp")
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
       shinyjs::disable("c_download_protein_fams")
@@ -11634,9 +11648,9 @@ shinyServer(function(input, output, session){
     if (is.null(input$c_file_pulldown2)){
       shinyjs::disable("c2_download_mapped_uniprot")
       shinyjs::disable("c2_download_replications_calculated")
-      shinyjs::disable("c_download_snp_to_genes")
+      # shinyjs::disable("c_download_snp_to_genes")
       shinyjs::disable("c_download_protein_comparisons")
-      shinyjs::disable("c_download_snp")
+      # shinyjs::disable("c_download_snp")
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
       shinyjs::disable("c_download_protein_fams")
@@ -11649,23 +11663,23 @@ shinyServer(function(input, output, session){
     if (is.null(input$c_file_pulldown3)){
       shinyjs::disable("c3_download_mapped_uniprot")
       shinyjs::disable("c3_download_replications_calculated")
-      shinyjs::disable("c_download_snp_to_genes")
-      shinyjs::disable("c_download_snp")
+      # shinyjs::disable("c_download_snp_to_genes")
+      # shinyjs::disable("c_download_snp")
       shinyjs::disable("c_download_goi")
       shinyjs::disable("c_download_inweb")
       shinyjs::disable("c_download_protein_fams")
     }
   })
   
-  observe({
-    if (is.null(input$c_file_SNP)){
-      shinyjs::disable("c_download_snp_to_genes")
-      shinyjs::disable("c_download_snp")
-    } else {
-      shinyjs::enable("c_download_snp_to_genes")
-      shinyjs::enable("c_download_snp")
-    }
-  })
+  # observe({
+  #   if (is.null(input$c_file_SNP)){
+  #     shinyjs::disable("c_download_snp_to_genes")
+  #     shinyjs::disable("c_download_snp")
+  #   } else {
+  #     shinyjs::enable("c_download_snp_to_genes")
+  #     shinyjs::enable("c_download_snp")
+  #   }
+  # })
   
   observe({
     if (is.null(input$c_file_genes)){
