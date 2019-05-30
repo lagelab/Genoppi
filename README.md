@@ -13,24 +13,8 @@ source("https://bioconductor.org/biocLite.R")
 biocLite("limma")
 install.packages(c("shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest", 
                    "htmltools", "R6", "sourcetools", "ggplot2", "scales", "httr", "magrittr", "viridisLite", "base64enc", 
-                   "htmlwidgets", "tidyr", "hexbin", "RColorBrewer", "dplyr", "tibble", "lazyeval", "crosstalk", "purrr", "data.table"))
+                   "htmlwidgets", "tidyr", "hexbin", "RColorBrewer", "dplyr", "tibble", "lazyeval", "crosstalk", "purrr", "data.table", "gplots", "plotly", "ggrepel", "shinydashboard", "hash"))
 install.packages("https://cran.r-project.org/src/contrib/Archive/shiny/shiny_1.0.3.tar.gz", repos = NULL, type = "source")
-install.packages("https://cran.r-project.org/src/contrib/plotly_4.7.1.tar.gz", repos=NULL, type="source")
-```
-
-Genoppi is stable using the following versions of each packages:
-
-```r
-shiny 1.0.3
-shinyjs 0.9
-plotly 4.7.1
-stringr 1.2.0
-VennDiagram 1.6.17
-rmarkdown 1.5
-plyr 1.8.4
-data.table 1.10.4
-ggplot2 2.2.1
-RColorBrewer 1.1-2
 ```
 
 ## Running Genoppi 
@@ -53,7 +37,7 @@ Genoppi can be 1. downloaded and ran locally or 2. run directly from Genoppi git
 
 ## Preparing your data
 <h3>Human experimental proteomics data</h3>
-Genoppi takes experimental IP-MS/MS results of bait pull down or full proteome data as text file. This file should include corresponding gene names or Uniprot accession numbers and either <br>
+Genoppi takes experimental IP-MS/MS results of bait pull down or full proteome data as <b>text file</b>. This file should include corresponding gene names or Uniprot accession numbers and either <br>
 (1) results of statistical analyses or <br>
 (2) values of logarithmic fold change (logFC, the ratio of case to control) for two replicates in chosen condition.
 
@@ -67,10 +51,10 @@ Any missing values in input files may lead to improper visualization of the data
 
 
 <h3>Example files</h3>
-Example dataset can be found in Genoppi/example.
+Example dataset can be found in Genoppi/example_data.
 
 
 ## Documentation and Support
-Documentation may be accessed from within Genoppi interface using the "Documentation" tab.
+Documentation may be accessed from within Genoppi interface.
 
 Please address comments and questions to April Kim at aprilkim@broadinstitute.org, Edyta Malolepsza at edytam@broadinstitute.org or Kasper Lage at lage.kasper@mgh.harvard.edu.
