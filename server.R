@@ -3603,34 +3603,38 @@ shinyServer(function(input, output, session){
     }
   )
   
+  basic_plot_dl <- reactive({
+    df <- a_in_pulldown()
+    if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
+       "rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      if(is.null(a_search_gene())){
+        params <- list(a = a_vp(), b = a_sp(), c = a_vp_colorbar_dl(), d = a_vp_count())
+      } else{
+        params <- list(a = a_vp_plus_rep(), b = a_sp_plus(), c = a_vp_colorbar_dl(), d = a_vp_count())
+      }
+    } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
+      if(is.null(a_search_gene())){
+        params <- list(a = a_vp(), c = a_vp_colorbar_dl(), d = a_vp_count())
+      } else{
+        params <- list(a = a_vp_plus_rep(), c = a_vp_colorbar_dl(), d = a_vp_count())
+      }
+    } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
+      if(is.null(a_search_gene())){
+        params <- list(a = a_vp(), b = a_sp(), c = a_vp_colorbar_dl(), d = a_vp_count())
+      } else{
+        params <- list(a = a_vp_plus_rep(), b = a_sp_plus(), c = a_vp_colorbar_dl(), d = a_vp_count())
+      }
+    }
+    rmarkdown::render("scripts/basic.Rmd", 
+                      output_file = file,
+                      params = params
+    )
+  })
+  
   output$download_basic_plots <- downloadHandler(
     filename = "basic-plots.html",
     content = function(file) {
-      df <- a_in_pulldown()
-      if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df) &
-         "rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
-        if(is.null(a_search_gene())){
-          params <- list(a = a_vp(), b = a_sp(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        } else{
-          params <- list(a = a_vp_plus_rep(), b = a_sp_plus(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        }
-      } else if("logFC" %in% colnames(df) & "FDR" %in% colnames(df) & "pvalue" %in% colnames(df)){
-        if(is.null(a_search_gene())){
-          params <- list(a = a_vp(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        } else{
-          params <- list(a = a_vp_plus_rep(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        }
-      } else if("rep1" %in% colnames(df) & "rep2" %in% colnames(df)){
-        if(is.null(a_search_gene())){
-          params <- list(a = a_vp(), b = a_sp(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        } else{
-          params <- list(a = a_vp_plus_rep(), b = a_sp_plus(), c = a_vp_colorbar_dl(), d = a_vp_count())
-        }
-      }
-      rmarkdown::render("scripts/basic.Rmd", 
-                        output_file = file,
-                        params = params
-      )
+      basic_plot_dl()
     }
   )
   
