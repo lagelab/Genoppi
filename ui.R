@@ -189,29 +189,24 @@ body <- dashboardBody(
                                  downloadButton("download_goi_overlap", "GOI"),
                                  br(),
                                  br(),
-                                 downloadButton("download_enriched_families_bpf", "Enriched protein families")
-                                 # ,
-                                 # hr(),
-                                 # downloadButton("download_basic_plots", "QC report"),
-                                 # br(),
-                                 # br(),
-                                 # downloadButton("download_layered_plots", "Integrated plots report"),
-                                 # br(),
-                                 # br(),
-                                 # downloadButton("download_venn_diagram_plot", "Venn diagram - InWeb report"),
-                                 # br(),
-                                 # br(),
-                                 # downloadButton("download_venn_diagram_GOI_plot", "Venn diagram - GOI report"),
-                                 # br(),
-                                 # br(),
-                                 # downloadButton("download_venn_diagram_SNP_plot", "Venn diagram - SNP report"),
-                                 # br(),
-                                 # br(),
-                                 # downloadButton("download_bpf_vp_plot", "Protein family report - VP")
-                                 # ,
-                                 # br(),
-                                 # br(),
-                                 # downloadButton("download_bpf_sp_plot", "Protein family report - SP")
+                                 downloadButton("download_enriched_families_bpf", "Enriched protein families"),
+                                 hr(),
+                                 downloadButton("download_basic_plots", "QC report"),
+                                 br(),
+                                 br(),
+                                 downloadButton("download_layered_plots", "Integrated plots report"),
+                                 br(),
+                                 br(),
+                                 downloadButton("download_venn_diagram_plot", "Venn diagram - InWeb report"),
+                                 br(),
+                                 br(),
+                                 downloadButton("download_venn_diagram_GOI_plot", "Venn diagram - GOI report"),
+                                 br(),
+                                 br(),
+                                 downloadButton("download_venn_diagram_SNP_plot", "Venn diagram - SNP report"),
+                                 br(),
+                                 br(),
+                                 downloadButton("download_bpf_vp_plot", "Protein family report")
                                  
                         )
                         
@@ -522,36 +517,35 @@ body <- dashboardBody(
                                    column(3, downloadButton("c1_download_replications_calculated", "Calculated mod ttest f1")),
                                    column(3, downloadButton("c2_download_replications_calculated", "Calculated mod ttest f2")),
                                    column(3, downloadButton("c3_download_replications_calculated", "Calculated mod ttest f3"))
-                                 )
-                                 # ,
+                                 ),
                                  # br(),
                                  # fluidRow(
                                  #   column(2, downloadButton("c_download_snp_to_genes", "SNP to gene"))
                                  # ),
-                                 # hr(),
-                                 # fluidRow(
-                                 #   column(3, downloadButton("c_download_basic_plots", "Basic Plots"))
-                                 # ),
+                                 hr(),
+                                 fluidRow(
+                                   column(3, downloadButton("c_download_basic_plots", "Basic Plots"))
+                                 ),
+                                 br(),
+                                 fluidRow(
+                                   column(3, downloadButton("c_download_protein_comparisons", "Protein comparisons"))
+                                 ),
+                                 br(),
+                                 fluidRow(
+                                   column(3, downloadButton("c_download_inweb", "InWeb comparisons"))
+                                 ),
+                                 br(),
+                                 fluidRow(
+                                   column(3, downloadButton("c_download_goi", "GOI comparisons"))
+                                 ),
                                  # br(),
                                  # fluidRow(
-                                 #   column(3, downloadButton("c_download_protein_comparisons", "Protein comparisons"))
+                                 #   column(3, downloadButton("c_download_snp", "SNP comparisons"))
                                  # ),
-                                 # br(),
-                                 # fluidRow(
-                                 #   column(3, downloadButton("c_download_inweb", "InWeb comparisons"))
-                                 # ),
-                                 # br(),
-                                 # fluidRow(
-                                 #   column(3, downloadButton("c_download_goi", "GOI comparisons"))
-                                 # ),
-                                 # # br(),
-                                 # # fluidRow(
-                                 # #   column(3, downloadButton("c_download_snp", "SNP comparisons"))
-                                 # # ),
-                                 # br(),
-                                 # fluidRow(
-                                 #   column(3, downloadButton("c_download_protein_fams", "Protein families"))
-                                 # )
+                                 br(),
+                                 fluidRow(
+                                   column(3, downloadButton("c_download_protein_fams", "Protein families"))
+                                 )
                         )
             )
     ),
