@@ -1,6 +1,5 @@
-<div class="text-purple">
-**This version of Genoppi is deprecated as of April 14, 2020. An updated version will be coming soon!**
-</div>
+**THIS VERSION OF GENOPPI IS DEPRECATED AS OF APRIL 14, 2020. AN UPDATED VERSION WILL BE COMING SOON!**
+
 
 # Genoppi v3.0
 Genoppi is an interactive web application for analyzing and visualizing integrated experimental human proteomics data with genetics. It provides a visual interface for generating a variety of interactive plots to quality control raw data, integrate with GWAS dataset, identify known protein interacting partners, determine protein families present and offer easy visualization.
