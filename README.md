@@ -1,8 +1,10 @@
 
 <!-- badges: start -->
-[![Build Status](https://travis-ci.com/frhl/genoppi-v4.svg?branch=master)](https://travis-ci.com/frhl/genoppi-v4)
-[![Codecov test coverage](https://codecov.io/gh/frhl/genoppi-v4/branch/master/graph/badge.svg)](https://codecov.io/gh/frhl/genoppi-v4?branch=master)
+[![Build Status](https://travis-ci.com/lagelab/Genoppi.svg?branch=master)](https://travis-ci.com/lagelab/Genoppi)
+[![Codecov test coverage](https://codecov.io/gh/lagelab/Genoppi/branch/master/graph/badge.svg)](https://codecov.io/gh/lagelab/Genoppi?branch=master)
 <!-- badges: end -->
+
+
 
 # Overview
 
