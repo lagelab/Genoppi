@@ -1,0 +1,44 @@
+/* logo */
+.skin-black .main-header .logo {
+background-color: #ffffff;
+}
+
+/* logo when hovered */
+.skin-black .main-header .logo:hover {
+background-color: #ffffff;
+}
+
+/* navbar (rest of the header) */
+.skin-black .main-header .navbar {
+background-color: #ffffff;
+}
+
+/* toggle button when hovered  */
+.skin-black .main-header .navbar .sidebar-toggle:hover{
+background-color: #ffffff;
+}
+
+/* body */
+.content-wrapper, .right-side {
+background-color: #ffffff;
+}
+
+/* main sidebar */
+/* .skin-black .main-sidebar {
+background-color: #ffffff;
+} */
+
+/* active selected tab in the sidebarmenu */
+/* .skin-black .main-sidebar .sidebar .sidebar-menu .active a{
+background-color: #ffffff;
+} */
+
+/* other links in the sidebarmenu */
+/* .skin-black .main-sidebar .sidebar .sidebar-menu a{
+background-color: #ffffff;
+} */
+
+/* other links in the sidebarmenu when hovered */
+/* .skin-black .main-sidebar .sidebar .sidebar-menu a:hover{
+background-color: #ffffff;
+} */

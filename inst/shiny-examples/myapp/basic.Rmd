@@ -1,0 +1,34 @@
+---
+title: "Basic report"
+output: html_document
+---
+Report generated using Genoppi from Lage Lab
+<br>
+https://github.com/lagelab/Genoppi
+<br>
+<br>
+<h4>Quality Control</h4>
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE, fig.height=1, fig.width=4}
+params$c
+```
+<br>
+<br/>
+```{r warning = FALSE, echo = FALSE, comment = NA}
+params$d
+```
+<br>
+<br>
+```{r,echo=FALSE, fig.width=3, fig.height=3,fig.show='hold',fig.align='center'}
+params$a
+```
+
+<br>
+<br>
+```{r warning = FALSE, echo = FALSE}
+params$b
+```
+
+
+
