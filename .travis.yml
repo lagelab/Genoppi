@@ -3,6 +3,11 @@ language: r
 cache: packages
 warnings_are_errors: false
 
+# test multiple operating systems
+os:
+  - linux
+  - osx
+
 # environment variables set for all builds
 env:
   global:
@@ -29,7 +34,7 @@ bioc_packages:
   - limma
 
 # run r testing
-#- Rscript -e "library(testthat); testthat::test_dir('tests/testthat', reporter = c('progress', 'fail'))"
+- Rscript -e "library(testthat); testthat::test_dir('tests/testthat', reporter = c('progress', 'fail'))"
 
 
 # only report coverage for the release version
