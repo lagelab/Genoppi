@@ -1,7 +1,7 @@
 #' @title plot pathways
 #' @description similar to \code{?plot_overlay}.
-#' @param pulldown
-#' @param pathways
+#' @param pulldown pulldown data
+#' @param database see get_pathways
 #' @keywords internal
 #' 
 #' 
