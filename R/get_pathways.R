@@ -8,6 +8,8 @@
 get_pathways <- function(database, genes){
 
   pathDf <- NULL
+  
+  stopifnot(any(database %in% c("hgnc","mf","cc","bp","h","c1","c2","c3","c4","c5","c6","c7")))
 
   # HGNC gene group
   if (database=="hgnc") {

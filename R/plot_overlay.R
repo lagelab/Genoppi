@@ -49,7 +49,8 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
                  fill = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other)),
                  size = overlay$gg.size,
                  shape = overlay$shape,
-                 stroke = 0.75)
+                 stroke = 0.75,
+                 alpha = overlay$opacity)
   
   # annotate plot
   p1 = p1 + ggrepel::geom_text_repel(collapse_labels(overlay[unlist(ifelse(is.null(label), list(overlay$label), list(label))),]), 

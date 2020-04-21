@@ -76,6 +76,26 @@ assign_freq <- function(df, col){
   return(merge(df, tabl, by = col))
 }
 
+#' @title assign color by column
+#' @description assigns color to a data.frame by a certain column
+#' @param df a data.frame
+#' @param col the identifiying column for assiging color
+#' @export
+assign_color <- function(df, col, by_freq = T, palette = color_distinct()){
+  
+  tabl = data.frame(table(df[[col]]), color = NA)
+  colnames(tabl) <- c(col, 'Freq', 'color')
+  n = nrow(tabl)
+  tabl$color = rep(palette, 10)[1:(min(length(palette), n))]
+  
+  # warnings and checks
+  if (by_freq) tabl = tabl[rev(order(tabl$Freq)),]
+  if (n > length(palette)) warning('There were more unique entries than the color palette. Re-using palette!')
+  tabl$Freq <- NULL
+  
+  return(merge(df, tabl, by = col))
+}
+
 
 #' @title bold
 #' @description make text html bold

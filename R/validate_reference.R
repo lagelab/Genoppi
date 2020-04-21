@@ -7,7 +7,7 @@
 #' @family overlay
 #' @export
 
-validate_reference <- function(df, valid = c('gene',
+validate_reference <- function(df, warn = T, valid = c('gene',
                                              'accession_number',
                                              'col_significant',
                                              'col_other',
@@ -27,6 +27,6 @@ validate_reference <- function(df, valid = c('gene',
   
   bool = colnames(df) %in% valid
   cols = colnames(df)[!bool]
-  if (any(!bool)) warning(paste0('columns: >', paste(cols, collapse=', '),'< from reference data.frame are not ggplot compatible and were ignored.'))
+  if (any(!bool) & warn) warning(paste0('columns: >', paste(cols, collapse=', '),'< from reference data.frame are not ggplot compatible and were ignored.'))
   return(df[bool])
 }
