@@ -20,10 +20,6 @@ add_genoppi_trace <- function(p, data, parameters, stroke_width = 0.2, legend = 
   # set legend order in trace
   if (!any(is.na(data$legend_order))) data$dataset = factor(data$dataset, levels = unique(data$dataset[data$legend_order]))
   
-  #if (any(data$size > 7.5)) browser()
-    
-  #if (is.null(data$accession_number)) browser()
-  
   # make trace
   p1 <- add_trace(p, data = data, 
                   type = 'scatter',

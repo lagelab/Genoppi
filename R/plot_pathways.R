@@ -34,7 +34,7 @@ as.geneset <- function(data, database){
   overlay$label = FALSE
   
   # only significant things are plotted
-  overlay = overlay[overlay$significant,]
+  overlay = validate_reference(overlay[overlay$significant,], warn = F)
 
   return(list(geneset=overlay))
 }
@@ -43,11 +43,7 @@ as.geneset <- function(data, database){
 
 
 
-p <- plot_volcano_basic(pulldown)
-p1 <- plot_overlay(p, as.geneset(pulldown, 'hgnc'))
-
-#p1 
-#p1 + labs(fill = "Dose (mg)")
-p1 %>% make_interactive()
+#p <- plot_volcano_basic(pulldown)
+#p1 <- plot_overlay(p, as.geneset(pulldown, 'hgnc'))
 
 
