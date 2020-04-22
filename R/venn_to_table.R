@@ -2,7 +2,6 @@
 #' @description converts a venn diagram (generated from draw_genoppi_venn)
 #' into a table that can be exported.
 #' @param venn a list of length two that each contains a vector of genes
-#' @param datnames a vector of string with the names of the venn items
 #' @export
 
 venn_to_table <- function(venn){

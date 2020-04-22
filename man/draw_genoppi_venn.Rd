@@ -4,7 +4,14 @@
 \alias{draw_genoppi_venn}
 \title{Draw venn diagrams}
 \usage{
-draw_genoppi_venn(x, main = "", colors = c("cornflowerblue", "yellow1"))
+draw_genoppi_venn(
+  x,
+  main = "",
+  colors = genoppi::color_distinct(),
+  cat.cex = 1.1,
+  cat.dist = 0.05,
+  sub.pos = 0
+)
 }
 \arguments{
 \item{x}{a list of two vectors that contain some overlapping strings.}

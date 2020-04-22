@@ -2,6 +2,7 @@
 #' @description Input a data.frame and check whether it contains a pre-specified
 #' set of valid columns. Invalid columns will be omitted alongside a warning.
 #' @param df a data.frame
+#' @param warn should a warning be issued about the columns that have been discarded?
 #' @param valid a vector of valid downstream ggplot/plotly.
 #' @return a data.frame
 #' @family overlay

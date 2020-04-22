@@ -4,19 +4,26 @@
 #' @param x a list of two vectors that contain some overlapping strings.
 #' @param colors color scheme.
 #' @param main title, typically a p-value.
+#' @param cat.cex numeric. the size of category labels
+#' @param cat.dist the border distance between venn diagrams and labels
+#' @param sub.pos numeric. the position of the labels.
 #' @importFrom VennDiagram venn.diagram
 #' @importFrom futile.logger flog.threshold ERROR
 #' @import grid 
 #' @export
 
 
-draw_genoppi_venn <- function(x, main='',colors = c("cornflowerblue", "yellow1")){
+draw_genoppi_venn <- function(x, main='',colors = genoppi::color_distinct(),
+                              cat.cex = 1.1, cat.dist = 0.05, sub.pos = 0){
+  
+  # suppress logging 
+  futile.logger::flog.threshold(futile.logger::ERROR)
   
   # check input
-  stopifnot(length(x) == 2)
-  stopifnot(length(colors) == 2)
+  n = length(x)
+  stopifnot(n>1)
   
-  # check for NAs
+  # check for NAs and remove
   x = lapply(x, function(i){
     genes = as.character(i)
     count = sum(is.na(genes))
@@ -27,11 +34,12 @@ draw_genoppi_venn <- function(x, main='',colors = c("cornflowerblue", "yellow1")
   
   # draw actual venn diagram
   v <- VennDiagram::venn.diagram(x,
-                            col = colors, margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
-                            main = main,
-                            sub = " ", sub.pos = c(0, 0), scaled = F,
-                            cat.cex = 1.1, cex = 2, cat.pos = c(180,180), cat.dist = c(0.05,0.05),
+                            col = colors[1:n], margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
+                            main = main, sub = " ", sub.pos = rep(sub.pos, n), scaled = F,
+                            cat.cex = 1.1, cex = 2, cat.dist = rep(cat.dist, n),
                             fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
   # render the plot
   return(v)
 }
+
+

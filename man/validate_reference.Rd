@@ -15,6 +15,8 @@ validate_reference(
 \arguments{
 \item{df}{a data.frame}
 
+\item{warn}{should a warning be issued about the columns that have been discarded?}
+
 \item{valid}{a vector of valid downstream ggplot/plotly.}
 }
 \value{

@@ -8,8 +8,6 @@ venn_to_table(venn)
 }
 \arguments{
 \item{venn}{a list of length two that each contains a vector of genes}
-
-\item{datnames}{a vector of string with the names of the venn items}
 }
 \description{
 converts a venn diagram (generated from draw_genoppi_venn)

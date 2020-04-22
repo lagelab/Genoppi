@@ -80,8 +80,10 @@ assign_freq <- function(df, col){
 #' @description assigns color to a data.frame by a certain column
 #' @param df a data.frame
 #' @param col the identifiying column for assiging color
+#' @param order_by_freq boolean. Should the data be order by frequency of col?
+#' @param palette color palette, i.e. a vector of colors.
 #' @export
-assign_color <- function(df, col, by_freq = T, palette = color_distinct()){
+assign_color <- function(df, col, order_by_freq = T, palette = color_distinct()){
   
   tabl = data.frame(table(df[[col]]), color = NA)
   colnames(tabl) <- c(col, 'Freq', 'color')
@@ -89,7 +91,7 @@ assign_color <- function(df, col, by_freq = T, palette = color_distinct()){
   tabl$color = rep(palette, 10)[1:(min(length(palette), n))]
   
   # warnings and checks
-  if (by_freq) tabl = tabl[rev(order(tabl$Freq)),]
+  if (order_by_freq) tabl = tabl[rev(order(tabl$Freq)),]
   if (n > length(palette)) warning('There were more unique entries than the color palette. Re-using palette!')
   tabl$Freq <- NULL
   
