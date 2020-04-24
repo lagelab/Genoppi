@@ -281,290 +281,67 @@ body <- dashboardBody(
     tabItem(tabName = "widgets",
             shinyjs::useShinyjs(),
             tabsetPanel(id = "comparison",
-                        tabPanel("Basic Plots", value = "3_p1",
+                        tabPanel("Protein Comparison", 
                                  br(),
-                                 fluidRow(
-                                   column(3, uiOutput("c_prot_fam_db")),
-                                   column(2, uiOutput("c_text_prot_fam_db")),
-                                   column(3, uiOutput("c_color_theme_pf"))
+                                 column(4,
+                                        box(
+                                          title = 'Protein Comparison I', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   uiOutput("b_file_1_significance_type_ui"),
+                                                   uiOutput("b_file_1_FDR_thresh"),
+                                                   uiOutput("b_file_1_PVal_thresh"),
+                                                   uiOutput('b_file_1_logfc_direction_ui'),
+                                                   uiOutput("b_file_1_logFC_thresh")
+                                                 ),
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_1_volcano'),
+                                                   #tableOutput('tmp_table')
+                                                 )
+                                                )
+                                        )
                                  ),
-                                 fluidRow(
-                                   column(4, downloadButton("download_c1_pf_cleaned_input", "Remove selected PF from f1")),
-                                   column(4, downloadButton("download_c2_pf_cleaned_input", "Remove selected PF from f2")),
-                                   column(4, downloadButton("download_c3_pf_cleaned_input", "Remove selected PF from f3"))
+                                 column(4,
+                                        box(
+                                          title = 'Protein Comparison II', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   uiOutput("b_file_2_significance_type_ui"),
+                                                   uiOutput("b_file_2_FDR_thresh"),
+                                                   uiOutput("b_file_2_PVal_thresh"),
+                                                   uiOutput('b_file_2_logfc_direction_ui'),
+                                                   uiOutput("b_file_2_logFC_thresh")
+                                                 ),
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_2_volcano')
+                                                   #plotlyOutput('file2_volcano')
+                                                   #'',#tableOutput('tmp_table')
+                                                 )
+                                          )
+                                        )
                                  ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_color_setting_text"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_color_theme"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_color_theme_indv_sig")),
-                                   column(4, uiOutput("c_color_theme_indv_insig"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, plotOutput("c_FDR_colorbar", height = "100px"))
-                                 ),
-                                 fluidRow(
-                                   column(1, myDownloadButton("download_c_vp1_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp2_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp3_gg", "Volcano"))
-                                 ),
-                                 fluidRow(
-                                   column(4, plotlyOutput("VolcanoPlot_c1")),
-                                   column(4, plotlyOutput("VolcanoPlot_c2")),
-                                   column(4, plotlyOutput("VolcanoPlot_c3"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(1, myDownloadButton("download_c_sp1_gg", "Scatter")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_sp2_gg", "Scatter")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_sp3_gg", "Scatter"))
-                                 ),
-                                 fluidRow(
-                                   column(4, plotlyOutput("ScatterPlot_c1")),
-                                   column(4, plotlyOutput("ScatterPlot_c2")),
-                                   column(4, plotlyOutput("ScatterPlot_c3"))
-                                 )
-                        ),
-                        tabPanel("Protein Comparison", value = "3_p2",
-                                 br(),
-                                 fluidRow(
-                                   column(8, uiOutput("c_comparison_text")),
-                                   column(4, uiOutput("c_pc_plot_button"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_comparison_text_f1")),
-                                   column(4, uiOutput("c_comparison_text_f2")),
-                                   column(4, uiOutput("c_comparison_text_f3"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_comparison1_FDR_slider")),
-                                   column(4, uiOutput("c_comparison2_FDR_slider")),
-                                   column(4, uiOutput("c_comparison3_FDR_slider"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_comparison1_pvalue_slider")),
-                                   column(4, uiOutput("c_comparison2_pvalue_slider")),
-                                   column(4, uiOutput("c_comparison3_pvalue_slider"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_comparison_logFC_slider1")),
-                                   column(4, uiOutput("c_comparison_logFC_slider2")),
-                                   column(4, uiOutput("c_comparison_logFC_slider3"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, plotlyOutput("comparison1")),
-                                   column(4, plotlyOutput("comparison2")),
-                                   column(4, plotlyOutput("comparison3")) #, width = "370px", height = "300px")
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, plotlyOutput("comparison1_scatter")),
-                                   column(4, plotlyOutput("comparison2_scatter")),
-                                   column(4, plotlyOutput("comparison3_scatter")) #, width = "370px", height = "300px")
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_VennDiagram_legend"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, plotOutput("c_VennDiagram", width = "220px", height = "220px")),
-                                   column(8, tableOutput("c_unique"))
-                                 )
-                        ),
-                        tabPanel("InWeb", value = "3_p3",
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_bait_layer")),
-                                   column(2, uiOutput("c_text_inweb")),
-                                   column(2, uiOutput("c_button_inweb"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_color_setting_text_inweb"))
-                                 ),
-                                 fluidRow(
-                                   column(2, uiOutput("c_color_theme_inweb_sig")),
-                                   column(2, uiOutput("c_color_theme_inweb_insig")),
-                                   column(2, uiOutput("c_color_theme_tab3")),
-                                   column(2, uiOutput("c_marker_theme_inweb"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, plotOutput("c_inweb_colorbar", height = "100px"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(1, myDownloadButton("download_c_vp1_inweb_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp2_inweb_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp3_inweb_gg", "Volcano"))
-                                 ),
-                                 fluidRow(
-                                   column(4, plotlyOutput("VolcanoPlot_c1_inweb")),
-                                   column(4, plotlyOutput("VolcanoPlot_c2_inweb")),
-                                   column(4, plotlyOutput("VolcanoPlot_c3_inweb"))
-                                 ),
-                                 br(),
-                                 br(),
-                                 fluidRow(
-                                   column(4, plotOutput("c_VennDiagram_inweb", width = "220px", height = "220px")),
-                                   column(8, tableOutput("c_unique_inweb"))
-                                 )
-                        ),
-                        tabPanel("GOI", value = "3_p4",
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_genes_file")),
-                                   column(2, uiOutput("c_text_goi")),
-                                   column(2, uiOutput("c_button_goi"))
-                                 ),
-                                 
-                                 fluidRow(
-                                   column(4, uiOutput("c_color_setting_text_goi"))
-                                 ),
-                                 fluidRow(
-                                   column(2, uiOutput("c_color_theme_goi_sig")),
-                                   column(2, uiOutput("c_color_theme_goi_insig")),
-                                   column(2, uiOutput("c_color_theme_tab4")),
-                                   column(2, uiOutput("c_marker_theme_goi"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, plotOutput("c_goi_colorbar", height = "100px"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(1, myDownloadButton("download_c_vp1_goi_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp2_goi_gg", "Volcano")),
-                                   column(3),
-                                   column(1, myDownloadButton("download_c_vp3_goi_gg", "Volcano"))
-                                 ),
-                                 fluidRow(
-                                   column(4, plotlyOutput("VolcanoPlot_c1_goi")),
-                                   column(4, plotlyOutput("VolcanoPlot_c2_goi")),
-                                   column(4, plotlyOutput("VolcanoPlot_c3_goi"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_goi_num_inputs"))
-                                 ),
-                                 br(),
-                                 br(),
-                                 fluidRow(
-                                   column(4, plotOutput("c_VennDiagram_goi", width = "220px", height = "220px")),
-                                   column(8, tableOutput("c_unique_goi"))
-                                 )
-                        ),
-                        tabPanel("Protein Family", value = "3_p6",
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("c_pf_FDR_slider1")),
-                                   column(4, uiOutput("c_pf_FDR_slider2")),
-                                   column(4, uiOutput("c_pf_FDR_slider3"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_pf_pvalue_slider1")),
-                                   column(4, uiOutput("c_pf_pvalue_slider2")),
-                                   column(4, uiOutput("c_pf_pvalue_slider3"))
-                                 ),
-                                 fluidRow(
-                                   column(4, uiOutput("c_pf_logFC_slider1")),
-                                   column(4, uiOutput("c_pf_logFC_slider2")),
-                                   column(4, uiOutput("c_pf_logFC_slider3"))
-                                 ),
-                                 fluidRow(
-                                   column(3, uiOutput("c_PF_marker_size")), 
-                                   column(3, uiOutput("c_PF_sort_col")),
-                                   column(3, uiOutput("c_PF_freq")),
-                                   column(3, uiOutput("c_PF_button"))
-                                 ),
-                                 fluidRow(
-                                   column(3, uiOutput("c_pf_loc_selection"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(12, plotlyOutput("comparison1_pf"))
-                                 ),
-                                 fluidRow(
-                                   column(12, plotlyOutput("comparison2_pf"))
-                                 ),
-                                 fluidRow(
-                                   column(12, plotlyOutput("comparison3_pf"))
-                                 )
-                        ),
-                        tabPanel("PFE", value = "q1",
-                                 br(),
-                                 fluidRow(
-                                   column(4, uiOutput("b_PF_FDR_slider")),
-                                   column(4, uiOutput("b_PF_logFC_slider")),
-                                   column(4, uiOutput("b_PF_pvalue_slider"))
-                                 ),
-                                 fluidRow(
-                                   column(3, uiOutput("b_PF_marker_size")), 
-                                   column(3, uiOutput("b_PF_sort_col")),
-                                   column(3, uiOutput("b_PF_freq"))
-                                 ),
-                                 fluidRow(column(3, uiOutput("b_pf_loc_selection")),
-                                          column(3, uiOutput("b_PF_button"))
-                                 ),
-                                 fluidRow(
-                                   column(12, plotlyOutput("Protein_Family"), height = "800px")
-                                 )
-                        ),
-                        tabPanel("Download", value = "3_p7",
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c1_download_mapped_uniprot", "Converted identifiers f1")),
-                                   column(3, downloadButton("c2_download_mapped_uniprot", "Converted identifiers f2")),
-                                   column(3, downloadButton("c3_download_mapped_uniprot", "Converted identifiers f3"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c1_download_replications_calculated", "Calculated mod ttest f1")),
-                                   column(3, downloadButton("c2_download_replications_calculated", "Calculated mod ttest f2")),
-                                   column(3, downloadButton("c3_download_replications_calculated", "Calculated mod ttest f3"))
-                                 ),
-                                 # br(),
-                                 # fluidRow(
-                                 #   column(2, downloadButton("c_download_snp_to_genes", "SNP to gene"))
-                                 # ),
-                                 hr(),
-                                 fluidRow(
-                                   column(3, downloadButton("c_download_basic_plots", "Basic Plots"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c_download_protein_comparisons", "Protein comparisons"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c_download_inweb", "InWeb comparisons"))
-                                 ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c_download_goi", "GOI comparisons"))
-                                 ),
-                                 # br(),
-                                 # fluidRow(
-                                 #   column(3, downloadButton("c_download_snp", "SNP comparisons"))
-                                 # ),
-                                 br(),
-                                 fluidRow(
-                                   column(3, downloadButton("c_download_protein_fams", "Protein families"))
-                                 )
+                                 column(4,
+                                        box(
+                                          title = 'Protein Comparison III', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   uiOutput("b_file_3_significance_type_ui"),
+                                                   uiOutput("b_file_3_FDR_thresh"),
+                                                   uiOutput("b_file_3_PVal_thresh"),
+                                                   uiOutput('b_file_3_logfc_direction_ui'),
+                                                   uiOutput("b_file_3_logFC_thresh")
+                                                 ),
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_3_volcano')
+                                                   #plotlyOutput('file2_volcano')
+                                                   #'',#tableOutput('tmp_table')
+                                                 )
+                                          )
+                                        )
+                                )
+                         
                         )
+            
             )
     ),
     tabItem(tabName = "guide",
@@ -597,19 +374,15 @@ sidebar <- dashboardSidebar(
                                uiOutput('a_logfc_direction_ui'),
                                uiOutput("logFC_thresh")
               ),
-              conditionalPanel("input.sidebarmenu === 'widgets'",
-                               uiOutput("c_file1"),
-                               uiOutput("c_file2"),
-                               uiOutput("c_file3"),
-                               HTML('<hr style="border-color: #D6DBE0;">'),
-                               uiOutput("c_GOI_search"),
-                               uiOutput("c_color_scheme"),
-                               uiOutput("c_color_style"),
-                               uiOutput("c_file_color"),
-                               uiOutput("c_FDR_thresh"),
-                               uiOutput("c_PVal_thresh"),
-                               uiOutput("c_logFC_thresh_combined")
+              conditionalPanel("input.sidebarmenu == 'widgets'",
+                               uiOutput("b_file_1_ui"),
+                               uiOutput("b_file_2_ui"),
+                               uiOutput("b_file_3_ui")
+                               #parse_file_upload_button_ui('upload1','do somthing'),
+                               #parse_file_upload_button_ui('upload2','do somthing')
               )
+                
+              
   )
 )
 

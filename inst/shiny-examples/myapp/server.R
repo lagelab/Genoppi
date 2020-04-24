@@ -12,15 +12,7 @@ shinyServer(function(input, output, session){
   
   ##### VISUALIZATIONS START ##### 
   output$a_file <- renderUI({
-    fileInput('a_file_pulldown_r', 'Upload user input file',
-              accept = c(
-                'text/csv',
-                'text/comma-separated-values',
-                'text/tab-separated-values',
-                'text/plain',
-                '.csv',
-                '.tsv')
-    )
+    fileInput('a_file_pulldown_r', 'Upload user input file', accept = files_accepted)
   })
   
   output$a_color_scheme <- renderUI({
@@ -58,50 +50,21 @@ shinyServer(function(input, output, session){
   })
   
   output$PVal_thresh <- renderUI({
-    #validate(need(input$a_significance_type == 'pvalue', ''))
     sliderInput("a_pval_thresh", HTML("<i>P</i>-value threshold"),
                 min = 0, max = 1, value = 0.05, step = 0.001)
   })
   
-  
-  
   # based on a_pulldown(), create slider for logFC
   output$logFC_thresh <- renderUI({
     if(!is.null(input$a_file_pulldown_r)){
-      df <- a_pulldown()
-      if (input$a_logfc_direction == 'negative'){
-        limit <- abs(min(df$logFC))
-        limit <- round(limit+0.5, 1)
-      } else if (input$a_logfc_direction == 'positive'){
-        limit <- max(df$logFC)
-        limit <- round(limit+0.5, 1)
-      } else {
-        limit <- max(max(df$logFC), abs(min(df$logFC)))
-        limit <- round(limit+0.5, 1)
-      }
+      limit <- calc_logfc_limit(a_pulldown(), input$a_logfc_direction)
       sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
                   min = 0, max = limit, value = 0, step = 0.1)
     }else
       sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
                   min = 0, max = 1, value = 0, step = 0.1)
   })  
-  
-  # based on a_pulldown(), create slider for logFC
-  output$logFC_thresh_old <- renderUI({
-    if(!is.null(input$a_file_pulldown_r)){
-      df <- a_pulldown()
-      min_logFC <- min(df$logFC)
-      min_logFC <- round(min_logFC-0.5, 1)
-      max_logFC <- max(df$logFC)
-      max_logFC <- round(max_logFC+0.5, 1)
-      sliderInput("a_logFC_thresh", "logFC threshold",
-                  min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
-    }else
-      sliderInput("a_logFC_thresh", "logFC threshold",
-                  min = -1, max = 1, value = c(0, 1), step = 0.1)
-  })  
-  
-  
+
   # track significance threshols for FDR and P-value
   monitor_significance_thresholds <- reactive({
     sig_type = ifelse(input$a_significance_type == 'fdr', 'FDR', '<i>P</i>-value')
@@ -1663,6 +1626,323 @@ shinyServer(function(input, output, session){
     req(a_pulldown_significant)
     a_integrated_plot()
   })
+  
+  
+  
+  
+  #####################
+  # Multiple file tab #
+  #####################
+
+  ## handle file upload
+  
+  output$b_file_1_ui <- renderUI({
+    fileInput('b_file_1', 'Upload user input file', accept = files_accepted)
+  })
+  
+  output$b_file_2_ui <- renderUI({
+    fileInput('b_file_2', 'Upload user input file', accept = files_accepted)
+  })
+  
+  output$b_file_3_ui <- renderUI({
+    fileInput('b_file_3', 'Upload user input file', accept = files_accepted)
+  })
+  
+ ## handle file parsing, i.e. ensure that the files are correctly mapped
+ ## and contain columns requried for further analysis.
+  
+ b_file_1_parsed <- reactive({
+   if (!is.null(input$b_file_1)){
+     return(parse_uploaded_file(input$b_file_1$datapath))
+   } else return(NULL)
+ })
+  
+ b_file_2_parsed <- reactive({
+   if (!is.null(input$b_file_2)){
+   return(parse_uploaded_file(input$b_file_2$datapath))
+   } else return(NULL)
+ })
+  
+ b_file_3_parsed <- reactive({
+   if (!is.null(input$b_file_3)){
+   return(parse_uploaded_file(input$b_file_3$datapath))
+   } else return(NULL)
+ })
+
+ # get significance thresholds for each file
+ # file 1
+ output$b_file_1_logfc_direction_ui <- renderUI({
+   radioButtons("b_file_1_logfc_direction", HTML("log<sub>2</sub>FC direction"),
+                c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
+                selected = 'positive',
+                inline = T)
+ })
+ 
+ output$b_file_1_significance_type_ui <- renderUI({
+   radioButtons("b_file_1_significance_type", "Significance metric",
+                choiceNames = list("FDR", HTML("<i>P</i>-value")),
+                choiceValues = list("fdr",'pvalue'),
+                inline = T)
+ })
+ 
+ output$b_file_1_FDR_thresh <- renderUI({
+   sliderInput("b_file_1_fdr_thresh", "FDR threshold",
+               min = 0, max = 1, value = 0.1, step = 0.01)
+ })
+ 
+ output$b_file_1_PVal_thresh <- renderUI({
+   sliderInput("b_file_1_pval_thresh", HTML("<i>P</i>-value threshold"),
+               min = 0, max = 1, value = 0.05, step = 0.001)
+ })
+ 
+ output$b_file_1_logFC_thresh <- renderUI({
+   if(!is.null(input$b_file_1)){
+     limit <- calc_logfc_limit(b_file_1_parsed(), input$b_file_1_logfc_direction)
+     sliderInput("b_file_1_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+                 min = 0, max = limit, value = 0, step = 0.1)
+   } else
+     sliderInput("b_file_1_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+                 min = 0, max = 1, value = 0, step = 0.1)
+ })  
+ 
+ # file 2
+ output$b_file_2_logfc_direction_ui <- renderUI({
+   radioButtons("b_file_2_logfc_direction", HTML("log<sub>2</sub>FC direction"),
+                c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
+                selected = 'positive',
+                inline = T)
+ })
+ 
+ output$b_file_2_significance_type_ui <- renderUI({
+   radioButtons("b_file_2_significance_type", "Significance metric",
+                choiceNames = list("FDR", HTML("<i>P</i>-value")),
+                choiceValues = list("fdr",'pvalue'),
+                inline = T)
+ })
+ 
+ output$b_file_2_FDR_thresh <- renderUI({
+   sliderInput("b_file_2_fdr_thresh", "FDR threshold",
+               min = 0, max = 1, value = 0.1, step = 0.01)
+ })
+ 
+ output$b_file_2_PVal_thresh <- renderUI({
+   sliderInput("b_file_2_pval_thresh", HTML("<i>P</i>-value threshold"),
+               min = 0, max = 1, value = 0.05, step = 0.001)
+ })
+ 
+ output$b_file_2_logFC_thresh <- renderUI({
+   if(!is.null(input$b_file_2)){
+     limit <- calc_logfc_limit(b_file_2_parsed(), input$b_file_2_logfc_direction)
+     sliderInput("b_file_2_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+                 min = 0, max = limit, value = 0, step = 0.1)
+   } else
+     sliderInput("b_file_2_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+                 min = 0, max = 1, value = 0, step = 0.1)
+ })  
+ 
+ # file 3
+ output$b_file_3_logfc_direction_ui <- renderUI({
+   radioButtons("b_file_3_logfc_direction", HTML("log<sub>2</sub>FC direction"),
+                c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
+                selected = 'positive',
+                inline = T)
+ })
+ 
+ output$b_file_3_significance_type_ui <- renderUI({
+   radioButtons("b_file_3_significance_type", "Significance metric",
+                choiceNames = list("FDR", HTML("<i>P</i>-value")),
+                choiceValues = list("fdr",'pvalue'),
+                inline = T)
+ })
+ 
+ output$b_file_3_FDR_thresh <- renderUI({
+   sliderInput("b_file_3_fdr_thresh", "FDR threshold",
+               min = 0, max = 1, value = 0.1, step = 0.01)
+ })
+ 
+ output$b_file_3_PVal_thresh <- renderUI({
+   sliderInput("b_file_3_pval_thresh", HTML("<i>P</i>-value threshold"),
+               min = 0, max = 1, value = 0.05, step = 0.001)
+ })
+ 
+ output$b_file_3_logFC_thresh <- renderUI({
+   if(!is.null(input$b_file_3)){
+     limit <- calc_logfc_limit(b_file_3_parsed(), input$b_file_3_logfc_direction)
+     sliderInput("b_file_3_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+                 min = 0, max = limit, value = 0, step = 0.1)
+   } else
+     sliderInput("b_file_3_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+                 min = 0, max = 1, value = 0, step = 0.1)
+ })  
+ 
+ ##
+ observeEvent(input$b_file_1_significance_type,{
+   if (input$b_file_1_significance_type == 'fdr'){
+     shinyjs::hide("b_file_1_pval_thresh")
+     shinyjs::show("b_file_1_fdr_thresh")
+   } else {
+     shinyjs::show("b_file_1_pval_thresh")
+     shinyjs::hide("b_file_1_fdr_thresh")
+   }
+ })
+ observeEvent(input$b_file_2_significance_type,{
+   if (input$b_file_2_significance_type == 'fdr'){
+     shinyjs::hide("b_file_2_pval_thresh")
+     shinyjs::show("b_file_2_fdr_thresh")
+   } else {
+     shinyjs::show("b_file_2_pval_thresh")
+     shinyjs::hide("b_file_2_fdr_thresh")
+   }
+ })
+ observeEvent(input$b_file_3_significance_type,{
+   if (input$b_file_3_significance_type == 'fdr'){
+     shinyjs::hide("b_file_3_pval_thresh")
+     shinyjs::show("b_file_3_fdr_thresh")
+   } else {
+     shinyjs::show("b_file_3_pval_thresh")
+     shinyjs::hide("b_file_3_fdr_thresh")
+   }
+ })
+ 
+ ## Handle significance for each file
+ 
+ b_file_1_significant <- reactive({
+   if (!is.null(b_file_1_parsed())){
+     d = b_file_1_parsed()
+     if (input$b_file_1_significance_type == 'fdr'){
+       d1 = id_enriched_proteins(d, fdr_cutoff = input$b_file_1_fdr_thresh, logfc_dir = input$b_file_1_logfc_direction, 
+                                 logfc_cutoff = input$b_file_1_logFC_thresh)
+     } else {
+       d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$b_file_1_pval_thresh, logfc_dir = input$b_file_1_logfc_direction, 
+                                 logfc_cutoff = input$b_file_1_logFC_thresh)
+     }
+     return(d1)
+   } else (return(NULL))
+ })
+ 
+ b_file_2_significant <- reactive({
+   if (!is.null(b_file_2_parsed())){
+     d = b_file_2_parsed()
+     if (input$b_file_2_significance_type == 'fdr'){
+       d1 = id_enriched_proteins(d, fdr_cutoff = input$b_file_2_fdr_thresh, logfc_dir = input$b_file_2_logfc_direction, 
+                                 logfc_cutoff = input$b_file_2_logFC_thresh)
+     } else {
+       d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$b_file_2_pval_thresh, logfc_dir = input$b_file_2_logfc_direction, 
+                                 logfc_cutoff = input$b_file_2_logFC_thresh)
+     }
+     return(d1)
+   } else (return(NULL))
+ })
+ 
+ b_file_3_significant <- reactive({
+   if (!is.null(b_file_3_parsed())){
+     d = b_file_3_parsed()
+     if (input$b_file_3_significance_type == 'fdr'){
+       d1 = id_enriched_proteins(d, fdr_cutoff = input$b_file_3_fdr_thresh, logfc_dir = input$b_file_3_logfc_direction, 
+                                 logfc_cutoff = input$b_file_3_logFC_thresh)
+     } else {
+       d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$b_file_3_pval_thresh, logfc_dir = input$b_file_3_logfc_direction, 
+                                 logfc_cutoff = input$b_file_3_logFC_thresh)
+     }
+     return(d1)
+   } else (return(NULL))
+ })
+ 
+ 
+ ### determine overlap
+ b_overlap <- reactive({
+   inputs = list(b_file_1_significant(), b_file_2_significant(), b_file_3_significant())
+   genes = lapply(inputs, function(x) if (!is.null(x)) return(x$gene[x$significant]))
+   genes = null_omit(genes)
+   overlap = Reduce(intersect, genes)
+   return(overlap)
+ })
+ 
+ b_file_1_vp <- reactive({
+   req(b_file_1_significant())
+   d <- b_file_1_significant()
+   p <- plot_volcano_basic(d)
+   p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   
+   if (length(b_overlap()) > 0){
+     mapping = to_overlay_data(d[d$gene %in% b_overlap(),])
+     mapping$col_significant = 'orange'
+     mapping$label = F
+     p <- plot_overlay(p, list(overlap=mapping))
+   }
+
+   p <- make_interactive(p, legend = F)
+   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL)
+   
+ })
+  
+ output$b_file_1_volcano = renderPlotly({
+   req(b_file_1_vp())
+   b_file_1_vp()
+ })
+ 
+ b_file_2_vp <- reactive({
+   req(b_file_2_significant())
+   d <- b_file_2_significant()
+   p <- plot_volcano_basic(d)
+   p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   
+   if (length(b_overlap()) > 0){
+     mapping = to_overlay_data(d[d$gene %in% b_overlap(),])
+     mapping$col_significant = 'orange'
+     mapping$label = F
+     p <- plot_overlay(p, list(overlap=mapping))
+   }
+   
+   p <- make_interactive(p, legend = F)
+   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL)
+   
+ })
+ 
+ output$b_file_2_volcano = renderPlotly({
+   req(b_file_2_vp())
+   b_file_2_vp()
+ })
+ 
+ b_file_3_vp <- reactive({
+   req(b_file_3_significant())
+   d <- b_file_3_significant()
+   p <- plot_volcano_basic(d)
+   p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   
+   if (length(b_overlap()) > 0){
+     mapping = to_overlay_data(d[d$gene %in% b_overlap(),])
+     mapping$col_significant = 'orange'
+     mapping$label = F
+     p <- plot_overlay(p, list(overlap=mapping))
+   }
+   
+   p <- make_interactive(p, legend = F)
+   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL)
+   
+ })
+ 
+ output$b_file_3_volcano = renderPlotly({
+   req(b_file_3_vp())
+   b_file_3_vp()
+ })
+ 
+ 
+  output$tmp_table <- renderTable({
+    #x = b_overlap()
+    
+    #if (!is.null(b_file_1_significant())) browser()
+    
+    return(head(b_file_1_significant()))
+  })
+  
+  
+
+  
+  
   
   
   

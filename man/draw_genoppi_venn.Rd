@@ -19,6 +19,12 @@ draw_genoppi_venn(
 \item{main}{title, typically a p-value.}
 
 \item{colors}{color scheme.}
+
+\item{cat.cex}{numeric. the size of category labels}
+
+\item{cat.dist}{the border distance between venn diagrams and labels}
+
+\item{sub.pos}{numeric. the position of the labels.}
 }
 \description{
 drwas a simple 1 by 1 overlap venn diagram.
