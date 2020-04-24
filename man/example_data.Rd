@@ -4,7 +4,9 @@
 \name{example_data}
 \alias{example_data}
 \title{example proteomic data}
-\format{data.table object with columns: gene, rep1, rep2, rep3}
+\format{
+data.frame object with columns: gene, rep1, rep2, rep3
+}
 \source{
 simulated data, do not represent true biology.
 }

@@ -4,7 +4,9 @@
 \name{msigdb_c2_table}
 \alias{msigdb_c2_table}
 \title{MSigDB C2 collection (curated gene sets) annotation table}
-\format{data.frame object with: Gene.symbol, Set.name}
+\format{
+data.frame object with: Gene.symbol, Set.name
+}
 \source{
 c2.all.v7.1.symbols.gmt file downloaded on 2020-04-03 (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#H).
 }

@@ -4,7 +4,9 @@
 \name{gwas_table}
 \alias{gwas_table}
 \title{GWAS catalog table}
-\format{data.frame object with: PUBMEDID, DISEASE.TRAIT, SNP, P.VALUE, SUTDY.ACCESSION}
+\format{
+data.frame object with: PUBMEDID, DISEASE.TRAIT, SNP, P.VALUE, SUTDY.ACCESSION
+}
 \source{
 gwas_catalog_v1.0.2-associations_e98_r2020-03-08.tsv file downloaded from GWAS catalog: https://www.ebi.ac.uk/gwas/docs/file-downloads.
 }

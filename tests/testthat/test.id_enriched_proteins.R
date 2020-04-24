@@ -1,7 +1,7 @@
 context('id_enriched_proteins')
 
 # read in test data
-df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+df <- read_input("data/test.data.txt", sep="\t")$data
 statsDf <- calc_mod_ttest(df)
 
 test_that('id_enriched_proteins return correct enriched proteins',{

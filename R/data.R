@@ -170,7 +170,7 @@
 
 #' @title example proteomic data
 #' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates
-#' @format data.table object with columns: gene, rep1, rep2, rep3
+#' @format data.frame object with columns: gene, rep1, rep2, rep3
 #' @family datasets
 #' @docType data
 #' @source simulated data, do not represent true biology. 

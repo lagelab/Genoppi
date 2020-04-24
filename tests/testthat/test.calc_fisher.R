@@ -1,13 +1,13 @@
 context('calc_fisher')
 
 # read in test data
-df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+df <- read_input("data/test.data.txt", sep="\t")$data
 statsDf <- calc_mod_ttest(df)
 sigDf <- id_enriched_proteins(statsDf)
 
 # InWeb df
 inwebDf <- data.frame(listName="InWeb", get_inweb_list("BCL2"))
-inwebInterDf <- data.frame(listName="InWeb",intersectN=T)
+inwebInterDf <- data.frame(listName="InWeb", intersectN=T)
 
 # gene list df
 geneInput <- get_gene_lists("data/test.ALSgenes.txt")

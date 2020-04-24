@@ -4,7 +4,7 @@ context('set_names_by_dataset')
 test_that('colors by dataset and inweb',{
   
   # make dataset
-  df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+  df <- read_input("data/test.data.txt", sep="\t")$data
   df <- calc_mod_ttest(df)
   df <- id_enriched_proteins(df)
   df$dataset = 'pulldown'

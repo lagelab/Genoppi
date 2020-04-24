@@ -4,7 +4,9 @@
 \name{accession_gene_table}
 \alias{accession_gene_table}
 \title{gene ID mapping table}
-\format{data.frame object with columns: accession_number, gene}
+\format{
+data.frame object with columns: accession_number, gene
+}
 \source{
 Protein-coding genes downloaded from Uniprot.
 }

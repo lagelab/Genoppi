@@ -1,7 +1,7 @@
 context('collapse_labels')
 
 # read in test data
-df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+df <- read_input("data/test.data.txt", sep="\t")$data
 df <- suppressWarnings(calc_mod_ttest(df))
 
 test_that('get colors by artifical dataset',{

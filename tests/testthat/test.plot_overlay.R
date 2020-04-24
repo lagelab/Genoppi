@@ -5,7 +5,7 @@ context('plot_overlay')
 func = 'plot_overlay'
 
 # read in test data
-df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+df <- read_input("data/test.data.txt", sep="\t")$data
 df <- calc_mod_ttest(df)
 
 

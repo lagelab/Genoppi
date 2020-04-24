@@ -1,17 +1,29 @@
-#' @title Read input data
-#' @description Read in input file and store as data.frame. Call check_input() to check data format.
-#' @param filename path to input file
-#' @param sep the field character seperator, see \code{?fread}
-#' @param header a logical value indicating whether the file contains the names of the variables as its first line
-#' @return list contaiing input data.table and list of boolean variables indicating input format
+#' @title Read in proteomic data from file
+#' @description Read in file containing proteomic data as data.frame. Call check_input() to check data format.
+#' @param filename path to input file.
+#' @param sep the field character seperator, see \code{?read.table}.
+#' @return list contaiing two objects, data and format. data: input data.frame. format: list returned by check_input(), see \code{?check_input}. 
 #' @export
+#' @examples
+#' \dontrun{
+#' df1 <- data.frame(gene=letters, rep1=rnorm(26), rep2=rnorm(26), rep3=rnorm(26))
+#' tmp <- tempfile()
+#' write.table(df1, tmp, quote=F, sep="\t", row.names=F)
+#' input <- read_input(tmp, sep="\t")
+#' } 
+#'
 
-read_input <- function(filename, header = 'auto', sep = 'auto'){
-  
-  #input = read.table(filename, header = header, sep = sep)
-  input = data.table::fread(filename, header = header, sep = sep)
-  check = check_input(input)
+read_input <- function(filename, sep = ""){
+ 
+  # check input file exists
+  stopifnot(file.exists(filename)) 
+ 
+  # read in file as data.frame
+  input <- read.table(filename, header = T, sep = sep)
+
+  # check input format
+  check <- check_input(input)
   
   return(list(data=input, format=check))
-}
 
+}

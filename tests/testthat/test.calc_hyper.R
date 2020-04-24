@@ -1,7 +1,7 @@
 context('calc_hyper')
 
 # read in test data
-df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+df <- read_input("data/test.data.txt", sep="\t")$data
 statsDf <- calc_mod_ttest(df)
 sigDf <- id_enriched_proteins(statsDf)
 

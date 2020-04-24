@@ -4,7 +4,9 @@
 \name{msigdb_c3_table}
 \alias{msigdb_c3_table}
 \title{MSigDB C3 collection (regulatory target gene sets) annotation table}
-\format{data.frame object with: Gene.symbol, Set.name}
+\format{
+data.frame object with: Gene.symbol, Set.name
+}
 \source{
 c3.all.v7.1.symbols.gmt file downloaded on 2020-04-03 (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#H).
 }

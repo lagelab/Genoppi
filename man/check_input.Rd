@@ -2,27 +2,28 @@
 % Please edit documentation in R/check_input.R
 \name{check_input}
 \alias{check_input}
-\title{Check input data format}
+\title{Check proteomic data format}
 \usage{
-check_input(tabl)
+check_input(df)
 }
 \arguments{
-\item{tabl}{a data.frame}
+\item{df}{data.frame containing proteomic data.}
 }
 \value{
-list of boolean vairables indicating if input match a format and allowed formats
+list of two lists: check and allowed. check: list of logical vairables indicating if input match an allowed format. allowed: a list of all allowed formats.
 }
 \description{
-Check if input data columns match one of the four allowed formats.
+Check if input data.frame columns match one of the four allowed formats.
 }
 \note{
-An item in the approved format list can appear more than once
+An item in the approved format list can appear more than once.
 }
 \examples{
 \dontrun{
 tabl1 = data.frame(gene = letters,rep1=runif(26), rep2=rnorm(26))
-tabl2 = data.frame(gene = letters,rep1=runif(26), rep2=rnorm(26), somethingelse=1:26)
 check_input(tabl1)
+tabl2 = data.frame(gene = letters,rep1=runif(26), rep2=rnorm(26), somethingelse=1:26)
+check_input(tabl2)
 }
 
 }

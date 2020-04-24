@@ -1,7 +1,7 @@
 context('calc_mod_ttest')
 
 # read in test data
-df <- read_input("data/test.data.txt",header=T,sep="\t")$data
+df <- read_input("data/test.data.txt", sep="\t")$data
 
 test_that('calc_mod_ttest can return results in data.frame',{
 

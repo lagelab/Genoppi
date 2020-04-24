@@ -1,7 +1,7 @@
 context('plot_scatter_basic')
 
 # read in test data
-data <- read_input("data/test.data.txt",header=T,sep="\t")$data
+data <- read_input("data/test.data.txt", sep="\t")$data
 data <- suppressWarnings(calc_mod_ttest(data))
 data = id_enriched_proteins(data)
 

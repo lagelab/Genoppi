@@ -4,7 +4,9 @@
 \name{genes_snps}
 \alias{genes_snps}
 \title{SNP-to-gene mapping hash table}
-\format{hash object with gene name as key, vector of SNPs as value}
+\format{
+hash object with gene name as key, vector of SNPs as value
+}
 \source{
 Genoppi-v3 snp_to_gene.Rdata file created by April Kim.
 }

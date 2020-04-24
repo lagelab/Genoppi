@@ -4,7 +4,9 @@
 \name{msigdb_h_table}
 \alias{msigdb_h_table}
 \title{MSigDB H collection (hallmark gene sets) annotation table}
-\format{data.frame object with: Gene.symbol, Set.name}
+\format{
+data.frame object with: Gene.symbol, Set.name
+}
 \source{
 h.all.v7.1.symbols.gmt file downloaded on 2020-04-03 (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#H).
 }

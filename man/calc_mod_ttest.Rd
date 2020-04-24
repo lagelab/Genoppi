@@ -7,12 +7,19 @@
 calc_mod_ttest(df)
 }
 \arguments{
-\item{df}{data.frame/data.table containing gene and rep (replicate logFC)  columns}
+\item{df}{data.frame containing gene and rep (replicate logFC)  columns}
 }
 \value{
-data.frame containing containing df + logFC, pvalue, and FDR; sorted by decreasing logFC
+data.frame containing containing df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR
 }
 \description{
 Use moderated t-test implemented in limma package to calculate logFC, pvalue, and FDR.
 See \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
+}
+\examples{
+/dontrun{
+data("example_data")
+stats_df <- calc_mod_ttest(example_data) 
+}
+
 }

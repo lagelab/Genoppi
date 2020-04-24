@@ -2,20 +2,27 @@
 % Please edit documentation in R/read_input.R
 \name{read_input}
 \alias{read_input}
-\title{Read input data}
+\title{Read in proteomic data from file}
 \usage{
-read_input(filename, header = "auto", sep = "auto")
+read_input(filename, sep = "")
 }
 \arguments{
-\item{filename}{path to input file}
+\item{filename}{path to input file.}
 
-\item{header}{a logical value indicating whether the file contains the names of the variables as its first line}
-
-\item{sep}{the field character seperator, see \code{?fread}}
+\item{sep}{the field character seperator, see \code{?read.table}.}
 }
 \value{
-list contaiing input data.table and list of boolean variables indicating input format
+list contaiing two objects, data and format. data: input data.frame. format: list returned by check_input(), see \code{?check_input}.
 }
 \description{
-Read in input file and store as data.frame. Call check_input() to check data format.
+Read in file containing proteomic data as data.frame. Call check_input() to check data format.
+}
+\examples{
+\dontrun{
+df1 <- data.frame(gene=letters, rep1=rnorm(26), rep2=rnorm(26), rep3=rnorm(26))
+tmp <- tempfile()
+write.table(df1, tmp, quote=F, sep="\t", row.names=F)
+input <- read_input(tmp, sep="\t")
+} 
+
 }

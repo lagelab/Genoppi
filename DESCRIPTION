@@ -39,7 +39,7 @@ Imports:
     DT,
     limma,
 Encoding: UTF-8
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Collate: 
     'add_genoppi_trace.R'
     'add_line_unity.R'

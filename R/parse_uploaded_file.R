@@ -14,7 +14,7 @@ parse_uploaded_file <- function(path){
   if (length(path) > 1) stop('expected a strin, found a vector!')
   if (!file.exists(path)) stop(paste(path,'does not exist!'))
   
-  pulldown = read_input(path, sep = '\t', header = T)
+  pulldown = read_input(path, sep = '\t')
   if (pulldown$format$check$accession_rep == TRUE){
     pulldown$data <- map_gene_id(pulldown$data)
   }

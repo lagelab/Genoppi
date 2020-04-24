@@ -493,7 +493,7 @@ shinyServer(function(input, output, session){
   # loading the data and getting the pulldown
   a_in_pulldown <- reactive({
     req(input$a_file_pulldown_r)
-    d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t', header = T)
+    d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t')
     return(d)
   })
   
@@ -523,7 +523,7 @@ shinyServer(function(input, output, session){
       allowed_vec = allowed_vec | 'gene' %in% colnames(pulldown)
       
       # ensure moderated t.test is only calculated on allowed columns
-      pulldown = pulldown[,colnames(pulldown)[allowed_vec], with = FALSE]
+      pulldown = pulldown[,colnames(pulldown)[allowed_vec]]
       result = calc_mod_ttest(pulldown) 
       return(result)
     }
