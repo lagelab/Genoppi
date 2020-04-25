@@ -1875,7 +1875,7 @@ shinyServer(function(input, output, session){
      f12 = intersect(genes$f1, genes$f2)[intersect(genes$f1, genes$f2) %nin% Reduce(intersect, genes)], 
      f13 = intersect(genes$f1, genes$f3)[intersect(genes$f1, genes$f3) %nin% Reduce(intersect, genes)], 
      f23 = intersect(genes$f2, genes$f3)[intersect(genes$f2, genes$f3) %nin% Reduce(intersect, genes)],
-     f123 = Reduce(intersect, genes)[Reduce(intersect, genes)]
+     f123 = Reduce(intersect, genes)
    )
    
    colors = list(
@@ -1885,7 +1885,7 @@ shinyServer(function(input, output, session){
      f12 = 'orange',
      f13 = 'purple',
      f23 = 'green',   
-     f123 = 'brown'
+     f123 = 'white'
    )
    
    # build data 
@@ -1903,6 +1903,16 @@ shinyServer(function(input, output, session){
 
  })
  
+ 
+ 
+ 
+ 
+ #b_file_1_venn_mapping <- reactive({
+#   
+   
+    
+#   
+# })
  
  b_file_1_vp <- reactive({
    req(b_file_1_significant())
