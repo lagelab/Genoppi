@@ -1,6 +1,6 @@
 # Use R
 language: r
-cache: packages
+#cache: packages
 warnings_are_errors: false
 
 # test multiple operating systems
