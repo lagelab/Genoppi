@@ -27,7 +27,7 @@ test_that('get colors by artifical dataset',{
   collapsed = collapse_labels(p3$overlay, collapse_into = 'mycol', dataset_collapse_sep = '', item_sep = '-')
   
   # collapsed by gene, so only one gene should be present
-  expect_true(all(table(collapsed$gene) == 1))
+  expect_true(all(table(as.character(collapsed$gene)) == 1))
   
   # the two genes to be present
   expect_equal(sum(myoverlay$myoverlay$gene %in% collapsed$gene), 2)

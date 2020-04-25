@@ -340,6 +340,9 @@ body <- dashboardBody(
                                         )
                                 )
                          
+                        ),
+                        tabPanel("Venn diagrams", 
+                                 h1('fa')
                         )
             
             )
@@ -378,8 +381,6 @@ sidebar <- dashboardSidebar(
                                uiOutput("b_file_1_ui"),
                                uiOutput("b_file_2_ui"),
                                uiOutput("b_file_3_ui")
-                               #parse_file_upload_button_ui('upload1','do somthing'),
-                               #parse_file_upload_button_ui('upload2','do somthing')
               )
                 
               
