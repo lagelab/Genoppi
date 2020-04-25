@@ -8,7 +8,8 @@ add_layout_html_axes_volcano(
   p,
   height = NULL,
   width = NULL,
-  legend_title = bold("Overlay")
+  legend_title = bold("Overlay"),
+  orientation = "v"
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ add_layout_html_axes_volcano(
 \item{width}{the width of the plotly object.}
 
 \item{legend_title}{the title of the legend.}
+
+\item{orientation}{piped to plotly. Can be 'v'ertical or 'h'orisontal.}
 }
 \description{
 Format axes.

@@ -9,7 +9,8 @@ add_layout_html_axes_scatterplot(
   title = "",
   legend_title = bold("Overlay"),
   width = NULL,
-  height = NULL
+  height = NULL,
+  orientation = "v"
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ add_layout_html_axes_scatterplot(
 \item{width}{the width of the plotly object.}
 
 \item{height}{the heigh of the plotly object.}
+
+\item{orientation}{piped to plotly. Can be 'v'ertical or 'h'orisontal.}
 }
 \description{
 format axes of a plotly object.

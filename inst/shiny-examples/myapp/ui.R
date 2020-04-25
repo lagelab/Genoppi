@@ -293,12 +293,16 @@ body <- dashboardBody(
                                                    uiOutput("b_file_1_PVal_thresh"),
                                                    uiOutput('b_file_1_logfc_direction_ui'),
                                                    uiOutput("b_file_1_logFC_thresh")
-                                                 ),
-                                                 fluidRow(
-                                                   plotlyOutput('b_file_1_volcano'),
-                                                   #tableOutput('tmp_table')
                                                  )
                                                 )
+                                        ),
+                                        box(
+                                          title = 'Volcano', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_1_volcano'),
+                                                 )
+                                          )
                                         )
                                  ),
                                  column(4,
@@ -311,11 +315,14 @@ body <- dashboardBody(
                                                    uiOutput("b_file_2_PVal_thresh"),
                                                    uiOutput('b_file_2_logfc_direction_ui'),
                                                    uiOutput("b_file_2_logFC_thresh")
-                                                 ),
+                                                 )
+                                          )
+                                        ),
+                                        box(
+                                          title = 'Volcano', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          column(12,
                                                  fluidRow(
-                                                   plotlyOutput('b_file_2_volcano')
-                                                   #plotlyOutput('file2_volcano')
-                                                   #'',#tableOutput('tmp_table')
+                                                   plotlyOutput('b_file_2_volcano'),
                                                  )
                                           )
                                         )
@@ -330,11 +337,14 @@ body <- dashboardBody(
                                                    uiOutput("b_file_3_PVal_thresh"),
                                                    uiOutput('b_file_3_logfc_direction_ui'),
                                                    uiOutput("b_file_3_logFC_thresh")
-                                                 ),
+                                                 )
+                                                )
+                                        ),
+                                        box(
+                                          title = 'Volcano', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          column(12,
                                                  fluidRow(
-                                                   plotlyOutput('b_file_3_volcano')
-                                                   #plotlyOutput('file2_volcano')
-                                                   #'',#tableOutput('tmp_table')
+                                                   plotlyOutput('b_file_3_volcano'),
                                                  )
                                           )
                                         )

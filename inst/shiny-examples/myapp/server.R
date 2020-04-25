@@ -1849,14 +1849,60 @@ shinyServer(function(input, output, session){
  })
  
  
- ### determine overlap
  b_overlap <- reactive({
-   inputs = list(b_file_1_significant(), b_file_2_significant(), b_file_3_significant())
-   genes = lapply(inputs, function(x) if (!is.null(x)) return(x$gene[x$significant]))
-   genes = null_omit(genes)
-   overlap = Reduce(intersect, genes)
-   return(overlap)
+   
+   inputs = list(f1=b_file_1_significant(), f2=b_file_2_significant(), f3=b_file_3_significant())
+   genes = lapply(inputs, function(x) if (!is.null(x)) return(as.character(x$gene[x$significant])))
+   
+   #if (length(null_omit(inputs)) > 1) browser()
+   
+   #return(genes)
+   genes_clean = null_omit(genes)
+   #overlap = Reduce(intersect, genes_clean)
+   #return(overlap)
+   return(genes_clean)
+   
  })
+ 
+ ### determine overlap
+ b_mapping <- reactive({
+   
+   genes = b_overlap()
+   venn = list(
+     f1 = genes$f1[genes$f1 %nin% c(genes$f3, genes$f2)], 
+     f2 = genes$f2[genes$f2 %nin% c(genes$f1, genes$f3)], 
+     f3 = genes$f3[genes$f3 %nin% c(genes$f1, genes$f2)],
+     f12 = intersect(genes$f1, genes$f2)[intersect(genes$f1, genes$f2) %nin% Reduce(intersect, genes)], 
+     f13 = intersect(genes$f1, genes$f3)[intersect(genes$f1, genes$f3) %nin% Reduce(intersect, genes)], 
+     f23 = intersect(genes$f2, genes$f3)[intersect(genes$f2, genes$f3) %nin% Reduce(intersect, genes)],
+     f123 = Reduce(intersect, genes)[Reduce(intersect, genes)]
+   )
+   
+   colors = list(
+     f1 = 'red',
+     f2 = 'yellow',
+     f3 = 'blue',
+     f12 = 'orange',
+     f13 = 'purple',
+     f23 = 'green',   
+     f123 = 'brown'
+   )
+   
+   # build data 
+   venn_colored = lapply(1:length(venn), function(i){
+     x = venn[[i]]
+     color = colors[[i]]
+     dataset = names(venn)[i]
+     if (length(x) > 0) return(data.frame(gene=x, col_significant=color, dataset = dataset))
+   })
+   
+   names(venn_colored) = names(venn)
+   venn_colored = null_omit(venn_colored)
+   
+   return(venn_colored)
+
+ })
+ 
  
  b_file_1_vp <- reactive({
    req(b_file_1_significant())
@@ -1865,15 +1911,19 @@ shinyServer(function(input, output, session){
    p <- plot_overlay(p, as.bait('AAAA')) # add bait
    
    if (length(b_overlap()) > 0){
-     mapping = to_overlay_data(d[d$gene %in% b_overlap(),])
-     mapping$col_significant = 'orange'
+     
+     mapping = b_mapping()
+     mapping = mapping[grepl('1',names(mapping))]
+     mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
+     mapping = do.call(rbind, mapping)
      mapping$label = F
-     p <- plot_overlay(p, list(overlap=mapping))
+     p <- plot_overlay(p, list(overlay=mapping))
+     
    }
-
-   p <- make_interactive(p, legend = F)
+   
+   p <- make_interactive(p, legend = T)
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    
  })
   
@@ -1889,15 +1939,17 @@ shinyServer(function(input, output, session){
    p <- plot_overlay(p, as.bait('AAAA')) # add bait
    
    if (length(b_overlap()) > 0){
-     mapping = to_overlay_data(d[d$gene %in% b_overlap(),])
-     mapping$col_significant = 'orange'
+     mapping = b_mapping()
+     mapping = mapping[grepl('2',names(mapping))]
+     mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
+     mapping = do.call(rbind, mapping)
      mapping$label = F
-     p <- plot_overlay(p, list(overlap=mapping))
+     p <- plot_overlay(p, list(overlay=mapping))
    }
    
-   p <- make_interactive(p, legend = F)
+   p <- make_interactive(p, legend = T)
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    
  })
  
@@ -1913,15 +1965,17 @@ shinyServer(function(input, output, session){
    p <- plot_overlay(p, as.bait('AAAA')) # add bait
    
    if (length(b_overlap()) > 0){
-     mapping = to_overlay_data(d[d$gene %in% b_overlap(),])
-     mapping$col_significant = 'orange'
+     mapping = b_mapping()
+     mapping = mapping[grepl('3',names(mapping))]
+     mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
+     mapping = do.call(rbind, mapping)
      mapping$label = F
-     p <- plot_overlay(p, list(overlap=mapping))
+     p <- plot_overlay(p, list(overlay=mapping))
    }
    
-   p <- make_interactive(p, legend = F)
+   p <- make_interactive(p, legend = T)
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    
  })
  

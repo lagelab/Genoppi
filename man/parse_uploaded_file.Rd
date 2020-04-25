@@ -7,7 +7,7 @@
 parse_uploaded_file(path)
 }
 \arguments{
-\item{data}{a string, data path}
+\item{path}{a string, data path}
 }
 \value{
 a data.frame ready for further analysis in genoppi

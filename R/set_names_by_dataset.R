@@ -21,8 +21,13 @@ set_names_by_dataset <- function(data, overlay, marker = 'color', by = 'dataset'
   tabl_overlay = as.data.frame(tabl_overlay[!duplicated(tabl_overlay),])
   tabl = rbind(tabl_data, tabl_overlay)
   
+  # check uniqueness
+  if (lun(tabl$dataset) != length(tabl$dataset)) stop(paste0('Multiple non-unique column "',marker,'" that correspond to different "',by,
+                                                             '". The mapping is ambigious and can not be constructed.'))
+  
   # set colors
   global_colors <- stats::setNames(tabl[[marker]], tabl$dataset)
+  
   
   return(global_colors)
   

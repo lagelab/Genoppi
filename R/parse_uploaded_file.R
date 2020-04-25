@@ -3,7 +3,7 @@
 #' 1) call read_input to get the file, 2) check whether accession_number
 #' column is present, and if so, map to gene id; 3) calculate moderated
 #' t-test on the data
-#' @param data a string, data path
+#' @param path a string, data path
 #' @return a data.frame ready for further analysis in genoppi 
 #' @export
 #' @family shiny
