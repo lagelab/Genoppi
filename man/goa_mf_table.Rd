@@ -4,9 +4,7 @@
 \name{goa_mf_table}
 \alias{goa_mf_table}
 \title{GOA molecular function annotation table}
-\format{
-data.frame object with: Gene.symbol, GO.ID, GO.name
-}
+\format{data.frame object with: Gene.symbol, GO.ID, GO.name}
 \source{
 GOA Homo sapiens protein dataset, 2020-03-23 release. Downloaded on 2020-03-30 (http://current.geneontology.org/products/pages/downloads.html).
 }

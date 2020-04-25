@@ -4,9 +4,7 @@
 \name{msigdb_c6_table}
 \alias{msigdb_c6_table}
 \title{MSigDB C6 collection (oncogenic signatures) annotation table}
-\format{
-data.frame object with: Gene.symbol, Set.name
-}
+\format{data.frame object with: Gene.symbol, Set.name}
 \source{
 c6.all.v7.1.symbols.gmt file downloaded on 2020-04-03 (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#H).
 }

@@ -17,7 +17,7 @@ Use moderated t-test implemented in limma package to calculate logFC, pvalue, an
 See \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
 }
 \examples{
-/dontrun{
+\dontrun{
 data("example_data")
 stats_df <- calc_mod_ttest(example_data) 
 }

@@ -4,9 +4,7 @@
 \name{msigdb_c7_table}
 \alias{msigdb_c7_table}
 \title{MSigDB C7 collection (immunologic signatures) annotation table}
-\format{
-data.frame object with: Gene.symbol, Set.name
-}
+\format{data.frame object with: Gene.symbol, Set.name}
 \source{
 c7.all.v7.1.symbols.gmt file downloaded on 2020-04-03 (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#H).
 }

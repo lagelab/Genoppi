@@ -4,9 +4,7 @@
 \name{gnomad_table}
 \alias{gnomad_table}
 \title{gnomAD table}
-\format{
-data.frame from gnomAD V 2.1.1
-}
+\format{data.frame from gnomAD V 2.1.1}
 \source{
 https://storage.googleapis.com/gnomad-public/release/2.1.1/constraint/gnomad.v2.1.1.lof_metrics.by_gene.txt.bgz
 }

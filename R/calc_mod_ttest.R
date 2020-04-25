@@ -5,7 +5,7 @@
 #' @return data.frame containing containing df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR
 #' @export
 #' @examples
-#' /dontrun{
+#' \dontrun{
 #' data("example_data")
 #' stats_df <- calc_mod_ttest(example_data) 
 #' }

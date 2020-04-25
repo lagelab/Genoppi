@@ -4,9 +4,7 @@
 \name{hgnc_group_table}
 \alias{hgnc_group_table}
 \title{HGNC gene group annotation table}
-\format{
-data.frame object with: Gene.symbol, Group.name
-}
+\format{data.frame object with: Gene.symbol, Group.name}
 \source{
 HGNC genes within groups dataset. Downloaded on 2020-03-30 (https://www.genenames.org/download/statistics-and-files/).
 }
