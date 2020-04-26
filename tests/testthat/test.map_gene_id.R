@@ -11,7 +11,7 @@ df3 <- data.frame(accession_number=c('BADNAME'))
 
 test_that('map_gene_id correctly maps acession_number (uniprot) to HGNC' ,{
   
-  # typical case
+  # typical cased
   result <- map_gene_id(df)
   expect_equal(result, outDf)
   
