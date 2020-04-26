@@ -60,6 +60,7 @@ Collate:
     'get_gene_lists.R'
     'get_gwas_lists.R'
     'get_pathways.R'
+    'html_translate_significance_thresholds.R'
     'launch_genoppi.R'
     'misc.R'
     'make_interactive.R'

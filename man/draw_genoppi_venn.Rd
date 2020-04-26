@@ -8,9 +8,11 @@ draw_genoppi_venn(
   x,
   main = "",
   colors = genoppi::color_distinct(),
+  alpha = NULL,
   cat.cex = 1.1,
   cat.dist = 0.05,
-  sub.pos = 0
+  sub.pos = 0,
+  fill = NULL
 )
 }
 \arguments{
