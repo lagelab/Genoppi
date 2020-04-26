@@ -1805,7 +1805,6 @@ shinyServer(function(input, output, session){
  })
  
  ## Handle significance for each file
- 
  b_file_1_significant <- reactive({
    if (!is.null(b_file_1_parsed())){
      d = b_file_1_parsed()
@@ -1848,18 +1847,12 @@ shinyServer(function(input, output, session){
    } else (return(NULL))
  })
  
- 
+ # get overlap of each file
  b_overlap <- reactive({
    
    inputs = list(f1=b_file_1_significant(), f2=b_file_2_significant(), f3=b_file_3_significant())
    genes = lapply(inputs, function(x) if (!is.null(x)) return(as.character(x$gene[x$significant])))
-   
-   #if (length(null_omit(inputs)) > 1) browser()
-   
-   #return(genes)
    genes_clean = null_omit(genes)
-   #overlap = Reduce(intersect, genes_clean)
-   #return(overlap)
    return(genes_clean)
    
  })
@@ -1903,37 +1896,57 @@ shinyServer(function(input, output, session){
 
  })
  
- 
- 
- 
- 
- #b_file_1_venn_mapping <- reactive({
-#   
+ # venn mapping for file 1
+ b_file_1_mapping <- reactive({
    
-    
-#   
-# })
+   d = b_file_1_significant()
+   mapping = b_mapping()
+   mapping = mapping[grepl('1',names(mapping))]
+   mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
+   mapping = do.call(rbind, mapping)
+   mapping$label = F
+   return(mapping)
+   
+ })
  
- b_file_1_vp <- reactive({
+ b_file_1_vp_gg <- reactive({
+   
    req(b_file_1_significant())
    d <- b_file_1_significant()
    p <- plot_volcano_basic(d)
    p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
+   return(p)
    
-   if (length(b_overlap()) > 0){
-     
-     mapping = b_mapping()
-     mapping = mapping[grepl('1',names(mapping))]
-     mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
-     mapping = do.call(rbind, mapping)
-     mapping$label = F
-     p <- plot_overlay(p, list(overlay=mapping))
-     
-   }
+ })
+ 
+ b_file_1_sp_gg <- reactive({
    
+   req(b_file_1_significant())
+   d <- b_file_1_significant()
+   p <- plot_scatter_basic(d)
+   p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
+   return(p)
+   
+ })
+ 
+ b_file_1_vp <- reactive({
+   
+   p <- b_file_1_vp_gg()
    p <- make_interactive(p, legend = T)
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   return(p)
+   
+ })
+ 
+ b_file_1_sp <- reactive({
+   
+   p <- b_file_1_sp_gg()
+   p <- make_interactive(p, legend = F)
+   p <- add_layout_html_axes_scatterplot(p, NULL, NULL, orientation = 'h')
+   return(p)
    
  })
   
@@ -1942,24 +1955,64 @@ shinyServer(function(input, output, session){
    b_file_1_vp()
  })
  
- b_file_2_vp <- reactive({
+ output$b_file_1_scatter = renderPlotly({
+   req(b_file_1_sp())
+   b_file_1_sp()
+ })
+ 
+ 
+ # venn mapping for file 1
+ b_file_2_mapping <- reactive({
+   
+   d = b_file_2_significant()
+   mapping = b_mapping()
+   mapping = mapping[grepl('2',names(mapping))]
+   mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
+   mapping = do.call(rbind, mapping)
+   mapping$label = F
+   return(mapping)
+   
+ })
+ 
+ b_file_2_vp_gg <- reactive({
+   
    req(b_file_2_significant())
    d <- b_file_2_significant()
    p <- plot_volcano_basic(d)
    p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
+   return(p)
    
-   if (length(b_overlap()) > 0){
-     mapping = b_mapping()
-     mapping = mapping[grepl('2',names(mapping))]
-     mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
-     mapping = do.call(rbind, mapping)
-     mapping$label = F
-     p <- plot_overlay(p, list(overlay=mapping))
-   }
+ })
+ 
+ b_file_2_sp_gg <- reactive({
    
+   req(b_file_2_significant())
+   d <- b_file_2_significant()
+   p <- plot_scatter_basic(d)
+   p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
+   return(p)
+   
+ })
+ 
+ b_file_2_vp <- reactive({
+   
+   p <- b_file_2_vp_gg()
    p <- make_interactive(p, legend = T)
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   return(p)
+   
+ })
+ 
+ b_file_2_sp <- reactive({
+   
+   p <- b_file_2_sp_gg()
+   p <- make_interactive(p, legend = F)
+   p <- add_layout_html_axes_scatterplot(p, NULL, NULL, orientation = 'h')
+   
+   return(p)
    
  })
  
@@ -1968,30 +2021,75 @@ shinyServer(function(input, output, session){
    b_file_2_vp()
  })
  
- b_file_3_vp <- reactive({
+ output$b_file_2_scatter = renderPlotly({
+   req(b_file_2_sp())
+   b_file_2_sp()
+ })
+ 
+ 
+ 
+ # venn mapping for file 1
+ b_file_3_mapping <- reactive({
+   
+   d = b_file_3_significant()
+   mapping = b_mapping()
+   mapping = mapping[grepl('3',names(mapping))]
+   mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
+   mapping = do.call(rbind, mapping)
+   mapping$label = F
+   return(mapping)
+   
+ }) 
+ 
+ b_file_3_vp_gg <- reactive({
+   
    req(b_file_3_significant())
    d <- b_file_3_significant()
    p <- plot_volcano_basic(d)
    p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
+   return(p)
    
-   if (length(b_overlap()) > 0){
-     mapping = b_mapping()
-     mapping = mapping[grepl('3',names(mapping))]
-     mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
-     mapping = do.call(rbind, mapping)
-     mapping$label = F
-     p <- plot_overlay(p, list(overlay=mapping))
-   }
+ })
+ 
+ b_file_3_sp_gg <- reactive({
    
+   req(b_file_3_significant())
+   d <- b_file_3_significant()
+   p <- plot_scatter_basic(d)
+   p <- plot_overlay(p, as.bait('AAAA')) # add bait
+   p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
+   return(p)
+   
+ })
+ 
+ b_file_3_vp <- reactive({
+   
+   p <- b_file_3_vp_gg()
    p <- make_interactive(p, legend = T)
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   return(p)
+   
+ })
+ 
+ b_file_3_sp <- reactive({
+   
+   p <- b_file_3_sp_gg()
+   p <- make_interactive(p, legend = F)
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   return(p)
    
  })
  
  output$b_file_3_volcano = renderPlotly({
    req(b_file_3_vp())
    b_file_3_vp()
+ })
+ 
+ output$b_file_3_scatter = renderPlotly({
+   req(b_file_3_sp())
+   b_file_3_sp()
  })
  
  

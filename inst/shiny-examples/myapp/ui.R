@@ -303,6 +303,14 @@ body <- dashboardBody(
                                                    plotlyOutput('b_file_1_volcano'),
                                                  )
                                           )
+                                        ),
+                                        box(
+                                          title = 'scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_1_scatter'),
+                                                 )
+                                          )
                                         )
                                  ),
                                  column(4,
@@ -325,6 +333,14 @@ body <- dashboardBody(
                                                    plotlyOutput('b_file_2_volcano'),
                                                  )
                                           )
+                                        ),
+                                        box(
+                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_2_scatter'),
+                                                 )
+                                          )
                                         )
                                  ),
                                  column(4,
@@ -345,6 +361,14 @@ body <- dashboardBody(
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_3_volcano'),
+                                                 )
+                                          )
+                                        ),
+                                        box(
+                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   plotlyOutput('b_file_3_scatter'),
                                                  )
                                           )
                                         )
