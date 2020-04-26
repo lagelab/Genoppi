@@ -13,10 +13,14 @@ test_that('map_gene_id correctly maps acession_number (uniprot) to HGNC' ,{
   
   # typical cased
   result <- map_gene_id(df)
+  result$gene <- as.factor(result$gene)
+  outDf$gene <- as.factor(outDf$gene)
   expect_equal(result, outDf)
   
   # valid Uniprot ID but with isoform
   result <- map_gene_id(df2)
+  result$gene <- as.factor(result$gene)
+  outDf2$gene <- as.factor(outDf2$gene)
   expect_equal(result, outDf2)
   
   # invalid uniprot ID
