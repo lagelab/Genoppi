@@ -305,7 +305,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = 'scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_1_scatter'),
@@ -335,7 +335,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_2_scatter'),
@@ -365,7 +365,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_3_scatter'),
@@ -376,7 +376,19 @@ body <- dashboardBody(
                          
                         ),
                         tabPanel("Venn diagrams", 
-                                 h1('fa')
+                                 column(12,
+                                   box(
+                                     title = 'Venn diagram', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                     column(12,
+                                            fluidRow(
+                                              plotOutput('b_file_comparison_venn_ui', width = "280px", height = "280px")
+                                            )
+                                     )
+                                   )
+                                 )
+                                 
+                                 
+                                 #column(4, ),
                         )
             
             )

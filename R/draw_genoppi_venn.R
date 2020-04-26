@@ -13,11 +13,11 @@
 #' @export
 
 
-draw_genoppi_venn <- function(x, main='',colors = genoppi::color_distinct(),
-                              cat.cex = 1.1, cat.dist = 0.05, sub.pos = 0){
+draw_genoppi_venn <- function(x, main='',colors = genoppi::color_distinct(), alpha = NULL,
+                              cat.cex = 1.1, cat.dist = 0.05, sub.pos = 0, fill = NULL){
   
   # suppress logging 
-  futile.logger::flog.threshold(futile.logger::ERROR)
+  futile.logger::flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
   
   # check input
   n = length(x)
@@ -34,7 +34,8 @@ draw_genoppi_venn <- function(x, main='',colors = genoppi::color_distinct(),
   
   # draw actual venn diagram
   v <- VennDiagram::venn.diagram(x,
-                            col = colors[1:n], margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
+                            col = colors[1:n], fill = fill, alpha = alpha,
+                            margin=0.05, filename = NULL, resolution = 900, height = 400, force.unique = T,
                             main = main, sub = " ", sub.pos = rep(sub.pos, n), scaled = F,
                             cat.cex = 1.1, cex = 2, cat.dist = rep(cat.dist, n),
                             fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')

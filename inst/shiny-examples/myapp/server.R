@@ -1630,6 +1630,10 @@ shinyServer(function(input, output, session){
   
   
   
+  
+  
+  
+  
   #####################
   # Multiple file tab #
   #####################
@@ -1804,6 +1808,37 @@ shinyServer(function(input, output, session){
    }
  })
  
+ ## track thresholds 
+
+ b_file_1_monitor_thresholds <- reactive({
+   
+   html_translate_significance_tresholds(fc = input$b_file_1_logFC_thresh,
+                                         fc_dir = input$b_file_1_logfc_direction, 
+                                         sig_type = input$b_file_1_significance_type, 
+                                         fdr_thresh = input$b_file_1_fdr_thresh, 
+                                         pval_thresh = input$b_file_1_pval_thresh)
+   
+ })
+ b_file_2_monitor_thresholds <- reactive({
+   
+   html_translate_significance_tresholds(fc = input$b_file_2_logFC_thresh,
+                                         fc_dir = input$b_file_2_logfc_direction, 
+                                         sig_type = input$b_file_2_significance_type, 
+                                         fdr_thresh = input$b_file_2_fdr_thresh, 
+                                         pval_thresh = input$b_file_2_pval_thresh)
+   
+ })
+ b_file_3_monitor_thresholds <- reactive({
+   
+   html_translate_significance_tresholds(fc = input$b_file_3_logFC_thresh,
+                                         fc_dir = input$b_file_3_logfc_direction, 
+                                         sig_type = input$b_file_3_significance_type, 
+                                         fdr_thresh = input$b_file_3_fdr_thresh, 
+                                         pval_thresh = input$b_file_3_pval_thresh)
+   
+ })
+ 
+
  ## Handle significance for each file
  b_file_1_significant <- reactive({
    if (!is.null(b_file_1_parsed())){
@@ -2093,15 +2128,61 @@ shinyServer(function(input, output, session){
  })
  
  
-  output$tmp_table <- renderTable({
+  #output$tmp_table <- renderTable({
     #x = b_overlap()
     
     #if (!is.null(b_file_1_significant())) browser()
     
-    return(head(b_file_1_significant()))
-  })
+    #return(head(b_file_1_significant()))
+  #})
+ 
+ # draw venn diagram for gnomAD
+ output$b_file_comparison_venn_ui <- renderPlot({
+   req(b_overlap())
+   diagram = b_overlap()
+   if (length(diagram) > 1) {
+     color_dict = list(f1='red',f2='yellow',f3='blue')
+     colors = unlist(lapply(names(diagram), function(x) color_dict[[x]]))
+     v = draw_genoppi_venn(b_overlap(), color = colors, main = 'File comparison')
+     grid::grid.newpage()
+     grid::grid.draw(v)
+   } else return(NULL)
+
+ })
+ 
+ 
+ 
+
+ 
+ # plot below venn diagram inweb
+ b_file_comparison_venn_verbatim <- reactive({
+   req(b_overlap())
+   
+   overlap = b_overlap()
+   
+   # dictionary of current threshoilds
+   all_thresholds = list(f1 = b_file_1_monitor_thresholds(), f2 = b_file_2_monitor_thresholds(), f3 = b_file_3_monitor_thresholds())
+   thresholds = lapply(all_thresholds, function(x) paste(x$sig$sig, x$fc$sig, sep = ', '))
+   
+   
+   
+   
+   #tresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+   #hyper = a_gnomad_calc_hyper()
+   #A <- paste0("A = pull down subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
+   #B <- paste0("B = gnomAD genes with pLI ≥", bold(input$a_slide_gnomad_pli_threshold)," &#40;", bold(hyper$statistics$sample_count), "&#41;")
+   #total <- paste0("Total population = pull down &cap; gnomAD &#40;", bold(hyper$statistics$population_count), "&#41;")
+   #return(list(A=A, B=B, total=total))
+ })
   
   
+ 
+ 
+ 
+
+ 
+ 
+ 
 
   
   
