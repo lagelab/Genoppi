@@ -7,7 +7,7 @@
 #' 
 #' 
 
-as.geneset <- function(data, database){
+as.pathway <- function(data, database){
   
   # check inpug
   stopifnot('gene' %in% colnames(data))
@@ -39,3 +39,13 @@ as.geneset <- function(data, database){
 
   return(list(geneset=overlay))
 }
+
+
+#data("example_data")
+
+#df = example_data %>% calc_mod_ttest() %>% id_enriched_proteins()
+
+#plot_volcano_basic(df) %>% plot_overlay(as.bait('BCL2')) %>% make_interactive()
+
+
+

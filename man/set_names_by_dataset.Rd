@@ -4,12 +4,11 @@
 \alias{set_names_by_dataset}
 \title{set_names_by_dataset}
 \usage{
-set_names_by_dataset(data, overlay, marker = "color", by = "dataset")
+set_names_by_dataset(lst, marker = "color", by = "dataset")
 }
 \arguments{
-\item{data}{a data.frame object.}
-
-\item{overlay}{a data.frame object.}
+\item{lst}{a data.frame or a list of data.frames that all contain the arguments
+'marker' and 'by' as column names.}
 
 \item{marker}{what should be organized?}
 

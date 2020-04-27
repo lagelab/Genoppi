@@ -5,7 +5,7 @@ data("example_data")
 test_that('basic test to see if function works',{
   
   # perform moderated t-test
-  stats_df <- calc_mod_ttest(example_data)
+  stats_df <- suppressWarnings(calc_mod_ttest(example_data))
   
   # identify enriched proteins
   sig_df <- id_enriched_proteins(stats_df)
@@ -26,5 +26,27 @@ test_that('basic test to see if function works',{
   expect_equal(quo_name(m$text),'BCL2')
   
 })
+
+test_that('plot without any overlay can be made interactive',{
+  
+  # perform moderated t-test
+  stats_df <- suppressWarnings(calc_mod_ttest(example_data))
+  
+  # identify enriched proteins
+  sig_df <- id_enriched_proteins(stats_df)
+  
+  # generate volcano plot with bait protein labeled
+  basic_volcano <- plot_volcano_basic(sig_df)
+  result = make_interactive(basic_volcano)
+  
+  # look at nnotations
+  m = result$x$attrs[[2]]
+  expect_equal(as.vector(m$colors), c("#41AB5D", "grey"))
+  expect_equal(quo_name(m$x),'logFC')
+  expect_equal(quo_name(m$y),'-log10(pvalue)')
+  expect_equal(quo_name(m$text),'~gene') # no bait
+  
+})
+
 
 

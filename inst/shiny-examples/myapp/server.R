@@ -1977,7 +1977,6 @@ shinyServer(function(input, output, session){
    req(b_file_1_significant())
    d <- b_file_1_significant()
    p <- plot_volcano_basic(d)
-   p <- plot_overlay(p, as.bait('AAAA')) # add bait
    p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
    return(p)
    
@@ -1988,7 +1987,6 @@ shinyServer(function(input, output, session){
    req(b_file_1_significant())
    d <- b_file_1_significant()
    p <- plot_scatter_basic(d)
-   p <- plot_overlay(p, as.bait('AAAA')) # add bait
    p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
    return(p)
    
@@ -2044,7 +2042,6 @@ shinyServer(function(input, output, session){
    req(b_file_2_significant())
    d <- b_file_2_significant()
    p <- plot_volcano_basic(d)
-   p <- plot_overlay(p, as.bait('AAAA')) # add bait
    p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
    return(p)
    
@@ -2055,7 +2052,6 @@ shinyServer(function(input, output, session){
    req(b_file_2_significant())
    d <- b_file_2_significant()
    p <- plot_scatter_basic(d)
-   p <- plot_overlay(p, as.bait('AAAA')) # add bait
    p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
    return(p)
    
@@ -2113,7 +2109,6 @@ shinyServer(function(input, output, session){
    req(b_file_3_significant())
    d <- b_file_3_significant()
    p <- plot_volcano_basic(d)
-   p <- plot_overlay(p, as.bait('AAAA')) # add bait
    p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
    return(p)
    
@@ -2124,7 +2119,6 @@ shinyServer(function(input, output, session){
    req(b_file_3_significant())
    d <- b_file_3_significant()
    p <- plot_scatter_basic(d)
-   p <- plot_overlay(p, as.bait('AAAA')) # add bait
    p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
    return(p)
    

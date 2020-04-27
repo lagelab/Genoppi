@@ -16,7 +16,7 @@ add_genoppi_trace <- function(p, data, parameters, stroke_width = 0.2, legend = 
   global_colors = parameters$global_colors
   global_symbols = parameters$global_symbols
   coords = parameters$ggparams
-
+  
   # set legend order in trace
   if (!any(is.na(data$legend_order))) data$dataset = factor(data$dataset, levels = unique(data$dataset[data$legend_order]))
   

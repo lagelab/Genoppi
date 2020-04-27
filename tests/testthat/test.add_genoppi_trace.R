@@ -21,8 +21,8 @@ test_that('basic test to see if function works',{
   
   # get the global symbol and color mapping and save in local environemnt
   sizes = c(min(c(p$data$size, p$overlay$size)), max(c(p$data$size, p$overlay$size)))
-  global_colors = set_names_by_dataset(data, overlay, marker = 'color') 
-  global_symbols = set_names_by_dataset(data, overlay, marker= 'symbol') 
+  global_colors = set_names_by_dataset(list(data, overlay), marker = 'color') 
+  global_symbols = set_names_by_dataset(list(data, overlay), marker= 'symbol') 
   ggparams = p
   params = environment()
   

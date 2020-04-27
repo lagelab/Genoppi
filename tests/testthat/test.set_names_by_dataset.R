@@ -24,8 +24,15 @@ test_that('colors by dataset and inweb',{
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
   
   # check function
-  global_colors = set_names_by_dataset(data, overlay)
+  global_colors = set_names_by_dataset(list(data, overlay))
   expect_equal(names(global_colors), c("pulldown (enriched)", "pulldown (not enriched)", "bait (not enriched)", "inweb (not enriched)", "inweb (enriched)"))
   expect_equal(as.vector(global_colors), c("#41AB5D", "grey", "orange", "grey", "yellow"))
   
+  # check errors
+  expect_error(set_names_by_dataset(data, overlay))
+  expect_error(set_names_by_dataset(data, marker = 'color', by = 2))
+  
 })
+
+
+

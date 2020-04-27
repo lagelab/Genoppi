@@ -42,11 +42,12 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x)))
   plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size')]
   overlay =  merge(plot.data, validate_reference(overlay), by = match)
+  overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
   
   # add the overlay to the ggplot
   p1 = p + ggplot2::geom_point(data = overlay, 
                  mapping = aes_string(x=p$mapping$x, y=p$mapping$y),
-                 fill = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other)),
+                 fill = overlay$color,
                  size = overlay$gg.size,
                  shape = overlay$shape,
                  stroke = 0.75,

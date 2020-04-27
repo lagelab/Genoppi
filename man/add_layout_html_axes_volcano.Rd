@@ -9,7 +9,10 @@ add_layout_html_axes_volcano(
   height = NULL,
   width = NULL,
   legend_title = bold("Overlay"),
-  orientation = "v"
+  orientation = "v",
+  xanchor = NULL,
+  legend.x = 0,
+  legend.y = 0
 )
 }
 \arguments{

@@ -10,7 +10,11 @@ add_layout_html_axes_scatterplot(
   legend_title = bold("Overlay"),
   width = NULL,
   height = NULL,
-  orientation = "v"
+  orientation = "v",
+  xanchor = NULL,
+  yanxhor = NULL,
+  legend.x = 0,
+  legend.y = 0
 )
 }
 \arguments{

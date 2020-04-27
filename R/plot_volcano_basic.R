@@ -33,7 +33,7 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.background = element_blank())
-
+  
   return(p)
 }
 
