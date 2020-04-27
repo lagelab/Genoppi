@@ -13,8 +13,7 @@ make_interactive(p, source = NULL, legend = T, sig_text = "")
 
 \item{legend}{boolean. Show legend for significant interactors?}
 
-\item{sig_text}{what legend text should be added to a significant
-item?}
+\item{sig_text}{what legend text should be added to a significant item?}
 }
 \description{
 Takes a ggplot and turns it into 

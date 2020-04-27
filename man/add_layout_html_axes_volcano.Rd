@@ -10,9 +10,8 @@ add_layout_html_axes_volcano(
   width = NULL,
   legend_title = bold("Overlay"),
   orientation = "v",
-  xanchor = NULL,
-  legend.x = 0,
-  legend.y = 0
+  legend.x = NULL,
+  legend.y = NULL
 )
 }
 \arguments{
@@ -25,6 +24,10 @@ add_layout_html_axes_volcano(
 \item{legend_title}{the title of the legend.}
 
 \item{orientation}{piped to plotly. Can be 'v'ertical or 'h'orisontal.}
+
+\item{legend.x}{shift legend by x-axis.}
+
+\item{legend.y}{shift legend by y-axis.}
 }
 \description{
 Format axes.

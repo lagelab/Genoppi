@@ -11,8 +11,6 @@ add_layout_html_axes_scatterplot(
   width = NULL,
   height = NULL,
   orientation = "v",
-  xanchor = NULL,
-  yanxhor = NULL,
   legend.x = 0,
   legend.y = 0
 )
@@ -29,6 +27,10 @@ add_layout_html_axes_scatterplot(
 \item{height}{the heigh of the plotly object.}
 
 \item{orientation}{piped to plotly. Can be 'v'ertical or 'h'orisontal.}
+
+\item{legend.x}{shift legend by x-axis.}
+
+\item{legend.y}{shift legend by y-axis.}
 }
 \description{
 format axes of a plotly object.

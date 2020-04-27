@@ -22,11 +22,15 @@ draw_genoppi_venn(
 
 \item{colors}{color scheme.}
 
+\item{alpha}{numeric, transparency value between 0 and 1.}
+
 \item{cat.cex}{numeric. the size of category labels}
 
 \item{cat.dist}{the border distance between venn diagrams and labels}
 
 \item{sub.pos}{numeric. the position of the labels.}
+
+\item{fill}{the fill color of the venn diagrams.}
 }
 \description{
 drwas a simple 1 by 1 overlap venn diagram.

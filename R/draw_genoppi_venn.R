@@ -7,6 +7,8 @@
 #' @param cat.cex numeric. the size of category labels
 #' @param cat.dist the border distance between venn diagrams and labels
 #' @param sub.pos numeric. the position of the labels.
+#' @param alpha numeric, transparency value between 0 and 1.
+#' @param fill the fill color of the venn diagrams.
 #' @importFrom VennDiagram venn.diagram
 #' @importFrom futile.logger flog.threshold ERROR
 #' @import grid 
