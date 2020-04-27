@@ -1824,7 +1824,7 @@ shinyServer(function(input, output, session){
 
  b_file_1_monitor_thresholds <- reactive({
    
-   html_translate_significance_tresholds(fc = input$b_file_1_logFC_thresh,
+   html_translate_significance_thresholds(fc = input$b_file_1_logFC_thresh,
                                          fc_dir = input$b_file_1_logfc_direction, 
                                          sig_type = input$b_file_1_significance_type, 
                                          fdr_thresh = input$b_file_1_fdr_thresh, 
@@ -1833,7 +1833,7 @@ shinyServer(function(input, output, session){
  })
  b_file_2_monitor_thresholds <- reactive({
    
-   html_translate_significance_tresholds(fc = input$b_file_2_logFC_thresh,
+   html_translate_significance_thresholds(fc = input$b_file_2_logFC_thresh,
                                          fc_dir = input$b_file_2_logfc_direction, 
                                          sig_type = input$b_file_2_significance_type, 
                                          fdr_thresh = input$b_file_2_fdr_thresh, 
@@ -1842,7 +1842,7 @@ shinyServer(function(input, output, session){
  })
  b_file_3_monitor_thresholds <- reactive({
    
-   html_translate_significance_tresholds(fc = input$b_file_3_logFC_thresh,
+   html_translate_significance_thresholds(fc = input$b_file_3_logFC_thresh,
                                          fc_dir = input$b_file_3_logfc_direction, 
                                          sig_type = input$b_file_3_significance_type, 
                                          fdr_thresh = input$b_file_3_fdr_thresh, 

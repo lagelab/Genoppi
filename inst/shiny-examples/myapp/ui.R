@@ -376,6 +376,7 @@ body <- dashboardBody(
                          
                         ),
                         tabPanel("Venn diagrams", 
+                                 br(),
                                  column(6,
                                    box(
                                      title = 'Venn diagram', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,

@@ -3,6 +3,7 @@
 #' @param pulldown pulldown data
 #' @param database see get_pathways
 #' @keywords internal
+#' @note this is a wark in progress.
 #' 
 #' 
 
@@ -38,12 +39,3 @@ as.geneset <- function(data, database){
 
   return(list(geneset=overlay))
 }
-
-
-
-
-
-#p <- plot_volcano_basic(pulldown)
-#p1 <- plot_overlay(p, as.geneset(pulldown, 'hgnc'))
-
-
