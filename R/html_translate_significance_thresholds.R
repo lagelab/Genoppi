@@ -10,7 +10,7 @@
 #' @export
 
 
-html_translate_significance_tresholds <- function(fc, fc_dir, sig_type, fdr_threshs, pval_thresh){
+html_translate_significance_tresholds <- function(fc, fc_dir, sig_type, fdr_thresh, pval_thresh){
   
   # track significance type and threshold
   sig_type = ifelse(sig_type == 'fdr', 'FDR', '<i>P</i>-value')

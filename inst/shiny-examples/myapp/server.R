@@ -1673,6 +1673,18 @@ shinyServer(function(input, output, session){
    } else return(NULL)
  })
 
+ #
+ output$b_GOI_search <- renderUI({
+   textInput("b_goi_search_rep", "Search HGNC symbol")
+ })
+ 
+ # needed for searching gene
+ b_search_gene <- reactive({
+   gene_in <- input$b_goi_search_rep
+   req(gene_in)
+   toupper(gene_in)
+ })
+ 
  # get significance thresholds for each file
  # file 1
  output$b_file_1_logfc_direction_ui <- renderUI({
@@ -1970,6 +1982,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_1_vp_gg()
    p <- make_interactive(p, legend = T)
+   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    return(p)
@@ -1980,6 +1993,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_1_sp_gg()
    p <- make_interactive(p, legend = F)
+   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_layout_html_axes_scatterplot(p, NULL, NULL, orientation = 'h')
    return(p)
    
@@ -2035,6 +2049,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_2_vp_gg()
    p <- make_interactive(p, legend = T)
+   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    return(p)
@@ -2045,6 +2060,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_2_sp_gg()
    p <- make_interactive(p, legend = F)
+   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_layout_html_axes_scatterplot(p, NULL, NULL, orientation = 'h')
    
    return(p)
@@ -2102,7 +2118,8 @@ shinyServer(function(input, output, session){
    
    p <- b_file_3_vp_gg()
    p <- make_interactive(p, legend = T)
-   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
+   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
+   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    return(p)
    
@@ -2112,6 +2129,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_3_sp_gg()
    p <- make_interactive(p, legend = F)
+   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
    return(p)
    
@@ -2126,15 +2144,6 @@ shinyServer(function(input, output, session){
    req(b_file_3_sp())
    b_file_3_sp()
  })
- 
- 
-  #output$tmp_table <- renderTable({
-    #x = b_overlap()
-    
-    #if (!is.null(b_file_1_significant())) browser()
-    
-    #return(head(b_file_1_significant()))
-  #})
  
  # draw venn diagram for gnomAD
  output$b_file_comparison_venn_ui <- renderPlot({
@@ -2151,31 +2160,39 @@ shinyServer(function(input, output, session){
  })
  
  
- 
-
- 
- # plot below venn diagram inweb
+ # text for venn diagram
  b_file_comparison_venn_verbatim <- reactive({
    req(b_overlap())
-   
    overlap = b_overlap()
    
-   # dictionary of current threshoilds
+   # get thresholds and combine them 
    all_thresholds = list(f1 = b_file_1_monitor_thresholds(), f2 = b_file_2_monitor_thresholds(), f3 = b_file_3_monitor_thresholds())
-   thresholds = lapply(all_thresholds, function(x) paste(x$sig$sig, x$fc$sig, sep = ', '))
+   thresholds = lapply(all_thresholds[names(all_thresholds) %in% names(overlap)], function(x) paste(x$sig$sig, x$fc$sig, sep = ', '))
    
+   # generate text for displaying
+   result = lapply(names(overlap), function(f){
+     paste0(f,' = pull down subsetted by ', thresholds[[f]], " &#40;", bold(length(overlap[[f]])), "&#41;")
+   })
    
-   
-   
-   #tresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
-   #hyper = a_gnomad_calc_hyper()
-   #A <- paste0("A = pull down subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
-   #B <- paste0("B = gnomAD genes with pLI ≥", bold(input$a_slide_gnomad_pli_threshold)," &#40;", bold(hyper$statistics$sample_count), "&#41;")
-   #total <- paste0("Total population = pull down &cap; gnomAD &#40;", bold(hyper$statistics$population_count), "&#41;")
-   #return(list(A=A, B=B, total=total))
+   names(result) <- names(overlap)
+   return(result)
  })
   
+ output$b_file_comparison_venn_verbatim_ui <- renderUI({
+   output <- b_file_comparison_venn_verbatim()
+   HTML(paste(output, collapse = "<br/>"))
+ })
+ 
+ # make data.table for showing overlap
+ output$b_file_comparison_data_table_ui <- DT::renderDataTable({
+   req(b_overlap())
+   overlap = b_mapping()
+   lst = lapply(names(overlap), function(x){overlap[[x]][,c('gene','dataset')]})
+   df = do.call(rbind, lst)
+   DT::datatable(df)
+ })
   
+ 
  
  
  

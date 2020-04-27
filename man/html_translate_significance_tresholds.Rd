@@ -8,7 +8,7 @@ html_translate_significance_tresholds(
   fc,
   fc_dir,
   sig_type,
-  fdr_threshs,
+  fdr_thresh,
   pval_thresh
 )
 }
@@ -19,9 +19,9 @@ html_translate_significance_tresholds(
 
 \item{sig_type}{the significance type: fdr or pvalue.}
 
-\item{pval_thresh}{the threshold for the p-value.}
-
 \item{fdr_thresh}{the fdr fdr thresholds}
+
+\item{pval_thresh}{the threshold for the p-value.}
 }
 \description{
 translate significance and logfc thresholds to html that

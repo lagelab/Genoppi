@@ -376,15 +376,29 @@ body <- dashboardBody(
                          
                         ),
                         tabPanel("Venn diagrams", 
-                                 column(12,
+                                 column(6,
                                    box(
                                      title = 'Venn diagram', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                     column(12,
+                                     column(2, ''),
+                                     column(8,
                                             fluidRow(
                                               plotOutput('b_file_comparison_venn_ui', width = "280px", height = "280px")
+                                            ),
+                                            fluidRow(
+                                              uiOutput('b_file_comparison_venn_verbatim_ui')
                                             )
-                                     )
+                                     ),
+                                     column(2, '')
                                    )
+                                 ),
+                                 column(6,
+                                        box(
+                                          title = 'Explore overlap', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                          column(12,
+                                                 DT::dataTableOutput('b_file_comparison_data_table_ui')
+                                          )
+                                        )
+                                        
                                  )
                                  
                                  
@@ -424,6 +438,7 @@ sidebar <- dashboardSidebar(
                                uiOutput("logFC_thresh")
               ),
               conditionalPanel("input.sidebarmenu == 'widgets'",
+                               uiOutput("b_GOI_search"),
                                uiOutput("b_file_1_ui"),
                                uiOutput("b_file_2_ui"),
                                uiOutput("b_file_3_ui")
