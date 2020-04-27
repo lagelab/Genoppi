@@ -1988,7 +1988,7 @@ shinyServer(function(input, output, session){
    p <- make_interactive(p, legend = T)
    if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
    
  })
@@ -2055,7 +2055,7 @@ shinyServer(function(input, output, session){
    p <- make_interactive(p, legend = T)
    if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
    
  })
@@ -2124,7 +2124,7 @@ shinyServer(function(input, output, session){
    p <- make_interactive(p, legend = T)
    if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
    
  })
@@ -2197,19 +2197,6 @@ shinyServer(function(input, output, session){
  })
   
  
- 
- 
- 
-
- 
- 
- 
-
-  
-  
-  
-  
-  
   
   ##### GENERAL #####
   #documentation
