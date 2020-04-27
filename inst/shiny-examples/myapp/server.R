@@ -1910,18 +1910,30 @@ shinyServer(function(input, output, session){
  
  ### determine overlap
  b_mapping <- reactive({
-   
    genes = b_overlap()
-   venn = list(
-     f1 = genes$f1[genes$f1 %nin% c(genes$f3, genes$f2)], 
-     f2 = genes$f2[genes$f2 %nin% c(genes$f1, genes$f3)], 
-     f3 = genes$f3[genes$f3 %nin% c(genes$f1, genes$f2)],
-     f12 = intersect(genes$f1, genes$f2)[intersect(genes$f1, genes$f2) %nin% Reduce(intersect, genes)], 
-     f13 = intersect(genes$f1, genes$f3)[intersect(genes$f1, genes$f3) %nin% Reduce(intersect, genes)], 
-     f23 = intersect(genes$f2, genes$f3)[intersect(genes$f2, genes$f3) %nin% Reduce(intersect, genes)],
-     f123 = Reduce(intersect, genes)
-   )
-   
+   req(genes)
+   if (length(genes) == 3){
+     venn = list(
+       f1 = genes$f1[genes$f1 %nin% c(genes$f3, genes$f2)], 
+       f2 = genes$f2[genes$f2 %nin% c(genes$f1, genes$f3)], 
+       f3 = genes$f3[genes$f3 %nin% c(genes$f1, genes$f2)],
+       f12 = intersect(genes$f1, genes$f2)[intersect(genes$f1, genes$f2) %nin% Reduce(intersect, genes)], 
+       f13 = intersect(genes$f1, genes$f3)[intersect(genes$f1, genes$f3) %nin% Reduce(intersect, genes)], 
+       f23 = intersect(genes$f2, genes$f3)[intersect(genes$f2, genes$f3) %nin% Reduce(intersect, genes)],
+       f123 = Reduce(intersect, genes)
+     )
+   } else if (length(genes) < 3){
+     venn = list(
+       f1 = genes$f1[genes$f1 %nin% c(genes$f3, genes$f2)], 
+       f2 = genes$f2[genes$f2 %nin% c(genes$f1, genes$f3)], 
+       f3 = genes$f3[genes$f3 %nin% c(genes$f1, genes$f2)],
+       f12 = intersect(genes$f1, genes$f2),
+       f13 = intersect(genes$f1, genes$f3),
+       f23 = intersect(genes$f2, genes$f3)
+     )
+   }
+
+   # venn colors
    colors = list(
      f1 = 'red',
      f2 = 'yellow',
