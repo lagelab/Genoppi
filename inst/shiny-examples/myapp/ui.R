@@ -32,7 +32,7 @@ body <- dashboardBody(
                                           ),
                                           fluidRow(
                                             br(),
-                                            column(12, tagList(h5(HTML(bold('Replicate corrlation(s):'))))),
+                                            column(12, uiOutput('a_replicate_summar_text_ui')),
                                           ),
                                           fluidRow(
                                             column(12, tableOutput("a_replicate_summary_table_ui"))

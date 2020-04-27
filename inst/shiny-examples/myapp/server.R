@@ -91,7 +91,7 @@ shinyServer(function(input, output, session){
   # basic plot
   output$a_color_theme_indv_sig <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig)))
+    label = isolate(HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
     colourpicker::colourInput('a_color_indv_sig', label, value = '#41AB5D', showColour = 'both', 
                   palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -99,7 +99,7 @@ shinyServer(function(input, output, session){
   # basic plot
   output$a_color_theme_indv_insig <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'and', monitor_logfc_threshold()$insig)))
+    label = isolate(HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'and', monitor_logfc_threshold()$insig))))
     colourpicker::colourInput('a_color_indv_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -107,14 +107,14 @@ shinyServer(function(input, output, session){
   # intgrated plot, snp
   output$a_color_snp_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_snp_sig', label, value = 'blue', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, snp
   output$a_color_snp_insig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_snp_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -144,14 +144,14 @@ shinyServer(function(input, output, session){
   # intgrated plot, genes upload
   output$a_color_genes_upload_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_genes_upload_sig', label, value = '#A52A2A', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, genes upload
   output$a_color_genes_upload_insig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_genes_upload_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -187,14 +187,14 @@ shinyServer(function(input, output, session){
   # intgrated plot, inweb
   output$a_color_inweb_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_inweb_sig', label, value = 'yellow', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, inweb
   output$a_color_inweb_insig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_inweb_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -212,14 +212,14 @@ shinyServer(function(input, output, session){
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_sig', label, value = 'cyan', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_insig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -238,14 +238,14 @@ shinyServer(function(input, output, session){
   # intgrated plot, gnomad
   output$a_color_gnomad_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gnomad_sig', label, value = '#FF00FF', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gnomad
   output$a_color_gnomad_insig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    label = HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', '))
+    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_gnomad_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -318,9 +318,13 @@ shinyServer(function(input, output, session){
     return(rs)
   })
   
+  output$a_replicate_summar_text_ui <- renderUI({
+    req(replicate_summary_table())
+    h5(HTML(bold('Replicate corrlation(s):')))
+  })
+  
   # render replicate summary
   output$a_replicate_summary_table_ui <- renderTable({
-    #req(replicate_summary_table())
     replicate_summary_table()
   })
   
@@ -948,9 +952,9 @@ shinyServer(function(input, output, session){
     req(a_pulldown_significant(), a_inweb_calc_hyper(), input$a_bait_rep)
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     hyper = a_inweb_calc_hyper()
-    A <- paste0("A = pull down subsetted by ", thresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
     B <- paste0("B = ", bold(input$a_bait_rep)," InWeb interactors", " &#40;", bold(hyper$statistics$sample_count), "&#41;")
-    total <- paste0("Total population = pull down &cap; InWeb &#40;", bold(hyper$statistics$population_count), "&#41;")
+    total <- paste0("Total population = proteomic data &cap; InWeb &#40;", bold(hyper$statistics$population_count), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1031,9 +1035,9 @@ shinyServer(function(input, output, session){
     pulldown = a_pulldown_significant()
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     diagram = a_genes_upload_venn()
-    A <- paste0("A = Pull down subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
     B <- paste0("B = Genes in ",italics(selected)," &#40;", bold(length(unique(diagram[[2]]))), "&#41;")
-    total <- paste0("Total population = pull down &#40;", bold(nrow(pulldown)), "&#41;")
+    total <- paste0("Total population = proteomic data &#40;", bold(nrow(pulldown)), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1107,7 +1111,7 @@ shinyServer(function(input, output, session){
     loci = gsub('all','all loci',loci)
     loci = gsub('multi','multi-gene loci',loci)
     loci = gsub('single','single-gene loci',loci)
-    A <- paste0("A = pull down subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
     B <- paste0("B = ",bold(selected)," genes mapped from ", loci,"&#40;", bold(length(unique(diagram[[2]]))), "&#41;")
     total <- paste0("Total population =", " &#40;", bold(nrow(pulldown)), "&#41;")
     return(list(A=A, B=B, total=total))
@@ -1153,9 +1157,9 @@ shinyServer(function(input, output, session){
     pulldown = a_pulldown_significant()
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     diagram = a_gwas_catalogue_mapping_venn()
-    A <- paste0("A = pulldown subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
     B <- paste0("B = Genes mapped from GWAS catalog &#40;", bold(length(unique(diagram[[2]]))), "&#41;")
-    total <- paste0("Total population = pulldown", " &#40;", bold(nrow(pulldown)), "&#41;")
+    total <- paste0("Total population = proteomic data", " &#40;", bold(nrow(pulldown)), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1195,9 +1199,9 @@ shinyServer(function(input, output, session){
     req(a_pulldown_significant(), a_gnomad_calc_hyper())
     tresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     hyper = a_gnomad_calc_hyper()
-    A <- paste0("A = pull down subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
     B <- paste0("B = gnomAD genes with pLI ≥", bold(input$a_slide_gnomad_pli_threshold)," &#40;", bold(hyper$statistics$sample_count), "&#41;")
-    total <- paste0("Total population = pull down &cap; gnomAD &#40;", bold(hyper$statistics$population_count), "&#41;")
+    total <- paste0("Total population = proteomic data &cap; gnomAD &#40;", bold(hyper$statistics$population_count), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -2171,7 +2175,7 @@ shinyServer(function(input, output, session){
    
    # generate text for displaying
    result = lapply(names(overlap), function(f){
-     paste0(f,' = pull down subsetted by ', thresholds[[f]], " &#40;", bold(length(overlap[[f]])), "&#41;")
+     paste0(f,' = proteomic data subsetted by ', thresholds[[f]], " &#40;", bold(length(overlap[[f]])), "&#41;")
    })
    
    names(result) <- names(overlap)
