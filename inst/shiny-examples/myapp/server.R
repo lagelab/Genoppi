@@ -2119,8 +2119,6 @@ shinyServer(function(input, output, session){
    mapping$label = F
    return(mapping)
    
-   
-   
  })
  
  b_file_2_vp_gg <- reactive({
@@ -2251,13 +2249,32 @@ shinyServer(function(input, output, session){
    if (length(diagram) > 1) {
      color_dict = list(f1='red',f2='yellow',f3='blue')
      colors = unlist(lapply(names(diagram), function(x) color_dict[[x]]))
-     v = draw_genoppi_venn(b_overlap(), color = colors, main = 'File comparison')
+     names(diagram) = gsub('f', 'file ', names(diagram))
+     v = draw_genoppi_venn(diagram, color = colors, main = '')
      grid::grid.newpage()
      grid::grid.draw(v)
    } else return(NULL)
 
  })
  
+ output$b_file_comparison_venn_explanations_ui <- renderUI({
+   
+   req(b_mapping())
+   input = unique(names(b_mapping()))
+   
+   text = list(
+     f1 = paste(bold('f1:'), 'enriched proteins unique to file1 (red)'),
+     f2 = paste(bold('f2:'), 'enriched proteins unique to file2 (yellow)'),
+     f3 = paste(bold('f3:'), 'enriched proteins unique to file3 (blue)'),
+     f12 = paste(bold('f12:'), 'enriched proteins identified in file1 and file2 (orange)'),
+     f13 = paste(bold('f13:'), 'enriched proteins identified in file1 and file3 (purple)'),
+     f23 = paste(bold('f23:'), 'enriched proteins identified in file2 and file3 (green)'),
+     f123 = paste(bold('f123:'), 'enriched proteins identified in file1, file2, and file3 (white)')
+   )
+   
+  return(HTML(paste(text[names(text) %in% input], collapse = "<br/>")))
+   
+ })
  
  # text for venn diagram
  b_file_comparison_venn_verbatim <- reactive({
@@ -2270,7 +2287,7 @@ shinyServer(function(input, output, session){
    
    # generate text for displaying
    result = lapply(names(overlap), function(f){
-     paste0(f,' = proteomic data subsetted by ', thresholds[[f]], " &#40;", bold(length(overlap[[f]])), "&#41;")
+     paste0(gsub('f', 'file ', f),' = proteomic data subsetted by ', thresholds[[f]], " &#40;", bold(length(overlap[[f]])), "&#41;")
    })
    
    names(result) <- names(overlap)

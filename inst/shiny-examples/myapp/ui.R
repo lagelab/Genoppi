@@ -401,7 +401,7 @@ body <- dashboardBody(
                                  column(6,
                                    box(
                                      title = 'Venn diagram', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                     column(2, ''),
+                                     column(1, ''),
                                      column(8,
                                             fluidRow(
                                               plotOutput('b_file_comparison_venn_ui', width = "280px", height = "280px")
@@ -410,8 +410,17 @@ body <- dashboardBody(
                                               uiOutput('b_file_comparison_venn_verbatim_ui')
                                             )
                                      ),
-                                     column(2, '')
+                                     column(3, '')
+                                   ),
+                                   box(
+                                     title = 'Venn diagram explanations', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                     column(12,
+                                            fluidRow(
+                                              uiOutput('b_file_comparison_venn_explanations_ui')
+                                            )
+                                     )
                                    )
+                                   
                                  ),
                                  column(6,
                                         box(
