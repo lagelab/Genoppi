@@ -18,6 +18,20 @@ test_that('various misc functions',{
   # colors
   expect_equal(color_gradient(c(1,2,3,4,5,6),colors = c('red','green'),colsteps = 6),c("#FF0000","#CC3300","#996600","#659900","#32CC00","#00FF00"))
   expect_equal(head(color_distinct()), c("#7FC97F", "#BEAED4","#FDC086","#FFFF99","#386CB0","#F0027F"))
+  
 
+})
+
+test_that('assign_color',{
+  
+  # standard use
+  result = assign_color(data.frame(x=c('a','b','c','d','a','a')), col = 'x')
+  expect_equal(result$color, c("#7FC97F", "#7FC97F", "#7FC97F", "#BEAED4", "#FDC086", "#FFFF99"))
+  
+  #result = assign_color(data.frame(x=c('a','b','c','d','a','a')), col = 'x', order_by_freq = F)
+  #expect_equal(result$color, c("#7FC97F", "#7FC97F", "#7FC97F", "#BEAED4", "#FDC086", "#FFFF99"))
   
 })
+
+
+
