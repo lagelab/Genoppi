@@ -1,8 +1,8 @@
 
 <!-- badges: start -->
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/lagelab/Genoppi?branch=master&svg=true)](https://ci.appveyor.com/project/lagelab/genoppi-j8jha)
 [![Build Status](https://travis-ci.com/lagelab/Genoppi.svg?branch=master)](https://travis-ci.com/lagelab/Genoppi)
 [![Codecov test coverage](https://codecov.io/gh/lagelab/Genoppi/branch/master/graph/badge.svg)](https://codecov.io/gh/lagelab/Genoppi?branch=master)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/lagelab/Genoppi?branch=master&svg=true)](https://ci.appveyor.com/project/lagelab/Genoppi)
 <!-- badges: end -->
 
 
