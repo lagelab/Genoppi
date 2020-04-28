@@ -281,23 +281,30 @@ body <- dashboardBody(
     tabItem(tabName = "widgets",
             shinyjs::useShinyjs(),
             tabsetPanel(id = "comparison",
-                        tabPanel("Protein Comparison", 
+                        tabPanel("Basic plotting", 
                                  br(),
                                  column(4,
                                         box(
-                                          title = 'Protein Comparison I', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                          title = 'Settings for file 1', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
-                                                   uiOutput("b_file_1_significance_type_ui"),
-                                                   uiOutput("b_file_1_FDR_thresh"),
-                                                   uiOutput("b_file_1_PVal_thresh"),
-                                                   uiOutput('b_file_1_logfc_direction_ui'),
-                                                   uiOutput("b_file_1_logFC_thresh")
+                                                   column(6, 
+                                                          uiOutput("b_file_1_significance_type_ui"),
+                                                          uiOutput("b_file_1_FDR_thresh"),
+                                                          uiOutput("b_file_1_PVal_thresh")
+                                                   ),
+                                                   column(6,
+                                                          uiOutput('b_file_1_logfc_direction_ui'),
+                                                          uiOutput("b_file_1_logFC_thresh")
+                                                   )
+                                                 ),
+                                                 fluidRow(
+                                                   uiOutput('b_file_1_select_scatterplot_ui')
                                                  )
-                                                )
+                                          )
                                         ),
                                         box(
-                                          title = 'Volcano', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = 'Volcano plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_1_volcano'),
@@ -305,7 +312,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_1_scatter'),
@@ -315,19 +322,26 @@ body <- dashboardBody(
                                  ),
                                  column(4,
                                         box(
-                                          title = 'Protein Comparison II', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                          title = 'Settings for file 2', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
-                                                   uiOutput("b_file_2_significance_type_ui"),
-                                                   uiOutput("b_file_2_FDR_thresh"),
-                                                   uiOutput("b_file_2_PVal_thresh"),
-                                                   uiOutput('b_file_2_logfc_direction_ui'),
-                                                   uiOutput("b_file_2_logFC_thresh")
+                                                   column(6, 
+                                                          uiOutput("b_file_2_significance_type_ui"),
+                                                          uiOutput("b_file_2_FDR_thresh"),
+                                                          uiOutput("b_file_2_PVal_thresh")
+                                                   ),
+                                                   column(6,
+                                                          uiOutput('b_file_2_logfc_direction_ui'),
+                                                          uiOutput("b_file_2_logFC_thresh")
+                                                   )
+                                                 ),
+                                                 fluidRow(
+                                                   uiOutput('b_file_2_select_scatterplot_ui')
                                                  )
                                           )
                                         ),
                                         box(
-                                          title = 'Volcano', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = 'Volcano plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_2_volcano'),
@@ -345,19 +359,26 @@ body <- dashboardBody(
                                  ),
                                  column(4,
                                         box(
-                                          title = 'Protein Comparison III', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                          title = 'Settings for file 3', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
-                                                   uiOutput("b_file_3_significance_type_ui"),
-                                                   uiOutput("b_file_3_FDR_thresh"),
-                                                   uiOutput("b_file_3_PVal_thresh"),
-                                                   uiOutput('b_file_3_logfc_direction_ui'),
-                                                   uiOutput("b_file_3_logFC_thresh")
+                                                   column(6, 
+                                                          uiOutput("b_file_3_significance_type_ui"),
+                                                          uiOutput("b_file_3_FDR_thresh"),
+                                                          uiOutput("b_file_3_PVal_thresh")
+                                                          ),
+                                                   column(6,
+                                                          uiOutput('b_file_3_logfc_direction_ui'),
+                                                          uiOutput("b_file_3_logFC_thresh")
+                                                          )
+                                                 ),
+                                                 fluidRow(
+                                                   uiOutput('b_file_3_select_scatterplot_ui')
                                                  )
                                                 )
                                         ),
                                         box(
-                                          title = 'Volcano', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = 'Volcano plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_3_volcano'),

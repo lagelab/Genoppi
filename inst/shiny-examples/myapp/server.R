@@ -1645,15 +1645,15 @@ shinyServer(function(input, output, session){
   ## handle file upload
   
   output$b_file_1_ui <- renderUI({
-    fileInput('b_file_1', 'Upload user input file', accept = files_accepted)
+    fileInput('b_file_1', 'Upload file 1', accept = files_accepted)
   })
   
   output$b_file_2_ui <- renderUI({
-    fileInput('b_file_2', 'Upload user input file', accept = files_accepted)
+    fileInput('b_file_2', 'Upload file 2', accept = files_accepted)
   })
   
   output$b_file_3_ui <- renderUI({
-    fileInput('b_file_3', 'Upload user input file', accept = files_accepted)
+    fileInput('b_file_3', 'Upload file 3', accept = files_accepted)
   })
   
  ## handle file parsing, i.e. ensure that the files are correctly mapped
@@ -1687,6 +1687,87 @@ shinyServer(function(input, output, session){
    gene_in <- input$b_goi_search_rep
    req(gene_in)
    toupper(gene_in)
+ })
+ 
+ ## get the available replicate in each file
+ 
+ # Search for replicates in data
+ b_file_1_available_replicates <- reactive({
+   req(b_file_1_parsed())
+   d <- b_file_1_parsed()
+   reps = sum(grepl('^rep[0-9]+$',colnames(d)))
+   if (reps > 2){
+     enum = enumerate_replicate_combinations(reps)
+     enum = apply(enum, 2, function(x) paste0('rep', x))
+     return(paste0(enum[,1],'.',enum[,2]))
+   } else {return('rep1.rep2')}
+ })
+ 
+ # render select scatter plot
+ output$b_file_1_select_scatterplot_ui <- renderUI({
+   
+   rep_input = b_file_1_available_replicates()
+   reps_verbatim = gsub('rep','replicate ', rep_input)
+   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
+   reps = lapply(rep_input, function(x){x})
+   names(reps) = reps_verbatim
+   selectInput('b_file_1_select_scatterplot',
+               'Replicates to compare in scatter plot', 
+               choices = reps)
+ })
+ 
+ ##
+ 
+ # Search for replicates in data
+ b_file_2_available_replicates <- reactive({
+   req(b_file_2_parsed())
+   d <- b_file_2_parsed()
+   reps = sum(grepl('^rep[0-9]+$',colnames(d)))
+   if (reps > 2){
+     enum = enumerate_replicate_combinations(reps)
+     enum = apply(enum, 2, function(x) paste0('rep', x))
+     return(paste0(enum[,1],'.',enum[,2]))
+   } else {return('rep1.rep2')}
+ })
+ 
+ # render select scatter plot
+ output$b_file_2_select_scatterplot_ui <- renderUI({
+   
+   rep_input = b_file_2_available_replicates()
+   reps_verbatim = gsub('rep','replicate ', rep_input)
+   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
+   reps = lapply(rep_input, function(x){x})
+   names(reps) = reps_verbatim
+   selectInput('b_file_2_select_scatterplot',
+               'Replicates to compare in scatter plot', 
+               choices = reps)
+ })
+ 
+ ##
+ 
+ # Search for replicates in data
+ b_file_3_available_replicates <- reactive({
+   req(b_file_3_parsed())
+   d <- b_file_3_parsed()
+   reps = sum(grepl('^rep[0-9]+$',colnames(d)))
+   if (reps > 2){
+     enum = enumerate_replicate_combinations(reps)
+     enum = apply(enum, 2, function(x) paste0('rep', x))
+     return(paste0(enum[,1],'.',enum[,2]))
+   } else {return('rep1.rep2')}
+ })
+ 
+ # render select scatter plot
+ output$b_file_3_select_scatterplot_ui <- renderUI({
+   
+   rep_input = b_file_3_available_replicates()
+   reps_verbatim = gsub('rep','replicate ', rep_input)
+   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
+   reps = lapply(rep_input, function(x){x})
+   names(reps) = reps_verbatim
+   selectInput('b_file_3_select_scatterplot',
+               'Replicates to compare in scatter plot', 
+               choices = reps)
  })
  
  # get significance thresholds for each file
@@ -1984,9 +2065,10 @@ shinyServer(function(input, output, session){
  
  b_file_1_sp_gg <- reactive({
    
-   req(b_file_1_significant())
+   req(b_file_1_significant(), input$b_file_1_select_scatterplot)
    d <- b_file_1_significant()
-   p <- plot_scatter_basic(d)
+   p <- plot_scatter_basic_all(d)[[input$b_file_1_select_scatterplot]]$ggplot
+   p$r <- p$correlation
    p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
    return(p)
    
@@ -1995,6 +2077,8 @@ shinyServer(function(input, output, session){
  b_file_1_vp <- reactive({
    
    p <- b_file_1_vp_gg()
+   p$overlay = p$overlay[order(p$overlay$dataset),]
+   p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
    if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
@@ -2035,6 +2119,8 @@ shinyServer(function(input, output, session){
    mapping$label = F
    return(mapping)
    
+   
+   
  })
  
  b_file_2_vp_gg <- reactive({
@@ -2049,9 +2135,10 @@ shinyServer(function(input, output, session){
  
  b_file_2_sp_gg <- reactive({
    
-   req(b_file_2_significant())
+   req(b_file_2_significant(), input$b_file_2_select_scatterplot)
    d <- b_file_2_significant()
-   p <- plot_scatter_basic(d)
+   p <- plot_scatter_basic_all(d)[[input$b_file_2_select_scatterplot]]$ggplot
+   p$r <- p$correlation
    p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
    return(p)
    
@@ -2060,6 +2147,8 @@ shinyServer(function(input, output, session){
  b_file_2_vp <- reactive({
    
    p <- b_file_2_vp_gg()
+   p$overlay = p$overlay[order(p$overlay$dataset),]
+   p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
    if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
@@ -2089,9 +2178,6 @@ shinyServer(function(input, output, session){
    b_file_2_sp()
  })
  
- 
- 
- # venn mapping for file 1
  b_file_3_mapping <- reactive({
    
    d = b_file_3_significant()
@@ -2116,9 +2202,10 @@ shinyServer(function(input, output, session){
  
  b_file_3_sp_gg <- reactive({
    
-   req(b_file_3_significant())
+   req(b_file_3_significant(), input$b_file_3_select_scatterplot)
    d <- b_file_3_significant()
-   p <- plot_scatter_basic(d)
+   p <- plot_scatter_basic_all(d)[[input$b_file_3_select_scatterplot]]$ggplot
+   p$r <- p$correlation
    p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
    return(p)
    
@@ -2127,6 +2214,8 @@ shinyServer(function(input, output, session){
  b_file_3_vp <- reactive({
    
    p <- b_file_3_vp_gg()
+   p$overlay = p$overlay[order(p$overlay$dataset),]
+   p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
    if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
    p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
