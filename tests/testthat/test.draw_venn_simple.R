@@ -18,7 +18,6 @@ test_that('venn diagram with double comparison',{
 })
 
 
-
 test_that('venn diagram with triple comparison',{
   
   # setup data

@@ -22,7 +22,6 @@ Other misc:
 \code{\link{color_gradient}()},
 \code{\link{enumerate_replicate_combinations}()},
 \code{\link{italics}()},
-\code{\link{null_omit}()},
-\code{\link{subscript}()}
+\code{\link{null_omit}()}
 }
 \concept{misc}

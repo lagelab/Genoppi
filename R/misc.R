@@ -112,10 +112,3 @@ bold <- function(x){paste('<b>',x,'</b>', sep='')}
 #' @family misc
 #' @export
 italics <- function(x){paste('<i>',x,'</i>', sep='')}
-
-#' @title subscript
-#' @description make text html subscript
-#' @param x string
-#' @family misc
-#' @export
-subscript <- function(x){paste('<sub>',x,'</sub>', sep='')}
