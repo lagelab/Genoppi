@@ -31,7 +31,7 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
   # plot singlebasic scatter plot
   correlation = stats::cor(df[,repA], df[,repB])
   p = ggplot(df, mapping=aes_(x=as.name(repA), y=as.name(repB), fill = as.name("group"), shape = as.name('group'))) + 
-    geom_point(alpha=1, size=size_point, shape = 21, stroke = 0, color = 'black') +
+    geom_point(alpha=1, size=size_point, stroke = 0, color = 'black') +
     geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2) +
     labs(title = paste("r =",format(correlation,digits=3))) + 
     xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~log[2]~'(Fold Change)')) +
@@ -78,9 +78,4 @@ plot_scatter_basic_all <- function(df, size_point = 3, col_significant = "#41AB5
   names(plts) <- unlist(lapply(plts, function(x) x$name))
   return(plts)
 }
-
-
-
-
-
 
