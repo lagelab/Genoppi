@@ -69,7 +69,6 @@ Collate:
     'make_interactive.R'
     'map_gene_id.R'
     'misc.R'
-    'modify_ggplot_from_overlay.R'
     'parse_uploaded_file.R'
     'plot_overlay.R'
     'plot_pathways.R'

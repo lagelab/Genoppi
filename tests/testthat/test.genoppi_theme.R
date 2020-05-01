@@ -22,4 +22,5 @@ test_that('basic test to see if function works',{
   bait_volcano <- plot_overlay(basic_volcano,as.bait('BCL2')) + theme_genoppi_bar()
   bait_volcano <- plot_overlay(basic_volcano,as.bait('BCL2')) + theme_genoppi_bar(rotate=F)
   
+  
 })

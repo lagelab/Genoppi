@@ -31,6 +31,13 @@ test_that('colors by dataset and inweb',{
   # check errors
   expect_error(set_names_by_dataset(data, overlay))
   expect_error(set_names_by_dataset(data, marker = 'color', by = 2))
+  expect_error(set_names_by_dataset(data.frame()))
+  expect_error(set_names_by_dataset(list(data.frame(A=c(1,2,3),B=c(1,2,3))), marker = 'C'))
+  expect_error(set_names_by_dataset(list(data.frame(A=c(1,2,3),B=c(1,2,3))), by = 'C'))
+  
+  # check uniqueness error
+  overlay$group = 'same group'
+  expect_error(set_names_by_dataset(list(overlay)))
   
 })
 

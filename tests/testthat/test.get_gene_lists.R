@@ -26,3 +26,15 @@ test_that('get_gene_lists can return correct data.frame',{
   
 })
 
+test_that('gene list without listName column',{
+  
+  # input file with gene column
+  result <- get_gene_lists('data/test.ALSgenes.simple.txt',sep="\t")
+  expect_equal(colnames(result$data), c("gene", "significant", "listName"))
+  
+})
+
+
+
+
+
