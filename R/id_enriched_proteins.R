@@ -10,7 +10,9 @@
 
 id_enriched_proteins <- function(df, logfc_dir="positive", logfc_cutoff=NULL, p_cutoff=NULL, fdr_cutoff=0.1){
 
-  # input check 
+  # input check
+  stopifnot(is.data.frame(df))
+  if (!is.null(logfc_dir) & is.null(df$logFC)) stop('logfc_dir specified, but logFC not in data!')
   if (!is.null(logfc_cutoff) & is.null(df$logFC)) stop('logFC_cutoff specified, but logFC not in data!')
   if (!is.null(p_cutoff) & is.null(df$pvalue)) stop('p_cutoff specified, but pvalue not in data!')
   if (!is.null(fdr_cutoff) & is.null(df$FDR)) stop('fdr_cutoff specified, but FDR not in data!')

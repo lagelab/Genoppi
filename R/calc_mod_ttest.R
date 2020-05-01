@@ -1,8 +1,9 @@
-#' @title Perform moderated t-test
-#' @description Use moderated t-test implemented in limma package to calculate logFC, pvalue, and FDR.
+#' @title Perform one-sample moderated t-test
+#' @description Use one-sample moderated t-test implemented in limma package to calculate protein logFC, pvalue, and FDR.
 #' See \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
-#' @param df data.frame containing gene and rep (replicate logFC)  columns
-#' @return data.frame containing containing df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR
+#' @param df data.frame containing gene and rep[0-9] (replicate logFC) columns.
+#' @param iter integer indicating maximum number of iterations to perform in limma::limFit().
+#' @return data.frame containing input df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR.
 #' @export
 #' @examples
 #' \dontrun{
@@ -11,7 +12,7 @@
 #' }
 #'
 
-calc_mod_ttest <- function(df){
+calc_mod_ttest <- function(df, iter=1000){
   
   # check input
   stopifnot(is.data.frame(df))
@@ -20,7 +21,7 @@ calc_mod_ttest <- function(df){
   columns = grepl('rep[0-9]',colnames(df))
   
   # moderated t-test
-  myfit <- limma::lmFit(df[,columns], method="robust")
+  myfit <- limma::lmFit(df[,columns], method="robust", maxit=iter)
   myfit <- limma::eBayes(myfit)
   modtest <- limma::topTable(myfit, number=nrow(myfit), sort.by='none')
   colnames(modtest)[4:5] <- c("pvalue","FDR")

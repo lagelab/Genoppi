@@ -75,7 +75,7 @@ example_data %>%
 
 # interactive volcano plot
 make_interactive(bait_volcano) %>%
-  add_layout_html_axes_volcano()
+  add_plotly_layout_volcano()
 
 
 ### ------------------------------------------------------------------
@@ -98,7 +98,7 @@ venn_list <- list(Enriched=overlap_results$genes$InWeb$success_genes,
 venn_diagram <- draw_genoppi_venn(venn_list)
 
 grid::grid.newpage()
-grid::grid.draw(venn_diagram) #
+grid::grid.draw(venn_diagram)
 
 ```
 
