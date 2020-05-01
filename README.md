@@ -76,7 +76,7 @@ example_data %>%
 
 # interactive volcano plot
 make_interactive(bait_volcano) %>%
-  add_layout_html_axes_volcano()
+  add_plotly_layout_volcano()
 
 
 ### ------------------------------------------------------------------
@@ -91,11 +91,11 @@ plot_overlay(bait_volcano,inweb_list)
 
 # assess overlap b/w enriched proteins and InWeb interactors
 overlap_results <- calc_hyper(sig_df, inweb_df,
-  data.frame(listName="InWeb",intersectN=T), bait="BCL2")
+                              data.frame(listName="InWeb",intersectN=T), bait="BCL2")
 
 # Venn diagram of overlap
 venn_list <- list(Enriched=overlap_results$genes$InWeb$success_genes,
-  InWeb=overlap_results$genes$InWeb$sample_genes)
+                  InWeb=overlap_results$genes$InWeb$sample_genes)
 venn_diagram <- draw_genoppi_venn(venn_list)
 
 grid::grid.newpage()
