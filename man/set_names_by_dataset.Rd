@@ -4,7 +4,7 @@
 \alias{set_names_by_dataset}
 \title{set_names_by_dataset}
 \usage{
-set_names_by_dataset(lst, marker = "color", by = "dataset")
+set_names_by_dataset(lst, marker = "color", by = "group")
 }
 \arguments{
 \item{lst}{a data.frame or a list of data.frames that all contain the arguments

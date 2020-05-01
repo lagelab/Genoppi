@@ -2,7 +2,7 @@ context('plot_overlay')
 
 # for comparing images
 #source('functions/compare_image.R')
-func = 'plot_overlay'
+#func = 'plot_overlay'
 
 # read in test data
 df <- read_input("data/test.data.txt", sep="\t")$data
@@ -45,14 +45,18 @@ test_that('inweb and gnomad overlay',{
   # setup basic test
   id = 'B1'
   df <- id_enriched_proteins(df, fdr_cutoff=0.1)
-  p = plot_volcano_basic(df) + ggtitle('BCL2 vs IgG in GPiNs') 
-  p1 = plot_overlay(p, as.bait('BCL2'))
+  p = plot_volcano_basic(df)
+
+  # overlay with square bait
+  bait = as.bait('BCL2')
+  bait$bait$shape = 22
+  p1 = plot_overlay(p, bait)
   
-  # overlay with inweb
+  # overlay with diamond inweb
   inweb = get_inweb_list('BCL2')
   inweb = list(inweb=inweb[inweb$significant, ])
-  p2 = suppressWarnings(plot_overlay(p1, inweb, label = F))
-  #expect_true(compare_with_reference(p2, func, id))
+  inweb$inweb$shape = 23
+  p2 = plot_overlay(p1, inweb, label = F)
   
   # overlay with gnomad
   id = 'B2'
@@ -62,6 +66,25 @@ test_that('inweb and gnomad overlay',{
   #expect_true(compare_with_reference(p3, func, id))
   
 })
+
+test_that('ggplot is built correctlty',{
+  
+  id = 'C1'
+  df = id_enriched_proteins(df)
+  p = plot_volcano_basic(df)
+
+  # check for both manuel shape and fill
+  expect_equal(unlist(lapply(p$scales$scales, function(x) x[['aesthetics']])), c('fill','shape'))
+  
+  # build plot
+  g = ggplot_build(p)  
+  
+  # check plot
+  expect_equal(unique(g$data[[1]]$fill), c("#41AB5D","grey"))
+  expect_equal(length(g$data), 3) # 3 objects: 2 lines and 1 scatter
+  
+})
+
 
 test_that('invalid columns in overlay gives warning and errrs',{
   

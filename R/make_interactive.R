@@ -15,8 +15,8 @@ make_interactive <- function(p, source = NULL, legend = T, sig_text = ''){
   
   # organize data and add accesion number column (temporary fix)
   overlay = p$overlay
-  data = to_overlay_data(append_to_column(p$data))
-  if (!is.null(overlay)) overlay = append_to_column(overlay, sig_text = sig_text)
+  data = to_overlay_data(p$data) #to_overlay_data(append_to_column(p$data))
+  #if (!is.null(overlay)) overlay = append_to_column(overlay, sig_text = sig_text)
   if (!is.null(overlay)) if (is.null(overlay$accession_number) & nrow(overlay) > 0) overlay$accession_number <- NA
   if (is.null(data$accession_number) & nrow(data) > 0) data$accession_number <- NA
   
@@ -31,7 +31,6 @@ make_interactive <- function(p, source = NULL, legend = T, sig_text = ''){
   p1 = plot_ly(source = source, sizes = sizes) %>%  # sizes=c(7,29)
     add_genoppi_trace(data[data$gene %nin% overlay$gene,], params)
 
-  
   # add overlay
   if (!is.null(overlay)){
     if (nrow(overlay) > 0 ){

@@ -4,7 +4,13 @@
 \alias{append_to_column}
 \title{Append a string to a column}
 \usage{
-append_to_column(data, sig_text = "(enriched)", insig_text = "(not enriched)")
+append_to_column(
+  data,
+  sig_text = "(enriched)",
+  insig_text = "(not enriched)",
+  from = "dataset",
+  to = "dataset"
+)
 }
 \arguments{
 \item{data}{a data or overlay data.frame with \code{dataset} as column.}
@@ -12,6 +18,10 @@ append_to_column(data, sig_text = "(enriched)", insig_text = "(not enriched)")
 \item{sig_text}{what should be the significance text?}
 
 \item{insig_text}{what should be the insignificance text?}
+
+\item{from}{what column should be appended?}
+
+\item{to}{where should be appended column be inserted?}
 }
 \description{
 Appends a dynamic string to a column condition on whether

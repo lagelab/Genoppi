@@ -9,7 +9,7 @@
 #' @family interactivity
 #' @export
 #' 
-set_names_by_dataset <- function(lst, marker = 'color', by = 'dataset'){
+set_names_by_dataset <- function(lst, marker = 'color', by = 'group'){
   
   # accept both lists and data.frames
   if (inherits(lst, "data.frame")) lst = list(lst)
@@ -31,10 +31,10 @@ set_names_by_dataset <- function(lst, marker = 'color', by = 'dataset'){
 
   
   # check uniqueness
-  if (lun(tabl$dataset) != length(tabl$dataset)) stop(paste0('Multiple non-unique column "',marker,'" that correspond to different "',by,
+  if (lun(tabl[[by]]) != length(tabl[[by]])) stop(paste0('Multiple non-unique column "',marker,'" that correspond to different "',by,
                                                              '". The mapping is ambigious and can not be constructed.'))
   # set colors
-  global_colors <- stats::setNames(tabl[[marker]], tabl$dataset)
+  global_colors <- stats::setNames(tabl[[marker]], tabl[[by]])
   
   
   return(global_colors)

@@ -10,7 +10,8 @@ plot_scatter_basic(
   repB = "rep2",
   size_point = 3,
   col_significant = "#41AB5D",
-  col_other = "grey"
+  col_other = "grey",
+  sig_text = "(enriched)"
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ plot_scatter_basic(
 \item{col_significant}{color for significant protein interactors.}
 
 \item{col_other}{color for other protein interactors.}
+
+\item{sig_text}{string. text for significant interactor to be displayed in legend.}
 }
 \value{
 a gg scatter plot.

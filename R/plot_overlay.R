@@ -38,20 +38,34 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   # check for allowed input
   if (!inherits(reference, "list")) stop('argumnt reference must be a named list.')
   
+  
   # convert reference to a single data.frame and omit non informative columns
   overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x)))
-  plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size')]
+  plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group')]
   overlay =  merge(plot.data, validate_reference(overlay), by = match)
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
+  overlay = append_to_column(overlay, to = 'group')
+  
+  # reset color scale using the original plot data, the prevvious overlay and the current overlay
+  global_colors = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group')
+  global_shapes = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group', marker = 'shape')
+  p$scales$scales[[1]] <- scale_fill_manual(values = global_colors)
+  p$scales$scales[[2]] <- scale_shape_manual(values = global_shapes)
   
   # add the overlay to the ggplot
   p1 = p + ggplot2::geom_point(data = overlay, 
-                 mapping = aes_string(x=p$mapping$x, y=p$mapping$y),
-                 fill = overlay$color,
+                 mapping = aes_string(x=p$mapping$x, y=p$mapping$y, fill = p$mapping$fill, shape = p$mapping$shape),
+                 #shape = overlay$shape,
+                 #color = overlay$color,
                  size = overlay$gg.size,
-                 shape = overlay$shape,
+                 #shape = overlay$shape,
                  stroke = 0.75,
-                 alpha = overlay$opacity)
+                 alpha = overlay$opacity)  
+  
+  
+  # add guides for maintaining legend size
+  p1 = p1 + guides(fill=guide_legend(override.aes=list(size = 3))) 
+  
   
   # annotate plot
   p1 = p1 + ggrepel::geom_text_repel(collapse_labels(overlay[unlist(ifelse(is.null(label), list(overlay$label), list(label))),]), 

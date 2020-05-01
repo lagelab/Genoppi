@@ -8,6 +8,7 @@ plot_volcano_basic(
   df,
   col_significant = "#41AB5D",
   col_other = "grey",
+  sig_text = "(enriched)",
   gg.size = 3
 )
 }
@@ -17,6 +18,8 @@ plot_volcano_basic(
 \item{col_significant}{the color of significant proteins/rows.}
 
 \item{col_other}{the color of non-significnt proteins/rows.}
+
+\item{sig_text}{string. text for significant interactor to be displayed in legend.}
 
 \item{gg.size}{the size of the points.}
 }

@@ -3,22 +3,22 @@
 #' @param pulldown pulldown data
 #' @param database see get_pathways
 #' @keywords internal
-#' @note this is a wark in progress.
-#' 
+#' @note this is a work in progress.
 #' 
 
-as.pathway <- function(data, database){
+
+as.geneset <- function(data, database){
   
   # check inpug
   stopifnot('gene' %in% colnames(data))
   
   # get pathways
-  get_pathways(database, data$gene)
+  pathways = get_pathways(database, data$gene)
   
   # merge pulldown, pathways and colors
   frequencies <- assign_freq(pathways, 'pathway')
   colors <- assign_color(pathways, 'pathway')
-  overlay = merge(frequencies, pulldown)
+  overlay = merge(frequencies, data)
   overlay = merge(colors, overlay)
   
   # parameters for plotting
@@ -40,12 +40,9 @@ as.pathway <- function(data, database){
   return(list(geneset=overlay))
 }
 
-
-#data("example_data")
-
-#df = example_data %>% calc_mod_ttest() %>% id_enriched_proteins()
-
-#plot_volcano_basic(df) %>% plot_overlay(as.bait('BCL2')) %>% make_interactive()
+# data("example_data")
+# df = example_data %>% calc_mod_ttest() %>% id_enriched_proteins()
+# plot_volcano_basic(df) %>% plot_overlay(as.geneset(df, 'hgnc')) %>% make_interactive()
 
 
 

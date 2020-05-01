@@ -4,42 +4,60 @@
 #' indicate the volcano color scheme and whether to draw names of specific proteins.
 #' @param df a data.frame with at least columns gene, logFC, pvalue and significant.
 #' @param col_significant the color of significant proteins/rows.
+#' @param sig_text string. text for significant interactor to be displayed in legend.
 #' @param col_other the color of non-significnt proteins/rows.
 #' @param gg.size the size of the points. 
 #' @export
 #' @importFrom ggplot2 ggplot geom_point geom_hline geom_vline xlab ylab theme aes_ aes aes_string geom_text
 #' 
 
-
-
-
-plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', gg.size = 3){
+plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(enriched)', gg.size = 3){
   
   # check input
   stop_invalid_columns(df,'plot_volcano_basic',c('gene','logFC', 'pvalue', 'significant'))
   
-  # set default parameters
+  # default parameters
   df$color <- ifelse(df$significant, col_significant, col_other)
   if (is.null(df$dataset)) df$dataset = 'pulldown'
   if (is.null(df$size)) df$size = 7
+  if (is.null(df$shape)) df$shape = 21
+  
+  # discriminate between significant and non-significant 
+  df = append_to_column(df, sig_text = sig_text, to = 'group')
+  global_colors = set_names_by_dataset(list(df), by = 'group')
+  global_shapes = set_names_by_dataset(list(df), by = 'group', marker = 'shape')
   
   # setup plotting  
-  p <- ggplot(df, aes(x = logFC, y = -log10(pvalue))) +
-    geom_point(alpha=1, size=gg.size, color=df$color, stroke = 0.6) +   
+  p <- ggplot(df, aes(x = logFC, y = -log10(pvalue), fill = group, shape = group)) +
+    geom_point(alpha=1, size=gg.size, stroke = 0, color = 'black') + 
     geom_hline(yintercept=0, color="black") + 
     geom_vline(xintercept=0, color="black") +
     xlab(bquote(log[2]*"[fold change]")) + 
     ylab(bquote(-log[10]*"["*italic(.("P"))*"-value]")) + 
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
-          panel.background = element_blank())
+          panel.background = element_blank()) +
+    scale_fill_manual(values = global_colors) +
+    scale_shape_manual(values = global_shapes)
   
   return(p)
 }
 
 
 
+#df = example_data %>% calc_mod_ttest() %>% id_enriched_proteins()
+
+
+#inweb = get_inweb_list('BCL2')
+#inweb = inweb[inweb$significant,]
+
+#p = plot_volcano_basic(df) %>% plot_overlay(list(inweb=inweb)) %>% plot_overlay(as.bait('BCL2')) 
+
+#p
 
 
 
+#i <- which(sapply(p$scales$scales, function(x) 'fill' %in% x$aesthetics))
+#p$scales$scales[[i]] <- NULL
+#p$scales$scales[[i]] <- scale_fill_manual(values = colors2)
 

@@ -8,8 +8,8 @@ validate_reference(
   df,
   warn = T,
   valid = c("gene", "accession_number", "col_significant", "col_other", "shape",
-    "dataset", "stroke", "alt_label", "label", "label_size", "size", "symbol", "pLI",
-    "opacity", "size", "gg.size", "legend_order")
+    "dataset", "group", "stroke", "alt_label", "label", "label_size", "size", "symbol",
+    "pLI", "opacity", "size", "gg.size", "legend_order")
 )
 }
 \arguments{
