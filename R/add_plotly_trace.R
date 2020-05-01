@@ -8,9 +8,10 @@
 #' @param legend Boolean. should legend be displayed?
 #' @note global variable 'global_colors' must be specified using setNames().
 #' @importFrom plotly add_trace
+#' @family plotly
 #' @export
 
-add_genoppi_trace <- function(p, data, parameters, stroke_width = 0.2, legend = F){
+add_plotly_trace <- function(p, data, parameters, stroke_width = 0.2, legend = F){
   
   # pass previous environment to function
   global_colors = parameters$global_colors

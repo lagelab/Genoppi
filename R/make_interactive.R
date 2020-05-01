@@ -29,15 +29,15 @@ make_interactive <- function(p, source = NULL, legend = T, sig_text = ''){
   
   # make plot
   p1 = plot_ly(source = source, sizes = sizes) %>%  # sizes=c(7,29)
-    add_genoppi_trace(data[data$gene %nin% overlay$gene,], params)
+    genoppi::add_plotly_trace(data[data$gene %nin% overlay$gene,], params)
 
   # add overlay
   if (!is.null(overlay)){
     if (nrow(overlay) > 0 ){
       
       p1 = p1 %>% 
-        add_genoppi_trace(overlay[overlay$significant, ], params, stroke_width = 0.9, legend = legend) %>%
-        add_genoppi_trace(overlay[!overlay$significant, ], params, stroke_width = 0.9, legend = F) 
+        genoppi::add_plotly_trace(overlay[overlay$significant, ], params, stroke_width = 0.9, legend = legend) %>%
+        genoppi::add_plotly_trace(overlay[!overlay$significant, ], params, stroke_width = 0.9, legend = F) 
       p1$overlay = p$overlay
     }
     

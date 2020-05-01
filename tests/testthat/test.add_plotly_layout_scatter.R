@@ -1,8 +1,8 @@
-context('add_line_unity')
+context('add_plotly_legend_scatter')
 
 data("example_data")
 
-test_that('basic',{
+test_that('add layout to scatter plot',{
   
   # perform moderated t-test
   stats_df <- calc_mod_ttest(example_data)
@@ -14,7 +14,12 @@ test_that('basic',{
   
   # interactive volcano plot
   result = make_interactive(bait_scatter) %>%
-    add_plotly_line_unity() 
+    add_plotly_layout_scatter()
   
-  expect_true(!is.null(result$x))
+  # check result
+  m = result$x$layoutAttrs[[2]]
+  expect_true(!is.null(m))
+  expect_equal(m$xaxis$title, "Replicate 1 log<sub>2</sub>(Fold change)")
+  expect_equal(m$yaxis$title, "Replicate 2 log<sub>2</sub>(Fold change)")
+  
 })

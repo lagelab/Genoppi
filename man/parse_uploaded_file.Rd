@@ -20,11 +20,8 @@ t-test on the data
 }
 \seealso{
 Other shiny: 
-\code{\link{add_hover_lines_volcano}()},
-\code{\link{add_layout_html_axes_scatterplot}()},
-\code{\link{add_layout_html_axes_volcano}()},
-\code{\link{add_markers_search_pathway}()},
-\code{\link{add_markers_search}()},
+\code{\link{add_plotly_markers_search_pathway}()},
+\code{\link{add_plotly_markers_search}()},
 \code{\link{calc_logfc_limit}()}
 }
 \concept{shiny}

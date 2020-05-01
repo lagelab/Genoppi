@@ -8,9 +8,12 @@
 #' @param width width of line
 #' @param dash dashed or solid?
 #' @param opacity opacity of line.
+#' @family plotly
 #' @export
 
-add_line_unity <- function(p, data=NULL, color = 'black', width = 0.5, dash = 'solid', opacity = 0.5){
+#add_line_unity
+
+add_plotly_line_unity <- function(p, data=NULL, color = 'black', width = 0.5, dash = 'solid', opacity = 0.5){
   
   if (is.null(data)) data = p$data
   stopifnot(!is.null(data))

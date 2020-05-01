@@ -1,4 +1,4 @@
-context('add_genoppi_trace')
+context('add_plotly_trace')
 
 data("example_data")
 
@@ -28,7 +28,7 @@ test_that('basic test to see if function works',{
   
   # interactive volcano plot
   result = plot_ly(source = source, sizes = sizes) %>%  # sizes=c(7,29)
-    add_genoppi_trace(data[data$gene %nin% overlay$gene,], params)
+    add_plotly_trace(data[data$gene %nin% overlay$gene,], params)
   
   # look at nnotations
   m = result$x$attrs[[2]]

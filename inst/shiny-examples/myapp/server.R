@@ -1282,9 +1282,9 @@ shinyServer(function(input, output, session){
   a_vp_layerx <- reactive({
     p <- a_vp_gg()
     p <- make_interactive(p, legend = T)
-    if (input$a_goi_search_rep != '') p <- add_markers_search(p, a_search_gene())
-    p <- add_hover_lines_volcano(p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-    p <- add_layout_html_axes_volcano(p, 500*0.8, 625*0.8)
+    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
+    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
+    p <- add_plotly_layout_volcano(p, 500*0.8, 625*0.8)
     return(p)
   })
   
@@ -1337,9 +1337,9 @@ shinyServer(function(input, output, session){
     
     # convert into interactive graphics
     p1 = make_interactive(p1)
-    if (input$a_goi_search_rep != '') p1 <- add_markers_search(p1, a_search_gene())
-    p1 = add_layout_html_axes_scatterplot(p1, paste0('r=',r))
-    p1 = add_line_unity(p1)
+    if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene())
+    p1 = add_plotly_layout_scatter(p1, paste0('r=',r))
+    p1 = add_plotly_line_unity(p1)
     #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
     
   })
@@ -1366,9 +1366,9 @@ shinyServer(function(input, output, session){
     sig_label = '(enriched)' #paste0(monitor_significance_thresholds()$sig) #, ', ', monitor_logfc_threshold_non_html()$sig)
     p <- a_integrated_plot_gg()
     p <- make_interactive(p, source = "Multi_VolcanoPlot", legend = T, sig_text = sig_label)
-    p <- add_hover_lines_volcano(p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction,  sig_type = input$a_significance_type)
-    if (input$a_goi_search_rep != '') p <- add_markers_search(p, a_search_gene())
-    p <- add_layout_html_axes_volcano(p, 550, 650) # error in searching overlay here when layout width/height supplied. 
+    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction,  sig_type = input$a_significance_type)
+    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
+    p <- add_plotly_layout_volcano(p, 550, 650) # error in searching overlay here when layout width/height supplied. 
     p
   })
   
@@ -1547,10 +1547,10 @@ shinyServer(function(input, output, session){
                                     list(rev(order(p$overlay$size))), list(order(p$overlay$dataset))))
     
     p <- make_interactive(p, legend = T)
-    if (input$a_goi_search_rep != '') p <- add_markers_search(p, a_search_gene())
-    if (!is.null(input$a_pathway_mapping_search)) p <- add_markers_search_pathway(p, input$a_pathway_mapping_search, mapping = a_pathway_mapping_initial())
-    p <- add_hover_lines_volcano(p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-    p <- add_layout_html_axes_volcano(p, 500, 875)
+    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
+    if (!is.null(input$a_pathway_mapping_search)) p <- add_plotly_markers_search_pathway(p, input$a_pathway_mapping_search, mapping = a_pathway_mapping_initial())
+    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
+    p <- add_plotly_layout_volcano(p, 500, 875)
     return(p)
   })
   
@@ -2080,9 +2080,9 @@ shinyServer(function(input, output, session){
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
-   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
+   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
    
  })
@@ -2091,8 +2091,8 @@ shinyServer(function(input, output, session){
    
    p <- b_file_1_sp_gg()
    p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
-   p <- add_layout_html_axes_scatterplot(p, NULL, NULL, orientation = 'h')
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
    return(p)
    
  })
@@ -2148,9 +2148,9 @@ shinyServer(function(input, output, session){
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
-   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
+   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
    
  })
@@ -2159,8 +2159,8 @@ shinyServer(function(input, output, session){
    
    p <- b_file_2_sp_gg()
    p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
-   p <- add_layout_html_axes_scatterplot(p, NULL, NULL, orientation = 'h')
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
    
    return(p)
    
@@ -2215,9 +2215,9 @@ shinyServer(function(input, output, session){
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
-   p <- add_hover_lines_volcano(p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
+   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
    
  })
@@ -2226,8 +2226,8 @@ shinyServer(function(input, output, session){
    
    p <- b_file_3_sp_gg()
    p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_markers_search(p, b_search_gene())
-   p <- add_layout_html_axes_volcano(p, NULL, NULL, orientation = 'h')
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h')
    return(p)
    
  })

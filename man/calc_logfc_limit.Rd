@@ -17,11 +17,8 @@ returns the maximum absoluate values plus 0.5 of the logFC.
 }
 \seealso{
 Other shiny: 
-\code{\link{add_hover_lines_volcano}()},
-\code{\link{add_layout_html_axes_scatterplot}()},
-\code{\link{add_layout_html_axes_volcano}()},
-\code{\link{add_markers_search_pathway}()},
-\code{\link{add_markers_search}()},
+\code{\link{add_plotly_markers_search_pathway}()},
+\code{\link{add_plotly_markers_search}()},
 \code{\link{parse_uploaded_file}()}
 }
 \concept{shiny}

@@ -1,4 +1,4 @@
-context('add_hover_lines_volcano')
+context('add_threshold_lines')
 
 data("example_data")
 
@@ -16,7 +16,7 @@ test_that('basic test to see if function works',{
   
   # interactive volcano plot
   result = make_interactive(bait_volcano) %>%
-    add_hover_lines_volcano(sig_type = 'pvalue',line_pvalue = 0.05,line_logfc = 5)
+    add_plotly_threshold_lines(sig_type = 'pvalue',line_pvalue = 0.05,line_logfc = 5)
   
   # check that  pvalyelines are plotted
   m1 = result$x$attrs[[5]]

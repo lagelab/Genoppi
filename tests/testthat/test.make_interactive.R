@@ -16,7 +16,7 @@ test_that('basic test to see if function works',{
   
   # interactive volcano plot
   result = make_interactive(bait_volcano) %>%
-    add_layout_html_axes_volcano(width = NULL, height = NULL)
+    add_plotly_layout_volcano(width = NULL, height = NULL)
   expect_true(!is.null(result))
   
   # look at nnotations

@@ -1,8 +1,8 @@
-context('add_plotly_legend_volcano')
+context('add_plotly_markers_search')
 
 data("example_data")
 
-test_that('add layout to volcano',{
+test_that('basic test to see if function works',{
   
   # perform moderated t-test
   stats_df <- calc_mod_ttest(example_data)
@@ -14,12 +14,13 @@ test_that('add layout to volcano',{
   
   # interactive volcano plot
   result = make_interactive(bait_volcano) %>%
-    add_plotly_layout_volcano()
+    add_plotly_markers_search('DD')
   
   # check result
-  m = result$x$layoutAttrs[[2]]
+  m = result$x$attrs[[5]]
   expect_true(!is.null(m))
-  expect_equal(m$xaxis$title, "log<sub>2</sub>(Fold change)")
-  expect_equal(m$yaxis$title, "-log<sub>10</sub>(<i>P</i>-value)")
+  expect_equal(m$hoverinfo, "text+x+y")
+  expect_equal(quo_name(m$x), 'logFC')
+  expect_equal(quo_name(m$y), "-log10(pvalue)")
   
 })

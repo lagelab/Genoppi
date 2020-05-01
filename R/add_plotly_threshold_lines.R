@@ -6,9 +6,10 @@
 #' @param logfc_direction string. Can be either \code{'positive'}, \code{'negative'} or \code{'both'}.
 #' @param sig_type string. Can be either \code{'fdr'} or \code{'pvalue'}.
 #' @importFrom plotly add_lines
-#' @family shiny
-#' @export
-add_hover_lines_volcano <- function(p, line_pvalue, line_logfc, logfc_direction = 'both', sig_type='fdr'){
+#' @family plotly
+
+
+add_plotly_threshold_lines <- function(p, line_pvalue, line_logfc, logfc_direction = 'both', sig_type='fdr'){
   
   stopifnot(!is.null(p$data))
   
