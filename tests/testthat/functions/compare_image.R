@@ -7,11 +7,12 @@ file.ext = function(x) {
 # function to generate test paths
 make_test_path <- function(func, id, type = 'png', create.dir = T){
   fname = paste(func,id,type, sep = '.')
-  dirs = system.file('tests','testthat',c('reference','result'), package = "genoppi")
+  #dirs = system.file(c('reference','result'), package = "genoppi") # doesnt work 
+  dirs = c('reference','result')
   dirs = file.path(dirs, func)
   if (create.dir){
-    if (!dir.exists(dirs[[1]])) dir.create(dirs[[1]])
-    if (!dir.exists(dirs[[2]])) dir.create(dirs[[2]])
+    if (!is.null(dirs[[1]])) if (!dir.exists(dirs[[1]])) dir.create(dirs[[1]])
+    if (!is.null(dirs[[2]])) if (!dir.exists(dirs[[2]])) dir.create(dirs[[2]])
   }
   paths = file.path(dirs, fname)
   return(list(ref=paths[1],res=paths[2]))
@@ -45,7 +46,7 @@ test_png_identity <- function(paths){
 }
 
 
-compare_both <- function(func, id){
+check_plot <- function(func, id, type = 'png'){
   require(png)
   paths = make_test_path(func, id, type)
   if (!all(unlist(lapply(paths, file.exists)))) stop('either ref or res does not exist!')

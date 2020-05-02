@@ -2,18 +2,20 @@
 % Please edit documentation in R/calc_mod_ttest.R
 \name{calc_mod_ttest}
 \alias{calc_mod_ttest}
-\title{Perform moderated t-test}
+\title{Perform one-sample moderated t-test}
 \usage{
-calc_mod_ttest(df)
+calc_mod_ttest(df, iter = 1000)
 }
 \arguments{
-\item{df}{data.frame containing gene and rep (replicate logFC)  columns}
+\item{df}{data.frame containing gene and rep[0-9] (replicate logFC) columns.}
+
+\item{iter}{integer indicating maximum number of iterations to perform in limma::limFit().}
 }
 \value{
-data.frame containing containing df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR
+data.frame containing input df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR.
 }
 \description{
-Use moderated t-test implemented in limma package to calculate logFC, pvalue, and FDR.
+Use one-sample moderated t-test implemented in limma package to calculate protein logFC, pvalue, and FDR.
 See \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
 }
 \examples{

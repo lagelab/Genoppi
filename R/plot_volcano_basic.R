@@ -44,20 +44,3 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
 }
 
 
-
-#df = example_data %>% calc_mod_ttest() %>% id_enriched_proteins()
-
-
-#inweb = get_inweb_list('BCL2')
-#inweb = inweb[inweb$significant,]
-
-#p = plot_volcano_basic(df) %>% plot_overlay(list(inweb=inweb)) %>% plot_overlay(as.bait('BCL2')) 
-
-#p
-
-
-
-#i <- which(sapply(p$scales$scales, function(x) 'fill' %in% x$aesthetics))
-#p$scales$scales[[i]] <- NULL
-#p$scales$scales[[i]] <- scale_fill_manual(values = colors2)
-

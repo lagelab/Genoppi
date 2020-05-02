@@ -2299,12 +2299,31 @@ shinyServer(function(input, output, session){
    HTML(paste(output, collapse = "<br/>"))
  })
  
+ 
+ # select 
+ output$b_file_comparison_data_table_select_ui <- renderUI({
+   overlap = b_mapping()
+            selectInput("b_file_comparison_data_table_select",
+                        "Subset data",
+                        c("All",
+                          unique(as.character(names(overlap)))))
+ })
+
  # make data.table for showing overlap
  output$b_file_comparison_data_table_ui <- DT::renderDataTable({
+   
    req(b_overlap())
    overlap = b_mapping()
+   
+   selected = input$b_file_comparison_data_table_select
+   
+   if (any(selected %nin% 'All')){
+     overlap = overlap[names(overlap) %in% selected]
+   }
+   
    lst = lapply(names(overlap), function(x){overlap[[x]][,c('gene','dataset')]})
    df = do.call(rbind, lst)
+   
    DT::datatable(df)
  })
   

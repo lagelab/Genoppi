@@ -1,12 +1,15 @@
 context('plot_overlay')
 
 # for comparing images
-#source('functions/compare_image.R')
-#func = 'plot_overlay'
+library(png)
+source('functions/compare_image.R')
+func = 'plot_overlay'
 
 # read in test data
 df <- read_input("data/test.data.txt", sep="\t")$data
 df <- calc_mod_ttest(df)
+
+
 
 
 test_that('simple overlay of a bait',{
@@ -16,6 +19,12 @@ test_that('simple overlay of a bait',{
   df = id_enriched_proteins(df)
   p = plot_volcano_basic(df) + ggtitle('BCL2 vs IgG in GPiNs') 
   p = plot_overlay(p, as.bait('BCL2')) ## testcase here..
+  
+  # test that result and reference are same
+  paths = make_test_path(func, id)
+  #ggsave(paths$res, p, width = 5, height = 5)
+  #test = test_png_identity(paths)
+  #expect_true(test) #check_plot(func, id)
   
   #save_gg_reference(p, func, id)
   #expect_true(compare_with_reference(p, func, id))
@@ -35,7 +44,10 @@ test_that('simple overlay of a bait',{
   
   # overlay second list
   p1 = plot_overlay(p1, reference) # testcase here..
-  #expect_true(compare_with_reference(p1, func, id))
+  #ggsave(paths$res, p1, width = 5, height = 5)
+  #paths = make_test_path(func, id) #   
+  #test = test_png_identity(paths)
+  #expect_true(test) #check_plot(func, id)
   
 
 })
@@ -86,7 +98,7 @@ test_that('ggplot is built correctlty',{
 })
 
 
-test_that('invalid columns in overlay gives warning and errrs',{
+test_that('invalid columns in overlay gives warning and errors',{
   
   # invalid columns in overlay gives warning
   df <- id_enriched_proteins(df, fdr_cutoff=0.1)
@@ -95,7 +107,6 @@ test_that('invalid columns in overlay gives warning and errrs',{
   ref2= data.frame(gene=c('APC2','MAP7','KHSRP'),col_significant='blue',col_other='grey', col_invalid = T)
   reference = list(ref1, ref2)
   names(reference) = c('SCZ genelist', 'ASD genelist')
-  expect_warning(plot_overlay(p, reference))
   
   # check invalid input 
   expect_error(plot_overlay(p, reference$`SCZ genelist`)) # must be a named list

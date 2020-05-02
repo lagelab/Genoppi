@@ -42,7 +42,7 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   # convert reference to a single data.frame and omit non informative columns
   overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x)))
   plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group')]
-  overlay =  merge(plot.data, validate_reference(overlay), by = match)
+  overlay =  merge(plot.data, validate_reference(overlay, warn = F), by = match)
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
   overlay = append_to_column(overlay, to = 'group')
   
@@ -55,12 +55,9 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   # add the overlay to the ggplot
   p1 = p + ggplot2::geom_point(data = overlay, 
                  mapping = aes_string(x=p$mapping$x, y=p$mapping$y, fill = p$mapping$fill, shape = p$mapping$shape),
-                 #shape = overlay$shape,
-                 #color = overlay$color,
                  size = overlay$gg.size,
-                 #shape = overlay$shape,
                  stroke = 0.75,
-                 alpha = overlay$opacity)  
+                 alpha = overlay$opacity) 
   
   
   # add guides for maintaining legend size
