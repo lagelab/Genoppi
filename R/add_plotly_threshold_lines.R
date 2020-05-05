@@ -7,6 +7,7 @@
 #' @param sig_type string. Can be either \code{'fdr'} or \code{'pvalue'}.
 #' @importFrom plotly add_lines
 #' @family plotly
+#' @export
 
 
 add_plotly_threshold_lines <- function(p, line_pvalue, line_logfc, logfc_direction = 'both', sig_type='fdr'){

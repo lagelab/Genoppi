@@ -1,13 +1,23 @@
 #' @title plot pathways
-#' @description similar to \code{?plot_overlay}.
+#' @description generates a list of data.frames that can be inputted to \code{plot_overlay()}
 #' @param pulldown pulldown data
 #' @param database see get_pathways
-#' @keywords internal
+#' @param k integer. Up to how many of the most recurrent gene sets should be displayed at once?
 #' @note this is a work in progress.
-#' 
+#' @examples 
+#' \dontrun{
+#' data("example_data")
+#' df = example_data %>% 
+#'    calc_mod_ttest() %>% 
+#'    id_enriched_proteins()
+#'    
+#' plot_volcano_basic(df) %>% 
+#'    plot_overlay(get_geneset_overlay(df, 'hgnc', k = 25)) %>% 
+#'    make_interactive()
+#' }
+#' @keywords internal
 
-
-as.geneset <- function(data, database){
+get_geneset_overlay <- function(data, database, k=100){
   
   # check inpug
   stopifnot('gene' %in% colnames(data))
@@ -32,17 +42,18 @@ as.geneset <- function(data, database){
   overlay$symbol = 'square'
   overlay$shape = 22 # square with outline // note plotly does not like this.
   overlay$opacity = 0.8
-  overlay$label = FALSE
+  overlay$label = FALSE 
+  
+  # subset pathways for lowest allowed frequency
+  
+  overlay = overlay[overlay$Freq >= lowest_allowed_freq,]
   
   # only significant things are plotted
   overlay = validate_reference(overlay[overlay$significant,], warn = F)
-
+  overlay$legend_order = rev(order(overlay$size))
   return(list(geneset=overlay))
+  
 }
-
-# data("example_data")
-# df = example_data %>% calc_mod_ttest() %>% id_enriched_proteins()
-# plot_volcano_basic(df) %>% plot_overlay(as.geneset(df, 'hgnc')) %>% make_interactive()
 
 
 
