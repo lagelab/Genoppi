@@ -1,8 +1,9 @@
-#' @title plot pathways
+#' @title get geneset as overlay
 #' @description generates a list of data.frames that can be inputted to \code{plot_overlay()}
 #' @param pulldown pulldown data
 #' @param database see get_pathways
 #' @param k integer. Up to how many of the most recurrent gene sets should be displayed at once?
+#' @param only.significant boolean. If true, only column with significant=TRUE will be considered.
 #' @note this is a work in progress.
 #' @examples 
 #' \dontrun{
@@ -17,10 +18,16 @@
 #' }
 #' @keywords internal
 
-get_geneset_overlay <- function(data, database, k=100){
+get_geneset_overlay <- function(data, database, k=100, only.significant = T){
   
-  # check inpug
+  # check input
   stopifnot('gene' %in% colnames(data))
+
+  # subset data
+  if (only.significant){
+    stopifnot('significant' %in% colnames(data))
+    data = data[data$significant, ]
+  }
   
   # get pathways
   pathways = get_pathways(database, data$gene)
@@ -45,11 +52,12 @@ get_geneset_overlay <- function(data, database, k=100){
   overlay$label = FALSE 
   
   # subset pathways for lowest allowed frequency
-  
+  tabl = calc_cumsum_table(overlay, 'pathway')
+  lowest_allowed_freq = min(tabl$Freq[tabl$n <= k])
   overlay = overlay[overlay$Freq >= lowest_allowed_freq,]
   
   # only significant things are plotted
-  overlay = validate_reference(overlay[overlay$significant,], warn = F)
+  #overlay = validate_reference(overlay, warn = F)
   overlay$legend_order = rev(order(overlay$size))
   return(list(geneset=overlay))
   
