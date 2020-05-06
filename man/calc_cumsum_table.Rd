@@ -13,7 +13,12 @@ calc_cumsum_table(x, col.id, col.freq = "Freq")
 
 \item{col.freq}{string. what numeric column contains the frequency?}
 }
+\value{
+\item{item}{the identifier item}
+\item{Freq}{the frequency of the item}
+\item{n}{the reversed cumulative sum of frequencies of items. i.e. the 
+revsersed cumulative sum of the tabulated frequencies.}
+}
 \description{
 calculate the cumulative sum of frequencies
 }
-\keyword{internal}

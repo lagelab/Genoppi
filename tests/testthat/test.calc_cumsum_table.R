@@ -17,3 +17,5 @@ test_that('expected errors and warnings',{
   expect_error(calc_cumsum_table(df, col.freq = 'invalid column'))
   
 })
+
+

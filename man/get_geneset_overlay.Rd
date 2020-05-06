@@ -2,14 +2,16 @@
 % Please edit documentation in R/get_geneset_overlay.R
 \name{get_geneset_overlay}
 \alias{get_geneset_overlay}
-\title{plot pathways}
+\title{get geneset as overlay}
 \usage{
-get_geneset_overlay(data, database, k = 100)
+get_geneset_overlay(data, database, k = 100, only.significant = T)
 }
 \arguments{
 \item{database}{see get_pathways}
 
 \item{k}{integer. Up to how many of the most recurrent gene sets should be displayed at once?}
+
+\item{only.significant}{boolean. If true, only column with significant=TRUE will be considered.}
 
 \item{pulldown}{pulldown data}
 }
