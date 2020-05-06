@@ -304,7 +304,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Volcano plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_1_volcano'),
@@ -312,7 +312,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_1_scatter'),
@@ -341,7 +341,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Volcano plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_2_volcano'),
@@ -349,7 +349,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_2_scatter'),
@@ -378,7 +378,7 @@ body <- dashboardBody(
                                                 )
                                         ),
                                         box(
-                                          title = 'Volcano plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_3_volcano'),
@@ -386,7 +386,7 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
-                                          title = 'Scatter plot', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
                                                  fluidRow(
                                                    plotlyOutput('b_file_3_scatter'),
@@ -400,7 +400,7 @@ body <- dashboardBody(
                                  br(),
                                  column(6,
                                    box(
-                                     title = 'Venn diagram', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
+                                     title = tagList(img(src='icon_venn_a.png',width='22px'), 'Venn diagrams'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                      column(1, ''),
                                      column(8,
                                             fluidRow(

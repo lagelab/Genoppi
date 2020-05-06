@@ -43,6 +43,22 @@ test_that('pathways are correctly subsetted by recurrent genests',{
   
 })
 
+test_that('common fuction call', {
+ 
+  plot_volcano_basic(df) %>% 
+    plot_overlay(get_geneset_overlay(df, 'hgnc', k = 3)) %>% 
+    make_interactive()
+  
+  plot_volcano_basic(df) %>% 
+    plot_overlay(get_geneset_overlay(df, 'hgnc', k = 10)) %>% 
+    make_interactive()
+  
+  plot_volcano_basic(df) %>% 
+      plot_overlay(get_geneset_overlay(df, 'hgnc', k = 25)) %>% 
+      make_interactive()
+  
+  
+})
 
 
 
