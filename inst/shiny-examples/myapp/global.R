@@ -12,7 +12,8 @@ allowed_colors = c(add_marker_gradient,'#808080', '#A52A2A')
 
 # global genoppi variables
 max.genesets = 100
-max.nchar.legend = 50
+max.nchar.legend = 35
+global.color.pathway.seed = 1
 
 # what is the allowed palette of symbols in plotly
 plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values

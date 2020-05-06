@@ -1432,7 +1432,7 @@ shinyServer(function(input, output, session){
     req(a_pulldown_significant(), input$a_pf_loc_option, )
     db = input$a_pf_loc_option
     pulldown <- a_pulldown_significant()
-    pulldown <- pulldown[pulldown$significant, ]
+    #pulldown <- pulldown[pulldown$significant, ]
     overlap <- get_pathways(db, pulldown$gene)
     overlap <- assign_freq(overlap, 'pathway')
     overlap = merge(overlap, pulldown)
@@ -1444,7 +1444,6 @@ shinyServer(function(input, output, session){
   a_pathway_mapping_initial <- reactive({
     req(a_pulldown_significant(), a_pathway_mapping_assign_freq())
     
-    
     #  # get raw data and assign frequency count
     overlap <- a_pathway_mapping_assign_freq()
     # assign color scheme
@@ -1452,9 +1451,12 @@ shinyServer(function(input, output, session){
     colors = colors[!duplicated(colors), ]
     colors$color = NA
     #colors$color = ifelse(colors$Freq <= 1, 'grey', NA)
-    colors$color[is.na(colors$color)] <- color_distinct()[1:sum(is.na(colors$color))]
+    set.seed(global.color.pathway.seed)
+    n = sum(is.na(colors$color))
+    colors$color[is.na(colors$color)] <- sample(color_distinct()[1:n], n) 
     # merge with overlap
     overlap = merge(overlap, colors[,c('pathway','color')], by = 'pathway')
+    overlap = overlap[overlap$significant, ]
     return(overlap)
   })
   
