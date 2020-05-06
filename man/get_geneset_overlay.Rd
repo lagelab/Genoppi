@@ -7,19 +7,17 @@
 get_geneset_overlay(data, database, k = 100, only.significant = T)
 }
 \arguments{
-\item{database}{see get_pathways}
+\item{data}{pulldown data}
 
-\item{k}{integer. Up to how many of the most recurrent gene sets should be displayed at once?}
+\item{database}{What database should be used for the search? For available pathways, see \code{?get_pathways}.}
+
+\item{k}{integer or NULL. Up to how many of the most recurrent gene sets should be displayed at once? NULL will
+indicate that no gene sets should be subsetted at all.}
 
 \item{only.significant}{boolean. If true, only column with significant=TRUE will be considered.}
-
-\item{pulldown}{pulldown data}
 }
 \description{
 generates a list of data.frames that can be inputted to \code{plot_overlay()}
-}
-\note{
-this is a work in progress.
 }
 \examples{
 \dontrun{
@@ -33,4 +31,3 @@ plot_volcano_basic(df) \%>\%
    make_interactive()
 }
 }
-\keyword{internal}

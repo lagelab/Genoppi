@@ -9,7 +9,8 @@ append_to_column(
   sig_text = "(enriched)",
   insig_text = "(not enriched)",
   from = "dataset",
-  to = "dataset"
+  to = "dataset",
+  nchar_max = NULL
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ append_to_column(
 \item{from}{what column should be appended?}
 
 \item{to}{where should be appended column be inserted?}
+
+\item{nchar_max}{integer. maximum amount of characters (incl spaces) in the group. NULL 
+means that there is no limit.}
 }
 \description{
 Appends a dynamic string to a column condition on whether

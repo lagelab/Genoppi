@@ -13,7 +13,8 @@ plot_overlay(
   label.color = "black",
   label.box.padding = 0.3,
   label.point.padding = 0.5,
-  label.arrowhead.size = 0.01
+  label.arrowhead.size = 0.01,
+  legend.nchar.max = NULL
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ for more details.}
 \item{label.point.padding}{Amount of padding around label. See \code{?ggrepel::geom_text_repel}.}
 
 \item{label.arrowhead.size}{The size of the arrowhead. 0 means no arrowhead.}
+
+\item{legend.nchar.max}{maximum amount of allowed characters in the legend.}
 }
 \value{
 a ggplot
@@ -53,7 +56,7 @@ The following data.frame headers for a reference are accepted:
 \itemize{
  \item{"gene"}{ A string tht indicates the gene name.}
  \item{"label"} {A boolen that indicates whether the label should be plotted.}
- \item{"label_size"}{A numeric that indicates the size of the label items.}
+ \item{"label.size"}{A numeric that indicates the size of the label items.}
 }
 See ?validate_reference or additional details.
 }

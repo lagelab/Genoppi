@@ -43,6 +43,15 @@ test_that('pathways are correctly subsetted by recurrent genests',{
   
 })
 
+test_that('k is NULL will result in NO subset',{
+
+  x1 = get_geneset_overlay(df, 'hgnc', k = +Inf)$geneset
+  x2 = get_geneset_overlay(df, 'hgnc', k = NULL)$geneset
+  expect_equal(x1, x2)
+
+})
+
+
 test_that('common fuction call', {
  
   plot_volcano_basic(df) %>% 
@@ -59,6 +68,7 @@ test_that('common fuction call', {
   
   
 })
+
 
 
 

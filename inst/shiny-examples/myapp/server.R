@@ -1468,9 +1468,7 @@ shinyServer(function(input, output, session){
   a_pathway_mapping_freq_revcumsum <- reactive({
     req(a_pathway_mapping_initial())
     overlay = a_pathway_mapping_initial()
-    counts = data.frame(pathway=overlay$pathway, Freq=overlay$Freq)
-    counts = counts[!duplicated(counts),]
-    revcumsum = cumsum(rev(table(counts$Freq)))
+    revcumsum = calc_cumsum_table(overlay, col.id = 'pathway')
     return(revcumsum)
   })
   
@@ -1478,9 +1476,8 @@ shinyServer(function(input, output, session){
   # that may appear in the plot
   a_pathway_mapping_freq_lowest_allowed <- reactive({
     req(a_pathway_mapping_freq_revcumsum())
-    revcumsum = a_pathway_mapping_freq_revcumsum()
-    lowest_allowed_freq = as.numeric(names(rev(revcumsum[revcumsum < 100]))[1])
-    #if (is.na(lowest_allowed_freq)) lowest_allowed_freq <- min(as.numeric(names(revcumsum)))
+    tabl = a_pathway_mapping_freq_revcumsum()
+    lowest_allowed_freq = min(tabl$Freq[tabl$n <= max.genesets]) # see global.R
     return(lowest_allowed_freq)
   })
   
@@ -1524,13 +1521,11 @@ shinyServer(function(input, output, session){
     return(overlay)
   })
   
-
-
   # make the ggplot
   a_pathway_plot_gg <- reactive({
     req(a_pulldown_significant())
       p <- a_vp_gg()
-      if (nrow(a_pathway_mapping_subset()) > 0) {p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()))}
+      if (nrow(a_pathway_mapping_subset()) > 0) {p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)}
       p
   })
   

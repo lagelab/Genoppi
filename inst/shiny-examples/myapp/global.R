@@ -1,6 +1,5 @@
 library(genoppi)
 
-
 # load genoppi if not attcahed (developer)
 if (!'genoppi' %in% .packages()) devtools::load_all()
 main = system.file('extdata', package = 'genoppi')
@@ -10,6 +9,10 @@ marker_cols <- read.table(file.path(main, 'colors.txt'))
 add_marker_cols <- read.table(file.path(main, 'colors_markers.txt'))
 add_marker_gradient <- readLines(file.path(main, 'color_markers_gradient.txt'))
 allowed_colors = c(add_marker_gradient,'#808080', '#A52A2A')
+
+# global genoppi variables
+max.genesets = 100
+max.nchar.legend = 50
 
 # what is the allowed palette of symbols in plotly
 plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values

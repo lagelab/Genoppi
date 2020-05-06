@@ -10,7 +10,7 @@
 #' \itemize{
 #'  \item{"gene"}{ A string tht indicates the gene name.}
 #'  \item{"label"} {A boolen that indicates whether the label should be plotted.}
-#'  \item{"label_size"}{A numeric that indicates the size of the label items.}
+#'  \item{"label.size"}{A numeric that indicates the size of the label items.}
 #' }
 #' See ?validate_reference or additional details.
 #' 
@@ -25,6 +25,7 @@
 #' for more details.
 #' @param label.point.padding Amount of padding around label. See \code{?ggrepel::geom_text_repel}.
 #' @param label.arrowhead.size The size of the arrowhead. 0 means no arrowhead.
+#' @param legend.nchar.max maximum amount of allowed characters in the legend.
 #' 
 #' @return a ggplot
 #' 
@@ -33,18 +34,18 @@
 #' @export
 
 plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size = NULL, label.color = 'black', 
-                         label.box.padding = 0.30, label.point.padding = 0.50, label.arrowhead.size = 0.01) {
+                         label.box.padding = 0.30, label.point.padding = 0.50, label.arrowhead.size = 0.01,
+                         legend.nchar.max = NULL) {
   
   # check for allowed input
   if (!inherits(reference, "list")) stop('argumnt reference must be a named list.')
-  
   
   # convert reference to a single data.frame and omit non informative columns
   overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x)))
   plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group')]
   overlay =  merge(plot.data, validate_reference(overlay, warn = F), by = match)
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
-  overlay = append_to_column(overlay, to = 'group')
+  overlay = append_to_column(overlay, to = 'group', nchar_max = legend.nchar.max)
   
   # reset color scale using the original plot data, the prevvious overlay and the current overlay
   global_colors = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group')
@@ -58,7 +59,6 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
                  size = overlay$gg.size,
                  stroke = 0.75,
                  alpha = overlay$opacity) 
-  
   
   # add guides for maintaining legend size
   p1 = p1 + guides(fill=guide_legend(override.aes=list(size = 3))) 

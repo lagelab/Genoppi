@@ -42,6 +42,16 @@ catf <- function(msg, file = stderr()){
 #' @export
 as.bait <- function(bait) return(list(bait=data.frame(gene=bait, col_significant='red', col_other='orange')))
 
+
+#' @title strsplit.nchar
+#' @description split a string by a charcater
+#' @param x a vector of strings.
+#' @param nchar integer.
+#' @export
+strsplit.nchar <- function(x, nchar){
+  return(lapply(strsplit(x, ''), function(x) paste0(paste(x[1:nchar], collapse = ''), '...')))
+}
+
 #' @title color gradient
 #' @description makes a function for getting gradient colors
 #' @param x vector of values

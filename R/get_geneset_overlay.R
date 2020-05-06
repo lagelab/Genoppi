@@ -1,10 +1,10 @@
 #' @title get geneset as overlay
 #' @description generates a list of data.frames that can be inputted to \code{plot_overlay()}
-#' @param pulldown pulldown data
-#' @param database see get_pathways
-#' @param k integer. Up to how many of the most recurrent gene sets should be displayed at once?
+#' @param data pulldown data
+#' @param database What database should be used for the search? For available pathways, see \code{?get_pathways}.
+#' @param k integer or NULL. Up to how many of the most recurrent gene sets should be displayed at once? NULL will
+#' indicate that no gene sets should be subsetted at all.
 #' @param only.significant boolean. If true, only column with significant=TRUE will be considered.
-#' @note this is a work in progress.
 #' @examples 
 #' \dontrun{
 #' data("example_data")
@@ -16,11 +16,11 @@
 #'    plot_overlay(get_geneset_overlay(df, 'hgnc', k = 25)) %>% 
 #'    make_interactive()
 #' }
-#' @keywords internal
+#' @export
 
 get_geneset_overlay <- function(data, database, k=100, only.significant = T){
   
-  # check input
+  # check the format of the input
   stopifnot('gene' %in% colnames(data))
 
   # subset data
@@ -52,12 +52,13 @@ get_geneset_overlay <- function(data, database, k=100, only.significant = T){
   overlay$label = FALSE 
   
   # subset pathways for lowest allowed frequency
-  tabl = calc_cumsum_table(overlay, 'pathway')
-  lowest_allowed_freq = min(tabl$Freq[tabl$n <= k])
-  overlay = overlay[overlay$Freq >= lowest_allowed_freq,]
-  
+  if (!is.null(k)){
+    tabl = calc_cumsum_table(overlay, 'pathway')
+    lowest_allowed_freq = min(tabl$Freq[tabl$n <= k])
+    overlay = overlay[overlay$Freq >= lowest_allowed_freq,]
+  }
+
   # only significant things are plotted
-  #overlay = validate_reference(overlay, warn = F)
   overlay$legend_order = rev(order(overlay$size))
   return(list(geneset=overlay))
   
