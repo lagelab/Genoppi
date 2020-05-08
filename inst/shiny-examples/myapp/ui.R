@@ -479,10 +479,11 @@ sidebar <- dashboardSidebar(
                                uiOutput("logFC_thresh")
               ),
               conditionalPanel("input.sidebarmenu == 'widgets'",
-                               uiOutput("b_GOI_search"),
                                uiOutput("b_file_1_ui"),
                                uiOutput("b_file_2_ui"),
-                               uiOutput("b_file_3_ui")
+                               uiOutput("b_file_3_ui"),
+                               HTML('<hr style="border-color: #D6DBE0;">'),
+                               uiOutput("b_GOI_search")
               )
                 
               

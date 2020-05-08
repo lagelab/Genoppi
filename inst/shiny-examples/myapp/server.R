@@ -2231,7 +2231,7 @@ shinyServer(function(input, output, session){
    p <- b_file_3_sp_gg()
    p <- make_interactive(p, legend = F)
    if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
-   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h')
+   p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
    return(p)
    
  })
