@@ -21,6 +21,7 @@ an interactive plot.
 }
 \seealso{
 Other interactivity: 
-\code{\link{set_names_by_dataset}()}
+\code{\link{set_names_by_dataset}()},
+\code{\link{tabulate_markers}()}
 }
 \concept{interactivity}

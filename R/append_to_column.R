@@ -12,12 +12,16 @@
 #' the identifier (dataset) must have a unique colors associated with it.
 #' This function appends the dataset column with a significance text. 
 #' @export
-#' 
 
-append_to_column <- function(data, sig_text = '(enriched)', insig_text = '(not enriched)', from = 'dataset', to = 'dataset', nchar_max = NULL){
+append_to_column <- function(data, sig_text = '(enriched)', insig_text = '(not enriched)', from = 'dataset', to = 'dataset', 
+                             nchar_max = NULL){
+  
+  # check input
   stopifnot(sig_text != insig_text)
   stopifnot(from %in% colnames(data))
   stopifnot('significant' %in% colnames(data))
+  
+  # append with significant/nonsignificant text
   data$sigtext = ifelse(data$significant, as.character(sig_text), as.character(insig_text))
   data[[to]] = apply(data[,c(from,'sigtext')], 1, paste, collapse = ' ')
   
@@ -27,14 +31,21 @@ append_to_column <- function(data, sig_text = '(enriched)', insig_text = '(not e
     bool = nchar(data[[to]]) > nchar_max
     
     if (sum(bool) > 0){
-    
-      newname = strsplit.nchar(data[[to]][bool], nchar_max)
-      data[[to]][bool] <- unlist(newname)
-    
+      
+      #newname = lapply(data[[to]], function(x) strsplit.breaks(x, width = 20, collapse = '<br>'))
+      # assign a new name
+      #newname = unlist(lapply(data[[to]][bool], function(x)  )
+      
+      newname = unlist(lapply(data[[to]][bool], function(x) paste(strwrap(x, width = nchar_max), collapse = '<br>')))
+
+      
+      # assign to data
+      data[[to]][bool] <- unlist(newname) 
+      
     }
     
   }
-  
+
   data$sigtext = NULL
   return(data)
 }

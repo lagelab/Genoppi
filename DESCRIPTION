@@ -79,6 +79,7 @@ Collate:
     'set_names_by_dataset.R'
     'stop_invalid.R'
     'subset_snp_loci.R'
+    'tabulate_markers.R'
     'theme_genoppi.R'
     'to_overlay_data.R'
     'validate_reference.R'

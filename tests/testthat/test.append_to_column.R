@@ -8,13 +8,28 @@ test_that('function fails when no mapping is not provided',{
   
 })
 
-test_that('characters are cut off in group when nchar_max is specified.',{
+test_that('characters are split by \n when nchar_max is specified and collapse_type is trunated',{
   
-  l = paste(rep(letters, 5), collapse = '')
-  L = paste(rep(LETTERS, 5), collapse = '')
+  #l = paste(rep(letters, 2), collapse = '')
+  #L = paste(rep(LETTERS, 2), collapse = '')
   
-  df = data.frame(gene=c('ALLISON','BOB','MIKKEL'), significant = c(F,T,T), dataset = c(l,l,L))
-  df = append_to_column(df, nchar_max = 5)
-  expect_equal(df$dataset,c('abcde...','abcde...','ABCDE...'))
+  #df = data.frame(gene=c('ALLISON','BOB','MIKKEL'), significant = c(F,T,T), dataset = c(l,l,L))
+  #df = append_to_column(df, nchar_max = 5)
+  #expect_equal(df$dataset,s)
+  
+})
+
+data("example_data")
+
+test_that('nchar_max is specified and mapping constraitns are violated',{
+  
+  df = example_data %>%
+    calc_mod_ttest() %>%
+    id_enriched_proteins()
+  
+  # unambigious mappoing is not working
+  overlay = get_geneset_overlay(df, database = 'bp')
+  df1 = df %>% plot_volcano_basic() %>% plot_overlay(overlay, legend.nchar.max = 50) %>% make_interactive()
+  expect_true(!is.null(df1))
   
 })

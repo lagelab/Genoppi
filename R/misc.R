@@ -47,9 +47,10 @@ as.bait <- function(bait) return(list(bait=data.frame(gene=bait, col_significant
 #' @description split a string by a charcater
 #' @param x a vector of strings.
 #' @param nchar integer.
+#' @param suffix  string. what should all strings end with?
 #' @export
-strsplit.nchar <- function(x, nchar){
-  return(lapply(strsplit(x, ''), function(x) paste0(paste(x[1:nchar], collapse = ''), '...')))
+strsplit.nchar <- function(x, nchar, suffix = '...'){
+  return(lapply(strsplit(x, ''), function(x) paste0(paste(x[1:nchar], collapse = ''), suffix)))
 }
 
 #' @title color gradient
@@ -67,12 +68,13 @@ color_gradient <- function(x, colors=c("green", 'red'), colsteps=100) {
 
 #' @title distinct coloring
 #' @description generates vector of 74 distinct colors from RColorBrewer.
+#' @param length.out repeats the vector.
 #' @importFrom RColorBrewer brewer.pal.info brewer.pal
 #' @family misc
 #' @export
-color_distinct <- function(){
+color_distinct <- function(length.out=74){
   palette = RColorBrewer::brewer.pal.info[RColorBrewer::brewer.pal.info$category == 'qual',]
-  return(rep(unlist(mapply(RColorBrewer::brewer.pal, palette$maxcolors, rownames(palette))),10))
+  return(rep_len(unlist(mapply(RColorBrewer::brewer.pal, palette$maxcolors, rownames(palette))), length.out))
 }
 
 #' @title assign frequency
@@ -91,18 +93,17 @@ assign_freq <- function(df, col){
 #' @param df a data.frame
 #' @param col the identifiying column for assiging color
 #' @param order_by_freq boolean. Should the data be order by frequency of col?
-#' @param palette color palette, i.e. a vector of colors.
 #' @export
-assign_color <- function(df, col, order_by_freq = T, palette = color_distinct()){
+assign_color <- function(df, col, order_by_freq = T){
   
   tabl = data.frame(table(df[[col]]), color = NA)
   colnames(tabl) <- c(col, 'Freq', 'color')
   n = nrow(tabl)
-  tabl$color = rep(palette, 10)[1:(min(length(palette), n))]
+  tabl$color = color_distinct(n) #rep(palette, 10)[1:(min(length(palette), n))]
   
   # warnings and checks
   if (order_by_freq) tabl = tabl[rev(order(tabl$Freq)),]
-  if (n > length(palette)) warning('There were more unique entries than the color palette. Re-using palette!')
+  #if (n > length(palette)) warning('There were more unique entries than the color palette. Re-using palette!')
   tabl$Freq <- NULL
   
   return(merge(df, tabl, by = col))

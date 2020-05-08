@@ -1429,14 +1429,15 @@ shinyServer(function(input, output, session){
   
   # assign frequency 
   a_pathway_mapping_assign_freq <- reactive({
-    req(a_pulldown_significant(), input$a_pf_loc_option, )
+    req(a_pulldown_significant(), input$a_pf_loc_option)
     db = input$a_pf_loc_option
     pulldown <- a_pulldown_significant()
-    #pulldown <- pulldown[pulldown$significant, ]
-    overlap <- get_pathways(db, pulldown$gene)
-    overlap <- assign_freq(overlap, 'pathway')
-    overlap = merge(overlap, pulldown)
-    overlap
+    if (sum(pulldown$significant) > 0){
+      overlap <- get_pathways(db, pulldown$gene)
+      overlap <- assign_freq(overlap, 'pathway')
+      overlap = merge(overlap, pulldown)
+      return(overlap)
+    } else return(NULL)
   })
   
   # load in data and preset colors in a seperate
@@ -1446,14 +1447,15 @@ shinyServer(function(input, output, session){
     
     #  # get raw data and assign frequency count
     overlap <- a_pathway_mapping_assign_freq()
-    # assign color scheme
+    
+    # setup color scheme
     colors = as.data.frame(overlap[,c('pathway','Freq')])
     colors = colors[!duplicated(colors), ]
     colors$color = NA
-    #colors$color = ifelse(colors$Freq <= 1, 'grey', NA)
     set.seed(global.color.pathway.seed)
     n = sum(is.na(colors$color))
-    colors$color[is.na(colors$color)] <- sample(color_distinct()[1:n], n) 
+    colors$color[is.na(colors$color)] <- sample(color_distinct(n), n) 
+    
     # merge with overlap
     overlap = merge(overlap, colors[,c('pathway','color')], by = 'pathway')
     overlap = overlap[overlap$significant, ]
@@ -1525,15 +1527,20 @@ shinyServer(function(input, output, session){
   
   # make the ggplot
   a_pathway_plot_gg <- reactive({
-    req(a_pulldown_significant())
+    data = a_pulldown_significant()
+    req(data)
       p <- a_vp_gg()
-      if (nrow(a_pathway_mapping_subset()) > 0) {p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)}
-      p
+      if (sum(data$significant) > 0){
+        if (nrow(a_pathway_mapping_subset()) > 0) {
+          p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)
+        }
+      }
+    return(p)
   })
   
   # convert to plotly
   a_pathway_plot <- reactive({
-    req(a_pulldown_significant(), a_pathway_plot_gg(), a_pathway_mapping_initial())
+    req(a_pulldown_significant(), a_pathway_plot_gg())
   
     p <- a_pathway_plot_gg()
     

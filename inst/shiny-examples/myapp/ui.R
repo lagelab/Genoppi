@@ -259,7 +259,7 @@ body <- dashboardBody(
                                  ),
                                  column(8,
                                         box(
-                                          title = tagList("Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           fluidRow(
                                             column(11, shinyjs::hidden(myDownloadButton("a_pathway_plot_download", 'Gene sets plot')))
                                           ),

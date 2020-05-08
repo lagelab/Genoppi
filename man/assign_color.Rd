@@ -4,7 +4,7 @@
 \alias{assign_color}
 \title{assign color by column}
 \usage{
-assign_color(df, col, order_by_freq = T, palette = color_distinct())
+assign_color(df, col, order_by_freq = T)
 }
 \arguments{
 \item{df}{a data.frame}
@@ -12,8 +12,6 @@ assign_color(df, col, order_by_freq = T, palette = color_distinct())
 \item{col}{the identifiying column for assiging color}
 
 \item{order_by_freq}{boolean. Should the data be order by frequency of col?}
-
-\item{palette}{color palette, i.e. a vector of colors.}
 }
 \description{
 assigns color to a data.frame by a certain column

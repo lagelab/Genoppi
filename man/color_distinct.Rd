@@ -4,7 +4,10 @@
 \alias{color_distinct}
 \title{distinct coloring}
 \usage{
-color_distinct()
+color_distinct(length.out = 74)
+}
+\arguments{
+\item{length.out}{repeats the vector.}
 }
 \description{
 generates vector of 74 distinct colors from RColorBrewer.

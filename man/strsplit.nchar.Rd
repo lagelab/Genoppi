@@ -4,12 +4,14 @@
 \alias{strsplit.nchar}
 \title{strsplit.nchar}
 \usage{
-strsplit.nchar(x, nchar)
+strsplit.nchar(x, nchar, suffix = "...")
 }
 \arguments{
 \item{x}{a vector of strings.}
 
 \item{nchar}{integer.}
+
+\item{suffix}{string. what should all strings end with?}
 }
 \description{
 split a string by a charcater

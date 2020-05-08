@@ -11,26 +11,13 @@
 #' 
 set_names_by_dataset <- function(lst, marker = 'color', by = 'group'){
   
-  # accept both lists and data.frames
-  if (inherits(lst, "data.frame")) lst = list(lst)
-  stopifnot(is.character(marker))
-  stopifnot(is.character(by))
-  
-  # get unique markers by each data.set
-  unique_markers_by_dataset = lapply(lst, function(df) {
-    if (!inherits(df, "data.frame")) stop('expected a data.frame as a list item!')
-    if (marker %nin% colnames(df)) stop(paste('expected column', marker,'in data.frame!'))
-    if (by %nin% colnames(df)) stop(paste('expected column', by,'in data.frame!'))
-    tabl = df[,c(by,marker)]
-    tabl = as.data.frame(tabl[!duplicated(tabl),])
-    return(tabl)
-  })
+  # get the mapping of groups to colors, shapes etc.
+  unique_markers_by_dataset = tabulate_markers(lst, marker, by)
   
   # combine all data.frames
   tabl = do.call(rbind, unique_markers_by_dataset)
 
-  
-  # check uniqueness
+  # check whether constraints are violated
   if (lun(tabl[[by]]) != length(tabl[[by]])) stop(paste0('Multiple non-unique column "',marker,'" that correspond to different "',by,
                                                              '". The mapping is ambigious and can not be constructed.'))
   # set colors

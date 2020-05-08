@@ -21,6 +21,7 @@ the appropiate mapping, so that the color scheme can be correctly plotted.
 }
 \seealso{
 Other interactivity: 
-\code{\link{make_interactive}()}
+\code{\link{make_interactive}()},
+\code{\link{tabulate_markers}()}
 }
 \concept{interactivity}
