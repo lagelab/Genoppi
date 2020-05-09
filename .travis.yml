@@ -1,13 +1,12 @@
 # Use R
 language: r
-cache: packages
+#cache: packages
 warnings_are_errors: false
 
 
 # test multiple operating systems
 os:
   - linux
-  - osx
 
 # environment variables set for all builds
 env:
