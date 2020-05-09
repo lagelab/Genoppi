@@ -21,6 +21,7 @@ add_plotly_trace <- function(p, data, parameters, stroke_width = 0.2, legend = F
   # set legend order in trace
   if (!any(is.na(data$legend_order))) data$group = factor(data$group, levels = unique(data$group[data$legend_order]))
   
+  
   # make trace
   p1 <- add_trace(p, data = data, 
                   type = 'scatter',

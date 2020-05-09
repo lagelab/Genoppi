@@ -25,21 +25,28 @@ collapse_labels <- function(overlay, dataset = 'dataset', collapse_into = 'alt_l
   
   # which rows are non-unique?
   drows = unlist(lapply(overlay[[collapse_by]], function(x) sum(overlay[[collapse_by]] == x))) > 1
-  
+
   # combine overlapping overlays into a single lines 
   new = lapply(unique(overlay[drows, ][[collapse_by]]), function(g) {
-    z = overlay[overlay[[collapse_by]] %in% g, ]
-    z[[collapse_into]][is.na(z[[collapse_into]])] <- ''
-    z[[collapse_into]] = paste(apply(z[,c(dataset, collapse_into)] , 1 , paste , collapse = dataset_collapse_sep), collapse = item_sep)
-    return(z[1,])
+      z = overlay[overlay[[collapse_by]] %in% g, ]
+      z[[collapse_into]][is.na(z[[collapse_into]])] <- ''
+      z[[collapse_into]] = paste(apply(z[,c(dataset, collapse_into)] , 1 , paste , collapse = dataset_collapse_sep), 
+                                 collapse = item_sep)
+      return(z[1,])
   })
+    
   
-  # deal with single labels 
+  # deal with single labels
   old = overlay[!drows, ]
-  old[[collapse_into]] = apply(old[,c(dataset, collapse_into)] , 1 , paste , collapse = dataset_collapse_sep)
-  
+  tmp = data.frame(x1 = old[[dataset]], x3 = old[[collapse_into]], stringsAsFactors = F)
+  tmp$x2 = ifelse(is.na(tmp$x3),'', ": ")
+  tmp$x3[is.na(tmp$x3)] <- ''
+  tmp = tmp[,order(colnames(tmp))]
+  old[[collapse_into]] = apply(tmp , 1 , paste , collapse = '')
+    
   # conbine the filtered new overlays with alt labels with old
   combined = as.data.frame(rbind(do.call(rbind, new), old))
-  
+    
   return(combined)
+  
 }

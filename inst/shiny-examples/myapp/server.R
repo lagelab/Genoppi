@@ -5,10 +5,30 @@ shinyServer(function(input, output, session){
   storeWarn<- getOption("warn")
   options(warn = -1) 
   
+  
   observe({
     input$filetype
     updateTabsetPanel(session, "basic", selected = "p1")
   })
+  
+  # temporary files
+  #output$a_make_example_file <- renderUI({
+  #  actionButton('a_make_example_file', 'Example path')
+  #})
+  
+  # 
+  #a_example_dir <- eventReactive(input$a_make_example_file,{
+  #  dir = tempdir()
+  #  path = file.path(dir, 'example_data.csv')
+  #  write.csv(example_data, path)
+  #  return(path)
+  #})
+  
+  
+  #a_file_handler <- reactive({
+  #  file <- input$a_file_pulldown_r
+  #})
+  
   
   ##### VISUALIZATIONS START ##### 
   output$a_file <- renderUI({
@@ -277,6 +297,11 @@ shinyServer(function(input, output, session){
                 min = 0, max = 1, value = 0.5, step = 0.01)
   })
   
+  # toggle search bar labels in gene set annotations
+  #output$a_label_pathway_search_ui <- renderUI({
+  #  validate(need(input$a_file_pulldown_r != '', ""))
+  #  checkboxInput("a_label_pathway_search", label = "Toggle labels", value = TRUE)
+  #})
   
   output$a_bait_layer <- renderUI({
     textInput("a_bait_rep", value = "", "Input HGNC symbol to search for InWeb protein interactors (e.g. ZBTB7A)")
@@ -475,6 +500,7 @@ shinyServer(function(input, output, session){
                  inline = T)
     
   })
+  
   
   output$a_pathway_mapping_search_ui <- renderUI({
     req(a_pulldown_significant())
@@ -923,11 +949,6 @@ shinyServer(function(input, output, session){
       inweb_intersect = data.frame(listName="InWeb", intersectN=T)
       data = a_pulldown_significant()
       
-      #sta
-      #data$gene[!sigDf$gene == data$gene]
-      #sigDf$gene[!sigDf$gene == data$gene]
-      #data$gene[grepl('or',data$gene)]
-      
       # compile venn diagram information
       hyper = calc_hyper(data, inweb_list, inweb_intersect, bait = input$a_bait_search_rep)
       hyper[['venn']][['A']] <- hyper$genes$InWeb$success_genes # pulldown
@@ -1356,6 +1377,7 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold') p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    
     p$overlay <- collapse_labels(p$overlay)
     p
     
@@ -1537,6 +1559,9 @@ shinyServer(function(input, output, session){
       }
     return(p)
   })
+  
+  
+  
   
   # convert to plotly
   a_pathway_plot <- reactive({

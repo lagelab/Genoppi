@@ -247,6 +247,7 @@ body <- dashboardBody(
                                       ),
                                       fluidRow(
                                         column(12, uiOutput("a_pathway_mapping_search_ui"))
+                                        #column(4, uiOutput("a_label_pathway_search_ui"))
                                       ),
                                       fluidRow(
                                         column(12, uiOutput("a_pathway_mapping_type_sort_ui"))
@@ -466,6 +467,7 @@ sidebar <- dashboardSidebar(
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",
                                uiOutput("a_file"),
+                               #uiOutput('a_make_example_file'),
                                HTML('<hr style="border-color: #D6DBE0;">'),
                                uiOutput("a_bait_search"),
                                uiOutput("a_GOI_search"),

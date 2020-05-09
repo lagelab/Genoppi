@@ -26,9 +26,9 @@ make_interactive <- function(p, source = NULL, legend = T, sig_text = ''){
   global_symbols = set_names_by_dataset(null_omit(list(data, overlay)), marker= 'symbol') 
   ggparams = p
   params = environment()
-  
+
   # make plot
-  p1 = plot_ly(source = source, sizes = sizes) %>%  # sizes=c(7,29)
+  p1 = plot_ly(source = source, sizes = sizes) %>%
     genoppi::add_plotly_trace(data[data$gene %nin% overlay$gene,], params)
 
   # add overlay
