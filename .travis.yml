@@ -3,10 +3,14 @@ language: r
 cache: packages
 warnings_are_errors: false
 
+
 # test multiple operating systems
 os:
   - linux
   - osx
+
+# fix osx
+before_install: R -e 'source("https://install-github.me/r-lib/remotes")'
 
 # environment variables set for all builds
 env:
