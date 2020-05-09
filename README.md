@@ -90,15 +90,29 @@ plot_overlay(bait_volcano,inweb_list)
 
 # assess overlap b/w enriched proteins and InWeb interactors
 overlap_results <- calc_hyper(sig_df, inweb_df,
-  data.frame(listName="InWeb",intersectN=T), bait="BCL2")
+                              data.frame(listName="InWeb",intersectN=T), bait="BCL2")
 
 # Venn diagram of overlap
 venn_list <- list(Enriched=overlap_results$genes$InWeb$success_genes,
-  InWeb=overlap_results$genes$InWeb$sample_genes)
+                  InWeb=overlap_results$genes$InWeb$sample_genes)
 venn_diagram <- draw_genoppi_venn(venn_list)
 
 grid::grid.newpage()
 grid::grid.draw(venn_diagram)
+
+
+### (3) Integrated analyses using gene set annotations   
+genesets = get_geneset_overlay(sig_df, 'hgnc')
+
+# plot with ggplot
+plot_volcano_basic(sig_df) %>%
+  plot_overlay(genesets)
+
+# explore via plotly
+plot_volcano_basic(sig_df) %>%
+  plot_overlay(genesets) %>%
+  make_interactive()
+
 
 ```
 
