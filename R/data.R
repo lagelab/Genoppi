@@ -168,7 +168,7 @@
 "msigdb_c7_table"
 
 
-#' @title example proteomic data
+#' @title example proteomic data (1)
 #' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates
 #' @format data.frame object with columns: gene, rep1, rep2, rep3
 #' @family datasets
@@ -176,4 +176,24 @@
 #' @source simulated data, do not represent true biology. 
 
 "example_data"
+
+
+#' @title example proteomic data (2)
+#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates
+#' @format data.frame object with columns: gene, rep1, rep2, rep3
+#' @family datasets
+#' @docType data
+#' @source simulated data, do not represent true biology. 
+
+"example_data2"
+
+
+#' @title example proteomic data (3)
+#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates
+#' @format data.frame object with columns: gene, rep1, rep2, rep3
+#' @family datasets
+#' @docType data
+#' @source simulated data, do not represent true biology. 
+
+"example_data3"
 
