@@ -37,6 +37,7 @@ Imports:
     colourpicker,
     futile.logger,
     DT,
+    remotes,
     limma,
 Encoding: UTF-8
 RoxygenNote: 7.1.0
