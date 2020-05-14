@@ -112,3 +112,39 @@ test_that('invalid columns in overlay gives warning and errors',{
   expect_error(plot_overlay(p, reference$`SCZ genelist`)) # must be a named list
   
 })
+
+test_that('ggplot shapes are correctly translated to plotly symbols',{
+  
+  # read data
+  df <- read_input("data/test.data.txt", sep="\t")$data
+  df <- calc_mod_ttest(df)
+  
+  # setup basic test
+  id = 'D1'
+  df <- id_enriched_proteins(df, fdr_cutoff=0.1)
+  p = plot_volcano_basic(df)
+  
+  # overlay with square bait
+  bait = as.bait('BCL2')
+  bait$bait$shape = 22
+  p1 = plot_overlay(p, bait)
+  
+  # overlay with diamond inweb
+  inweb = get_inweb_list('BCL2')
+  inweb = list(inweb=inweb[inweb$significant, ])
+  inweb$inweb$shape = 23
+  p2 = plot_overlay(p1, inweb, label = F)
+  
+  # see whether squares are created
+  built = ggplot2::ggplot_build(p2)
+  expect_equal(as.character(built$data[[5]]$label), 'BCL2')
+  expect_equal(as.character(built$data[[5]]$shape), '22')
+  
+  # see whether diamonds are created
+  expect_true(all(as.character(built$data[[6]]$shape)  == '23'))
+  
+  # ensure that plotly also reflects these changes
+  built2 = make_interactive(p2)
+  expect_true(all(as.vector(built2$x$attrs[[2]]$symbols) == c("circle", "circle", "square", "diamond", "diamond")))
+  
+})

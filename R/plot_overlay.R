@@ -63,7 +63,6 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   # add guides for maintaining legend size
   p1 = p1 + guides(fill=guide_legend(override.aes=list(size = 3))) 
   
-  
   # annotate plot
   p1 = p1 + ggrepel::geom_text_repel(collapse_labels(overlay[unlist(ifelse(is.null(label), list(overlay$label), list(label))),]), 
                        mapping=aes(label = gene),

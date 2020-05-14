@@ -1,7 +1,4 @@
-#' @title misc tools
-#' @rdname misc
-#' @export
-
+#' @title length of unique 
 #' @description length of unique items.
 #' @param x a vector or list of items.
 #' @family misc
@@ -82,6 +79,7 @@ color_distinct <- function(length.out=74){
 #' @param df a data.frame
 #' @param col the column which to assign frequency to.
 #' @export
+#' 
 assign_freq <- function(df, col){
   tabl = as.data.frame(table(df[[col]]))
   colnames(tabl) <- c(col, 'Freq')
@@ -94,6 +92,7 @@ assign_freq <- function(df, col){
 #' @param col the identifiying column for assiging color
 #' @param order_by_freq boolean. Should the data be order by frequency of col?
 #' @export
+#' 
 assign_color <- function(df, col, order_by_freq = T){
   
   tabl = data.frame(table(df[[col]]), color = NA)
@@ -122,4 +121,70 @@ bold <- function(x){paste('<b>',x,'</b>', sep='')}
 #' @param x string
 #' @family misc
 #' @export
+#' 
 italics <- function(x){paste('<i>',x,'</i>', sep='')}
+
+#' @title get table of plotly/ggplot symbols
+#' @description get a table for translating
+#' between plotly symbols and ggplot shapes.
+#' @export
+#' @family misc
+table_symbols <- function() {
+  d = data.frame(shape=c(0:12,14,21:25),
+             symbol=c('square-open', # 0
+                      'circle-open', # 1
+                      'triangle-up-open', # 2
+                      'cross', # 3
+                      'x', # 4
+                      'diamond-open', # 5
+                      'triangle-down-open', # 6
+                      'square-x-open', # 7
+                      'asterisk', # 8
+                      'diamond-cross-open',
+                      'circle-cross-open', # 10
+                      'star-diamond', # 11
+                      'square-cross-open', # 12
+                      #'circle', # 13
+                      'square-x', # 14
+                      #'square', # 15
+                      #'circle', # 16
+                      #'triangle', # 17
+                      #'diamond', # 18
+                      #'circle', # 19
+                      #'circle', # 20
+                      'circle', # 21 
+                      'square', # 22
+                      'diamond', # 23
+                      'triangle-up',
+                      'triangle-down'), # 25
+             stringsAsFactors = F)
+  return(d[order(d$symbol),])
+}
+
+#' @title translate ggplot shapes to plotly symbols
+#' @param vec a character vector of ggplot shapes.
+#' @family misc
+#' @export
+#' 
+shape_to_symbol <- function(vec){
+  tabl = table_symbols()
+  stopifnot(all(vec %in% tabl$shape))
+  res = unlist(lapply(vec, function(x){tabl$symbol[tabl$shape == x]}))
+  return(res)
+}
+
+#' @title translate plotly symbols to ggplot shapes
+#' @param vec a character vector of plotly symbols.
+#' @family misc
+#' @export
+#' 
+symbol_to_shape <- function(vec){
+  tabl = table_symbols()
+  stopifnot(all(vec %in% tabl$symbol))
+  res = unlist(lapply(vec, function(x){tabl$shape[tabl$symbol == x][1]}))
+  return(res)
+}
+  
+  
+  
+

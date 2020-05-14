@@ -22,6 +22,8 @@ Other misc:
 \code{\link{color_gradient}()},
 \code{\link{enumerate_replicate_combinations}()},
 \code{\link{italics}()},
-\code{\link{lun}()}
+\code{\link{lun}()},
+\code{\link{shape_to_symbol}()},
+\code{\link{symbol_to_shape}()}
 }
 \concept{misc}

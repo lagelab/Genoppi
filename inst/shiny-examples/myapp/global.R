@@ -20,7 +20,8 @@ global.img.scatter.download.width = 8
 global.img.scatter.download.height = 8
 
 # what is the allowed palette of symbols in plotly
-plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values
+plotly_symbols = table_symbols()$symbol
+#plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values
 allowed_plotly_symbols = plotly_symbols[!grepl('^[0-9]+$', plotly_symbols)]
 
 # what file types are acccepted

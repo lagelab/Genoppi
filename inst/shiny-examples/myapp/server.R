@@ -141,7 +141,7 @@ shinyServer(function(input, output, session){
   # integrated plot, snp
   output$a_symbol_snp_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_snp', 'Symbol', choices = allowed_plotly_symbols)
+    selectInput('a_symbol_snp', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   # integrated plot, snp
   output$a_label_snp_ui <- renderUI({
@@ -179,7 +179,7 @@ shinyServer(function(input, output, session){
   # integrated plot, genes uplaod
   output$a_symbol_genes_upload_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_genes_upload', 'Symbol', choices = allowed_plotly_symbols)
+    selectInput('a_symbol_genes_upload', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # integrated plot, genes upload
@@ -221,7 +221,7 @@ shinyServer(function(input, output, session){
   # integrated plot, inweb
   output$a_symbol_inweb_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_inweb', 'Symbol', choices = allowed_plotly_symbols)
+    selectInput('a_symbol_inweb', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   # integrated plot, inweb
   output$a_label_inweb_ui <- renderUI({
@@ -246,7 +246,7 @@ shinyServer(function(input, output, session){
   # integrated plot, gwas catalogue
   output$a_symbol_gwas_cat_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_gwas_cat', 'Symbol', choices = allowed_plotly_symbols)
+    selectInput('a_symbol_gwas_cat', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   # integrated plot, genes upload
   output$a_label_gwas_cat_ui <- renderUI({
@@ -272,7 +272,7 @@ shinyServer(function(input, output, session){
   # intgrated plot, gnomad
   output$a_symbol_gnomad_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_gnomad', 'Symbol', choices = allowed_plotly_symbols)
+    selectInput('a_symbol_gnomad', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # intgrated plot, gnomad
@@ -641,6 +641,7 @@ shinyServer(function(input, output, session){
       genes$data$dataset = paste('Genes', ifelse(is.null(genes$data$listName), 'Upload', as.character(genes$data$listName)))
       genes$data$col_significant = input$a_color_genes_upload_sig
       genes$data$col_other = input$a_color_genes_upload_insig
+      genes$data$shape = symbol_to_shape(input$a_symbol_genes_upload)
       genes$data$symbol = input$a_symbol_genes_upload
       genes$data$label = input$a_label_genes_upload
       return(genes)
@@ -667,6 +668,7 @@ shinyServer(function(input, output, session){
     mapping$alt_label = mapping$SNP
     mapping$col_significant = input$a_color_snp_sig
     mapping$col_other = input$a_color_snp_insig
+    mapping$shape = symbol_to_shape(input$a_symbol_snp)
     mapping$symbol = input$a_symbol_snp
     mapping$label = input$a_label_snp
     mapping$dataset =  paste('SNPs', mapping$listName)
@@ -681,6 +683,7 @@ shinyServer(function(input, output, session){
         mapping = mapping[mapping$significant, ]
         mapping$col_significant = input$a_color_inweb_sig
         mapping$col_other = input$a_color_inweb_insig
+        mapping$shape = symbol_to_shape(input$a_symbol_inweb)
         mapping$symbol = input$a_symbol_inweb
         mapping$label = input$a_label_inweb
         mapping$dataset = 'InWeb'
@@ -696,6 +699,7 @@ shinyServer(function(input, output, session){
     if (!is.null(mapping)){
       mapping$col_significant = input$a_color_gwas_cat_sig
       mapping$col_other = input$a_color_gwas_cat_insig
+      mapping$shape = symbol_to_shape(input$a_symbol_gwas_cat)
       mapping$symbol = input$a_symbol_gwas_cat
       mapping$label = input$a_label_gwas_cat
       mapping$dataset = mapping$DISEASE.TRAIT
@@ -724,6 +728,7 @@ shinyServer(function(input, output, session){
     gnomad = gnomad[bool_threshold,]
     gnomad$col_significant = input$a_color_gnomad_sig 
     gnomad$col_other = input$a_color_gnomad_insig 
+    gnomad$shape = symbol_to_shape(input$a_symbol_gnomad)
     gnomad$symbol = input$a_symbol_gnomad
     gnomad$label = input$a_label_gnomad
     return(gnomad)
@@ -1376,6 +1381,9 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold') p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    
+    
+    #if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% hash::keys(inweb_hash)) browser()
     
     p$overlay <- collapse_labels(p$overlay)
     p

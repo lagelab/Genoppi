@@ -19,11 +19,13 @@ to_overlay_data <- function(df, dataset=NULL) {
   if ('label_size' %nin% cnames) df$label_size = 3
   if ('pLI' %nin% cnames) df$pLI <- NA
   if ('shape' %nin% cnames) df$shape <- 21
-  if ('symbol' %nin% cnames) df$symbol <- 'circle'
   if ('opacity' %nin% cnames) df$opacity <- 1
   if ('gg.size' %nin% cnames) df$gg.size <- 3.5
   if ('gene' %nin% cnames) df$gene <- NA
   if ('size' %nin% cnames) df$size <- 9
   if ('legend_order' %nin% cnames) df$legend_order <- NA 
+  if ('symbol' %nin% cnames) df$symbol <- shape_to_symbol(df$shape)
+  #if ('symbol' %nin% cnames) df$symbol <- 'circle'
+  
   return(as.data.frame(df))
 }

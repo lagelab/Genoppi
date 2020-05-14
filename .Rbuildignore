@@ -3,3 +3,5 @@
 ^codecov\.yml$
 ^\.travis\.yml$
 ^appveyor\.yml$
+^Dockerfile$
+^cloudbuild.yaml$

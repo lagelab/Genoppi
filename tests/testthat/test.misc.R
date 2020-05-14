@@ -33,5 +33,17 @@ test_that('assign_color',{
   
 })
 
+test_that('translate plotly symbols and ggplot shapes',{
+  
+  x = table_symbols()
+  expect_equal(lun(x$shape), length(x$shape))
+  expect_equal(lun(x$symbol), length(x$symbol))
+  expect_equal(symbol_to_shape(x$symbol), x$shape)
+  expect_equal(shape_to_symbol(x$shape), x$symbol)
+  expect_error(symbol_to_shape(x$shape))
+  expect_error(shape_to_symbol(x$symbol))
+  
+})
+
 
 
