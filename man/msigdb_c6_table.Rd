@@ -17,6 +17,8 @@ A table containing 30,469 MSigDB oncogenic signature annotations (10,897 unique 
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{example_data2}},
+\code{\link{example_data3}},
 \code{\link{example_data}},
 \code{\link{genes_snps}},
 \code{\link{gnomad_table}},

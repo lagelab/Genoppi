@@ -14,6 +14,10 @@ allowed_colors = c(add_marker_gradient,'#808080', '#A52A2A')
 max.genesets = 100
 max.nchar.legend = 35
 global.color.pathway.seed = 1
+global.img.volcano.download.width = 12
+global.img.volcano.download.height = 8
+global.img.scatter.download.width = 8
+global.img.scatter.download.height = 8
 
 # what is the allowed palette of symbols in plotly
 plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values

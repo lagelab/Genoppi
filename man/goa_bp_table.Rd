@@ -17,6 +17,8 @@ A table containing 140,067 GO biological process annotations (17,814 unique gene
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{example_data2}},
+\code{\link{example_data3}},
 \code{\link{example_data}},
 \code{\link{genes_snps}},
 \code{\link{gnomad_table}},

@@ -19,7 +19,7 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
   
   # set default parameters
   df$color = ifelse(df$significant, col_significant, col_other)
-  if (is.null(df$dataset)) df$dataset = 'pulldown'
+  if (is.null(df$dataset)) df$dataset = 'proteomic data'
   if (is.null(df$size)) df$size = 7
   if (is.null(df$shape)) df$shape = 21
   
@@ -34,13 +34,14 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
     geom_point(alpha=1, size=size_point, stroke = 0, color = 'black') +
     geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2) +
     labs(title = paste("r =",format(correlation,digits=3))) + 
-    xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~log[2]~'(Fold Change)')) +
-    ylab(bquote(.(gsub('(R|r)ep','Replicate ', repB))  ~log[2]~'(Fold Change)')) +
+    xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~log[2]~'[Fold Change]')) +
+    ylab(bquote(.(gsub('(R|r)ep','Replicate ', repB))  ~log[2]~'[Fold Change]')) +
     theme_minimal() + theme(panel.grid.major = element_blank(), 
                             panel.grid.minor = element_blank(),
                             panel.background = element_blank()) +
     scale_fill_manual(values = global_colors) +
-    scale_shape_manual(values = global_shapes)
+    scale_shape_manual(values = global_shapes) +
+    theme_classic()
   
   # set parameters for downstream processing
   #p$visual = list(volcano=F, x=repA, y=repB)

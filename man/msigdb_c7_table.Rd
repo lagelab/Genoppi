@@ -17,6 +17,8 @@ A table containing 947,586 MSigDB immunologic signature annotations (20,235 uniq
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{example_data2}},
+\code{\link{example_data3}},
 \code{\link{example_data}},
 \code{\link{genes_snps}},
 \code{\link{gnomad_table}},

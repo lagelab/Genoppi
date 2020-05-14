@@ -18,7 +18,7 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   
   # default parameters
   df$color <- ifelse(df$significant, col_significant, col_other)
-  if (is.null(df$dataset)) df$dataset = 'pulldown'
+  if (is.null(df$dataset)) df$dataset = 'proteomic data'
   if (is.null(df$size)) df$size = 7
   if (is.null(df$shape)) df$shape = 21
   

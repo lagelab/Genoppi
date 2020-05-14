@@ -762,7 +762,7 @@ shinyServer(function(input, output, session){
   # download inweb mapping
   output$a_inweb_mapping_download <- downloadHandler(
     filename = function() {
-      paste("inweb-mapping",".csv", sep="")
+      paste("genoppi-inweb-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -785,7 +785,7 @@ shinyServer(function(input, output, session){
   # download gene upload mapping
   output$a_gene_upload_mapping_download <- downloadHandler(
     filename = function() {
-      paste("gene-upload-mapping",".csv", sep="")
+      paste("genoppi-gene-upload-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -799,7 +799,7 @@ shinyServer(function(input, output, session){
   # download snp mapping
   output$a_snp_mapping_download <- downloadHandler(
     filename = function() {
-      paste("snps-mapping",".csv", sep="")
+      paste("genoppi-snps-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -812,7 +812,7 @@ shinyServer(function(input, output, session){
   # gwas catalogue mapping download
   output$a_gwas_catalogue_mapping_download <- downloadHandler(
     filename = function() {
-      paste("gwas-catalogue-mapping",".csv", sep="")
+      paste("genoppi-gwas-catalogue-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -825,7 +825,7 @@ shinyServer(function(input, output, session){
   # download gnomAD mapping
   output$a_gnomad_mapping_download <- downloadHandler(
     filename = function() {
-      paste("gnomad-mapping",".csv", sep="")
+      paste("genoppi-gnomad-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -838,7 +838,7 @@ shinyServer(function(input, output, session){
   # download protein family mapping? gene annotations
   output$a_pathway_mapping_download <- downloadHandler(
     filename = function() {
-      paste("gene-set-annotations-mapping",".csv", sep="")
+      paste("genoppi-gene-set-annotations-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -853,7 +853,7 @@ shinyServer(function(input, output, session){
   # venn diagram inweb mapping for inweb
   output$a_inweb_venn_mapping_download <- downloadHandler(
     filename = function() {
-      paste("inweb_venn_mapping",".csv", sep="")
+      paste("genoppi-inweb-venn-mapping",".csv", sep="")
     },
     content = function(file) {
       venn = a_inweb_calc_hyper()$venn
@@ -864,7 +864,7 @@ shinyServer(function(input, output, session){
   # venn diagram mapping for gnomad
   output$a_gnomad_venn_mapping_download <- downloadHandler(
     filename = function() {
-      paste("gnomad_venn_mapping",".csv", sep="")
+      paste("genoppi-gnomad-venn-mapping",".csv", sep="")
     },
     content = function(file) {
       venn = a_gnomad_calc_hyper()$venn
@@ -875,7 +875,7 @@ shinyServer(function(input, output, session){
   # venn diagram mapping for gwas catalogue
   output$a_gwas_catalogue_venn_mapping_download <- downloadHandler(
     filename = function() {
-      paste("a_gwas_catalogue_venn_mapping",".csv", sep="")
+      paste("genoppi-gwas-catalogue-venn-mapping",".csv", sep="")
     },
     content = function(file) {
       venn = a_gwas_catalogue_mapping_venn()
@@ -886,7 +886,7 @@ shinyServer(function(input, output, session){
   # venn diagram mapping snps
   output$a_snp_venn_mapping_download <- downloadHandler(
     filename = function() {
-      paste("a_snp_venn_mapping",".csv", sep="")
+      paste("genoppi-snp-venn-mapping",".csv", sep="")
     },
     content = function(file) {
       venn = a_snp_venn()
@@ -897,7 +897,7 @@ shinyServer(function(input, output, session){
   # venn diagram mapping for uploaded genes
   output$a_genes_upload_venn_mapping_download <- downloadHandler(
     filename = function() {
-      paste("a_genes_upload_venn_mapping",".csv", sep="")
+      paste("genoppi-genes-upload-venn-mapping",".csv", sep="")
     },
     content = function(file) {
       venn = a_genes_upload_venn()
@@ -1305,7 +1305,8 @@ shinyServer(function(input, output, session){
     p <- make_interactive(p, legend = T)
     if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-    p <- add_plotly_layout_volcano(p, 500*0.8, 625*0.8)
+    p <- add_plotly_layout_volcano(p, 550*0.8, 650*0.9)
+    
     return(p)
   })
   
@@ -1324,7 +1325,6 @@ shinyServer(function(input, output, session){
     }
   })
  
-  
   a_sp_gg_all <- reactive({
     # handle all scatter plots
     req(a_pulldown_significant())
@@ -1334,7 +1334,6 @@ shinyServer(function(input, output, session){
   })
   
   a_sp_gg <- reactive({
-    
   
     # what replicates are inputted
     req(input$a_select_scatterplot, a_pulldown_significant())
@@ -1346,7 +1345,7 @@ shinyServer(function(input, output, session){
     p1 = plot_overlay(p1, as.bait(input$a_bait_search_rep))
     p1$r = format(p[[input$a_select_scatterplot]]$correlation, digits = 3)
     p1
-
+  
   })
   
   a_sp <- reactive({
@@ -1397,13 +1396,15 @@ shinyServer(function(input, output, session){
   # download integrated plot graphics.
   input_integrated_plot_gg <- function(){a_integrated_plot_gg()}
   output$a_integrated_plot_download = downloadHandler(
-    filename = 'integrated-plot.png',
+    filename = 'genoppi-integrated-plot.png',
     content = function(file) {
       device <- function(..., width, height) {
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_integrated_plot_gg(), device = device)
+      ggsave(file, plot =  input_integrated_plot_gg(), device = device, 
+             width = global.img.volcano.download.width,
+             height = global.img.volcano.download.height)
     })
   
   # download pathway annoation plot
@@ -1415,32 +1416,38 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_pathway_plot_gg(), device = device)
+      ggsave(file, plot =  input_pathway_plot_gg(), device = device, 
+             width = global.img.volcano.download.width,
+             height = global.img.volcano.download.height)
     })
   
   
   # download basic scatter plot
   input_sp_gg <- function(){a_sp_gg()}
   output$a_scatter_plot_download = downloadHandler(
-    filename = 'scatter-plot.png',
+    filename = 'genoppi-scatter-plot.png',
     content = function(file) {
       device <- function(..., width, height) {
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_sp_gg(), device = device)
+      ggsave(file, plot =  input_sp_gg(), device = device, 
+             width = global.img.scatter.download.width,
+             height = global.img.scatter.download.height)
     })
   
   # download basic scatter plot
   input_vp_gg <- function(){a_vp_gg()}
   output$a_volcano_plot_download = downloadHandler(
-    filename = 'basic-volcano-plot.png',
+    filename = 'genoppi-volcano-plot.png',
     content = function(file) {
       device <- function(..., width, height) {
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_vp_gg(), device = device)
+      ggsave(file, plot =  input_vp_gg(), device = device, 
+             width = global.img.volcano.download.width,
+             height = global.img.volcano.download.height)
     })
   
   

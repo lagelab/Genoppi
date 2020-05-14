@@ -3,7 +3,7 @@
 \docType{data}
 \name{example_data}
 \alias{example_data}
-\title{example proteomic data}
+\title{example proteomic data (1)}
 \format{data.frame object with columns: gene, rep1, rep2, rep3}
 \source{
 simulated data, do not represent true biology.
@@ -17,6 +17,8 @@ Simulated proteomic dataset containing gene symbol and corresponding log2 fold c
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{example_data2}},
+\code{\link{example_data3}},
 \code{\link{genes_snps}},
 \code{\link{gnomad_table}},
 \code{\link{goa_bp_table}},
