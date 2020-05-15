@@ -2407,6 +2407,111 @@ shinyServer(function(input, output, session){
  })
   
  
+ #------------------------------------------------------
+ # download multiple files volcano and scatter plots
+ 
+ # download basic volcano and scatter plot
+ input_b_file_1_vp_gg <- function(){b_file_1_vp_gg()}
+ output$b_file_1_volcano_download = downloadHandler(
+   filename = paste("genoppi-multi-volcano-file1",".png", sep=""),
+   content = function(file) {
+     device <- function(..., width, height) {
+       grDevices::png(..., width = width, height = height,
+                      res = 300, units = "in")
+     }
+     ggsave(file, plot = input_b_file_1_vp_gg(), device = device, 
+            width = global.img.scatter.download.width,
+            height = global.img.scatter.download.height)
+   })
+ 
+ input_b_file_1_sp_gg <- function(){b_file_1_sp_gg()}
+ output$b_file_1_scatter_download = downloadHandler(
+   filename = paste("genoppi-multi-scatter-file1",".png", sep=""),
+   content = function(file) {
+     device <- function(..., width, height) {
+       grDevices::png(..., width = width, height = height,
+                      res = 300, units = "in")
+     }
+     ggsave(file, plot = input_b_file_1_sp_gg(), device = device, 
+            width = global.img.scatter.download.width,
+            height = global.img.scatter.download.height)
+   })
+ 
+ # show/hide buttons
+ observeEvent(b_file_1_significant(),{
+   shinyjs::show("b_file_1_volcano_download")
+   shinyjs::show("b_file_1_scatter_download")
+ })
+ 
+ ##
+ 
+ # download basic volcano and scatter plot
+ input_b_file_2_vp_gg <- function(){b_file_2_vp_gg()}
+ output$b_file_2_volcano_download = downloadHandler(
+   filename = paste("genoppi-multi-volcano-file2",".png", sep=""),
+   content = function(file) {
+     device <- function(..., width, height) {
+       grDevices::png(..., width = width, height = height,
+                      res = 300, units = "in")
+     }
+     ggsave(file, plot = input_b_file_2_vp_gg(), device = device, 
+            width = global.img.scatter.download.width,
+            height = global.img.scatter.download.height)
+   })
+ 
+ input_b_file_2_sp_gg <- function(){b_file_2_sp_gg()}
+ output$b_file_2_scatter_download = downloadHandler(
+   filename = paste("genoppi-multi-scatter-file2",".png", sep=""),
+   content = function(file) {
+     device <- function(..., width, height) {
+       grDevices::png(..., width = width, height = height,
+                      res = 300, units = "in")
+     }
+     ggsave(file, plot = input_b_file_2_sp_gg(), device = device, 
+            width = global.img.scatter.download.width,
+            height = global.img.scatter.download.height)
+   })
+ 
+ # show/hide buttons
+ observeEvent(b_file_2_significant(),{
+   shinyjs::show("b_file_2_volcano_download")
+   shinyjs::show("b_file_2_scatter_download")
+ })
+ 
+ 
+ # download basic volcano and scatter plot
+ input_b_file_3_vp_gg <- function(){b_file_3_vp_gg()}
+ output$b_file_3_volcano_download = downloadHandler(
+   filename = paste("genoppi-multi-volcano-file3",".png", sep=""),
+   content = function(file) {
+     device <- function(..., width, height) {
+       grDevices::png(..., width = width, height = height,
+                      res = 300, units = "in")
+     }
+     ggsave(file, plot = input_b_file_3_vp_gg(), device = device, 
+            width = global.img.scatter.download.width,
+            height = global.img.scatter.download.height)
+   })
+ 
+ input_b_file_3_sp_gg <- function(){b_file_3_sp_gg()}
+ output$b_file_3_scatter_download = downloadHandler(
+   filename = paste("genoppi-multi-scatter-file3",".png", sep=""),
+   content = function(file) {
+     device <- function(..., width, height) {
+       grDevices::png(..., width = width, height = height,
+                      res = 300, units = "in")
+     }
+     ggsave(file, plot = input_b_file_3_sp_gg(), device = device, 
+            width = global.img.scatter.download.width,
+            height = global.img.scatter.download.height)
+   })
+ 
+ # show/hide buttons
+ observeEvent(b_file_3_significant(),{
+   shinyjs::show("b_file_3_volcano_download")
+   shinyjs::show("b_file_3_scatter_download")
+ })
+ 
   
   ##### GENERAL #####
   #documentation

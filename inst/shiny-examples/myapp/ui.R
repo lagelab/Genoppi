@@ -310,6 +310,9 @@ body <- dashboardBody(
                                           title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
+                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_1_volcano_download", 'Volcano plot')))
+                                                 ),
+                                                 fluidRow(
                                                    plotlyOutput('b_file_1_volcano'),
                                                  )
                                           )
@@ -317,6 +320,9 @@ body <- dashboardBody(
                                         box(
                                           title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
+                                                 fluidRow(
+                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_1_scatter_download", 'Scatter plot')))
+                                                 ),
                                                  fluidRow(
                                                    plotlyOutput('b_file_1_scatter'),
                                                  )
@@ -347,6 +353,9 @@ body <- dashboardBody(
                                           title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
+                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_2_volcano_download", 'Volcano plot')))
+                                                 ),
+                                                 fluidRow(
                                                    plotlyOutput('b_file_2_volcano'),
                                                  )
                                           )
@@ -354,6 +363,9 @@ body <- dashboardBody(
                                         box(
                                           title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
+                                                 fluidRow(
+                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_2_scatter_download", 'Scatter plot')))
+                                                 ),
                                                  fluidRow(
                                                    plotlyOutput('b_file_2_scatter'),
                                                  )
@@ -384,6 +396,9 @@ body <- dashboardBody(
                                           title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
+                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_3_volcano_download", 'Volcano plot')))
+                                                 ),
+                                                 fluidRow(
                                                    plotlyOutput('b_file_3_volcano'),
                                                  )
                                           )
@@ -391,6 +406,9 @@ body <- dashboardBody(
                                         box(
                                           title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           column(12,
+                                                 fluidRow(
+                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_3_scatter_download", 'Scatter plot')))
+                                                 ),
                                                  fluidRow(
                                                    plotlyOutput('b_file_3_scatter'),
                                                  )
