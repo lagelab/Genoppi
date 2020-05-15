@@ -3,7 +3,8 @@ library(genoppi)
 # load genoppi if not attcahed (developer)
 if (!'genoppi' %in% .packages()) devtools::load_all()
 main = system.file('extdata', package = 'genoppi')
-
+genoppi.ver = as.character(packageVersion("genoppi"))
+  
 # setup the colors used in the app
 marker_cols <- read.table(file.path(main, 'colors.txt'))
 add_marker_cols <- read.table(file.path(main, 'colors_markers.txt'))

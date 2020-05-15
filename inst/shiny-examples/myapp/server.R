@@ -776,11 +776,11 @@ shinyServer(function(input, output, session){
       write.csv(mymerge, file, row.names = F)
     }
   )
-  
+   
   # download moderated t-test
   output$a_mttest_mapping_download <- downloadHandler(
     filename = function() {
-      paste("pulldown-mttest",".csv", sep="")
+      paste("genoppi-proteomic-results",".csv", sep="")
     },
     content = function(file) {
       write.csv(a_pulldown_significant(), file, row.names = F)
@@ -817,7 +817,7 @@ shinyServer(function(input, output, session){
   # gwas catalogue mapping download
   output$a_gwas_catalogue_mapping_download <- downloadHandler(
     filename = function() {
-      paste("genoppi-gwas-catalogue-mapping",".csv", sep="")
+      paste("genoppi-gwas-catalog-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
@@ -843,12 +843,13 @@ shinyServer(function(input, output, session){
   # download protein family mapping? gene annotations
   output$a_pathway_mapping_download <- downloadHandler(
     filename = function() {
-      paste("genoppi-gene-set-annotations-mapping",".csv", sep="")
+      paste("genoppi-geneset-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
       pathway = a_pathway_mapping()[,c('gene','pathway','Freq')]
       mymerge = merge(pulldown, pathway, by = 'gene')
+      mymerge$database = input$a_pf_loc_option
       write.csv(mymerge, file, row.names = F)
     }
   )
@@ -935,6 +936,7 @@ shinyServer(function(input, output, session){
     shinyjs::show("a_scatter_plot_download")
     shinyjs::show("a_integrated_plot_download")
     shinyjs::show("a_pathway_plot_download")
+    shinyjs::show("a_pathway_plot_legend_download")
   })
   
   #--------------------------------------------------------
@@ -1415,16 +1417,32 @@ shinyServer(function(input, output, session){
              height = global.img.volcano.download.height)
     })
   
+  
+  
   # download pathway annoation plot
  input_pathway_plot_gg <- function(){a_pathway_plot_gg()}
   output$a_pathway_plot_download = downloadHandler(
-    filename = 'gene-set-annotation-volcano-plot.png',
+    filename = paste0('genoppi-','geneset', '-plot.png'),
     content = function(file) {
       device <- function(..., width, height) {
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_pathway_plot_gg(), device = device, 
+      ggsave(file, plot =  a_pathway_plot_gg(), device = device, 
+             width = global.img.volcano.download.width,
+             height = global.img.volcano.download.height)
+    })
+  
+  # save the legend of the pathway plot
+  input_pathway_plot_legend_gg <- function(){a_pathway_plot_legend_gg()}
+  output$a_pathway_plot_legend_download = downloadHandler(
+    filename = paste0('genoppi-', 'geneset', '-legend.png'),
+    content = function(file) {
+      device <- function(..., width, height) {
+        grDevices::png(..., width = width, height = height,
+                       res = 300, units = "in")
+      }
+      ggsave(file, plot = a_pathway_plot_legend_gg(), device = device, 
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })
@@ -1538,10 +1556,11 @@ shinyServer(function(input, output, session){
       overlay$alt_label = overlay$pathway
       overlay$size = overlay$Freq/max(a_pathway_mapping_values()$Freq)
       overlay$size = 9+exp(3*overlay$size)
+      overlay$gg.size = overlay$size/2
       overlay$col_significant = overlay$color
       overlay$col_other = overlay$color
       overlay$symbol = 'square'
-      overlay$shape = 'square'
+      overlay$shape = 22
       overlay$opacity = 0.8
       overlay$label = F
       return(overlay)
@@ -1562,22 +1581,38 @@ shinyServer(function(input, output, session){
     return(overlay)
   })
   
-  # make the ggplot
-  a_pathway_plot_gg <- reactive({
+  
+  # make the ggplot legend
+  a_pathway_plot_legend_gg <- reactive({
+    plt = a_pathway_plot_tmp_gg()
+    req(plt)
+    legend = get_gg_legend(plt)
+    grid.newpage()
+    grid.draw(legend) 
+  })
+  
+  # make the ggplot with legend
+  a_pathway_plot_tmp_gg <- reactive({
     data = a_pulldown_significant()
-    req(data)
-      p <- a_vp_gg()
-      if (sum(data$significant) > 0){
-        if (nrow(a_pathway_mapping_subset()) > 0) {
-          p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)
-        }
+    req(data, a_pathway_mapping_subset())
+    p <- a_vp_gg()
+    if (sum(data$significant) > 0){
+      if (nrow(a_pathway_mapping_subset()) > 0) {
+        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)
       }
+    }
     return(p)
   })
   
+  # remove the legend with ggplot
+  a_pathway_plot_gg <- reactive({
+    plt = a_pathway_plot_tmp_gg()
+    req(plt)
+    plt = plt + theme(legend.position = 'none')
+    return(plt)
+  })
   
-  
-  
+
   # convert to plotly
   a_pathway_plot <- reactive({
     req(a_pulldown_significant(), a_pathway_plot_gg())

@@ -20,6 +20,7 @@ Other misc:
 \code{\link{catf}()},
 \code{\link{color_distinct}()},
 \code{\link{color_gradient}()},
+\code{\link{get_gg_legend}()},
 \code{\link{italics}()},
 \code{\link{lun}()},
 \code{\link{null_omit}()},

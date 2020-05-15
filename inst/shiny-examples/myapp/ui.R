@@ -262,7 +262,9 @@ body <- dashboardBody(
                                         box(
                                           title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           fluidRow(
-                                            column(11, shinyjs::hidden(myDownloadButton("a_pathway_plot_download", 'Gene sets plot')))
+                                            column(3, shinyjs::hidden(myDownloadButton("a_pathway_plot_download", 'Volcano plot'))),
+                                            column(3, shinyjs::hidden(myDownloadButton("a_pathway_plot_legend_download", 'Volcano plot (legend)'))),
+                                            column(6, '')
                                           ),
                                           fluidRow(style = "padding-bottom:125px",
                                             column(12, plotlyOutput('VolcanoPlotPathway'))
@@ -462,6 +464,7 @@ body <- dashboardBody(
 
 sidebar <- dashboardSidebar(
   sidebarMenu(id = "sidebarmenu",
+              #h6(as.character(genoppi.ver)),
               menuItem("Welcome Guide", tabName = "guide", icon = icon("info-circle")),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
@@ -486,15 +489,21 @@ sidebar <- dashboardSidebar(
                                uiOutput("b_file_3_ui"),
                                HTML('<hr style="border-color: #D6DBE0;">'),
                                uiOutput("b_GOI_search")
+              ),
+              br(),
+              tags$footer(
+                tags$p(paste('version',genoppi.ver), style = "color: grey; text-align: center;")
               )
                 
               
   )
 )
 
+
 # Put them together into a dashboardPage
 dashboardPage(skin = "black",
-              dashboardHeader(title = "Genoppi"),
+              #header,
+              dashboardHeader(title = 'Genoppi'),
               sidebar,
               body
 )

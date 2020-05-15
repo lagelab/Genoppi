@@ -12,6 +12,7 @@ between plotly symbols and ggplot shapes.
 }
 \concept{misc
 circle', # 13
+square-x-open', # 14
 square', # 15
 circle', # 16
 triangle', # 17

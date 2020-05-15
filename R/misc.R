@@ -130,22 +130,23 @@ italics <- function(x){paste('<i>',x,'</i>', sep='')}
 #' @export
 #' @family misc
 table_symbols <- function() {
-  d = data.frame(shape=c(0:12,14,21:25),
+  d = data.frame(
+    shape=c(0:12,21:25),
              symbol=c('square-open', # 0
                       'circle-open', # 1
                       'triangle-up-open', # 2
-                      'cross', # 3
-                      'x', # 4
+                      'cross-open', # 3
+                      'x-open', # 4
                       'diamond-open', # 5
                       'triangle-down-open', # 6
                       'square-x-open', # 7
-                      'asterisk', # 8
+                      'asterisk-open', # 8
                       'diamond-cross-open',
                       'circle-cross-open', # 10
-                      'star-diamond', # 11
+                      'star-diamond-open', # 11
                       'square-cross-open', # 12
                       #'circle', # 13
-                      'square-x', # 14
+                      #'square-x-open', # 14
                       #'square', # 15
                       #'circle', # 16
                       #'triangle', # 17
@@ -158,6 +159,9 @@ table_symbols <- function() {
                       'triangle-up',
                       'triangle-down'), # 25
              stringsAsFactors = F)
+
+  # open/closed symbols
+  d$open <- grepl('open', d$symbol)
   return(d[order(d$symbol),])
 }
 
@@ -185,6 +189,19 @@ symbol_to_shape <- function(vec){
   return(res)
 }
   
+#' @title get ggplot legend
+#' @description gets a ggplot legend
+#' @param a.gplot a ggplot
+#' @note code snippet from \url{https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2}
+#' @family misc
+#' @export
+#' 
+get_gg_legend <- function(a.gplot){ 
+  tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
+  legend <- tmp$grobs[[leg]] 
+  legend
+} 
   
   
 
