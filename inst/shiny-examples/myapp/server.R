@@ -310,6 +310,13 @@ shinyServer(function(input, output, session){
     textInput("a_bait_search_rep", "Input bait (HGNC symbol, e.g. BCL2)")
   })
   
+  a_bait_parsed <- reactive({
+    bait = input$a_bait_search_rep
+    if (bait == '') return(NULL)
+    else return(bait)
+  })
+  
+  
   output$a_GOI_search <- renderUI({
     textInput("a_goi_search_rep", "Search HGNC symbol")
   })
@@ -971,7 +978,7 @@ shinyServer(function(input, output, session){
       data = a_pulldown_significant()
       
       # compile venn diagram information
-      hyper = calc_hyper(data, inweb_list, inweb_intersect, bait = input$a_bait_search_rep)
+      hyper = calc_hyper(data, inweb_list, inweb_intersect, bait = a_bait_parsed())
       hyper[['venn']][['A']] <- hyper$genes$InWeb$success_genes # pulldown
       hyper[['venn' ]][['B']] <- hyper$genes$InWeb$sample_genes # inweb
       return(hyper)
@@ -1034,7 +1041,7 @@ shinyServer(function(input, output, session){
     # compile venn diagram information
     intersect_selected = intersect[intersect$listName %in% genelist | genelist == 'combined',]
     genes_selected = genes[genes$listName %in% genelist | genelist == 'combined',]
-    hyper = calc_hyper(pulldown, genes_selected, intersect_selected, input$a_bait_search_rep)
+    hyper = calc_hyper(pulldown, genes_selected, intersect_selected, a_bait_parsed())
     
     return(hyper)
   })
@@ -1316,7 +1323,8 @@ shinyServer(function(input, output, session){
     d <- a_pulldown_significant()
     req(input$a_color_indv_sig, input$a_color_indv_insig)
     p <- plot_volcano_basic(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
-    p <- plot_overlay(p, as.bait(input$a_bait_search_rep)) # add bait
+    if (!is.null(a_bait_parsed())) p <- plot_overlay(p, as.bait(a_bait_parsed())) # add bait
+    
     return(p)
   })
   
@@ -1363,7 +1371,7 @@ shinyServer(function(input, output, session){
 
     # handle individual plot
     p1 = p[[input$a_select_scatterplot]]$ggplot
-    p1 = plot_overlay(p1, as.bait(input$a_bait_search_rep))
+    if (!is.null(a_bait_parsed())) p1 = plot_overlay(p1, as.bait(a_bait_parsed()))
     p1$r = format(p[[input$a_select_scatterplot]]$correlation, digits = 3)
     p1
   
@@ -1397,11 +1405,8 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold') p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
-    
-    
-    #if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% hash::keys(inweb_hash)) browser()
-    
-    p$overlay <- collapse_labels(p$overlay)
+    # collapse labels
+    if (!is.null(x$overlay)) p$overlay <- collapse_labels(p$overlay)
     p
     
   })
@@ -1620,6 +1625,7 @@ shinyServer(function(input, output, session){
   
   # remove the legend with ggplot
   a_pathway_plot_gg <- reactive({
+    req(a_pathway_plot_tmp_gg())
     plt = a_pathway_plot_tmp_gg()
     req(plt)
     plt = plt + theme(legend.position = 'none')
@@ -1629,14 +1635,14 @@ shinyServer(function(input, output, session){
 
   # convert to plotly
   a_pathway_plot <- reactive({
-    req(a_pulldown_significant(), a_pathway_plot_gg())
+    req(a_pulldown_significant(), a_pathway_plot_gg(), input$a_pathway_mapping_type_sort)
   
     p <- a_pathway_plot_gg()
     
     # for now, we order overlay AFTER plot_overlay() has been called since 
     # the legend_order column would otherwise be disrupted through a merge operation.
     # see github issues for more details. In the future, this should be a reactive.
-    p$overlay$legend_order = unlist(ifelse(input$a_pathway_mapping_type_sort == 'freq',
+    if (!is.null(p$overlay$dataset)) p$overlay$legend_order = unlist(ifelse(input$a_pathway_mapping_type_sort == 'freq',
                                     list(rev(order(p$overlay$size))), list(order(p$overlay$dataset))))
     
     p <- make_interactive(p, legend = T)
@@ -1778,8 +1784,8 @@ shinyServer(function(input, output, session){
  # needed for searching gene
  b_search_gene <- reactive({
    gene_in <- input$b_goi_search_rep
-   req(gene_in)
-   toupper(gene_in)
+   if (gene_in == '') return(NULL)
+   else return(toupper(gene_in))
  })
  
  ## get the available replicate in each file
