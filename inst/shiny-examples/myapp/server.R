@@ -5,7 +5,6 @@ shinyServer(function(input, output, session){
   storeWarn<- getOption("warn")
   options(warn = -1) 
   
-  
   observe({
     input$filetype
     updateTabsetPanel(session, "basic", selected = "p1")
@@ -34,6 +33,7 @@ shinyServer(function(input, output, session){
   output$a_file <- renderUI({
     fileInput('a_file_pulldown_r', 'Upload user input file', accept = files_accepted)
   })
+  
   
   output$a_color_scheme <- renderUI({
     radioButtons("colorscheme", "Color scheme:",
@@ -254,7 +254,6 @@ shinyServer(function(input, output, session){
     checkboxInput("a_label_gwas_cat", label = "Toggle labels", value = TRUE)
   })
   
-  
   # intgrated plot, gnomad
   output$a_color_gnomad_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
@@ -451,9 +450,7 @@ shinyServer(function(input, output, session){
   
   # based on a_pulldown(), create slider for logFC
   output$a_FDR_slider <- renderUI({
-    validate(
-      need(input$a_file_pulldown_r != '', "")
-    )
+    validate(need(input$a_file_pulldown_r != '', ""))
     sliderInput("a_FDR_range", "FDR",
                 min = 0, max = 1, value = c(0, 0.1), step = 0.01)
   })
@@ -518,6 +515,16 @@ shinyServer(function(input, output, session){
         shinyjs::show("a_pval_thresh")
         shinyjs::hide("a_fdr_thresh")
       }
+  })
+  
+  
+  # check pulldown input format for inconsistencies
+  a_in_pulldown_check <- reactive({
+    req(input$a_file_pulldown_r)
+    d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t')
+    errs = get_shiny_errors(d$data)
+    if (errs == '') return(T)
+    else return(F)
   })
   
   # loading the data and getting the pulldown
@@ -652,7 +659,11 @@ shinyServer(function(input, output, session){
   a_search_gene <- reactive({
     gene_in <- input$a_goi_search_rep
     req(gene_in)
-    toupper(gene_in)
+    if (gene_in != ''){
+      toupper(gene_in)
+    } else {
+      return(NULL)
+    }
   })
   
   #snp to gene using LD r^2>0.6±user defined extension
@@ -881,7 +892,7 @@ shinyServer(function(input, output, session){
   # venn diagram mapping for gwas catalogue
   output$a_gwas_catalogue_venn_mapping_download <- downloadHandler(
     filename = function() {
-      paste("genoppi-gwas-catalogue-venn-mapping",".csv", sep="")
+      paste("genoppi-gwas-catalog-venn-mapping",".csv", sep="")
     },
     content = function(file) {
       venn = a_gwas_catalogue_mapping_venn()
@@ -896,6 +907,9 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_snp_venn()
+      #browser()
+      #a_snp_mapping() # to be adressed..
+      
       write.csv(venn_to_table(venn), file, row.names = F)
     }
   )
@@ -1312,7 +1326,7 @@ shinyServer(function(input, output, session){
     p <- make_interactive(p, legend = T)
     if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-    p <- add_plotly_layout_volcano(p, 550*0.8, 650*0.9)
+    p <- add_plotly_layout_volcano(p, width = global.basic.volcano.width, height = global.basic.volcano.height)
     
     return(p)
   })
@@ -1365,7 +1379,7 @@ shinyServer(function(input, output, session){
     # convert into interactive graphics
     p1 = make_interactive(p1)
     if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene())
-    p1 = add_plotly_layout_scatter(p1, paste0('r=',r))
+    p1 = add_plotly_layout_scatter(p1, paste0('r=',r), width = global.basic.scatter.width, height = global.basic.scatter.height)
     p1 = add_plotly_line_unity(p1)
     #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
     
@@ -1399,7 +1413,7 @@ shinyServer(function(input, output, session){
     p <- make_interactive(p, source = "Multi_VolcanoPlot", legend = T, sig_text = sig_label)
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction,  sig_type = input$a_significance_type)
     if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
-    p <- add_plotly_layout_volcano(p, 550, 650) # error in searching overlay here when layout width/height supplied. 
+    p <- add_plotly_layout_volcano(p, width = global.integrated.volcano.width, height = global.integrated.volcano.height) # error in searching overlay here when layout width/height supplied. 
     p
   })
   
@@ -1629,7 +1643,7 @@ shinyServer(function(input, output, session){
     if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
     if (!is.null(input$a_pathway_mapping_search)) p <- add_plotly_markers_search_pathway(p, input$a_pathway_mapping_search, mapping = a_pathway_mapping_initial())
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-    p <- add_plotly_layout_volcano(p, 500, 875)
+    p <- add_plotly_layout_volcano(p, width = global.genesets.volcano.width, height = global.genesets.volcano.height)
     return(p)
   })
   

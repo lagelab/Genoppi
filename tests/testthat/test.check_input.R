@@ -39,3 +39,23 @@ test_that('check_input can describe different datasets',{
 
 })
 
+test_that('column names are accepted but column content is invalid',{
+  
+  # expected numeric columns
+  #df1a = df1
+  #df1a$rep2 = as.character(df1a$rep2)
+  #expect_error(check_input(df1a))
+  
+  # expected character column
+  #df1b = df1b
+  #df1b$gene = as.numeric(df1b$gene)
+  #expect_error(check_input(df1b))
+  
+  
+  
+  
+})
+
+
+
+

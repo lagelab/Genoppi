@@ -202,6 +202,17 @@ get_gg_legend <- function(a.gplot){
   legend <- tmp$grobs[[leg]] 
   legend
 } 
+
+#' @title is columns
+#' @description conducts a test on a specific
+#' subset of columns in the data.frame
+#' @param df the data.frame
+#' @param col string. Column name regex.
+#' @param test a function. E.g. is.numeric
+is_cols <- function(df, col, test){
+  cnames = colnames(df)
+  return(all(lapply(df[,grepl(col, cnames)], test)))
+}
   
   
 

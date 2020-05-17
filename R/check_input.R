@@ -35,5 +35,4 @@ check_input <- function(df){
   
   names(check) = names(allowed_formats)
   return(list(check=check, allowed=allowed_formats)) 
-
 }

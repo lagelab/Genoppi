@@ -49,8 +49,8 @@ body <- dashboardBody(
                                             column(12, shinyjs::hidden(myDownloadButton("a_mttest_mapping_download", 'Proteomic data', icon("download"))))
                                           )
                                         ),
-                                        shinyjs::hidden(box(
-                                          id='box_mapping_warning_ui', title = "Gene mapping", width = NULL, solidHeader = TRUE, status = "warning", collapsible = TRUE, collapsed = FALSE,
+                                        shinyjs::hidden(box( #
+                                          id='box_mapping_warning_ui', title = "Error!", width = NULL, solidHeader = TRUE, status = "warning", collapsible = TRUE, collapsed = FALSE,
                                           fluidRow(
                                             h6('Explore mapping of accession to gene symbol')
                                           )

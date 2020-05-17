@@ -11,13 +11,28 @@ add_marker_cols <- read.table(file.path(main, 'colors_markers.txt'))
 add_marker_gradient <- readLines(file.path(main, 'color_markers_gradient.txt'))
 allowed_colors = c(add_marker_gradient,'#808080', '#A52A2A')
 
+##---------------------------
+# global default variables
+
 # global genoppi variables
 max.genesets = 100
 max.nchar.legend = 35
 global.color.pathway.seed = 1
+
+# genoppi plotly dimensions
+global.basic.volcano.width = 650*0.95
+global.basic.volcano.height = 550*0.8
+global.basic.scatter.width = 650*0.95
+global.basic.scatter.height = 550*0.8
+global.integrated.volcano.width = 650
+global.integrated.volcano.height = 550
+global.genesets.volcano.width = 875
+global.genesets.volcano.height = 500
+
+# genoppi download dimensions
 global.img.volcano.download.width = 12
 global.img.volcano.download.height = 8
-global.img.scatter.download.width = 8
+global.img.scatter.download.width = 12
 global.img.scatter.download.height = 8
 
 # what is the allowed palette of symbols in plotly
