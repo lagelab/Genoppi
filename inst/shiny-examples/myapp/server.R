@@ -2560,7 +2560,7 @@ shinyServer(function(input, output, session){
  # download protein family mapping? gene annotations
  output$b_file_comparison_data_table_download_ui <- downloadHandler(
    filename = function() {
-     paste("genoppi-multi-scatter-files-venn",".csv", sep="")
+     paste("genoppi-multi-venn-mapping",".csv", sep="")
    },
    content = function(file) {
     df = b_file_comparison_data_table()
