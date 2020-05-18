@@ -48,13 +48,13 @@ body <- dashboardBody(
                                             br(),
                                             column(12, shinyjs::hidden(myDownloadButton("a_mttest_mapping_download", 'Proteomic data', icon("download"))))
                                           )
-                                        ),
-                                        shinyjs::hidden(box( #
-                                          id='box_mapping_warning_ui', title = "Error!", width = NULL, solidHeader = TRUE, status = "warning", collapsible = TRUE, collapsed = FALSE,
-                                          fluidRow(
-                                            h6('Explore mapping of accession to gene symbol')
-                                          )
-                                        ))
+                                        )#,
+                                        #shinyjs::hidden(box( #
+                                        #  id='box_mapping_warning_ui', title = "Error!", width = NULL, solidHeader = TRUE, status = "warning", collapsible = TRUE, collapsed = FALSE,
+                                        #  fluidRow(
+                                        #    column(12, uiOutput('a_in_pulldown_check_ui'))
+                                        #  )
+                                        #))
                                  ),
                                  column(width = 8,
                                         box(
@@ -488,6 +488,7 @@ sidebar <- dashboardSidebar(
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",
                                uiOutput("a_file"),
+                               uiOutput("a_in_pulldown_check_ui"),
                                #uiOutput('a_make_example_file'),
                                HTML('<hr style="border-color: #D6DBE0;">'),
                                uiOutput("a_bait_search"),

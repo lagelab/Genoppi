@@ -33,8 +33,7 @@ shinyServer(function(input, output, session){
   output$a_file <- renderUI({
     fileInput('a_file_pulldown_r', 'Upload user input file', accept = files_accepted)
   })
-  
-  
+
   output$a_color_scheme <- renderUI({
     radioButtons("colorscheme", "Color scheme:",
                  c("FDR" = "fdr", 
@@ -524,21 +523,26 @@ shinyServer(function(input, output, session){
       }
   })
   
-  
   # check pulldown input format for inconsistencies
-  a_in_pulldown_check <- reactive({
+  a_input_errors <- reactive({
     req(input$a_file_pulldown_r)
     d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t')
     errs = get_shiny_errors(d$data)
-    if (errs == '') return(T)
-    else return(F)
+    return(errs)
+  })
+  
+  # check input
+  output$a_in_pulldown_check_ui <- renderUI({
+    output <- a_input_errors()
+    if (output != '') stop(HTML(paste(output, sep = "<br/>")))
   })
   
   # loading the data and getting the pulldown
-  a_in_pulldown <- reactive({
+  a_in_pulldown <- eventReactive(input$a_file_pulldown_r,{
     req(input$a_file_pulldown_r)
+    validate(need(a_input_errors() == '', ""))
     d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t')
-    return(d)
+    d
   })
   
   # map accession_numbers to gene ids if needed
@@ -611,19 +615,34 @@ shinyServer(function(input, output, session){
     accepted = colnames(pulldown$data)[allowed_vec]
     discarded = colnames(pulldown$data)[!allowed_vec]
     
+    # check for NAs in rows
+    na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
+    na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
+
     # pre-rendered messages
     msg1 = paste0(bold('Error:'),' None of the inpputed column names are allowed')
     msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
     msg3 = paste0('The following column names were invalid and discarded: ', italics(paste0(discarded, collapse = ', ')),'.')
     msg4 = paste0('See supplementary protocol for a description of allowed data inputs.')
-
+    msg5 = paste0(bold('Warning:'), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
+    
     # no valid cols
+    msg = ''
     if (length(accepted) == 0){
-      return(HTML(paste(msg1, msg4)))
+      msg = paste(msg, msg1, msg4)
+      #return(HTML(paste(msg1, msg4)))
     # enough valid but some invalid
     } else if (length(accepted) != length(allowed_vec)){
-      return(HTML(paste(msg2, msg3, msg4)))
-    } else return(NULL)
+      msg = paste(msg, msg2, msg3, msg4)
+      #return(HTML(paste(msg2, msg3, msg4)))
+    } 
+    if (na_rows > 0){
+      msg = paste(msg, msg5)
+    }
+    
+    
+    if (msg != '') return(HTML(msg))
+    else return(NULL)
     
   })
  

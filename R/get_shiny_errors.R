@@ -9,11 +9,12 @@ get_shiny_errors <- function(df){
   check_columns_names = check_input(df)
   cnames = colnames(df)
   msg = ''
+  warning = ''
   
   # The input format was not accepted
   if (all(!unlist(check_columns_names$check))){
-    msg[[1]] = paste('The input columns were not recognized. See the supplementary protocol on what column names are accepted')
-    return(list(fail=T, msg=msg))
+    msg[[1]] = paste('The input columns were not recognized. See the supplementary protocol on what column names are accepted.')
+    return(msg)
   }
   
   # check columns
@@ -35,6 +36,13 @@ get_shiny_errors <- function(df){
   if ('FDR' %in% cnames){
     if (!is_cols(df, 'FDR', is.nuemric)){msg = paste(msg, 'exepcted column FDR to be numeric')}
   }
+  
+  # check for NAs
+  #nas.col = apply(df, 2, function(x) any(is.na(x)))
+  #nas.row = sum(apply(df, 1, function(x) any(is.na(x))))
+  #if (any(nas)){
+  #  warning = paste0(warning, ' <NA> was found in column(s) ', paste(names(nas.col)[nas.col], ' (',nas.row,' rows)', collapse = ', '))
+  #}
   
   return(msg)
 }
