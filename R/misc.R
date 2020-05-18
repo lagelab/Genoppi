@@ -211,7 +211,8 @@ get_gg_legend <- function(a.gplot){
 #' @param test a function. E.g. is.numeric
 is_cols <- function(df, col, test){
   cnames = colnames(df)
-  return(all(lapply(df[,grepl(col, cnames)], test)))
+  if (!any(grepl(col, cnames))) stop(paste(col,'was not found!'))
+  return(all(unlist(lapply(df[,grepl(col, cnames)], test))))
 }
   
   

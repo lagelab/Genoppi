@@ -5,13 +5,15 @@
 #' t-test on the data
 #' @param path a string, data path
 #' @return a data.frame ready for further analysis in genoppi 
+#' @note this is for sequential parsing of files in the multiple
+#' file tab in shiny.
 #' @export
 #' @family shiny
 
 
 parse_uploaded_file <- function(path){
   
-  if (length(path) > 1) stop('expected a strin, found a vector!')
+  if (length(path) > 1) stop('expected a string, found a vector!')
   if (!file.exists(path)) stop(paste(path,'does not exist!'))
   
   pulldown = read_input(path, sep = '\t')

@@ -18,6 +18,10 @@ the following actions are performed sequentially
 column is present, and if so, map to gene id; 3) calculate moderated
 t-test on the data
 }
+\note{
+this is for sequential parsing of files in the multiple
+file tab in shiny.
+}
 \seealso{
 Other shiny: 
 \code{\link{add_plotly_markers_search_pathway}()},

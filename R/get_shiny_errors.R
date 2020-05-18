@@ -28,21 +28,14 @@ get_shiny_errors <- function(df){
     if (!is_cols(df, 'rep[0-9]', is.numeric)){msg = paste(msg, 'exepcted column(s) rep[0-9] to be numeric!')}
   }
   if ('logFC' %in% cnames){
-    if (!is_cols(df, 'logFC', is.nuemric)){msg = paste(msg, 'exepcted column logFC to be numeric')}
+    if (!is_cols(df, 'logFC', is.numeric)){msg = paste(msg, 'exepcted column logFC to be numeric')}
   }
   if ('pvalue' %in% cnames){
-    if (!is_cols(df, 'pvalue', is.nuemric)){msg = paste(msg, 'exepcted column pvalue to be numeric')}
+    if (!is_cols(df, 'pvalue', is.numeric)){msg = paste(msg, 'exepcted column pvalue to be numeric')}
   }
   if ('FDR' %in% cnames){
-    if (!is_cols(df, 'FDR', is.nuemric)){msg = paste(msg, 'exepcted column FDR to be numeric')}
+    if (!is_cols(df, 'FDR', is.numeric)){msg = paste(msg, 'exepcted column FDR to be numeric')}
   }
-  
-  # check for NAs
-  #nas.col = apply(df, 2, function(x) any(is.na(x)))
-  #nas.row = sum(apply(df, 1, function(x) any(is.na(x))))
-  #if (any(nas)){
-  #  warning = paste0(warning, ' <NA> was found in column(s) ', paste(names(nas.col)[nas.col], ' (',nas.row,' rows)', collapse = ', '))
-  #}
   
   return(msg)
 }
