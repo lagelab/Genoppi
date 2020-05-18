@@ -877,6 +877,7 @@ shinyServer(function(input, output, session){
     }
    )
   
+
   # download protein family mapping? gene annotations
   output$a_pathway_mapping_download <- downloadHandler(
     filename = function() {
@@ -1419,13 +1420,14 @@ shinyServer(function(input, output, session){
   # generate plot in ggformat
   a_integrated_plot_gg <- reactive({
     p = a_vp_gg()
+    
     if (!is.null(input$a_gwas_catalogue)) if (input$a_gwas_catalogue != '') p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
     if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% hash::keys(inweb_hash)) p = plot_overlay(p, list(inweb=a_inweb_mapping()))
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold') p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
     # collapse labels
-    if (!is.null(x$overlay)) p$overlay <- collapse_labels(p$overlay)
+    if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)
     p
     
   })
@@ -2427,21 +2429,25 @@ shinyServer(function(input, output, session){
                           unique(as.character(names(overlap)))))
  })
 
+ 
  # make data.table for showing overlap
- output$b_file_comparison_data_table_ui <- DT::renderDataTable({
-   
+ b_file_comparison_data_table <- reactive({
    req(b_overlap())
    overlap = b_mapping()
-   
    selected = input$b_file_comparison_data_table_select
-   
    if (any(selected %nin% 'All')){
      overlap = overlap[names(overlap) %in% selected]
    }
    
    lst = lapply(names(overlap), function(x){overlap[[x]][,c('gene','dataset')]})
    df = do.call(rbind, lst)
-   
+   return(df)
+ })
+ 
+ # show table
+ output$b_file_comparison_data_table_ui <- DT::renderDataTable({
+   req(b_file_comparison_data_table())
+   df = b_file_comparison_data_table()
    DT::datatable(df)
  })
   
@@ -2550,6 +2556,18 @@ shinyServer(function(input, output, session){
    shinyjs::show("b_file_3_volcano_download")
    shinyjs::show("b_file_3_scatter_download")
  })
+ 
+ # download protein family mapping? gene annotations
+ output$b_file_comparison_data_table_download_ui <- downloadHandler(
+   filename = function() {
+     paste("genoppi-multi-scatter-files-venn",".csv", sep="")
+   },
+   content = function(file) {
+    df = b_file_comparison_data_table()
+    write.csv(df, file, row.names = F)
+   }
+ )
+ 
  
   
   ##### GENERAL #####

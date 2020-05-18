@@ -450,8 +450,11 @@ body <- dashboardBody(
                                             column(4, 
                                                    uiOutput('b_file_comparison_data_table_select_ui')   
                                                    ),
-                                            column(8
-                                                   #''
+                                            column(4,
+                                                   myDownloadButton("b_file_comparison_data_table_download_ui", 'Genes', icon("download"))
+                                                   ),
+                                            column(4,
+                                                   ''
                                                    )
                                           ),
                                           fluidRow(
