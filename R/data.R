@@ -1,5 +1,5 @@
 #' @title  gene ID mapping table
-#' @description A table containing 67,744 entries of accession_number to gene (HGNC symbol) mapping. 
+#' @description A table containing 67,519 entries of accession_number to gene (HGNC symbol) mapping. 
 #' @format data.frame object with columns: accession_number, gene
 #' @family datasets
 #' @docType data
@@ -9,11 +9,11 @@
 
 
 #' @title InWeb hash table
-#' @description A hash table containing InWeb interactions for 18,478 genes (generated October 2018).
-#' @format hash object with each of 18,478 genes as key, vector of its InWeb interactors as value
+#' @description A hash table containing InWeb database protein interactions for 18,551 genes.
+#' @format hash object with each of 18,551 genes as key, vector of its InWeb interactors as value
 #' @family datasets
 #' @docType data
-#' @source Genoppi-v3 InWeb_Combined_Oct2018.Rdata file created by April Kim.
+#' @source Genoppi-v3 InWeb_Combined_Oct2018.Rdata file created by April Kim, modified to add 73 genes as keys.
 
 "inweb_hash"
 
