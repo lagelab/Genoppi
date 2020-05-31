@@ -12,7 +12,7 @@ Protein-coding genes downloaded from Uniprot.
 accession_gene_table
 }
 \description{
-A table containing 67,744 entries of accession_number to gene (HGNC symbol) mapping.
+A table containing 67,519 entries of accession_number to gene (HGNC symbol) mapping.
 }
 \seealso{
 Other datasets: 

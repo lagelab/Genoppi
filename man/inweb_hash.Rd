@@ -4,15 +4,15 @@
 \name{inweb_hash}
 \alias{inweb_hash}
 \title{InWeb hash table}
-\format{hash object with each of 18,478 genes as key, vector of its InWeb interactors as value}
+\format{hash object with each of 18,551 genes as key, vector of its InWeb interactors as value}
 \source{
-Genoppi-v3 InWeb_Combined_Oct2018.Rdata file created by April Kim.
+Genoppi-v3 InWeb_Combined_Oct2018.Rdata file created by April Kim, modified to add 73 genes as keys.
 }
 \usage{
 inweb_hash
 }
 \description{
-A hash table containing InWeb interactions for 18,478 genes (generated October 2018).
+A hash table containing InWeb database protein interactions for 18,551 genes.
 }
 \seealso{
 Other datasets: 

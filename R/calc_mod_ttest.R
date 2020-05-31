@@ -17,8 +17,10 @@ calc_mod_ttest <- function(df, iter=1000){
   # check input
   stopifnot(is.data.frame(df))
   stopifnot(nrow(df) > 0)
-  
   columns = grepl('rep[0-9]',colnames(df))
+  
+  # check for rep names
+  if (all(!columns)) stop('data does not contain rep columns! LmFit failed!')
   
   # moderated t-test
   myfit <- limma::lmFit(df[,columns], method="robust", maxit=iter)

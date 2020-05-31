@@ -42,8 +42,8 @@ make_interactive <- function(p, source = NULL, legend = T, sig_text = ''){
     }
     
     # add annotations
-    if (nrow(overlay) > 0 & any(overlay$label)){
-      overlay_label = overlay[overlay$label, ]
+    if (nrow(overlay) > 0 & any(overlay$label) & any(!is.na(overlay$gene)) ){
+      overlay_label = overlay[overlay$label & !is.na(overlay$gene), ]
       p1 <- add_annotations(p1,
                             data = overlay_label,
                             x = ggparams$mapping$x,

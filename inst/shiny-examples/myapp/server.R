@@ -537,6 +537,20 @@ shinyServer(function(input, output, session){
     if (output != '') stop(HTML(paste(output, sep = "<br/>")))
   })
   
+  # returns boolean indicating whether mapping was done
+  a_gene_mapping_bool <- reactive({
+    req(a_in_pulldown())
+    pulldown <- a_in_pulldown()
+    return(pulldown$format$check$accession_rep | pulldown$format$check$accession_signif)
+  })
+  
+  # returns boolean indicating whether rep1-2 is in the data
+  a_file_rep_bool <- reactive({
+    req(a_in_pulldown())
+    check = a_in_pulldown()$format$check
+    return(check$gene_rep | check$accession_rep)
+  })
+  
   # loading the data and getting the pulldown
   a_in_pulldown <- eventReactive(input$a_file_pulldown_r,{
     req(input$a_file_pulldown_r)
@@ -548,12 +562,11 @@ shinyServer(function(input, output, session){
   # map accession_numbers to gene ids if needed
   a_orig_pulldown <- reactive({
     pulldown <- a_in_pulldown()
-    if (pulldown$format$check$accession_rep == TRUE){
+    if (a_gene_mapping_bool()){
       pulldown$data <- map_gene_id(pulldown$data)
       }
     return(pulldown$data)
   })  
-  
   
   # final pulldown formatted data.frame
   a_pulldown <- reactive({
@@ -1377,6 +1390,7 @@ shinyServer(function(input, output, session){
   a_sp_gg_all <- reactive({
     # handle all scatter plots
     req(a_pulldown_significant())
+    validate(need(a_file_rep_bool() == TRUE , ""))
     d = a_pulldown_significant()
     p = plot_scatter_basic_all(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
     return(p)
@@ -1386,6 +1400,7 @@ shinyServer(function(input, output, session){
   
     # what replicates are inputted
     req(input$a_select_scatterplot, a_pulldown_significant())
+    
     rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
     p = a_sp_gg_all()
 
@@ -1796,7 +1811,27 @@ shinyServer(function(input, output, session){
    return(parse_uploaded_file(input$b_file_3$datapath))
    } else return(NULL)
  })
-
+ 
+ ## track whether data contains replixcate data
+ 
+ b_file_1_rep_bool <- reactive({
+   req(b_file_1_parsed())
+   check = read_input(input$b_file_1$datapath)$format$check
+   return(check$gene_rep | check$accession_rep)
+ })
+ 
+ b_file_2_rep_bool <- reactive({
+   req(b_file_2_parsed())
+   check = read_input(input$b_file_2$datapath)$format$check
+   return(check$gene_rep | check$accession_rep)
+ })
+ 
+ b_file_3_rep_bool <- reactive({
+   req(b_file_3_parsed())
+   check = read_input(input$b_file_3$datapath)$format$check
+   return(check$gene_rep | check$accession_rep)
+ })
+ 
  #
  output$b_GOI_search <- renderUI({
    textInput("b_goi_search_rep", "Search HGNC symbol")
@@ -1813,7 +1848,7 @@ shinyServer(function(input, output, session){
  
  # Search for replicates in data
  b_file_1_available_replicates <- reactive({
-   req(b_file_1_parsed())
+   validate(need(b_file_1_rep_bool(), ""))
    d <- b_file_1_parsed()
    reps = sum(grepl('^rep[0-9]+$',colnames(d)))
    if (reps > 2){
@@ -1825,6 +1860,7 @@ shinyServer(function(input, output, session){
  
  # render select scatter plot
  output$b_file_1_select_scatterplot_ui <- renderUI({
+   req(b_file_1_available_replicates())
    
    rep_input = b_file_1_available_replicates()
    reps_verbatim = gsub('rep','replicate ', rep_input)
@@ -1840,7 +1876,7 @@ shinyServer(function(input, output, session){
  
  # Search for replicates in data
  b_file_2_available_replicates <- reactive({
-   req(b_file_2_parsed())
+   validate(need(b_file_2_rep_bool(), ""))
    d <- b_file_2_parsed()
    reps = sum(grepl('^rep[0-9]+$',colnames(d)))
    if (reps > 2){
@@ -1852,6 +1888,7 @@ shinyServer(function(input, output, session){
  
  # render select scatter plot
  output$b_file_2_select_scatterplot_ui <- renderUI({
+   req(b_file_2_available_replicates())
    
    rep_input = b_file_2_available_replicates()
    reps_verbatim = gsub('rep','replicate ', rep_input)
@@ -1867,7 +1904,7 @@ shinyServer(function(input, output, session){
  
  # Search for replicates in data
  b_file_3_available_replicates <- reactive({
-   req(b_file_3_parsed())
+   validate(need(b_file_3_rep_bool(), ""))
    d <- b_file_3_parsed()
    reps = sum(grepl('^rep[0-9]+$',colnames(d)))
    if (reps > 2){
@@ -1879,6 +1916,7 @@ shinyServer(function(input, output, session){
  
  # render select scatter plot
  output$b_file_3_select_scatterplot_ui <- renderUI({
+   req(b_file_3_available_replicates())
    
    rep_input = b_file_3_available_replicates()
    reps_verbatim = gsub('rep','replicate ', rep_input)
@@ -1917,7 +1955,7 @@ shinyServer(function(input, output, session){
  })
  
  output$b_file_1_logFC_thresh <- renderUI({
-   if(!is.null(input$b_file_1)){
+   if(!is.null(b_file_1_parsed())){
      limit <- calc_logfc_limit(b_file_1_parsed(), input$b_file_1_logfc_direction)
      sliderInput("b_file_1_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
                  min = 0, max = limit, value = 0, step = 0.1)
@@ -1952,7 +1990,7 @@ shinyServer(function(input, output, session){
  })
  
  output$b_file_2_logFC_thresh <- renderUI({
-   if(!is.null(input$b_file_2)){
+   if(!is.null(b_file_2_parsed())){
      limit <- calc_logfc_limit(b_file_2_parsed(), input$b_file_2_logfc_direction)
      sliderInput("b_file_2_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
                  min = 0, max = limit, value = 0, step = 0.1)
@@ -1987,7 +2025,7 @@ shinyServer(function(input, output, session){
  })
  
  output$b_file_3_logFC_thresh <- renderUI({
-   if(!is.null(input$b_file_3)){
+   if(!is.null(b_file_3_parsed())){
      limit <- calc_logfc_limit(b_file_3_parsed(), input$b_file_3_logfc_direction)
      sliderInput("b_file_3_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
                  min = 0, max = limit, value = 0, step = 0.1)
@@ -2195,7 +2233,7 @@ shinyServer(function(input, output, session){
  })
  
  b_file_1_vp <- reactive({
-   
+
    p <- b_file_1_vp_gg()
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
