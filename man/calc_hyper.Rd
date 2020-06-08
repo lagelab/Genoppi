@@ -23,7 +23,10 @@ Use one-tailed hypergeometric test to calcualte overlap enrichment between prote
 }
 \examples{
 \dontrun{
-# an example
-
+data("example_data")
+inwebDf <- get_inweb_list('BCL2')
+inwebDf$listName <- 'list1'
+intersectDf <- data.frame(listName='list1', intersectN = T)
+calc_hyper(example_data, inwebDf, intersectDf, 'BCL2')
 }
 }

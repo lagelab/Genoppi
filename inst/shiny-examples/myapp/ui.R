@@ -87,7 +87,7 @@ body <- dashboardBody(
                                        column(12, uiOutput("a_bait_layer"))
                                      ),
                                      fluidRow(
-                                       column(8, uiOutput("a_label_inweb_ui")),
+                                       column(8, uiOutput("a_label_inweb_ui"), uiOutput("a_inweb_message")),
                                        column(4, shinyjs::hidden(myDownloadButton("a_inweb_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      ),
                                     ),

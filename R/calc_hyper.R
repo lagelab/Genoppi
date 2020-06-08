@@ -7,8 +7,11 @@
 #' @return list of data.frame and list. Data.frame contains list_name, successInSample_count (x), sample_count (n), notSample_count (N-n), success_count (k), population_count (N), pvalue. List of lists (for each listName) contains genes names corresponding to each group (successInSample_genes, sample_genes, notSample_genes, success_genes, population_genes).
 #' @examples 
 #' \dontrun{
-#' # an example
-#' 
+#' data("example_data")
+#' inwebDf <- get_inweb_list('BCL2')
+#' inwebDf$listName <- 'list1'
+#' intersectDf <- data.frame(listName='list1', intersectN = T)
+#' calc_hyper(example_data, inwebDf, intersectDf, 'BCL2')
 #' }
 #' @export
 
@@ -67,3 +70,14 @@ calc_hyper <- function(df, listDf, intersectDf, bait=NULL){
   return(list(statistics=outDf,genes=outList))
 
 }
+
+
+
+
+
+
+
+
+
+
+

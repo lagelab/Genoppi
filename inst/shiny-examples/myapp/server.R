@@ -140,7 +140,7 @@ shinyServer(function(input, output, session){
   # integrated plot, snp
   output$a_symbol_snp_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_snp', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
+    selectInput('a_symbol_snp', 'Symbol', choices = allowed_plotly_symbols, selected = 'square')
   })
   # integrated plot, snp
   output$a_label_snp_ui <- renderUI({
@@ -178,7 +178,7 @@ shinyServer(function(input, output, session){
   # integrated plot, genes uplaod
   output$a_symbol_genes_upload_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_genes_upload', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
+    selectInput('a_symbol_genes_upload', 'Symbol', choices = allowed_plotly_symbols, selected = 'square')
   })
   
   # integrated plot, genes upload
@@ -228,6 +228,7 @@ shinyServer(function(input, output, session){
     checkboxInput("a_label_inweb", label = "Toggle labels", value = TRUE)
   })
   
+  
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_sig_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
@@ -245,7 +246,7 @@ shinyServer(function(input, output, session){
   # integrated plot, gwas catalogue
   output$a_symbol_gwas_cat_ui <- renderUI({
     validate(need(input$a_file_pulldown_r != '', ""))
-    selectInput('a_symbol_gwas_cat', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
+    selectInput('a_symbol_gwas_cat', 'Symbol', choices = allowed_plotly_symbols, selected = 'diamond')
   })
   # integrated plot, genes upload
   output$a_label_gwas_cat_ui <- renderUI({
@@ -289,7 +290,6 @@ shinyServer(function(input, output, session){
   
   # integrated plot, gnomad slider
   output$a_slide_gnomad_pli_threshold_ui <- renderUI({
-    #validate(need(input$a_file_pulldown_r != '', ""))
     validate(need(input$a_select_gnomad_pli_type == 'threshold', ""))
     sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
                 min = 0, max = 1, value = 0.5, step = 0.01)
@@ -314,7 +314,6 @@ shinyServer(function(input, output, session){
     if (bait == '') return(NULL)
     else return(bait)
   })
-  
   
   output$a_GOI_search <- renderUI({
     textInput("a_goi_search_rep", "Search HGNC symbol")
@@ -684,12 +683,14 @@ shinyServer(function(input, output, session){
     filepath = input$a_file_genes_rep$datapath
     if (!is.null(filepath)){
       genes = get_gene_lists(filepath)
-      genes$data$dataset = paste('Genes', ifelse(is.null(genes$data$listName), 'Upload', as.character(genes$data$listName)))
+      genes$data$dataset = 'Genes upload'
       genes$data$col_significant = input$a_color_genes_upload_sig
       genes$data$col_other = input$a_color_genes_upload_insig
       genes$data$shape = symbol_to_shape(input$a_symbol_genes_upload)
       genes$data$symbol = input$a_symbol_genes_upload
       genes$data$label = input$a_label_genes_upload
+      #if (!is.null(genes$data$listName)) genes$data$alt_label <- genes$data$listName
+      if (lun(genes$data$listName) > 1) genes$data$alt_label <- genes$data$listName
       return(genes)
     }
   })
@@ -715,13 +716,14 @@ shinyServer(function(input, output, session){
   # read in the snps from a file
   a_snp_mapping <- reactive({
     mapping = get_snp_lists(infile = a_snp(), a_pulldown()$gene)
-    mapping$alt_label = mapping$SNP
     mapping$col_significant = input$a_color_snp_sig
     mapping$col_other = input$a_color_snp_insig
     mapping$shape = symbol_to_shape(input$a_symbol_snp)
     mapping$symbol = input$a_symbol_snp
     mapping$label = input$a_label_snp
-    mapping$dataset =  paste('SNPs', mapping$listName)
+    mapping$dataset = 'SNP upload'
+    mapping$alt_label = mapping$SNP
+    if (lun(mapping$listName) > 1) mapping$alt_label <- paste0(mapping$alt_label, ' (',mapping$listName,')')
     return(mapping)
   })
   
@@ -752,8 +754,9 @@ shinyServer(function(input, output, session){
       mapping$shape = symbol_to_shape(input$a_symbol_gwas_cat)
       mapping$symbol = input$a_symbol_gwas_cat
       mapping$label = input$a_label_gwas_cat
-      mapping$dataset = mapping$DISEASE.TRAIT
       mapping$alt_label = mapping$SNP
+      mapping$dataset = 'GWAS catalog'
+      if (lun(mapping$DISEASE.TRAIT) == 1) mapping$dataset = mapping$DISEASE.TRAIT
       return(mapping)
     }
   })
@@ -1003,8 +1006,6 @@ shinyServer(function(input, output, session){
     inweb_output = get_inweb_list(input$a_bait_rep)
     if (!is.null(inweb_output)){
       
-      #browser()
-      
       # gather all inweb data
       inweb_list = data.frame(listName="InWeb", inweb_output)
       inweb_intersect = data.frame(listName="InWeb", intersectN=T)
@@ -1040,6 +1041,17 @@ shinyServer(function(input, output, session){
     return(list(A=A, B=B, total=total))
   })
   
+  # message if Inweb can not be found
+  output$a_inweb_message <- renderUI({
+    query = input$a_bait_rep
+    mapping = a_inweb_mapping()
+    data = a_pulldown_significant()
+    if (is.null(mapping)){
+      return(HTML(paste(query, 'was not found in InWeb!')))
+    } else if (query %nin% data$gene){
+      return(HTML(paste(query, 'was not found ind data!')))
+    }
+  })
   
   output$a_inweb_venn_table_ui <- reactive({
     req(a_pulldown_significant(), a_inweb_calc_hyper())
