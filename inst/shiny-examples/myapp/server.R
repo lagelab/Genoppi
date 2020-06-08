@@ -10,6 +10,9 @@ shinyServer(function(input, output, session){
     updateTabsetPanel(session, "basic", selected = "p1")
   })
   
+  ## reactive values
+  file1_path <- reactiveVal(value = NULL)
+  
   # temporary files
   #output$a_make_example_file <- renderUI({
   #  actionButton('a_make_example_file', 'Example path')
@@ -25,15 +28,48 @@ shinyServer(function(input, output, session){
   
   
   #a_file_handler <- reactive({
-  #  file <- input$a_file_pulldown_r
+  #  file <- a_file_pulldown_r() 
   #})
   
   
   ##### VISUALIZATIONS START ##### 
+  output$a_example_file_ui <- renderUI({
+    fileInput('a_file_pulldown_extra', 'Upload a proteomic data file to get started!', accept = files_accepted)
+  })
+  
+  output$a_get_example_file_ui <- renderUI({
+    HTML(paste('Or try out',actionLink('a_get_example_file', 'an example file'), '!'))
+  })
+  
+  
   output$a_file <- renderUI({
     fileInput('a_file_pulldown_r', 'Upload user input file', accept = files_accepted)
   })
-
+  
+  observeEvent(input$a_get_example_file,{
+    updateTabItems(session, "sidebarmenu", 'dashboard')
+    file1_path(example_file)
+  })
+  
+  observeEvent(input$a_file_pulldown_extra,{
+    updateTabItems(session, "sidebarmenu", 'dashboard')
+    file1_path(input$a_file_pulldown_extra$datapath)
+  })
+  
+  observeEvent(input$tab_welcome, {
+    updateTabItems(session, "sidebarmenu", 'guide')
+  })
+  
+  observeEvent(input$a_file_pulldown_r,{
+    file1_path(input$a_file_pulldown_r$datapath)
+  })
+  
+  a_file_pulldown_r <- reactive({
+    validate(need(!is.null(file1_path()), ''))
+    data.frame(datapath = file1_path(), stringsAsFactors = F)
+  })
+  
+  
   output$a_color_scheme <- renderUI({
     radioButtons("colorscheme", "Color scheme:",
                  c("FDR" = "fdr", 
@@ -75,7 +111,7 @@ shinyServer(function(input, output, session){
   
   # based on a_pulldown(), create slider for logFC
   output$logFC_thresh <- renderUI({
-    if(!is.null(input$a_file_pulldown_r)){
+    if(!is.null(a_file_pulldown_r() )){
       limit <- calc_logfc_limit(a_pulldown(), input$a_logfc_direction)
       sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
                   min = 0, max = limit, value = 0, step = 0.1)
@@ -109,7 +145,7 @@ shinyServer(function(input, output, session){
   
   # basic plot
   output$a_color_theme_indv_sig <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
     colourpicker::colourInput('a_color_indv_sig', label, value = '#41AB5D', showColour = 'both', 
                   palette = c( "limited"), allowedCols = allowed_colors)
@@ -117,7 +153,7 @@ shinyServer(function(input, output, session){
     
   # basic plot
   output$a_color_theme_indv_insig <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'and', monitor_logfc_threshold()$insig))))
     colourpicker::colourInput('a_color_indv_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
@@ -125,32 +161,32 @@ shinyServer(function(input, output, session){
   
   # intgrated plot, snp
   output$a_color_snp_sig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_snp_sig', label, value = 'blue', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, snp
   output$a_color_snp_insig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_snp_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # integrated plot, snp
   output$a_symbol_snp_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     selectInput('a_symbol_snp', 'Symbol', choices = allowed_plotly_symbols, selected = 'square')
   })
   # integrated plot, snp
   output$a_label_snp_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_snp", label = "Toggle labels", value = TRUE)
   })
   
   # integrated plot, snp
   output$a_overlay_snp_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_overlay_snp", label = "Toggle overlay", value = TRUE)
   })
   
@@ -162,14 +198,14 @@ shinyServer(function(input, output, session){
   
   # intgrated plot, genes upload
   output$a_color_genes_upload_sig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_genes_upload_sig', label, value = '#A52A2A', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, genes upload
   output$a_color_genes_upload_insig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_genes_upload_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
@@ -177,25 +213,25 @@ shinyServer(function(input, output, session){
   
   # integrated plot, genes uplaod
   output$a_symbol_genes_upload_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     selectInput('a_symbol_genes_upload', 'Symbol', choices = allowed_plotly_symbols, selected = 'square')
   })
   
   # integrated plot, genes upload
   output$a_label_genes_upload_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_genes_upload", label = "Toggle labels", value = TRUE)
   })
   
   # integrated plot, genes upload
   output$a_overlay_genes_upload_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_overlay_genes_upload", label = "Toggle overlay", value = TRUE)
   })
   
   # integrated plot, reset
   output$a_reset_genes_upload_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     actionButton('a_reset_genes_upload', 'Reset')
   })
   observeEvent(input$a_reset_genes_upload, {
@@ -205,84 +241,84 @@ shinyServer(function(input, output, session){
   
   # intgrated plot, inweb
   output$a_color_inweb_sig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_inweb_sig', label, value = 'yellow', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, inweb
   output$a_color_inweb_insig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_inweb_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # integrated plot, inweb
   output$a_symbol_inweb_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     selectInput('a_symbol_inweb', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   # integrated plot, inweb
   output$a_label_inweb_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_inweb", label = "Toggle labels", value = TRUE)
   })
   
   
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_sig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_sig', label, value = 'cyan', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_insig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # integrated plot, gwas catalogue
   output$a_symbol_gwas_cat_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     selectInput('a_symbol_gwas_cat', 'Symbol', choices = allowed_plotly_symbols, selected = 'diamond')
   })
   # integrated plot, genes upload
   output$a_label_gwas_cat_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_gwas_cat", label = "Toggle labels", value = TRUE)
   })
   
   # intgrated plot, gnomad
   output$a_color_gnomad_sig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gnomad_sig', label, value = '#FF00FF', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gnomad
   output$a_color_gnomad_insig_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_gnomad_insig', label, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gnomad
   output$a_symbol_gnomad_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     selectInput('a_symbol_gnomad', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # intgrated plot, gnomad
   output$a_label_gnomad_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_gnomad", label = "Toggle labels", value = FALSE)
   })
 
   # integrated plot, gnomad 
   output$a_select_gnomad_pli_type_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     radioButtons("a_select_gnomad_pli_type", label = 'Select pLI type', 
                  choiceNames = list('None','Threshold'),
                  choiceValues = list('none','threshold'))
@@ -297,7 +333,7 @@ shinyServer(function(input, output, session){
   
   # toggle search bar labels in gene set annotations
   #output$a_label_pathway_search_ui <- renderUI({
-  #  validate(need(input$a_file_pulldown_r != '', ""))
+  #  validate(need(a_file_pulldown_r()  != '', ""))
   #  checkboxInput("a_label_pathway_search", label = "Toggle labels", value = TRUE)
   #})
   
@@ -437,7 +473,7 @@ shinyServer(function(input, output, session){
   
   # based on a_pulldown(), create slider for logFC
   output$a_logFC_slider <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     
     catf('deprecated..!')
     
@@ -455,7 +491,7 @@ shinyServer(function(input, output, session){
   
   # based on a_pulldown(), create slider for logFC
   output$a_FDR_slider <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     sliderInput("a_FDR_range", "FDR",
                 min = 0, max = 1, value = c(0, 0.1), step = 0.01)
   })
@@ -463,14 +499,14 @@ shinyServer(function(input, output, session){
   # based on a_pulldown(), create slider for logFC
   output$a_pvalue_slider <- renderUI({
     validate(
-      need(input$a_file_pulldown_r != '', "")
+      need(a_file_pulldown_r()  != '', "")
     )
     sliderInput("a_pvalue_range", "pvalue",
                 min = 0, max = 1, value = c(0, 1), step = 0.01)
   })
   
   output$a_pf_loc_selection <- renderUI({
-    #req(input$a_file_pulldown_r())
+    #req(a_file_pulldown_r() ())
     selectInput('a_pf_loc_option', 'Gene sets', c("HGNC gene groups"="hgnc", 
                                                      "GO terms: molecular function"="mf", 
                                                      "GO terms: cellular component"="cc", 
@@ -524,8 +560,8 @@ shinyServer(function(input, output, session){
   
   # check pulldown input format for inconsistencies
   a_input_errors <- reactive({
-    req(input$a_file_pulldown_r)
-    d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t')
+    req(a_file_pulldown_r() )
+    d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
     errs = get_shiny_errors(d$data)
     return(errs)
   })
@@ -551,10 +587,10 @@ shinyServer(function(input, output, session){
   })
   
   # loading the data and getting the pulldown
-  a_in_pulldown <- eventReactive(input$a_file_pulldown_r,{
-    req(input$a_file_pulldown_r)
+  a_in_pulldown <- eventReactive(a_file_pulldown_r() ,{
+    req(a_file_pulldown_r() )
     validate(need(a_input_errors() == '', ""))
-    d <- read_input(input$a_file_pulldown_r$datapath, sep = '\t')
+    d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
     d
   })
   
@@ -758,7 +794,7 @@ shinyServer(function(input, output, session){
       mapping$dataset = 'GWAS catalog'
       if (lun(mapping$DISEASE.TRAIT) == 1) mapping$dataset = mapping$DISEASE.TRAIT
       return(mapping)
-    }
+    } 
   })
   
   
@@ -969,7 +1005,7 @@ shinyServer(function(input, output, session){
   )
   
   # show/hide data download buttons
-  observeEvent(input$a_file_pulldown_r, {shinyjs::toggle(id="a_mttest_mapping_download", condition=!is.null(input$a_file_pulldown_r))})
+  observeEvent(a_file_pulldown_r() , {shinyjs::toggle(id="a_mttest_mapping_download", condition=!is.null(a_file_pulldown_r() ))})
   observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% hash::keys(inweb_hash)))})
   observe({shinyjs::toggle(id="a_snp_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_SNP_rep$datapath))})
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
@@ -1716,19 +1752,19 @@ shinyServer(function(input, output, session){
   
   # plot colors bars
   output$FDR_colorbar <- renderPlot({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     a_vp_colorbar()
   })
   
   output$FDR_colorbar_integrated <- renderPlot({
-    validate(need(input$a_file_pulldown_r != '', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
     a_vp_colorbar()
   })
   
 
   # the actual volcano plot outputted to the user
   output$VolcanoPlot <- renderPlotly({
-    validate(need(input$a_file_pulldown_r != '', "Upload file"))
+    validate(need(a_file_pulldown_r()  != '', "Upload file"))
       a_vp_layerx()
   })
   
@@ -1739,12 +1775,12 @@ shinyServer(function(input, output, session){
   
   
   output$a_verbatim_count_ui <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', " "))
+    validate(need(a_file_pulldown_r()  != '', " "))
     a_verbatim_count()
   })
   
   output$VP_count_text <- renderUI({
-    validate(need(input$a_file_pulldown_r != '', " "))
+    validate(need(a_file_pulldown_r()  != '', " "))
     output <- a_vp_count_text()
     HTML(output)
   })
@@ -1761,19 +1797,19 @@ shinyServer(function(input, output, session){
   
   
   output$ScatterPlot <- renderPlotly({
-    validate(need(input$a_file_pulldown_r != '', "Upload file"))
+    validate(need(a_file_pulldown_r()  != '', "Upload file"))
     a_sp()
   })
   
   output$multi_FDR_colorbar <- renderPlot({
     validate(
-      need(input$a_file_pulldown_r != '', "")
+      need(a_file_pulldown_r()  != '', "")
     )
     a_multi_vp_colorbar()
   })
   
   output$Multi_VolcanoPlot <- renderPlotly({
-    #validate(need(input$a_file_pulldown_r != '', "Upload file"))
+    #validate(need(a_file_pulldown_r()  != '', "Upload file"))
     req(a_pulldown_significant)
     a_integrated_plot()
   })

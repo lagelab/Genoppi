@@ -51,6 +51,11 @@ files_accepted = c('text/csv',
 # for ensuring venn diagrams does not make logs
 futile.logger::flog.threshold(futile.logger::ERROR) 
 
+# save example data
+data("example_data")
+example_file = tempfile(fileext = '.txt')
+write.table(example_data, example_file, quote = F, row.names = F, sep = '\t')
+
 #
 myDownloadButton <- function(outputId, label = "Download", img = icon("camera")){
   tags$a(id = outputId, class = "btn btn-default shiny-download-link", href = "", 
