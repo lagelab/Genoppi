@@ -480,28 +480,30 @@ body <- dashboardBody(
                                            height = "3100px")
     ),
     tabItem(tabName = "start",
-            column(3, ''),
-            column(6, 
-              # top of table
-              fluidRow(style = "padding-top:200px",
-                column(12, align = 'center',
-                       h1(strong("Genoppi"), style = "font-size:100px;"),
-                       br(),
-                       uiOutput('a_example_file_ui'),
-                       uiOutput('a_get_example_file_ui')
-                  )
-                ),
-                fluidRow(
-                  br(),
-                  h5(HTML(paste('<b>Genoppi</b> is an open-source software for performing quality control and 
-                           analyzing quantitative proteomic data. Genoppi streamlines the integration of 
-                           proteomic data with external datasets such as known protein-protein interactions 
-                           in published literature, data from genetic studies, gene set annotations, or other 
-                           user-defined inputs. See the', actionLink('tab_welcome','welcome guide'), 
-                           'for more details.') ))
-                  )
-                ),
-            column(3, '')
+            fluidRow(
+              column(3, ''),
+              column(6, 
+                # top of table
+                fluidRow(style = "padding-top:200px",
+                  column(12, align = 'center',
+                         h1(strong("Genoppi"), style = "font-size:100px;"),
+                         br(),
+                         uiOutput('a_example_file_ui'),
+                         uiOutput('a_get_example_file_ui')
+                    )
+                  ),
+                  fluidRow(
+                    br(),
+                    h5(HTML(paste('<b>Genoppi</b> is an open-source software for performing quality control and 
+                             analyzing quantitative proteomic data. Genoppi streamlines the integration of 
+                             proteomic data with external datasets such as known protein-protein interactions 
+                             in published literature, data from genetic studies, gene set annotations, or other 
+                             user-defined inputs. See the', actionLink('tab_welcome','welcome guide'), 
+                             'for more details.') ))
+                    ),
+                  ),
+              column(3, '')
+            )
             
             
     )
@@ -512,7 +514,7 @@ body <- dashboardBody(
 sidebar <- dashboardSidebar(
   sidebarMenu(id = "sidebarmenu",
               #h6(as.character(genoppi.ver)),
-              menuItem("Quick start", tabName = "start", icon = icon("stream")),
+              menuItem("Quick start", tabName = "start", icon = icon("stream"), badgeLabel = "new", badgeColor = "green"),
               menuItem("Guide", tabName = "guide", icon = icon("info-circle")),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),

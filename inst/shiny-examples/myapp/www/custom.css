@@ -1,26 +1,26 @@
 /* logo */
 .skin-black .main-header .logo {
-background-color: #000000;
+background-color: #ffffff;
 }
 
 /* logo when hovered */
 .skin-black .main-header .logo:hover {
-background-color: #000000;
+background-color: #ffffff;
 }
 
 /* navbar (rest of the header) */
 .skin-black .main-header .navbar {
-background-color: #000000;
+background-color: #ffffff;
 }
 
 /* toggle button when hovered  */
 .skin-black .main-header .navbar .sidebar-toggle:hover{
-background-color: #000000;
+background-color: #ffffff;
 }
 
 /* body */
 .content-wrapper, .right-side {
-background-color: #000000;
+background-color: #ffffff;
 }
 
 /* main sidebar */
