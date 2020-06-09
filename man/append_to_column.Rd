@@ -10,7 +10,8 @@ append_to_column(
   insig_text = "(not enriched)",
   from = "dataset",
   to = "dataset",
-  nchar_max = NULL
+  nchar_max = NULL,
+  nchar_max_collapse = "<br>"
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ append_to_column(
 
 \item{nchar_max}{integer. maximum amount of characters (incl spaces) in the group. NULL 
 means that there is no limit.}
+
+\item{nchar_max_collapse}{what should be the line seperator when nchar_max is specified?}
 }
 \description{
 Appends a dynamic string to a column condition on whether

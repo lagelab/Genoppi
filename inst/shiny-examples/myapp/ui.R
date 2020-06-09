@@ -288,6 +288,14 @@ body <- dashboardBody(
                                           )
                                         )
                                  )
+                        ),
+                        tabPanel("Inspect uploaded data (dev)", value = "p5",
+                            fluidRow(
+                              column(12,
+                                     DT::dataTableOutput('a_file_display_table_ui')  
+                                     )
+                            )
+                            
                         )
             )
     ),
@@ -477,6 +485,8 @@ body <- dashboardBody(
                                         
                                  )
                                  
+                                 
+                                 #column(4, ),
                         )
             
             )
@@ -510,16 +520,16 @@ body <- dashboardBody(
                              user-defined inputs. See the', actionLink('tab_welcome','welcome guide'), 
                              'for more details.') ))
                     ),
+                     fluidRow(style = "padding-top:300px",
+                         column(12, align = 'center',
+                                h6(HTML(paste0(actionLink('enable_dev_mode', 'Developer mode'))))
+                               )
+                             ),
                   ),
               column(3, '')
-            )#,
-            #fluidRow(
-            #  img(src='genoppi-workflow-01.png', align = "center", height="75%", width="100%"),
-            #)
-            
-            
+            )
     )
-  )
+   )
   )
 )
 

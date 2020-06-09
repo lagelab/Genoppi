@@ -11,6 +11,13 @@ shinyServer(function(input, output, session){
     updateTabsetPanel(session, "basic", selected = "p1")
   })
   
+  # hide developer tabs when starting app
+  hideTab('basic','p5')
+  
+  observeEvent(input$enable_dev_mode,{
+    showTab('basic','p5')
+  })
+  
   ## reactive values
   file1_path <- reactiveVal(value = NULL)
   
@@ -1708,11 +1715,13 @@ shinyServer(function(input, output, session){
     return(overlay)
   })
   
-  
   # make the ggplot legend
   a_pathway_plot_legend_gg <- reactive({
+    
     plt = a_pathway_plot_tmp_gg()
+    
     req(plt)
+    
     legend = get_gg_legend(plt)
     grid.newpage()
     grid.draw(legend) 
@@ -1838,10 +1847,10 @@ shinyServer(function(input, output, session){
     a_integrated_plot()
   })
   
-  
-  
-  
-  
+  output$a_file_display_table_ui <- DT::renderDataTable({
+    req(a_in_pulldown())
+    DT::datatable(a_in_pulldown()$data)
+  })
   
   
   

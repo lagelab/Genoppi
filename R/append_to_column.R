@@ -8,13 +8,14 @@
 #' @param to where should be appended column be inserted?
 #' @param nchar_max integer. maximum amount of characters (incl spaces) in the group. NULL 
 #' means that there is no limit. 
+#' @param nchar_max_collapse what should be the line seperator when nchar_max is specified?
 #' @note In order to correctly draw plotly points
 #' the identifier (dataset) must have a unique colors associated with it.
 #' This function appends the dataset column with a significance text. 
 #' @export
 
 append_to_column <- function(data, sig_text = '(enriched)', insig_text = '(not enriched)', from = 'dataset', to = 'dataset', 
-                             nchar_max = NULL){
+                             nchar_max = NULL, nchar_max_collapse = '<br>'){
   
   # check input
   stopifnot(sig_text != insig_text)
@@ -32,12 +33,9 @@ append_to_column <- function(data, sig_text = '(enriched)', insig_text = '(not e
     
     if (sum(bool) > 0){
       
-      #newname = lapply(data[[to]], function(x) strsplit.breaks(x, width = 20, collapse = '<br>'))
-      # assign a new name
-      #newname = unlist(lapply(data[[to]][bool], function(x)  )
-      
-      newname = unlist(lapply(data[[to]][bool], function(x) paste(strwrap(x, width = nchar_max), collapse = '<br>')))
-
+      tmpname = data[[to]][bool]
+      tmpname = gsub('\\_','\\%v\\ ', tmpname)
+      newname = unlist(lapply(tmpname, function(x) gsub('(\\%v\\ )|(\\%v)', '\\_' ,paste(strwrap(x, width = nchar_max), collapse = nchar_max_collapse))))
       
       # assign to data
       data[[to]][bool] <- unlist(newname) 
