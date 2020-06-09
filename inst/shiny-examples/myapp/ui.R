@@ -143,35 +143,46 @@ body <- dashboardBody(
                                   ),
                                   box(
                                     title = "Settings", width = NULL, solidHeader = TRUE, collapsible = TRUE, collapsed = FALSE,
-                                    fluidRow(column(12, h5('InWeb'))),
                                     fluidRow(
-                                      column(4, uiOutput("a_color_inweb_sig_ui")),
-                                      column(4, uiOutput("a_color_inweb_insig_ui")),
-                                      column(4, uiOutput("a_symbol_inweb_ui"))
+                                      column(3, align = 'left',  h5(strong('Overlay'))),
+                                      column(3, align = 'center',  h5(strong(uiOutput("a_sig_text_ui")))),
+                                      column(3, align = 'center',  h5(strong(uiOutput("a_insig_text_ui")))),
+                                      column(3, align = 'center',  h5(strong('Symbol'))),
                                     ),
-                                    fluidRow(column(12, h5('GWAS catalogue'))),
+                                    #fluidRow(column(12, h5('InWeb'))),
                                     fluidRow(
-                                      column(4, uiOutput("a_color_gwas_cat_sig_ui")),
-                                      column(4, uiOutput("a_color_gwas_cat_insig_ui")),
-                                      column(4, uiOutput("a_symbol_gwas_cat_ui"))
+                                      column(3, h5('InWeb')),
+                                      column(3, uiOutput("a_color_inweb_sig_ui")),
+                                      column(3, uiOutput("a_color_inweb_insig_ui")),
+                                      column(3, uiOutput("a_symbol_inweb_ui"))
                                     ),
-                                    fluidRow(column(12, h5('gnomAD'))),
+                                    #fluidRow(column(12, h5('GWAS catalogue'))),
                                     fluidRow(
-                                      column(4, uiOutput("a_color_gnomad_sig_ui")),
-                                      column(4, uiOutput("a_color_gnomad_insig_ui")),
-                                      column(4, uiOutput("a_symbol_gnomad_ui"))
+                                      column(3, h5('GWAS catalog')),
+                                      column(3, uiOutput("a_color_gwas_cat_sig_ui")),
+                                      column(3, uiOutput("a_color_gwas_cat_insig_ui")),
+                                      column(3, uiOutput("a_symbol_gwas_cat_ui"))
                                     ),
-                                    fluidRow(column(12, h5('SNPs upload'))),
+                                    #fluidRow(column(12, h5('gnomAD'))),
                                     fluidRow(
-                                      column(4, uiOutput("a_color_snp_sig_ui")),
-                                      column(4, uiOutput("a_color_snp_insig_ui")),
-                                      column(4, uiOutput("a_symbol_snp_ui"))
+                                      column(3, h5('gnomAD')),
+                                      column(3, uiOutput("a_color_gnomad_sig_ui")),
+                                      column(3, uiOutput("a_color_gnomad_insig_ui")),
+                                      column(3, uiOutput("a_symbol_gnomad_ui"))
                                     ),
-                                    fluidRow(column(12, h5('genes upload'))),
+                                    #fluidRow(column(12, h5('SNPs upload'))),
                                     fluidRow(
-                                      column(4, uiOutput("a_color_genes_upload_sig_ui")),
-                                      column(4, uiOutput("a_color_genes_upload_insig_ui")),
-                                      column(4, uiOutput("a_symbol_genes_upload_ui"))
+                                      column(3, h5('SNPs upload')),
+                                      column(3, uiOutput("a_color_snp_sig_ui")),
+                                      column(3, uiOutput("a_color_snp_insig_ui")),
+                                      column(3, uiOutput("a_symbol_snp_ui"))
+                                    ),
+                                    #fluidRow(column(12, h5('genes upload'))),
+                                    fluidRow(
+                                      column(3, h5('Genes upload')),
+                                      column(3, uiOutput("a_color_genes_upload_sig_ui")),
+                                      column(3, uiOutput("a_color_genes_upload_insig_ui")),
+                                      column(3, uiOutput("a_symbol_genes_upload_ui"))
                                     )
                                   )
                                  ),
@@ -466,8 +477,6 @@ body <- dashboardBody(
                                         
                                  )
                                  
-                                 
-                                 #column(4, ),
                         )
             
             )
@@ -503,7 +512,10 @@ body <- dashboardBody(
                     ),
                   ),
               column(3, '')
-            )
+            )#,
+            #fluidRow(
+            #  img(src='genoppi-workflow-01.png', align = "center", height="75%", width="100%"),
+            #)
             
             
     )

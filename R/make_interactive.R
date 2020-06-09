@@ -36,8 +36,8 @@ make_interactive <- function(p, source = NULL, legend = T, sig_text = ''){
     if (nrow(overlay) > 0 ){
       
       p1 = p1 %>% 
-        genoppi::add_plotly_trace(overlay[overlay$significant, ], params, stroke_width = 0.9, legend = legend) %>%
-        genoppi::add_plotly_trace(overlay[!overlay$significant, ], params, stroke_width = 0.9, legend = F) 
+        genoppi::add_plotly_trace(overlay[overlay$significant, ], params, stroke_width = 0.9, legend = legend, legend_group = 'significant') %>%
+        genoppi::add_plotly_trace(overlay[!overlay$significant, ], params, stroke_width = 0.9, legend = legend, legend_group = 'non-significant' ) 
       p1$overlay = p$overlay
     }
     

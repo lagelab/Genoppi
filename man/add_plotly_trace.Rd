@@ -4,7 +4,14 @@
 \alias{add_plotly_trace}
 \title{add genoppi trace}
 \usage{
-add_plotly_trace(p, data, parameters, stroke_width = 0.2, legend = F)
+add_plotly_trace(
+  p,
+  data,
+  parameters,
+  stroke_width = 0.2,
+  legend = F,
+  legend_group = NULL
+)
 }
 \arguments{
 \item{p}{a plot_ly() object.}
@@ -16,6 +23,8 @@ add_plotly_trace(p, data, parameters, stroke_width = 0.2, legend = F)
 \item{stroke_width}{numeric. the line width/stroke of a given point.}
 
 \item{legend}{Boolean. should legend be displayed?}
+
+\item{legend_group}{group legend into sublegends. Argument is directly passed to \code{plotly::add_trace(legendgroup)}.}
 }
 \description{
 adding a trace with new data to plotly is non-trivial. This function takes

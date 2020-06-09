@@ -1,6 +1,7 @@
 
 # shiny server
 shinyServer(function(input, output, session){
+  
   #supress warnings
   storeWarn<- getOption("warn")
   options(warn = -1) 
@@ -140,43 +141,58 @@ shinyServer(function(input, output, session){
     return(list(sig=fc_sig, insig=fc_insig))
   })
 
+  output$a_sig_text_ui <- renderUI({
+    HTML(paste0(monitor_significance_thresholds()$sig, ', ', monitor_logfc_threshold()$sig))
+  })
+  
+  output$a_insig_text_ui <- renderUI({
+    HTML(paste0(monitor_significance_thresholds()$insig, ', ', monitor_logfc_threshold()$insig))
+  })
+  
+  
   #----------------------------------------------------------
   # sliders for selecting color, symbols and labels of plots
-  
+
   # basic plot
+  val_a_color_theme_indv_sig <- reactiveVal(value = '#41AB5D')
+  observeEvent(input$a_color_indv_sig, { val_a_color_theme_indv_sig(input$a_color_indv_sig)})
+  
   output$a_color_theme_indv_sig <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
-    colourpicker::colourInput('a_color_indv_sig', label, value = '#41AB5D', showColour = 'both', 
+    label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
+    colourpicker::colourInput('a_color_indv_sig', label, value = val_a_color_theme_indv_sig(), showColour = 'both', 
                   palette = c( "limited"), allowedCols = allowed_colors)
   })
     
   # basic plot
+  val_a_color_theme_indv_insig <- reactiveVal(value = '#808080')
+  observeEvent(input$a_color_indv_insig, { val_a_color_theme_indv_insig(input$a_color_indv_insig)})
+  
   output$a_color_theme_indv_insig <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'and', monitor_logfc_threshold()$insig))))
-    colourpicker::colourInput('a_color_indv_insig', label, value = '#808080', showColour = 'both', 
+    label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'and', monitor_logfc_threshold()$insig))))
+    colourpicker::colourInput('a_color_indv_insig', label, value = val_a_color_theme_indv_insig(), showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   
   # intgrated plot, snp
   output$a_color_snp_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
-    colourpicker::colourInput('a_color_snp_sig', label, value = 'blue', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
+    colourpicker::colourInput('a_color_snp_sig', NULL, value = 'blue', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, snp
   output$a_color_snp_insig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
-    colourpicker::colourInput('a_color_snp_insig', label, value = '#808080', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
+    colourpicker::colourInput('a_color_snp_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # integrated plot, snp
   output$a_symbol_snp_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    selectInput('a_symbol_snp', 'Symbol', choices = allowed_plotly_symbols, selected = 'square')
+    selectInput('a_symbol_snp', NULL, choices = allowed_plotly_symbols, selected = 'square')
   })
   # integrated plot, snp
   output$a_label_snp_ui <- renderUI({
@@ -199,22 +215,22 @@ shinyServer(function(input, output, session){
   # intgrated plot, genes upload
   output$a_color_genes_upload_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
-    colourpicker::colourInput('a_color_genes_upload_sig', label, value = '#A52A2A', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
+    colourpicker::colourInput('a_color_genes_upload_sig', NULL, value = '#A52A2A', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, genes upload
   output$a_color_genes_upload_insig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
-    colourpicker::colourInput('a_color_genes_upload_insig', label, value = '#808080', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
+    colourpicker::colourInput('a_color_genes_upload_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   
   # integrated plot, genes uplaod
   output$a_symbol_genes_upload_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    selectInput('a_symbol_genes_upload', 'Symbol', choices = allowed_plotly_symbols, selected = 'square')
+    selectInput('a_symbol_genes_upload', NULL, choices = allowed_plotly_symbols, selected = 'square')
   })
   
   # integrated plot, genes upload
@@ -242,22 +258,23 @@ shinyServer(function(input, output, session){
   # intgrated plot, inweb
   output$a_color_inweb_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
-    colourpicker::colourInput('a_color_inweb_sig', label, value = 'yellow', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
+    colourpicker::colourInput('a_color_inweb_sig', NULL, value = 'yellow', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, inweb
   output$a_color_inweb_insig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
-    colourpicker::colourInput('a_color_inweb_insig', label, value = '#808080', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
+    colourpicker::colourInput('a_color_inweb_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # integrated plot, inweb
   output$a_symbol_inweb_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    selectInput('a_symbol_inweb', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
+    selectInput('a_symbol_inweb', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
+  
   # integrated plot, inweb
   output$a_label_inweb_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
@@ -268,21 +285,21 @@ shinyServer(function(input, output, session){
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
-    colourpicker::colourInput('a_color_gwas_cat_sig', label, value = 'cyan', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
+    colourpicker::colourInput('a_color_gwas_cat_sig', NULL, value = 'cyan', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_insig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
-    colourpicker::colourInput('a_color_gwas_cat_insig', label, value = '#808080', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
+    colourpicker::colourInput('a_color_gwas_cat_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # integrated plot, gwas catalogue
   output$a_symbol_gwas_cat_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    selectInput('a_symbol_gwas_cat', 'Symbol', choices = allowed_plotly_symbols, selected = 'diamond')
+    selectInput('a_symbol_gwas_cat', NULL, choices = allowed_plotly_symbols, selected = 'diamond')
   })
   # integrated plot, genes upload
   output$a_label_gwas_cat_ui <- renderUI({
@@ -293,21 +310,21 @@ shinyServer(function(input, output, session){
   # intgrated plot, gnomad
   output$a_color_gnomad_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
-    colourpicker::colourInput('a_color_gnomad_sig', label, value = '#FF00FF', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
+    colourpicker::colourInput('a_color_gnomad_sig', NULL, value = '#FF00FF', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gnomad
   output$a_color_gnomad_insig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
-    colourpicker::colourInput('a_color_gnomad_insig', label, value = '#808080', showColour = 'both', 
+    #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
+    colourpicker::colourInput('a_color_gnomad_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, gnomad
   output$a_symbol_gnomad_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    selectInput('a_symbol_gnomad', 'Symbol', choices = allowed_plotly_symbols, selected = 'circle')
+    selectInput('a_symbol_gnomad', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # intgrated plot, gnomad
@@ -385,7 +402,7 @@ shinyServer(function(input, output, session){
   
   output$a_replicate_summar_text_ui <- renderUI({
     req(replicate_summary_table())
-    h5(HTML(bold('Replicate corrlation(s):')))
+    h5(HTML(bold('Replicate correlation(s):')))
   })
   
   # render replicate summary
@@ -975,7 +992,10 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_gwas_catalogue_mapping_venn()
-      write.csv(venn_to_table(venn), file, row.names = F)
+      diagram = venn_to_table(venn)
+      mapping = a_gwas_catalogue_mapping()[,c('gene','SNP', 'P.VALUE','PUBMEDID', 'STUDY.ACCESSION', 'DISEASE.TRAIT')]
+      mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
+      write.csv(mymerge, file, row.names = F)
     }
   )
   
@@ -986,10 +1006,10 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_snp_venn()
-      #browser()
-      #a_snp_mapping() # to be adressed..
-      
-      write.csv(venn_to_table(venn), file, row.names = F)
+      diagram = venn_to_table(venn)
+      mapping = a_snp_mapping()[,c('gene','listName','SNP')]
+      mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
+      write.csv(mymerge, file, row.names = F)
     }
   )
   
@@ -1000,7 +1020,11 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_genes_upload_venn()
-      write.csv(venn_to_table(venn), file, row.names = F)
+      diagram = venn_to_table(venn)
+      mapping = a_genes_upload()$data[,c('gene','listName')]
+      mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
+      write.csv(mymerge, file, row.names = F)
+      
     }
   )
   

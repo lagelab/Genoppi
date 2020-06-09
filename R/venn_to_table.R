@@ -7,16 +7,23 @@
 venn_to_table <- function(venn){
   stopifnot(length(venn) == 2)
   venn = lapply(venn, as.character)
-  intersect = intersect(venn[[1]],venn[[2]])
-  a = venn[[1]][venn[[1]] %nin% intersect]
-  b = venn[[2]][venn[[2]] %nin% intersect]
-  dat = data.frame(
-    A = c(a, intersect, rep(NA, length(b))),
-    B = c(rep(NA, length(a)), intersect, b),
-    stringsAsFactors = F
-  )
-  dat$overlap = 0
-  bool = !is.na(dat$A) & !is.na(dat$B)
-  if (any(bool)) dat[bool,]$overlap = 1
+  vennnames = names(venn)
+  
+  # return individual overlaps
+  ab = intersect(venn[[1]],venn[[2]])
+  a = venn[[1]][venn[[1]] %nin% ab]
+  b = venn[[2]][venn[[2]] %nin% ab]
+  
+  # convert to data.frames
+  da = data.frame(gene = a, dataset = vennnames[1], stringsAsFactors = F)
+  db = data.frame(gene = b, dataset = vennnames[2], stringsAsFactors = F)
+  
+  if (length(ab) > 0){
+    dab = data.frame(gene = ab, dataset = paste(vennnames, collapse = ''), stringsAsFactors = F)
+    dat = rbind(dab, da, db)
+  } else {
+    dat = rbind(da, db)
+  }
+  
   return(dat)
 }

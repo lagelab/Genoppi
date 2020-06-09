@@ -6,12 +6,13 @@
 #' @param parameters a list of parameters or an environement generated with \code{environment()}.
 #' @param stroke_width numeric. the line width/stroke of a given point.
 #' @param legend Boolean. should legend be displayed?
+#' @param legend_group group legend into sublegends. Argument is directly passed to \code{plotly::add_trace(legendgroup)}.
 #' @note global variable 'global_colors' must be specified using setNames().
 #' @importFrom plotly add_trace
 #' @family plotly
 #' @export
 
-add_plotly_trace <- function(p, data, parameters, stroke_width = 0.2, legend = F){
+add_plotly_trace <- function(p, data, parameters, stroke_width = 0.2, legend = F, legend_group = NULL){
   
   # pass previous environment to function
   global_colors = parameters$global_colors
@@ -49,7 +50,7 @@ add_plotly_trace <- function(p, data, parameters, stroke_width = 0.2, legend = F
                                                 ifelse(!is.na(data$alt_label), alt_label, group), 
                                                 sep = "<br>")),
                   textposition = ~ifelse(logFC>0,"top right","top left"),
-                  legendgroup = NULL,
+                  legendgroup = legend_group,
                   showlegend = legend)
   
   return(p1)
