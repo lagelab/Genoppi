@@ -87,7 +87,8 @@ body <- dashboardBody(
                                        column(12, uiOutput("a_bait_layer"))
                                      ),
                                      fluidRow(
-                                       column(8, uiOutput("a_label_inweb_ui"), uiOutput("a_inweb_message")),
+                                       column(4, uiOutput("a_label_inweb_ui"), uiOutput("a_inweb_message")),
+                                       column(4, uiOutput("a_overlay_inweb_ui")),
                                        column(4, shinyjs::hidden(myDownloadButton("a_inweb_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      ),
                                     ),
@@ -97,10 +98,14 @@ body <- dashboardBody(
                                         column(12, uiOutput('a_gwas_catalogue_ui'))
                                       ),
                                       fluidRow(
-                                        column(8, uiOutput("a_label_gwas_cat_ui")),
+                                        column(4, uiOutput("a_label_gwas_cat_ui")),
+                                        column(4, uiOutput("a_overlay_gwas_cat_ui")),
                                         column(4, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
-                                       ),
-                                      
+                                      ),
+                                      fluidRow(
+                                        column(12, uiOutput('a_gwas_subset_traits_by_data'))
+                                        #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
+                                      )
                                     ),
                                     box(
                                       title = tagList('gnomAD'), width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
@@ -113,7 +118,8 @@ body <- dashboardBody(
                                         )
                                       ),
                                       fluidRow(
-                                        column(8, uiOutput("a_label_gnomad_ui")),
+                                        column(4, uiOutput("a_label_gnomad_ui")),
+                                        column(4, uiOutput("a_overlay_gnomad_ui")),
                                         column(4, shinyjs::hidden(myDownloadButton("a_gnomad_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                       )
                                       #fluidRow(column(12, uiOutput('a_gnomad_constraints_available_ui'))),

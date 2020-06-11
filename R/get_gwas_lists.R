@@ -10,7 +10,7 @@ get_gwas_lists <- function(traits, genes){
 
   # extract all GWAS catalog entries matching the input traits
   gwasDf <- gwas_table[gwas_table$DISEASE.TRAIT %in% traits,]
-
+  
   # SNP-to-gene mapping, restricted to gene names in genes vector
   mapDf <- NULL
   for (g in genes) {

@@ -18,9 +18,6 @@ shinyServer(function(input, output, session){
     showTab('basic','p5')
   })
   
-  ## reactive values
-  file1_path <- reactiveVal(value = NULL)
-  
   # temporary files
   #output$a_make_example_file <- renderUI({
   #  actionButton('a_make_example_file', 'Example path')
@@ -71,6 +68,8 @@ shinyServer(function(input, output, session){
   observeEvent(input$a_file_pulldown_r,{
     file1_path(input$a_file_pulldown_r$datapath)
   })
+  
+  file1_path <- reactiveVal(value = NULL)
   
   a_file_pulldown_r <- reactive({
     validate(need(!is.null(file1_path()), ''))
@@ -283,6 +282,12 @@ shinyServer(function(input, output, session){
   })
   
   # integrated plot, inweb
+  output$a_overlay_inweb_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    checkboxInput("a_overlay_inweb", label = "Toggle overlay", value = TRUE)
+  })
+  
+  # integrated plot, inweb
   output$a_label_inweb_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_inweb", label = "Toggle labels", value = TRUE)
@@ -303,6 +308,13 @@ shinyServer(function(input, output, session){
     colourpicker::colourInput('a_color_gwas_cat_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
+  
+  # integrated plot, gwas catalogue
+  output$a_overlay_gwas_cat_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    checkboxInput("a_overlay_gwas_cat", label = "Toggle overlay", value = TRUE)
+  })
+  
   # integrated plot, gwas catalogue
   output$a_symbol_gwas_cat_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
@@ -338,6 +350,12 @@ shinyServer(function(input, output, session){
   output$a_label_gnomad_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
     checkboxInput("a_label_gnomad", label = "Toggle labels", value = FALSE)
+  })
+  
+  # integrated plot, gnomad
+  output$a_overlay_gnomad_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    checkboxInput("a_overlay_gnomad", label = "Toggle overlay", value = TRUE)
   })
 
   # integrated plot, gnomad 
@@ -379,8 +397,31 @@ shinyServer(function(input, output, session){
     textInput("a_goi_search_rep", "Search HGNC symbol")
   })
   
+  
+  # GWAS catalog traits
+  gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
+  
   output$a_gwas_catalogue_ui <- renderUI({
-    selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):', unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))), multiple=T, selectize=TRUE, selected = "grey")
+    selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):', gwas_traits(), multiple=T, selectize=TRUE, selected = "grey")
+  })
+  
+  output$a_gwas_subset_traits_by_data <- renderUI({
+    checkboxInput("a_toggle_gwas_subset", label = "Subset entries with traits in data (WARNING: takes a while)", value = FALSE)
+  })
+  
+  output$a_gwas_subset_traits_by_data_freq <- renderUI({
+    checkboxInput("a_toggle_gwas_subset_freq", label = "Order entries by frequency", value = FALSE)
+  })
+  
+  observeEvent(input$a_toggle_gwas_subset,{
+    input = input$a_toggle_gwas_subset
+    if (input){
+      showModal(modalDialog(HTML(paste("subsetting GWAS entries by uploaded data.. This may take a while.", '<div class="loader"></div>')), easyClose = T, footer=NULL))
+      gwas_traits(a_gwas_catalogue_traits_in_data())
+      removeModal()
+    } else {
+      gwas_traits(unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
+    }
   })
   
   # Search for replicates in data
@@ -784,7 +825,6 @@ shinyServer(function(input, output, session){
     mapping$dataset = 'SNP upload'
     mapping$alt_label = mapping$SNP
     if (lun(mapping$listName) > 1) mapping$alt_label <- paste0(mapping$alt_label, ' (',mapping$listName,')')
-    return(mapping)
   })
   
   # map inweb prorteins
@@ -821,6 +861,24 @@ shinyServer(function(input, output, session){
     } 
   })
   
+  # traits in data
+  a_gwas_catalogue_traits_in_data <- eventReactive(input$a_toggle_gwas_subset,{
+    genes = as.character(a_pulldown()$gene)
+    
+    # map genes to snps and find gwas table entry
+    tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps[[x]])
+    tabl_bool = apply(do.call(cbind, tabl), 1, any)
+    tabl_subset = gwas_table[tabl_bool, ]
+    result = tabl_subset$DISEASE.TRAIT
+
+    # order by snp occurences
+    #if (input$a_toggle_gwas_subset_freq){
+    #  freq = table(result)
+    #  result = names(freq[order(freq, decreasing = T)])
+    #}
+    
+    return(unique(result))
+  })
   
   # setup main gnomad mapping
   a_gnomad_mapping <- reactive({
@@ -1442,6 +1500,7 @@ shinyServer(function(input, output, session){
   
   # basic volcano plot
   a_vp_layerx <- reactive({
+    req(a_vp_gg())
     p <- a_vp_gg()
     p <- make_interactive(p, legend = T)
     if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
@@ -1515,11 +1574,12 @@ shinyServer(function(input, output, session){
   a_integrated_plot_gg <- reactive({
     p = a_vp_gg()
     
-    if (!is.null(input$a_gwas_catalogue)) if (input$a_gwas_catalogue != '') p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
-    if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% hash::keys(inweb_hash)) p = plot_overlay(p, list(inweb=a_inweb_mapping()))
+    if (!is.null(input$a_gwas_catalogue)) if (input$a_gwas_catalogue != '' & input$a_overlay_gwas_cat) p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
+    if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% hash::keys(inweb_hash) & input$a_overlay_inweb) p = plot_overlay(p, list(inweb=a_inweb_mapping()))
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
-    if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold') p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold' & input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    
     # collapse labels
     if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)
     p
@@ -1551,9 +1611,7 @@ shinyServer(function(input, output, session){
              height = global.img.volcano.download.height)
     })
   
-  
-  
-  # download pathway annoation plot
+ # download pathway annoation plot
  input_pathway_plot_gg <- function(){a_pathway_plot_gg()}
   output$a_pathway_plot_download = downloadHandler(
     filename = paste0('genoppi-','geneset', '-plot.png'),
@@ -1715,16 +1773,37 @@ shinyServer(function(input, output, session){
     return(overlay)
   })
   
+  
+  # make the ggplot with legend
+  a_pathway_plot_tmp_gg <- reactive({
+    data = a_pulldown_significant()
+    req(data, a_pathway_mapping_subset())
+    p <- a_vp_gg()
+    if (sum(data$significant) > 0){
+      if (nrow(a_pathway_mapping_subset()) > 0) {
+        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)
+      }
+    }
+    return(p)
+  })
+  
   # make the ggplot legend
   a_pathway_plot_legend_gg <- reactive({
+    req(a_pathway_mapping_subset())
     
-    plt = a_pathway_plot_tmp_gg()
+    # generate ggplot with \n 
+    p <- a_vp_gg()
+    p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend, nchar.max.collapse = '\n')
+    p <- p + theme(legend.key.height=unit(0.75, "cm"))
     
-    req(plt)
-    
-    legend = get_gg_legend(plt)
+    # extract legend from plot
+    req(p)
+    legend = get_gg_legend(p)
+    grid.arrange(legend, )
     grid.newpage()
     grid.draw(legend) 
+    
+    
   })
   
   # make the ggplot with legend
@@ -1739,6 +1818,7 @@ shinyServer(function(input, output, session){
     }
     return(p)
   })
+  
   
   # remove the legend with ggplot
   a_pathway_plot_gg <- reactive({

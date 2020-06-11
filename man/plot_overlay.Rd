@@ -14,7 +14,8 @@ plot_overlay(
   label.box.padding = 0.3,
   label.point.padding = 0.5,
   label.arrowhead.size = 0.01,
-  legend.nchar.max = NULL
+  legend.nchar.max = NULL,
+  nchar.max.collapse = "<br>"
 )
 }
 \arguments{
