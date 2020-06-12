@@ -26,6 +26,7 @@
 #' @param label.point.padding Amount of padding around label. See \code{?ggrepel::geom_text_repel}.
 #' @param label.arrowhead.size The size of the arrowhead. 0 means no arrowhead.
 #' @param legend.nchar.max maximum amount of allowed characters in the legend.
+#' @param nchar.max.collapse what charcter should be used for line break? Default is HTML line break \code{"<br>".}
 #' 
 #' @return a ggplot
 #' 

@@ -40,6 +40,8 @@ for more details.}
 \item{label.arrowhead.size}{The size of the arrowhead. 0 means no arrowhead.}
 
 \item{legend.nchar.max}{maximum amount of allowed characters in the legend.}
+
+\item{nchar.max.collapse}{what charcter should be used for line break? Default is HTML line break \code{"<br>".}}
 }
 \value{
 a ggplot
