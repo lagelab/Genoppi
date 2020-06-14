@@ -167,6 +167,14 @@
 
 "msigdb_c7_table"
 
+#' @title Subsetted Human Protein Atlas annotation table
+#' @description A table containing classification of all human protein-coding genes based on transcript expression levels in 32 tissues.
+#' @format data.frame object
+#' @family datasets
+#' @docType data
+#' @source merge between proteinatlas.tsv.zip and normal_tissue.tsv.zip downloaded on 2020-06-12 (https://www.proteinatlas.org/about/download).
+
+'hpa_table'
 
 #' @title example proteomic data (1)
 #' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates

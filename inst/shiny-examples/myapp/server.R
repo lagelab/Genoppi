@@ -195,11 +195,13 @@ shinyServer(function(input, output, session){
     colourpicker::colourInput('a_color_snp_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
+  
   # integrated plot, snp
   output$a_symbol_snp_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
     selectInput('a_symbol_snp', NULL, choices = allowed_plotly_symbols, selected = 'square')
   })
+  
   # integrated plot, snp
   output$a_label_snp_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
@@ -372,7 +374,39 @@ shinyServer(function(input, output, session){
     sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
                 min = 0, max = 1, value = 0.5, step = 0.01)
   })
+
+
+  # intgrated plot, HPA
+  output$a_color_hpa_sig_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    colourpicker::colourInput('a_color_hpa_sig', NULL, value = '#FF1900', showColour = 'both', 
+                              palette = c( "limited"), allowedCols = allowed_colors)
+  })
+  # intgrated plot, HPA
+  output$a_color_hpa_insig_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    colourpicker::colourInput('a_color_hpa_insig', NULL, value = '#808080', showColour = 'both', 
+                              palette = c( "limited"), allowedCols = allowed_colors)
+  })
+  # intgrated plot, HPA
+  output$a_symbol_hpa_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    selectInput('a_symbol_hpa', NULL, choices = allowed_plotly_symbols, selected = 'circle')
+  })
   
+  # intgrated plot, HPA
+  output$a_label_hpa_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    checkboxInput("a_label_hpa", label = "Toggle labels", value = FALSE)
+  })
+  
+  # integrated plot, HPA
+  output$a_overlay_hpa_ui <- renderUI({
+    validate(need(a_file_pulldown_r()  != '', ""))
+    checkboxInput("a_overlay_hpa", label = "Toggle overlay", value = TRUE)
+  })
+  
+
   # toggle search bar labels in gene set annotations
   #output$a_label_pathway_search_ui <- renderUI({
   #  validate(need(a_file_pulldown_r()  != '', ""))
@@ -423,6 +457,13 @@ shinyServer(function(input, output, session){
       gwas_traits(unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
     }
   })
+  
+  
+  # HPA selection
+  output$a_hpa_tissue_ui <- renderUI({
+    selectInput('a_hpa_tissue', 'Annotate genes in tissue with elevated expression', sort(unique(hpa_table$RNA.tissue.specific)), multiple=T, selectize=TRUE, selected = "grey")
+  })
+  
   
   # Search for replicates in data
   available_replicates <- reactive({
@@ -871,12 +912,6 @@ shinyServer(function(input, output, session){
     tabl_subset = gwas_table[tabl_bool, ]
     result = tabl_subset$DISEASE.TRAIT
 
-    # order by snp occurences
-    #if (input$a_toggle_gwas_subset_freq){
-    #  freq = table(result)
-    #  result = names(freq[order(freq, decreasing = T)])
-    #}
-    
     return(unique(result))
   })
   
@@ -930,7 +965,25 @@ shinyServer(function(input, output, session){
     }
   })
   
-  
+  # setup main gnomad mapping
+  a_hpa_mapping <- reactive({
+    req(a_pulldown_significant())
+    pulldown = a_pulldown_significant()
+    hpa = get_hpa_lists(tissue = input$a_hpa_tissue, pulldown$genes)
+    hpa = merge(pulldown, hpa, by = 'gene')
+    if (nrow(hpa)){
+      hpa$dataset = 'Protein Atlas'
+      hpa$col_significant = input$a_color_hpa_sig 
+      hpa$col_other = input$a_color_hpa_insig 
+      hpa$shape = symbol_to_shape(input$a_symbol_hpa)
+      hpa$symbol = input$a_symbol_hpa
+      hpa$label = input$a_label_hpa
+      hpa$alt_label = paste0('RNA tissue specificity - ', hpa$RNA.tissue.specific, ' (',hpa$RNA.tissue.specificity,')')
+      return(hpa)
+    } else {
+      return(NULL)
+    }
+  })
   
   #---------------------------------------------------------------
   # download different mappings and hide/show download buttons
@@ -1010,6 +1063,18 @@ shinyServer(function(input, output, session){
       write.csv(mymerge, file, row.names = F)
     }
    )
+  
+  # download HPA mapping
+  output$a_hpa_mapping_download <- downloadHandler(
+    filename = function() {
+      paste("genoppi-hpa-mapping",".csv", sep="")
+    },
+    content = function(file) {
+      pulldown = a_pulldown_significant()
+      hpa = a_hpa_mapping()[,1:15]
+      write.csv(hpa, file, row.names = F)
+    }
+  )
   
 
   # download protein family mapping? gene annotations
@@ -1100,6 +1165,7 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) & input$a_select_gnomad_pli_type == 'threshold')})
+  observe({shinyjs::toggle(id="a_hpa_mapping_download", condition=!is.null(a_pulldown_significant() ))})
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
   
   # venn diagrams
@@ -1579,8 +1645,9 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold' & input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    if (!is.null(input$a_hpa_tissue)) if (input$a_overlay_hpa) p = plot_overlay(p, list(hpa=a_hpa_mapping()))
     
-    # collapse labels
+    # collapse/combine labels from multiple overlay
     if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)
     p
     

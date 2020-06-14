@@ -136,6 +136,17 @@ body <- dashboardBody(
                                        column(4, shinyjs::hidden(myDownloadButton("a_snp_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      )
                                    ),
+                                   box(
+                                     title = "Human Protein Atlas", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                     fluidRow(
+                                       column(12, uiOutput("a_hpa_tissue_ui")),
+                                     ),
+                                     fluidRow(
+                                       column(4, uiOutput("a_overlay_hpa_ui")),
+                                       column(4, uiOutput("a_label_hpa_ui")),
+                                       column(4, shinyjs::hidden(myDownloadButton("a_hpa_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                     )
+                                   ),
                                   box(
                                      title = "Upload genes", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                      fluidRow(
@@ -175,6 +186,12 @@ body <- dashboardBody(
                                       column(3, uiOutput("a_color_gnomad_sig_ui")),
                                       column(3, uiOutput("a_color_gnomad_insig_ui")),
                                       column(3, uiOutput("a_symbol_gnomad_ui"))
+                                    ),
+                                    fluidRow(
+                                      column(3, h5('Protein atlas')),
+                                      column(3, uiOutput("a_color_hpa_sig_ui")),
+                                      column(3, uiOutput("a_color_hpa_insig_ui")),
+                                      column(3, uiOutput("a_symbol_hpa_ui"))
                                     ),
                                     #fluidRow(column(12, h5('SNPs upload'))),
                                     fluidRow(
