@@ -4,7 +4,7 @@
 \alias{get_hpa_lists}
 \title{Retreive Human Protein Atlas specific data}
 \usage{
-get_hpa_lists(tissue = NULL, genes = NULL)
+get_hpa_lists(tissue)
 }
 \arguments{
 \item{tissue}{vector of tissue names (character). See details for acceptable names.}
@@ -15,44 +15,46 @@ get_hpa_lists(tissue = NULL, genes = NULL)
 Create gene list data.frame from input traits
 }
 \details{
-The following tissues are available:
+The following 33 tissues are available:
 \itemize{
-\item liver
-\item intestine
-\item lung
-\item esophagus
-\item lymphoid tissue
-\item tongue
-\item gallbladder
-\item pancreas
-\item stomach 1
-\item adrenal gland
-\item placenta
-\item skin 1
-\item adipose tissue
-\item epididymis
-\item vagina
-\item parathyroid gland
-\item skeletal muscle
-\item retina
-\item testis
-\item smooth muscle
-\item brain
-\item kidney
-\item ovary
-\item bone marrow
-\item breast
-\item prostate
-\item pituitary gland
-\item ductus deferens
-\item seminal vesicle
-\item blood
-\item heart muscle
-\item cervix, uterine
-\item endometrium 1
-\item salivary gland
-\item fallopian tube
-\item thyroid gland
-\item urinary bladder
+\item 'adipose tissue'
+\item 'adrenal gland'
+\item 'bone marrow'
+\item 'breast'
+\item 'cervix, uterine'
+\item 'ductus deferens'
+\item 'endometrium 1'
+\item 'epididymis'
+\item 'esophagus'
+\item 'fallopian tube'
+\item 'gallbladder'
+\item 'heart muscle'
+\item 'kidney'
+\item 'liver'
+\item 'lung'
+\item 'ovary'
+\item 'pancreas'
+\item 'parathyroid gland'
+\item 'pituitary gland'
+\item 'placenta'
+\item 'prostate'
+\item 'retina'
+\item 'salivary gland'
+\item 'seminal vesicle'
+\item 'skeletal muscle'
+\item 'skin 1'
+\item 'smooth muscle'
+\item 'stomach 1'
+\item 'testis'
+\item 'thyroid gland'
+\item 'tongue'
+\item 'urinary bladder'
+\item 'vagina'
+}
+}
+\examples{
+\dontrun{
+
+
 }
 }

@@ -61,3 +61,7 @@ myDownloadButton <- function(outputId, label = "Download", img = icon("camera"))
   tags$a(id = outputId, class = "btn btn-default shiny-download-link", href = "", 
          target = "_blank", download = NA, img, label)
 }
+
+
+# load data
+

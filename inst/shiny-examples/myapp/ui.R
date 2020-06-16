@@ -312,6 +312,14 @@ body <- dashboardBody(
                                         )
                                  )
                         ),
+                        #tabPanel("Tissue specificity", value = "p6",
+                        #         br(),
+                        #         column(12,
+                        #                fluidRow(
+                        #                  h4('TBA')
+                        #                )
+                        #         )
+                        #),
                         tabPanel("Inspect uploaded data (dev)", value = "p5",
                             fluidRow(
                               column(12,

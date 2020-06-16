@@ -461,7 +461,7 @@ shinyServer(function(input, output, session){
   
   # HPA selection
   output$a_hpa_tissue_ui <- renderUI({
-    selectInput('a_hpa_tissue', 'Annotate genes in tissue with elevated expression', sort(unique(hpa_table$RNA.tissue.specific)), multiple=T, selectize=TRUE, selected = "grey")
+    selectInput('a_hpa_tissue', 'Annotate genes in tissue with elevated expression', sort(unique(hpa_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
   })
   
   
@@ -968,8 +968,9 @@ shinyServer(function(input, output, session){
   # setup main gnomad mapping
   a_hpa_mapping <- reactive({
     req(a_pulldown_significant())
+    hpa = get_hpa_lists(tissue = input$a_hpa_tissue)
+    hpa = hpa[hpa$significant, ]
     pulldown = a_pulldown_significant()
-    hpa = get_hpa_lists(tissue = input$a_hpa_tissue, pulldown$genes)
     hpa = merge(pulldown, hpa, by = 'gene')
     if (nrow(hpa)){
       hpa$dataset = 'Protein Atlas'
@@ -978,12 +979,65 @@ shinyServer(function(input, output, session){
       hpa$shape = symbol_to_shape(input$a_symbol_hpa)
       hpa$symbol = input$a_symbol_hpa
       hpa$label = input$a_label_hpa
-      hpa$alt_label = paste0('RNA tissue specificity - ', hpa$RNA.tissue.specific, ' (',hpa$RNA.tissue.specificity,')')
+      hpa$alt_label = paste0('Tissue elevated gene in ', hpa$tissue,'.')
       return(hpa)
     } else {
       return(NULL)
     }
   })
+  
+  # get tissue with elevated expression
+  # and calculate FDR.
+  a_hpa_enrichment <- reactive({
+    req(a_pulldown_significant())
+    
+    pulldown = a_pulldown_significant()
+    table = hpa_table[hpa_table$RNA.tissue.specificity %nin% "Low tissue specificity",]
+    hyper = calc_hyper_set(pulldown, table)
+    return(hyper)
+
+  })
+  
+  a_hpa_enrichment_gg <- reactive({
+    req(a_hpa_enrichment())
+    df = a_hpa_enrichment()
+    
+    ggplot(df, aes(x = tissue, y = FDR.BH, fill = list_name)) + 
+      geom_bar(stat="identity", color = 'black', position = 'dodge') +
+      scale_fill_brewer(palette="Blues") +
+      theme_minimal() +
+      coord_flip()
+    
+    
+  })
+  
+  #calc_hyper_set <- function(pulldown, table, col.gene = 'gene', col.tissue = 'RNA.tissue.specific'){
+  
+  # for hypergeometric test on each tissue type
+  #  table$listName = 'list1'
+  #  table_intersect = data.frame(listName = "list1", intersectN = F)
+  #  tissue = sort(unique(table[[col.tissue]]))
+  
+  #  sig = lapply(tissue, function(x){
+  
+  #    table$significant = table[[col.tissue]] %in% x
+  #    hyper = calc_hyper(pulldown, table, table_intersect)
+  #    return(hyper$statistics)
+  
+  #  })
+  
+  # correct for multiple testing using Benjamin-Hochberg FDR
+  #  names(sig) = tissue
+  #  result = do.call(rbind, sig)
+  #  result$FDR.BH = stats::p.adjust(result$pvalue, method = 'BH')
+  #  result$tissue = row.names(result)
+  #  row.names(result) = NULL
+  
+  #  return(result)
+  
+  #}
+  
+  
   
   #---------------------------------------------------------------
   # download different mappings and hide/show download buttons

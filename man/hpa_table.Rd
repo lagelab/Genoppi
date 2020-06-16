@@ -4,7 +4,7 @@
 \name{hpa_table}
 \alias{hpa_table}
 \title{Subsetted Human Protein Atlas annotation table}
-\format{data.frame object}
+\format{data.frame object with: tissue, gene, significant (indicating whether the gene is elvated in the tissue.)}
 \source{
 merge between proteinatlas.tsv.zip and normal_tissue.tsv.zip downloaded on 2020-06-12 (https://www.proteinatlas.org/about/download).
 }
@@ -12,7 +12,12 @@ merge between proteinatlas.tsv.zip and normal_tissue.tsv.zip downloaded on 2020-
 hpa_table
 }
 \description{
-A table containing classification of all human protein-coding genes based on transcript expression levels in 32 tissues.
+A table containing classification of all human protein-coding genes based on transcript expression levels in 33 tissues
+(19,634 unique genes). Only tissue with elevated expression has been included.
+}
+\note{
+some tissue is divided into sub-categories, e.g. Small intestine (Intestine) and Small intestine (Intestine). See table 2-3 at \url{https://www.proteinatlas.org/humanproteome/tissue/tissue+specific} 
+for additional details.
 }
 \seealso{
 Other datasets: 
