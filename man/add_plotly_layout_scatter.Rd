@@ -40,6 +40,7 @@ Other plotly:
 \code{\link{add_plotly_layout_volcano}()},
 \code{\link{add_plotly_line_unity}()},
 \code{\link{add_plotly_threshold_lines}()},
-\code{\link{add_plotly_trace}()}
+\code{\link{add_plotly_trace}()},
+\code{\link{plotly_tissue_enrichment}()}
 }
 \concept{plotly}

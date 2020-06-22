@@ -16,6 +16,7 @@ A table containing 67,519 entries of accession_number to gene (HGNC symbol) mapp
 }
 \seealso{
 Other datasets: 
+\code{\link{GTEX_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

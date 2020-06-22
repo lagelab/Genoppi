@@ -16,6 +16,7 @@ A hash table containing 18,116 genes mapped to LD loci of 1KG phase 3 SNPs.
 }
 \seealso{
 Other datasets: 
+\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},

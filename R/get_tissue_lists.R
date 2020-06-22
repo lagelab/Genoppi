@@ -1,10 +1,10 @@
 #' @title Retreive Human Protein Atlas specific data
 #' @description Create gene list data.frame from input traits
 #' @param tissue vector of tissue names (character). See details for acceptable names.
-#' @param genes vector of gene names (genes detected in proteomic data)
+#' @param table either hpa_table or GTEX_table
 #' @details
 #' 
-#' The following 33 tissues are available:
+#' The following 33 tissues are available for Human Protein Atlas:
 #' 
 #' * 'adipose tissue'
 #' * 'adrenal gland'
@@ -41,19 +41,14 @@
 #' * 'vagina'
 #' 
 #' @md
-#' @examples 
-#' \dontrun{
-#' 
-#' 
-#' }
 #' @export
 
 
-get_hpa_lists <- function(tissue){
+get_tissue_lists <- function(tissue, table = hpa_table){
   
   if (!is.character(tissue)) stop('tissue input must be character')
-  if (!tissue %in% hpa_table$tissue) stop(paste(tissue,'is not a valid tissue. Please see ?get_hpa_lists for details.'))
+  if (!tissue %in% table$tissue) stop(paste(tissue,'is not a valid tissue. Please see ?get_hpa_lists for details.'))
   
-  return(hpa_table[hpa_table$tissue %in% tissue, ])
+  return(table[table$tissue %in% tissue, ])
 }
 

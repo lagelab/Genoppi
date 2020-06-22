@@ -179,6 +179,20 @@
 
 'hpa_table'
 
+
+#' @title Genotype tissue expression (GTEx)
+#' @description A table containing classification of all human protein-coding genes based on transcript expression levels in 53 tissues
+#' (20,025 unique genes). Constructed from a gene by tissue matrix containing t-statistics from Finucane et al (see reference and source). 
+#' Genes are ranked by the t-statistic, and the top 10% of genes in a tissue are considered 'elevated'. 
+#' @format data.frame object with: tissue, gene, significant (indicating whether the gene is elvated in the tissue.)
+#' @family datasets
+#' @docType data
+#' @references Finucane, H.K., Reshef, Y.A., Anttila, V. et al. Heritability enrichment of specifically expressed genes identifies disease-relevant tissues and cell types. Nat Genet 50, 621–629 (2018).
+#' @source downloaded on 2020-06-15 (\url{https://data.broadinstitute.org/alkesgroup/LDSCORE/LDSC_SEG_ldscores/tstats/}).
+
+'GTEX_table'
+
+
 #' @title example proteomic data (1)
 #' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates
 #' @format data.frame object with columns: gene, rep1, rep2, rep3

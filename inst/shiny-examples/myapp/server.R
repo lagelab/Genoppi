@@ -17,26 +17,8 @@ shinyServer(function(input, output, session){
   observeEvent(input$enable_dev_mode,{
     showTab('basic','p5')
   })
-  
-  # temporary files
-  #output$a_make_example_file <- renderUI({
-  #  actionButton('a_make_example_file', 'Example path')
-  #})
-  
-  # 
-  #a_example_dir <- eventReactive(input$a_make_example_file,{
-  #  dir = tempdir()
-  #  path = file.path(dir, 'example_data.csv')
-  #  write.csv(example_data, path)
-  #  return(path)
-  #})
-  
-  
-  #a_file_handler <- reactive({
-  #  file <- a_file_pulldown_r() 
-  #})
-  
-  
+
+
   ##### VISUALIZATIONS START ##### 
   output$a_example_file_ui <- renderUI({
     fileInput('a_file_pulldown_extra', 'Upload a proteomic data file to get started!', accept = files_accepted)
@@ -376,34 +358,34 @@ shinyServer(function(input, output, session){
   })
 
 
-  # intgrated plot, HPA
-  output$a_color_hpa_sig_ui <- renderUI({
+  # intgrated plot, tissue
+  output$a_color_tissue_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    colourpicker::colourInput('a_color_hpa_sig', NULL, value = '#FF1900', showColour = 'both', 
+    colourpicker::colourInput('a_color_tissue_sig', NULL, value = '#3AFF00', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
-  # intgrated plot, HPA
-  output$a_color_hpa_insig_ui <- renderUI({
+  # intgrated plot, tissue
+  output$a_color_tissue_insig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    colourpicker::colourInput('a_color_hpa_insig', NULL, value = '#808080', showColour = 'both', 
+    colourpicker::colourInput('a_color_tissue_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
-  # intgrated plot, HPA
-  output$a_symbol_hpa_ui <- renderUI({
+  # intgrated plot, tissue
+  output$a_symbol_tissue_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    selectInput('a_symbol_hpa', NULL, choices = allowed_plotly_symbols, selected = 'circle')
+    selectInput('a_symbol_tissue', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
   
-  # intgrated plot, HPA
-  output$a_label_hpa_ui <- renderUI({
+  # intgrated plot, tissue
+  output$a_label_tissue_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    checkboxInput("a_label_hpa", label = "Toggle labels", value = FALSE)
+    checkboxInput("a_label_tissue", label = "Toggle labels", value = FALSE)
   })
   
-  # integrated plot, HPA
-  output$a_overlay_hpa_ui <- renderUI({
+  # integrated plot, tissue
+  output$a_overlay_tissue_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    checkboxInput("a_overlay_hpa", label = "Toggle overlay", value = TRUE)
+    checkboxInput("a_overlay_tissue", label = "Toggle overlay", value = TRUE)
   })
   
 
@@ -459,11 +441,35 @@ shinyServer(function(input, output, session){
   })
   
   
-  # HPA selection
+  # Select GTEX or HPA
   output$a_hpa_tissue_ui <- renderUI({
-    selectInput('a_hpa_tissue', 'Annotate genes in tissue with elevated expression', sort(unique(hpa_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
+    selectInput('a_hpa_tissue', 'Annotate genes in tissue with elevated expression (HPA)', sort(unique(hpa_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
   })
   
+  output$a_gtex_tissue_ui <- renderUI({
+    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate genes in tissue with elevated expression (GTEX)', sort(unique(GTEX_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+  })
+  
+  output$a_tissue_select_ui <- renderUI({
+    selectInput('a_tissue_select', 'Select reference database',  c("Human Protein Atlas" = "hpa",
+                                                                   "Genome Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+  })
+  
+  # tissue enrichment (Tissue specificity tab)
+  output$a_tissue_enrichment_slider_ui <- renderUI({
+    sliderInput('a_tissue_enrichment_slider', 'Select significance threshold', 0, 1, value = 0.05, step = 0.001)
+  })
+  
+  output$a_tissue_enrichment_type_select_ui <- renderUI({
+    selectInput('a_tissue_enrichment_type_select', 'Select reference database',  c("Human Protein Atlas" = "hpa",
+                                                                                   "Genome Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+  })
+  
+  output$a_tissue_enrichment_xaxis_ui <- renderUI({
+    radioButtons('a_tissue_enrichment_xaxis', 'Format x-axis',c("P-value" = "pvalue",
+                                                                "-log10(P-value)" = 'log10pvalue',
+                                                                "Benjamin Hochberg FDR" = 'bhfdr'))
+  })
   
   # Search for replicates in data
   available_replicates <- reactive({
@@ -965,50 +971,112 @@ shinyServer(function(input, output, session){
     }
   })
   
-  # setup main gnomad mapping
-  a_hpa_mapping <- reactive({
-    req(a_pulldown_significant())
-    hpa = get_hpa_lists(tissue = input$a_hpa_tissue)
-    hpa = hpa[hpa$significant, ]
-    pulldown = a_pulldown_significant()
-    hpa = merge(pulldown, hpa, by = 'gene')
-    if (nrow(hpa)){
-      hpa$dataset = 'Protein Atlas'
-      hpa$col_significant = input$a_color_hpa_sig 
-      hpa$col_other = input$a_color_hpa_insig 
-      hpa$shape = symbol_to_shape(input$a_symbol_hpa)
-      hpa$symbol = input$a_symbol_hpa
-      hpa$label = input$a_label_hpa
-      hpa$alt_label = paste0('Tissue elevated gene in ', hpa$tissue,'.')
-      return(hpa)
+  
+  
+  
+  # return HPA or GTEx query
+  a_get_tissue_list <- reactive({
+    selected = input$a_tissue_select
+    req(a_pulldown_significant(), selected)
+    if (selected %in% 'hpa' & length(input$a_hpa_tissue) > 0){
+      return(get_tissue_lists(tissue = as.character(input$a_hpa_tissue), table = hpa_table))
+    } else if (selected %in% 'gtex' & length(input$a_gtex_tissue) > 0){
+      return(get_tissue_lists(tissue = as.character(input$a_gtex_tissue), table = GTEX_table))
     } else {
       return(NULL)
     }
   })
   
-  # get tissue with elevated expression
-  # and calculate FDR.
-  a_hpa_enrichment <- reactive({
-    req(a_pulldown_significant())
-    
+  # setup main gnomad mapping
+  a_tissue_mapping <- reactive({
+    req(a_pulldown_significant(), a_get_tissue_list())
+    tissue = a_get_tissue_list() 
+    tissue = tissue[tissue$significant, ]
     pulldown = a_pulldown_significant()
-    table = hpa_table[hpa_table$RNA.tissue.specificity %nin% "Low tissue specificity",]
-    hyper = calc_hyper_set(pulldown, table)
-    return(hyper)
-
+    tissue = merge(pulldown, tissue, by = 'gene')
+    if (nrow(tissue)){
+      tissue$dataset = toupper(input$a_tissue_select)
+      tissue$col_significant = input$a_color_tissue_sig 
+      tissue$col_other = input$a_color_tissue_insig 
+      tissue$shape = symbol_to_shape(input$a_symbol_tissue)
+      tissue$symbol = input$a_symbol_tissue
+      tissue$label = input$a_label_tissue
+      tissue$alt_label = paste0('Tissue elevated gene in ', tissue$tissue,'.')
+      return(tissue)
+    } else {
+      return(NULL)
+    }
   })
   
-  a_hpa_enrichment_gg <- reactive({
-    req(a_hpa_enrichment())
-    df = a_hpa_enrichment()
+  
+  # get the tissue enrichment table that have been selected by user
+  a_tissue_enrichment_table <- reactive({
+    req(a_pulldown_significant(), input$a_tissue_enrichment_type_select)
+    if (input$a_tissue_enrichment_type_select == 'hpa') {
+      return(hpa_table)
+    } else {
+      return(GTEX_table)
+    }
+  })
+  
+  # get tissue with elevated expression and calculate FDR.
+  a_tissue_enrichment <- reactive({
+    req(a_pulldown_significant(), a_tissue_enrichment_table())
+    pulldown = a_pulldown_significant()
+    table = a_tissue_enrichment_table()
+    enrichment = calc_adjusted_enrichment(pulldown, table)
+    enrichment$log10pvalue <- -log10(enrichment$pvalue)
+    enrichment$bhfdr <- enrichment$BH.FDR
+    return(enrichment)
+  })
+  
+  
+  
+  a_tissue_enrichment_gg <- reactive({
+    req(a_tissue_enrichment())
+    df = a_tissue_enrichment()
+    p = plot_tissue_enrichment(df, 'list_name', 'log10pvalue')
+    return(p)
+  })
+  
+  # controls what should be returned to enrichment plot
+  a_tissue_enrichment_layout <- reactive({
+    req(a_pulldown_significant(), input$a_tissue_enrichment_xaxis, input$a_tissue_enrichment_slider)
     
-    ggplot(df, aes(x = tissue, y = FDR.BH, fill = list_name)) + 
-      geom_bar(stat="identity", color = 'black', position = 'dodge') +
-      scale_fill_brewer(palette="Blues") +
-      theme_minimal() +
-      coord_flip()
+    # setup switches
+    make_xlab <- function(type) {
+      switch(type,
+             pvalue = '<i>P</i>-value',
+             log10pvalue = '-log10(<i>P</i>-value)',
+             bhfdr = 'FDR')
+    }
     
+    # save layout to list
+    layout <- list()
+    layout$xaxis = input$a_tissue_enrichment_xaxis
+    layout$sig_line = ifelse(input$a_tissue_enrichment_xaxis == 'log10pvalue', 
+                             -log10(input$a_tissue_enrichment_slider),
+                             input$a_tissue_enrichment_slider)
+    layout$title = ifelse(input$a_tissue_enrichment_type_select == 'hpa',
+                          'Proteomic data enriched in Human Protein Atlas',
+                          'Protemoc data enriched in GTEx')
+    layout$xlab = make_xlab(input$a_tissue_enrichment_xaxis)
     
+    return(layout)
+  })
+  
+  # plot bar chart of tissue enrichment
+  output$a_tissue_enrichment_ui <- renderPlotly({
+    req(a_tissue_enrichment())
+    df = a_tissue_enrichment()
+    layout = a_tissue_enrichment_layout()
+    df$details = paste('P-value:', round(df$pvalue, 8), 'FDR:', df$bhfdr)
+    plotly_tissue_enrichment(df, 
+                             'list_name', 
+                             layout$xaxis,'details',
+                             pvalue.line = layout$sig_line, 
+                             xlab = HTML(layout$xlab), 
+                             ylab = 'Tissue')
   })
   
   #calc_hyper_set <- function(pulldown, table, col.gene = 'gene', col.tissue = 'RNA.tissue.specific'){
@@ -1118,15 +1186,28 @@ shinyServer(function(input, output, session){
     }
    )
   
-  # download HPA mapping
-  output$a_hpa_mapping_download <- downloadHandler(
+  # download tissue mapping
+  output$a_tissue_mapping_download <- downloadHandler(
     filename = function() {
-      paste("genoppi-hpa-mapping",".csv", sep="")
+      paste("genoppi-tissue-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
-      hpa = a_hpa_mapping()[,1:15]
+      hpa = a_tissue_mapping()[,1:15]
       write.csv(hpa, file, row.names = F)
+    }
+  )
+  
+  # download tissue enrichment data
+  output$a_tissue_enrichment_download <- downloadHandler(
+    filename = function() {
+      paste("genoppi-tissue-specificity",".csv", sep="")
+    },
+    content = function(file) {
+      result = a_tissue_enrichment()
+      result$bhfdr <- NULL
+      result$log10pvalue <- NULL
+      write.csv(result, file, row.names = F)
     }
   )
   
@@ -1183,6 +1264,17 @@ shinyServer(function(input, output, session){
     }
   )
   
+  # venn diagram human protein atlas
+  output$a_tissue_venn_mapping_download <- downloadHandler(
+    filename = function() {
+      paste("genoppi-tissue-venn-mapping",".csv", sep="")
+    },
+    content = function(file) {
+      venn = a_tissue_calc_hyper()$venn
+      write.csv(venn_to_table(venn), file, row.names = F)
+    }
+  )
+  
   # venn diagram mapping snps
   output$a_snp_venn_mapping_download <- downloadHandler(
     filename = function() {
@@ -1219,8 +1311,10 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) & input$a_select_gnomad_pli_type == 'threshold')})
-  observe({shinyjs::toggle(id="a_hpa_mapping_download", condition=!is.null(a_pulldown_significant() ))})
+  observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() ))})
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
+  observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(a_tissue_enrichment()))})  
+  
   
   # venn diagrams
   observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% hash::keys(inweb_hash)))})
@@ -1228,6 +1322,12 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_genes_upload_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(a_gnomad_mapping_threshold()) & input$a_select_gnomad_pli_type == 'threshold')})
+  observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_tissue_select))})
+  
+  # show hide select buttons
+  observe({shinyjs::toggle(id="a_hpa_tissue", condition = input$a_tissue_select == 'hpa')})
+  observe({shinyjs::toggle(id="a_gtex_tissue", condition = input$a_tissue_select == 'gtex')})
+  
   
   # warning boxes
   # observeEvent(!is.null(a_pulldown_significant()),{shinyjs::toggle(id="box_mapping_warning_ui")})
@@ -1386,8 +1486,59 @@ shinyServer(function(input, output, session){
     HTML(paste(output$total, output$A, output$B, sep = "<br/>"))
   })
   
+  ## Human Protein Atlas and GTEX
+  # calculate hypergeometric overlap
+  a_tissue_calc_hyper <- reactive({
+    req(input$a_tissue_select, a_pulldown_significant())
+    output = a_get_tissue_list() 
+    if (!is.null(output)){
+      # setup data for calculating hypergeom. P-value.
+      listname = toupper(input$a_tissue_select)
+      output_list = data.frame(listName = listname, output)
+      output_intersect = data.frame(listName = listname, intersectN = T)
+      data = a_pulldown_significant()
+      # compile venn diagram information
+      hyper = calc_hyper(data, output_list, output_intersect, bait = a_bait_parsed())
+      hyper[['venn']][['A']] <- hyper$genes[[listname]]$success_genes # pulldown
+      hyper[['venn' ]][['B']] <- hyper$genes[[listname]]$sample_genes # inweb
+      return(hyper)
+    } else {NULL}
+  })
+  
+  # draw venn diagram
+  output$a_tissue_venn_ui <- renderPlot({
+    req(input$a_tissue_select, a_pulldown_significant(), a_tissue_calc_hyper())
+    hyper = a_tissue_calc_hyper()
+    v = draw_genoppi_venn(hyper$venn, color = c('blue','red'),
+                          main = paste0('P-value = ', format(hyper$statistics$pvalue, digits = 3)))
+    grid::grid.newpage()
+    grid::grid.draw(v)
+  })
   
   
+  # text to be displayed alongside venn diagram
+  a_tissue_venn_verbatim <- reactive({
+    req(a_pulldown_significant(), a_tissue_calc_hyper(), input$a_tissue_select)
+    
+    # get text to be displayed
+    thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+    dataset = ifelse(input$a_tissue_select == 'hpa', 'Human Protein Atlas', 'GTEx')
+    tissue = unlist(ifelse(input$a_tissue_select == 'hpa', list(input$a_hpa_tissue), list(input$a_gtex_tissue)))
+    
+    # get hypergeometric stats
+    hyper = a_tissue_calc_hyper()
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
+    B <- paste0("B = ", bold(paste0(tissue, collapse = '; '))," (", dataset,")", " &#40;", bold(hyper$statistics$sample_count), "&#41;")
+                total <- paste0("Total population = proteomic data &cap; ", dataset," &#40;", bold(hyper$statistics$population_count), "&#41;")
+                return(list(A=A, B=B, total=total))
+  })
+    
+  # Send text to ui
+  output$a_tissue_venn_verbatim_ui <- renderUI({
+    output <- a_tissue_venn_verbatim()
+    HTML(paste(output$total, output$A, output$B, sep = "<br/>"))
+  })
+    
   
   # SNPS UPLOAD
   # get available snp lists
@@ -1508,7 +1659,6 @@ shinyServer(function(input, output, session){
     HTML(paste(output$total, output$A, output$B, sep = "<br/>"))
   })
   
-
   # hypergeometric overlap gnomAD
   a_gnomad_calc_hyper <- reactive({
     req(a_gnomad_sig_list(), a_pulldown_significant())
@@ -1699,7 +1849,7 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold' & input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
-    if (!is.null(input$a_hpa_tissue)) if (input$a_overlay_hpa) p = plot_overlay(p, list(hpa=a_hpa_mapping()))
+    if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p = plot_overlay(p, list(tissue=a_tissue_mapping()))
     
     # collapse/combine labels from multiple overlay
     if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)

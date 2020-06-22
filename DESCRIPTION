@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 0.4.1
+Version: 0.4.3
 Authors@R: 
     c(person(given = "Frederik",
              family = "Lassen",
@@ -49,6 +49,7 @@ Collate:
     'add_plotly_threshold_lines.R'
     'add_plotly_trace.R'
     'append_to_column.R'
+    'calc_adujusted_enrichment.R'
     'calc_cumsum_table.R'
     'calc_fisher.R'
     'calc_hyper.R'
@@ -62,11 +63,11 @@ Collate:
     'get_geneset_overlay.R'
     'get_gene_lists.R'
     'get_gwas_lists.R'
-    'get_hpa_lists.R'
     'get_inweb_list.R'
     'get_pathways.R'
     'get_shiny_errors.R'
     'get_snp_lists.R'
+    'get_tissue_lists.R'
     'html_translate_significance_thresholds.R'
     'id_enriched_proteins.R'
     'launch_genoppi.R'
@@ -76,6 +77,7 @@ Collate:
     'parse_uploaded_file.R'
     'plot_overlay.R'
     'plot_scatter_basic.R'
+    'plot_tissue_enrichment.R'
     'plot_volcano_basic.R'
     'read_input.R'
     'set_names_by_dataset.R'

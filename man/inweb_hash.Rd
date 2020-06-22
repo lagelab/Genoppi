@@ -16,6 +16,7 @@ A hash table containing InWeb database protein interactions for 18,551 genes.
 }
 \seealso{
 Other datasets: 
+\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},

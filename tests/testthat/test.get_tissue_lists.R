@@ -1,11 +1,11 @@
-context('get_hpa_lists')
+context('get_tissue_lists')
 
 # test HPA Tissue and genes
 tissue <- c("blood","esophagus")
 genes <- c('ANXA1', 'EEF1G', 'SNCA', 'WARS')
 genes_null <- c("TEST1","TEST2","TEST3")
 
-test_that('get_hpa_lists can return correct data.frame',{
+test_that('get_tissue_lists can return correct data.frame',{
   
   # Multiple tissues can be found
   #result <- get_hpa_lists(tissue, genes)

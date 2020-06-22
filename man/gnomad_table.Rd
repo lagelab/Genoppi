@@ -16,6 +16,7 @@ The gnomAD v2 data set contains data from 125,748 exomes and 15,708 whole genome
 }
 \seealso{
 Other datasets: 
+\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},

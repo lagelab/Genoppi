@@ -137,14 +137,16 @@ body <- dashboardBody(
                                      )
                                    ),
                                    box(
-                                     title = "Human Protein Atlas", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                     title = "Tissue enrichment", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                      fluidRow(
-                                       column(12, uiOutput("a_hpa_tissue_ui")),
+                                       column(12, uiOutput('a_tissue_select_ui'),
+                                                  uiOutput("a_gtex_tissue_ui"),
+                                                  uiOutput("a_hpa_tissue_ui")),
                                      ),
                                      fluidRow(
-                                       column(4, uiOutput("a_overlay_hpa_ui")),
-                                       column(4, uiOutput("a_label_hpa_ui")),
-                                       column(4, shinyjs::hidden(myDownloadButton("a_hpa_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                       column(4, uiOutput("a_overlay_tissue_ui")),
+                                       column(4, uiOutput("a_label_tissue_ui")),
+                                       column(4, shinyjs::hidden(myDownloadButton("a_tissue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      )
                                    ),
                                   box(
@@ -188,10 +190,10 @@ body <- dashboardBody(
                                       column(3, uiOutput("a_symbol_gnomad_ui"))
                                     ),
                                     fluidRow(
-                                      column(3, h5('Protein atlas')),
-                                      column(3, uiOutput("a_color_hpa_sig_ui")),
-                                      column(3, uiOutput("a_color_hpa_insig_ui")),
-                                      column(3, uiOutput("a_symbol_hpa_ui"))
+                                      column(3, h5('Tissue enrichment')),
+                                      column(3, uiOutput("a_color_tissue_sig_ui")),
+                                      column(3, uiOutput("a_color_tissue_insig_ui")),
+                                      column(3, uiOutput("a_symbol_tissue_ui"))
                                     ),
                                     #fluidRow(column(12, h5('SNPs upload'))),
                                     fluidRow(
@@ -217,7 +219,6 @@ body <- dashboardBody(
                                             column(12, shinyjs::hidden(myDownloadButton("a_integrated_plot_download",'Volcano plot')))
                                           ),
                                           fluidRow(style = "padding-bottom:150px",
-                                           #column(1, br(), br(), br(), br(), plotOutput("FDR_colorbar_integrated", width = "50px")),
                                            column(12, plotlyOutput("Multi_VolcanoPlot")),
                                          )
                                     ),
@@ -244,6 +245,13 @@ body <- dashboardBody(
                                                  column(3, shinyjs::hidden(myDownloadButton("a_gnomad_venn_mapping_download", 'Genes', icon("download"))))
                                                )
                                       ),
+                                      tabPanel('Tissue enrichment',
+                                               fluidRow(
+                                                 column(4, plotOutput('a_tissue_venn_ui', width = "220px", height = "220px")),
+                                                 column(5, br(), br(), br(), br(), uiOutput("a_tissue_venn_verbatim_ui")),
+                                                 column(3, shinyjs::hidden(myDownloadButton("a_tissue_venn_mapping_download", 'Genes', icon("download"))))
+                                               ),
+                                      ),
                                       tabPanel('SNPs upload',
                                          fluidRow(
                                           column(4, plotOutput('a_snp_venn_ui', width = "220px", height = "220px")),
@@ -265,6 +273,34 @@ body <- dashboardBody(
                                       )
                                     )
                                 )
+                        ),
+                        tabPanel("Tissue specificity", value = "p4",
+                                 br(),
+                                 column(4,
+                                      box(
+                                        title = tagList('Settings'), width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                        column(12, 
+                                          fluidRow(
+                                            uiOutput('a_tissue_enrichment_type_select_ui'),
+                                            uiOutput('a_tissue_enrichment_slider_ui'),  
+                                            uiOutput('a_tissue_enrichment_xaxis_ui'),
+                                            shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome")))
+                                            
+                                          )
+                                        )
+                                      )
+                                 ),
+                                 column(8,
+                                        box(
+                                          title = tagList('Tissue-specific enrichment'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, height = 1000,
+                                          fluidRow(
+                                            column(12,
+                                                   plotlyOutput('a_tissue_enrichment_ui')
+                                                   )
+                                          )
+                                        )
+                                 )
+                                      
                         ),
                         tabPanel("Gene set annotations", value = "p4",
                                  br(),

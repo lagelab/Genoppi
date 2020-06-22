@@ -16,6 +16,7 @@ Simulated proteomic dataset containing gene symbol and corresponding log2 fold c
 }
 \seealso{
 Other datasets: 
+\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},

@@ -21,10 +21,12 @@ Other misc:
 \code{\link{color_distinct}()},
 \code{\link{color_gradient}()},
 \code{\link{get_gg_legend}()},
+\code{\link{hline}()},
 \code{\link{italics}()},
 \code{\link{lun}()},
 \code{\link{null_omit}()},
 \code{\link{shape_to_symbol}()},
-\code{\link{symbol_to_shape}()}
+\code{\link{symbol_to_shape}()},
+\code{\link{vline}()}
 }
 \concept{misc}
