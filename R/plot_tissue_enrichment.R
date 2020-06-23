@@ -33,9 +33,14 @@ plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue',
 #' @param xlim vector of length 2.
 #' @family plotly
 #' @export
+#' @export
 
 plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text = NULL, pvalue.line = NULL, 
-                                     xlab = '', ylab = '', title = '', xlim = NULL){
+                                     xlab = '', ylab = '', title = '', xlim = NULL, col.color = NULL){
+  
+  # color scheme
+  data$color <- ifelse(data$significant == 'significant', 'red', 'orange')
+  params.colors = set_names_by_dataset(data, marker = 'color', by = 'significant') 
   
   # main plotting
   p = plot_ly(data, 
@@ -44,8 +49,10 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
           y = data[[col.tissue]], 
           name = data[[col.tissue]],
           text = data[[col.tissue]],
+          color = data[[col.color]],
+          colors = params.colors,
           textposition = 'auto', 
-          marker = list(color = 'orange', line = list(color = 'rgb(8,48,107)', width = 1)),
+          marker = list(line = list(color = 'rgb(8,48,107)', width = 1)),
           hoverinfo = "text", 
           hovertemplate = ~data[[col.value.text]],
           showlegend = F)
@@ -63,7 +70,7 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
   
   yaxis <- list(
     title = ylab,
-    tickangle = -45
+    tickangle = -30
   )
   
   p <- layout(p, title = title, yaxis = yaxis, xaxis = xaxis.ticks, height = 900, shapes = list(vline(pvalue.line)))        

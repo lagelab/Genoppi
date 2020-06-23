@@ -466,9 +466,8 @@ shinyServer(function(input, output, session){
   })
   
   output$a_tissue_enrichment_xaxis_ui <- renderUI({
-    radioButtons('a_tissue_enrichment_xaxis', 'Format x-axis',c("P-value" = "pvalue",
-                                                                "-log10(P-value)" = 'log10pvalue',
-                                                                "Benjamin Hochberg FDR" = 'bhfdr'))
+    radioButtons('a_tissue_enrichment_xaxis', 'Format x-axis',c("-log10(P-value)" = 'log10pvalue',
+                                                                "-log10(Q-value)" = 'log10qvalue'))
   })
   
   # Search for replicates in data
@@ -1026,18 +1025,17 @@ shinyServer(function(input, output, session){
     table = a_tissue_enrichment_table()
     enrichment = calc_adjusted_enrichment(pulldown, table)
     enrichment$log10pvalue <- -log10(enrichment$pvalue)
+    enrichment$log10qvalue <- -log10(enrichment$BH.FDR)
     enrichment$bhfdr <- enrichment$BH.FDR
     return(enrichment)
   })
   
-  
-  
-  a_tissue_enrichment_gg <- reactive({
-    req(a_tissue_enrichment())
-    df = a_tissue_enrichment()
-    p = plot_tissue_enrichment(df, 'list_name', 'log10pvalue')
-    return(p)
-  })
+  #a_tissue_enrichment_gg <- reactive({
+  #  req(a_tissue_enrichment())
+  #  df = a_tissue_enrichment()
+  #  p = plot_tissue_enrichment(df, 'list_name', 'log10pvalue')
+  #  return(p)
+  #})
   
   # controls what should be returned to enrichment plot
   a_tissue_enrichment_layout <- reactive({
@@ -1046,65 +1044,48 @@ shinyServer(function(input, output, session){
     # setup switches
     make_xlab <- function(type) {
       switch(type,
-             pvalue = '<i>P</i>-value',
              log10pvalue = '-log10(<i>P</i>-value)',
-             bhfdr = 'FDR')
+             log10qvalue = '-log10(<i>Q</i>-value)')
     }
     
     # save layout to list
     layout <- list()
     layout$xaxis = input$a_tissue_enrichment_xaxis
-    layout$sig_line = ifelse(input$a_tissue_enrichment_xaxis == 'log10pvalue', 
-                             -log10(input$a_tissue_enrichment_slider),
-                             input$a_tissue_enrichment_slider)
+    layout$sig_line = -log10(input$a_tissue_enrichment_slider)
+    layout$xlab = make_xlab(input$a_tissue_enrichment_xaxis)
     layout$title = ifelse(input$a_tissue_enrichment_type_select == 'hpa',
                           'Proteomic data enriched in Human Protein Atlas',
                           'Protemoc data enriched in GTEx')
-    layout$xlab = make_xlab(input$a_tissue_enrichment_xaxis)
-    
+
     return(layout)
   })
   
   # plot bar chart of tissue enrichment
   output$a_tissue_enrichment_ui <- renderPlotly({
-    req(a_tissue_enrichment())
+    req(a_tissue_enrichment(), a_tissue_enrichment_layout())
+    
+    # get enrichment data and format visuals
     df = a_tissue_enrichment()
     layout = a_tissue_enrichment_layout()
-    df$details = paste('P-value:', round(df$pvalue, 8), 'FDR:', df$bhfdr)
+    genes = unlist(lapply(df$successInSampleGenes, function(x) paste(strwrap(x, width = 40), collapse = '<br>')))
+    df$significant = as.factor(ifelse(df[[layout$xaxis]] > layout$sig_line, 'significant', 'not-significant'))
+    df$details = paste0('P-value: ', formatC(df$pvalue, format = "e", digits = 3), '. ',
+                       'Q-value (FDR): ', formatC(df$bhfdr, format = "e", digits = 3), '. <br>',
+                       bold(df$successInSample_count), ' genes(s) enriched in tissue: <br>',
+                       italics(genes), '.')
+    
+    # plot data
     plotly_tissue_enrichment(df, 
                              'list_name', 
-                             layout$xaxis,'details',
+                             layout$xaxis,
+                             'details',
+                             col.color = 'significant',
                              pvalue.line = layout$sig_line, 
                              xlab = HTML(layout$xlab), 
                              ylab = 'Tissue')
+    
+    
   })
-  
-  #calc_hyper_set <- function(pulldown, table, col.gene = 'gene', col.tissue = 'RNA.tissue.specific'){
-  
-  # for hypergeometric test on each tissue type
-  #  table$listName = 'list1'
-  #  table_intersect = data.frame(listName = "list1", intersectN = F)
-  #  tissue = sort(unique(table[[col.tissue]]))
-  
-  #  sig = lapply(tissue, function(x){
-  
-  #    table$significant = table[[col.tissue]] %in% x
-  #    hyper = calc_hyper(pulldown, table, table_intersect)
-  #    return(hyper$statistics)
-  
-  #  })
-  
-  # correct for multiple testing using Benjamin-Hochberg FDR
-  #  names(sig) = tissue
-  #  result = do.call(rbind, sig)
-  #  result$FDR.BH = stats::p.adjust(result$pvalue, method = 'BH')
-  #  result$tissue = row.names(result)
-  #  row.names(result) = NULL
-  
-  #  return(result)
-  
-  #}
-  
   
   
   #---------------------------------------------------------------
@@ -1498,7 +1479,7 @@ shinyServer(function(input, output, session){
       output_intersect = data.frame(listName = listname, intersectN = T)
       data = a_pulldown_significant()
       # compile venn diagram information
-      hyper = calc_hyper(data, output_list, output_intersect, bait = a_bait_parsed())
+      hyper = calc_hyper(data, output_list, output_intersect, bait = NULL) #a_bait_parsed())
       hyper[['venn']][['A']] <- hyper$genes[[listname]]$success_genes # pulldown
       hyper[['venn' ]][['B']] <- hyper$genes[[listname]]$sample_genes # inweb
       return(hyper)

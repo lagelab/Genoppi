@@ -126,6 +126,19 @@ body <- dashboardBody(
                                       #fluidRow(column(12, tableOutput("a_table_gnomad_constraints_ui")))
                                     ),
                                     box(
+                                      title = "Tissue-specific genes", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                      fluidRow(
+                                        column(12, uiOutput('a_tissue_select_ui'),
+                                               uiOutput("a_gtex_tissue_ui"),
+                                               uiOutput("a_hpa_tissue_ui")),
+                                      ),
+                                      fluidRow(
+                                        column(4, uiOutput("a_overlay_tissue_ui")),
+                                        column(4, uiOutput("a_label_tissue_ui")),
+                                        column(4, shinyjs::hidden(myDownloadButton("a_tissue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                      )
+                                    ),
+                                    box(
                                      title ='Upload SNPs', width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                      fluidRow(
                                        column(12, uiOutput("a_SNP_file"))
@@ -134,19 +147,6 @@ body <- dashboardBody(
                                        column(4, uiOutput("a_overlay_snp_ui")),
                                        column(4, uiOutput("a_label_snp_ui")),
                                        column(4, shinyjs::hidden(myDownloadButton("a_snp_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
-                                     )
-                                   ),
-                                   box(
-                                     title = "Tissue enrichment", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
-                                     fluidRow(
-                                       column(12, uiOutput('a_tissue_select_ui'),
-                                                  uiOutput("a_gtex_tissue_ui"),
-                                                  uiOutput("a_hpa_tissue_ui")),
-                                     ),
-                                     fluidRow(
-                                       column(4, uiOutput("a_overlay_tissue_ui")),
-                                       column(4, uiOutput("a_label_tissue_ui")),
-                                       column(4, shinyjs::hidden(myDownloadButton("a_tissue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      )
                                    ),
                                   box(
