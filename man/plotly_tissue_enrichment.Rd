@@ -13,8 +13,7 @@ plotly_tissue_enrichment(
   xlab = "",
   ylab = "",
   title = "",
-  xlim = NULL,
-  col.color = NULL
+  xlim = NULL
 )
 }
 \arguments{

@@ -25,9 +25,9 @@ shinyServer(function(input, output, session){
   })
   
   output$a_get_example_file_ui <- renderUI({
-    HTML(paste('Or try out',actionLink('a_get_example_file', 'an example file'), '!'))
+    HTML(paste('or try the',actionLink('a_get_example_file', 'single file'), 'analysis or a',
+               actionLink('a_get_example_multiple_files', 'multiple files'),'comparison!'))
   })
-  
   
   output$a_file <- renderUI({
     fileInput('a_file_pulldown_r', 'Upload user input file', accept = files_accepted)
@@ -1079,7 +1079,6 @@ shinyServer(function(input, output, session){
                              'list_name', 
                              layout$xaxis,
                              'details',
-                             col.color = 'significant',
                              pvalue.line = layout$sig_line, 
                              xlab = HTML(layout$xlab), 
                              ylab = 'Tissue')
@@ -1594,8 +1593,6 @@ shinyServer(function(input, output, session){
     HTML(paste(output$total, output$A, output$B, sep = "<br/>"))
   })
   
-  
-  
   ## GWAS catalog
   # subset all snps for gwas catalog
   a_gwas_catalogue_mapping_venn <- reactive({
@@ -1751,7 +1748,7 @@ shinyServer(function(input, output, session){
   
   # basic volcano plot
   a_vp_layerx <- reactive({
-    req(a_vp_gg())
+    req(a_vp_gg(), input$a_pval_thresh, input$a_logFC_thresh, input$a_logfc_direction, input$a_significance_type)
     p <- a_vp_gg()
     p <- make_interactive(p, legend = T)
     if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
@@ -2192,6 +2189,10 @@ shinyServer(function(input, output, session){
 
   ## handle file upload
   
+  b_file_1_datapath <- reactiveVal(value = NULL)
+  b_file_2_datapath <- reactiveVal(value = NULL)
+  b_file_3_datapath <- reactiveVal(value = NULL)
+  
   output$b_file_1_ui <- renderUI({
     fileInput('b_file_1', 'Upload file 1', accept = files_accepted)
   })
@@ -2204,44 +2205,57 @@ shinyServer(function(input, output, session){
     fileInput('b_file_3', 'Upload file 3', accept = files_accepted)
   })
   
+  # store paths to the data
+  b_file_1_setpath <- observeEvent(input$b_file_1,{b_file_1_datapath(input$b_file_1$datapath)})
+  b_file_2_setpath <- observeEvent(input$b_file_2,{b_file_2_datapath(input$b_file_2$datapath)})
+  b_file_3_setpath <- observeEvent(input$b_file_3,{b_file_3_datapath(input$b_file_3$datapath)})
+  
+  # example files
+  observeEvent(input$a_get_example_multiple_files,{
+    updateTabItems(session, "sidebarmenu", 'widgets')
+    b_file_1_datapath(example_file)
+    b_file_2_datapath(example_file2)
+    b_file_3_datapath(example_file3)
+  })
+  
+  
  ## handle file parsing, i.e. ensure that the files are correctly mapped
  ## and contain columns requried for further analysis.
-  
  b_file_1_parsed <- reactive({
-   if (!is.null(input$b_file_1)){
-     return(parse_uploaded_file(input$b_file_1$datapath))
+   if (!is.null(b_file_1_datapath())){
+     return(parse_uploaded_file(b_file_1_datapath()))
    } else return(NULL)
  })
   
  b_file_2_parsed <- reactive({
-   if (!is.null(input$b_file_2)){
-   return(parse_uploaded_file(input$b_file_2$datapath))
+   if (!is.null(b_file_2_datapath())){
+   return(parse_uploaded_file(b_file_2_datapath()))
    } else return(NULL)
  })
   
  b_file_3_parsed <- reactive({
-   if (!is.null(input$b_file_3)){
-   return(parse_uploaded_file(input$b_file_3$datapath))
+   if (!is.null(b_file_3_datapath())){
+   return(parse_uploaded_file(b_file_3_datapath()))
    } else return(NULL)
  })
  
- ## track whether data contains replixcate data
+ ## track whether input contains replicate data
  
  b_file_1_rep_bool <- reactive({
    req(b_file_1_parsed())
-   check = read_input(input$b_file_1$datapath)$format$check
+   check = read_input(b_file_1_datapath())$format$check
    return(check$gene_rep | check$accession_rep)
  })
  
  b_file_2_rep_bool <- reactive({
    req(b_file_2_parsed())
-   check = read_input(input$b_file_2$datapath)$format$check
+   check = read_input(b_file_2_datapath())$format$check
    return(check$gene_rep | check$accession_rep)
  })
  
  b_file_3_rep_bool <- reactive({
    req(b_file_3_parsed())
-   check = read_input(input$b_file_3$datapath)$format$check
+   check = read_input(b_file_3_datapath())$format$check
    return(check$gene_rep | check$accession_rep)
  })
  
@@ -2368,6 +2382,7 @@ shinyServer(function(input, output, session){
  })
  
  output$b_file_1_logFC_thresh <- renderUI({
+   req(b_file_1_parsed(), input$b_file_1_logfc_direction)
    if(!is.null(b_file_1_parsed())){
      limit <- calc_logfc_limit(b_file_1_parsed(), input$b_file_1_logfc_direction)
      sliderInput("b_file_1_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
@@ -2403,6 +2418,7 @@ shinyServer(function(input, output, session){
  })
  
  output$b_file_2_logFC_thresh <- renderUI({
+   req(b_file_2_parsed(), input$b_file_2_logfc_direction)
    if(!is.null(b_file_2_parsed())){
      limit <- calc_logfc_limit(b_file_2_parsed(), input$b_file_2_logfc_direction)
      sliderInput("b_file_2_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
@@ -2438,6 +2454,7 @@ shinyServer(function(input, output, session){
  })
  
  output$b_file_3_logFC_thresh <- renderUI({
+   req(b_file_3_parsed(), input$b_file_3_logfc_direction)
    if(!is.null(b_file_3_parsed())){
      limit <- calc_logfc_limit(b_file_3_parsed(), input$b_file_3_logfc_direction)
      sliderInput("b_file_3_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
@@ -2509,6 +2526,7 @@ shinyServer(function(input, output, session){
 
  ## Handle significance for each file
  b_file_1_significant <- reactive({
+   req(input$b_file_1_significance_type)
    if (!is.null(b_file_1_parsed())){
      d = b_file_1_parsed()
      if (input$b_file_1_significance_type == 'fdr'){
@@ -2523,6 +2541,7 @@ shinyServer(function(input, output, session){
  })
  
  b_file_2_significant <- reactive({
+   req(input$b_file_2_significance_type)
    if (!is.null(b_file_2_parsed())){
      d = b_file_2_parsed()
      if (input$b_file_2_significance_type == 'fdr'){
@@ -2537,6 +2556,7 @@ shinyServer(function(input, output, session){
  })
  
  b_file_3_significant <- reactive({
+   req(input$b_file_3_significance_type)
    if (!is.null(b_file_3_parsed())){
      d = b_file_3_parsed()
      if (input$b_file_3_significance_type == 'fdr'){
@@ -2646,7 +2666,7 @@ shinyServer(function(input, output, session){
  })
  
  b_file_1_vp <- reactive({
-
+   req(input$b_file_1_pval_thresh, input$b_file_1_logFC_thresh, input$b_file_1_logfc_direction, input$b_file_1_significance_type)
    p <- b_file_1_vp_gg()
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
@@ -2714,7 +2734,7 @@ shinyServer(function(input, output, session){
  })
  
  b_file_2_vp <- reactive({
-   
+   req(input$b_file_2_pval_thresh, input$b_file_2_logFC_thresh, input$b_file_2_logfc_direction, input$b_file_2_significance_type)
    p <- b_file_2_vp_gg()
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
@@ -2781,7 +2801,7 @@ shinyServer(function(input, output, session){
  })
  
  b_file_3_vp <- reactive({
-   
+   req(input$b_file_3_pval_thresh, input$b_file_3_logFC_thresh, input$b_file_3_logfc_direction, input$b_file_3_significance_type)
    p <- b_file_3_vp_gg()
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)

@@ -36,9 +36,9 @@ plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue',
 #' @export
 
 plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text = NULL, pvalue.line = NULL, 
-                                     xlab = '', ylab = '', title = '', xlim = NULL, col.color = NULL){
+                                     xlab = '', ylab = '', title = '', xlim = NULL){
   
-  # color scheme
+  # color scheme (constant for now)
   data$color <- ifelse(data$significant == 'significant', 'red', 'orange')
   params.colors = set_names_by_dataset(data, marker = 'color', by = 'significant') 
   
@@ -49,7 +49,7 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
           y = data[[col.tissue]], 
           name = data[[col.tissue]],
           text = data[[col.tissue]],
-          color = data[[col.color]],
+          color = data[['significant']],
           colors = params.colors,
           textposition = 'auto', 
           marker = list(line = list(color = 'rgb(8,48,107)', width = 1)),

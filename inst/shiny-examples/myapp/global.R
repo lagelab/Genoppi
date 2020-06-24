@@ -51,10 +51,17 @@ files_accepted = c('text/csv',
 # for ensuring venn diagrams does not make logs
 futile.logger::flog.threshold(futile.logger::ERROR) 
 
-# save example data
+# save example data so that it can be loaded in the app
 data("example_data")
+data("example_data2")
+data("example_data3")
 example_file = tempfile(fileext = '.txt')
+example_file2 = tempfile(fileext = '.txt')
+example_file3 = tempfile(fileext = '.txt')
 write.table(example_data, example_file, quote = F, row.names = F, sep = '\t')
+write.table(example_data2, example_file2, quote = F, row.names = F, sep = '\t')
+write.table(example_data3, example_file3, quote = F, row.names = F, sep = '\t')
+
 
 #
 myDownloadButton <- function(outputId, label = "Download", img = icon("camera")){
