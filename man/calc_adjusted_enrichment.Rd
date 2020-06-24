@@ -4,7 +4,13 @@
 \alias{calc_adjusted_enrichment}
 \title{calculate adjusted enrichment}
 \usage{
-calc_adjusted_enrichment(data, reference, col.by = "tissue", bait = NULL)
+calc_adjusted_enrichment(
+  data,
+  reference,
+  col.by = "tissue",
+  bait = NULL,
+  p.adj.method = "fdr"
+)
 }
 \arguments{
 \item{data}{proteomic data with gene and significant columns.}
@@ -14,6 +20,8 @@ calc_adjusted_enrichment(data, reference, col.by = "tissue", bait = NULL)
 \item{col.by}{string. What column contains the group?}
 
 \item{bait}{bait. String. Passed to \code{?calc_hyper}.}
+
+\item{p.adj.method}{Default is fdr. See p.adjust.methods in \code{?stats::p.adjust}.}
 }
 \description{
 calculate benjamin-hochberg adjusted enrichment of genes in tissue.

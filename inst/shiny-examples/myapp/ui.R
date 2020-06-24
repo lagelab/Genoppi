@@ -64,7 +64,7 @@ body <- dashboardBody(
                                           ),
                                           fluidRow(style = "padding-bottom:75px",
                                             #column(1, plotOutput("FDR_colorbar", width = "50px")),
-                                            column(12, plotlyOutput("VolcanoPlot")) #, width = "550px", height = "550px"
+                                            column(12, withSpinner(plotlyOutput("VolcanoPlot"), spinner_type)) #, width = "550px", height = "550px"
                                           ),
                                         ),
                                         box(
@@ -73,7 +73,7 @@ body <- dashboardBody(
                                             column(11, shinyjs::hidden(myDownloadButton("a_scatter_plot_download", 'Scatter plot')))
                                           ),
                                           fluidRow(
-                                            column(11, plotlyOutput("ScatterPlot")) #, width = "550px", height = "550px"
+                                            column(11, withSpinner(plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
                                           )
                                         )
                                  )
@@ -219,7 +219,7 @@ body <- dashboardBody(
                                             column(12, shinyjs::hidden(myDownloadButton("a_integrated_plot_download",'Volcano plot')))
                                           ),
                                           fluidRow(style = "padding-bottom:150px",
-                                           column(12, plotlyOutput("Multi_VolcanoPlot")),
+                                           column(12, withSpinner(plotlyOutput("Multi_VolcanoPlot"), spinner_type)),
                                          )
                                     ),
                                     tabBox(
@@ -284,6 +284,7 @@ body <- dashboardBody(
                                             uiOutput('a_tissue_enrichment_type_select_ui'),
                                             uiOutput('a_tissue_enrichment_slider_ui'),  
                                             uiOutput('a_tissue_enrichment_xaxis_ui'),
+                                            uiOutput('a_tissue_enrichment_scientific_notation_ui'),
                                             shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome")))
                                             
                                           )
@@ -295,7 +296,7 @@ body <- dashboardBody(
                                           title = tagList('Tissue-specific enrichment'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, height = 1000,
                                           fluidRow(
                                             column(12,
-                                                   plotlyOutput('a_tissue_enrichment_ui')
+                                                   withSpinner(plotlyOutput('a_tissue_enrichment_ui'), spinner_type)
                                                    )
                                           )
                                         )
@@ -309,15 +310,12 @@ body <- dashboardBody(
                                       title = tagList("Settings"), width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
                                       fluidRow(
                                         column(12, uiOutput("a_pf_loc_selection")),
-                                        #column(5, uiOutput("a_PF_sort_col")),
-                                        #column(5, uiOutput("a_BPF_freq"))
                                       ),
                                       fluidRow(
                                         column(12, uiOutput("a_pathway_mapping_freq_slider_ui"))
                                       ),
                                       fluidRow(
                                         column(12, uiOutput("a_pathway_mapping_search_ui"))
-                                        #column(4, uiOutput("a_label_pathway_search_ui"))
                                       ),
                                       fluidRow(
                                         column(12, uiOutput("a_pathway_mapping_type_sort_ui"))
@@ -337,7 +335,7 @@ body <- dashboardBody(
                                             column(6, '')
                                           ),
                                           fluidRow(style = "padding-bottom:125px",
-                                            column(12, plotlyOutput('VolcanoPlotPathway'))
+                                            column(12, withSpinner(plotlyOutput('VolcanoPlotPathway'), spinner_type))
                                           )
                                         ),
                                         box(
@@ -399,7 +397,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_1_volcano_download", 'Volcano plot')))
                                                  ),
                                                  fluidRow(
-                                                   plotlyOutput('b_file_1_volcano'),
+                                                   withSpinner(plotlyOutput('b_file_1_volcano'), spinner_type),
                                                  )
                                           )
                                         ),
@@ -410,7 +408,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_1_scatter_download", 'Scatter plot')))
                                                  ),
                                                  fluidRow(
-                                                   plotlyOutput('b_file_1_scatter'),
+                                                   withSpinner(plotlyOutput('b_file_1_scatter'), spinner_type),
                                                  )
                                           )
                                         )
@@ -442,7 +440,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_2_volcano_download", 'Volcano plot')))
                                                  ),
                                                  fluidRow(
-                                                   plotlyOutput('b_file_2_volcano'),
+                                                   withSpinner(plotlyOutput('b_file_2_volcano'), spinner_type),
                                                  )
                                           )
                                         ),
@@ -453,7 +451,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_2_scatter_download", 'Scatter plot')))
                                                  ),
                                                  fluidRow(
-                                                   plotlyOutput('b_file_2_scatter'),
+                                                   withSpinner(plotlyOutput('b_file_2_scatter'), spinner_type),
                                                  )
                                           )
                                         )
@@ -485,7 +483,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_3_volcano_download", 'Volcano plot')))
                                                  ),
                                                  fluidRow(
-                                                   plotlyOutput('b_file_3_volcano'),
+                                                   withSpinner(plotlyOutput('b_file_3_volcano'), spinner_type),
                                                  )
                                           )
                                         ),
@@ -496,7 +494,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_3_scatter_download", 'Scatter plot')))
                                                  ),
                                                  fluidRow(
-                                                   plotlyOutput('b_file_3_scatter'),
+                                                   withSpinner(plotlyOutput('b_file_3_scatter'), spinner_type),
                                                  )
                                           )
                                         )

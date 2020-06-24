@@ -4,6 +4,7 @@
 #' @param reference table with col.by, gene, significant in columns.
 #' @param col.by string. What column contains the group?
 #' @param bait bait. String. Passed to \code{?calc_hyper}.
+#' @param p.adj.method Default is fdr. See p.adjust.methods in \code{?stats::p.adjust}.
 #' @examples
 #' \dontrun{
 #' # check for enrichment in GTEx
@@ -20,13 +21,12 @@
 
 
 
-calc_adjusted_enrichment <- function(data, reference, col.by = 'tissue', bait = NULL){
+calc_adjusted_enrichment <- function(data, reference, col.by = 'tissue', bait = NULL, p.adj.method = 'fdr'){
   
   stopifnot(all(c('gene', 'significant') %in% colnames(data)))
   stopifnot(all(c('gene', 'significant', col.by) %in% colnames(reference)))
   
   byval = unique(reference[[col.by]])
-  
   statistics = lapply(byval, function(x){
     
     query_list = data.frame(listName = x, reference[reference[[col.by]] == x, ])
@@ -38,8 +38,9 @@ calc_adjusted_enrichment <- function(data, reference, col.by = 'tissue', bait = 
     
   })
   
+  # combine results and calculate adjusted p-values
   statistics <- do.call(rbind, statistics)
-  statistics$BH.FDR <- stats::p.adjust(statistics$pvalue)
+  statistics$BH.FDR <- stats::p.adjust(statistics$pvalue, method = p.adj.method)
   rank <- order(statistics$BH.FDR, statistics$pvalue)
   statistics <- statistics[rank,]
   statistics$list_name <- factor(statistics$list_name, levels = rev(statistics$list_name))

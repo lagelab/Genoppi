@@ -10,6 +10,7 @@ marker_cols <- read.table(file.path(main, 'colors.txt'))
 add_marker_cols <- read.table(file.path(main, 'colors_markers.txt'))
 add_marker_gradient <- readLines(file.path(main, 'color_markers_gradient.txt'))
 allowed_colors = c(add_marker_gradient,'#808080', '#A52A2A')
+spinner_type = 8
 
 ##---------------------------
 # global default variables

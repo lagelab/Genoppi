@@ -470,6 +470,10 @@ shinyServer(function(input, output, session){
                                                                 "-log10(Q-value)" = 'log10qvalue'))
   })
   
+  output$a_tissue_enrichment_scientific_notation_ui <- renderUI({
+    checkboxInput('a_tissue_enrichment_scientific_notation', 'Scientific notations')
+  })
+  
   # Search for replicates in data
   available_replicates <- reactive({
     req(a_pulldown())
@@ -1025,7 +1029,7 @@ shinyServer(function(input, output, session){
     table = a_tissue_enrichment_table()
     enrichment = calc_adjusted_enrichment(pulldown, table)
     enrichment$log10pvalue <- -log10(enrichment$pvalue)
-    enrichment$log10qvalue <- -log10(enrichment$BH.FDR)
+    enrichment$log10qvalue <- -log10(enrichment$BH.FDR) 
     enrichment$bhfdr <- enrichment$BH.FDR
     return(enrichment)
   })
@@ -1060,6 +1064,22 @@ shinyServer(function(input, output, session){
     return(layout)
   })
   
+  
+  # generate the hovertext for tissue enrichment bar plot
+  tissue_enrichment_hovertext <- reactive({
+    req(a_tissue_enrichment, !is.null(input$a_tissue_enrichment_scientific_notation))
+    df = a_tissue_enrichment()
+    scientific = input$a_tissue_enrichment_scientific_notation
+    
+    # collect data to be displayed
+    pvalues = ifelse(scientific, list(formatC(df$pvalue, format = "e", digits = 2)), list(df$pvalue))
+    fdr = ifelse(scientific, list(formatC(df$bhfdr, format = "e", digits = 2)), list(df$bhfdr))
+    genes = unlist(lapply(df$successInSampleGenes, function(x) paste(strwrap(x, width = 40), collapse = '<br>')))
+    return(paste0('P-value: ', unlist(pvalues), '. ', 'Q-value (FDR): ', unlist(fdr), '. <br>',
+                      bold(df$successInSample_count), ' genes(s) enriched in tissue: <br>',
+                      italics(genes), '.'))
+  })
+  
   # plot bar chart of tissue enrichment
   output$a_tissue_enrichment_ui <- renderPlotly({
     req(a_tissue_enrichment(), a_tissue_enrichment_layout())
@@ -1067,13 +1087,10 @@ shinyServer(function(input, output, session){
     # get enrichment data and format visuals
     df = a_tissue_enrichment()
     layout = a_tissue_enrichment_layout()
-    genes = unlist(lapply(df$successInSampleGenes, function(x) paste(strwrap(x, width = 40), collapse = '<br>')))
+    hovertext = tissue_enrichment_hovertext()
     df$significant = as.factor(ifelse(df[[layout$xaxis]] > layout$sig_line, 'significant', 'not-significant'))
-    df$details = paste0('P-value: ', formatC(df$pvalue, format = "e", digits = 3), '. ',
-                       'Q-value (FDR): ', formatC(df$bhfdr, format = "e", digits = 3), '. <br>',
-                       bold(df$successInSample_count), ' genes(s) enriched in tissue: <br>',
-                       italics(genes), '.')
-    
+    df$details = hovertext
+
     # plot data
     plotly_tissue_enrichment(df, 
                              'list_name', 
@@ -1082,7 +1099,6 @@ shinyServer(function(input, output, session){
                              pvalue.line = layout$sig_line, 
                              xlab = HTML(layout$xlab), 
                              ylab = 'Tissue')
-    
     
   })
   
@@ -1291,10 +1307,9 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) & input$a_select_gnomad_pli_type == 'threshold')})
-  observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() ))})
+  observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() & !is.null(a_tissue_mapping())))})
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
   observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(a_tissue_enrichment()))})  
-  
   
   # venn diagrams
   observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% hash::keys(inweb_hash)))})
@@ -1307,10 +1322,6 @@ shinyServer(function(input, output, session){
   # show hide select buttons
   observe({shinyjs::toggle(id="a_hpa_tissue", condition = input$a_tissue_select == 'hpa')})
   observe({shinyjs::toggle(id="a_gtex_tissue", condition = input$a_tissue_select == 'gtex')})
-  
-  
-  # warning boxes
-  # observeEvent(!is.null(a_pulldown_significant()),{shinyjs::toggle(id="box_mapping_warning_ui")})
   
   # show/hide plot download buttons
   observeEvent(!is.null(a_pulldown_significant()),{

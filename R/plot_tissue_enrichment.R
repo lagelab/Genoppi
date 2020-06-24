@@ -48,11 +48,12 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
           x = data[[col.value]], 
           y = data[[col.tissue]], 
           name = data[[col.tissue]],
-          text = data[[col.tissue]],
+          text = NULL,
+          #text = data[[col.tissue]],
           color = data[['significant']],
           colors = params.colors,
           textposition = 'auto', 
-          marker = list(line = list(color = 'rgb(8,48,107)', width = 1)),
+          marker = list(line = list(color = 'black', width = 1)),
           hoverinfo = "text", 
           hovertemplate = ~data[[col.value.text]],
           showlegend = F)
@@ -70,8 +71,9 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
   
   yaxis <- list(
     title = ylab,
-    tickangle = -30
+    tickangle = -35
   )
+  
   
   p <- layout(p, title = title, yaxis = yaxis, xaxis = xaxis.ticks, height = 900, shapes = list(vline(pvalue.line)))        
   

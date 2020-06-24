@@ -14,7 +14,7 @@ test_that("Basic functionality GTEX", {
   gtex_enrichment = calc_adjusted_enrichment(data, GTEX_table, bait = 'BCL2')
   expect_equal(sum(gtex_enrichment$pvalue), 31.54759, tolerance = 10e-5)
   expect_equal(sum(gtex_enrichment$successInSample_count), 253)
-  expect_true(all(gtex_enrichment$BH.FDR == 1))
+  expect_equal(mean(gtex_enrichment$BH.FDR), 0.991033, tolerance = 10e-5)
   
 })
 
