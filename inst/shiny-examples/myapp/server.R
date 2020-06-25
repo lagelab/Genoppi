@@ -980,10 +980,13 @@ shinyServer(function(input, output, session){
   # return HPA or GTEx query
   a_get_tissue_list <- reactive({
     selected = input$a_tissue_select
+    showNotification("Debug 1", duration = NULL)
     req(a_pulldown_significant(), selected)
     if (selected %in% 'hpa' & length(input$a_hpa_tissue) > 0){
+      showNotification("debug1a", duration = NULL)
       return(get_tissue_lists(tissue = as.character(input$a_hpa_tissue), table = hpa_table))
     } else if (selected %in% 'gtex' & length(input$a_gtex_tissue) > 0){
+      showNotification("debug1b", duration = NULL)
       return(get_tissue_lists(tissue = as.character(input$a_gtex_tissue), table = GTEX_table))
     } else {
       return(NULL)
@@ -993,18 +996,31 @@ shinyServer(function(input, output, session){
   # setup main gnomad mapping
   a_tissue_mapping <- reactive({
     req(a_pulldown_significant(), a_get_tissue_list())
+    showNotification("debug2a")
     tissue = a_get_tissue_list() 
+    showNotification("debug2b")
     tissue = tissue[tissue$significant, ]
+    showNotification("debug2c")
     pulldown = a_pulldown_significant()
+    showNotification("debug2d")
     tissue = merge(pulldown, tissue, by = 'gene')
+    showNotification("debug2e")
     if (nrow(tissue)){
+      showNotification("debug2f")
       tissue$dataset = toupper(input$a_tissue_select)
+      showNotification("debug2g")
       tissue$col_significant = input$a_color_tissue_sig 
+      showNotification("debug2h")
       tissue$col_other = input$a_color_tissue_insig 
+      showNotification("debug2i")
       tissue$shape = symbol_to_shape(input$a_symbol_tissue)
+      showNotification("debug2j")
       tissue$symbol = input$a_symbol_tissue
+      showNotification("debug2k")
       tissue$label = input$a_label_tissue
+      showNotification("debug2l")
       tissue$alt_label = paste0('Tissue elevated gene in ', tissue$tissue,'.')
+      showNotification("debug2m (final on 2)")
       return(tissue)
     } else {
       return(NULL)
@@ -1838,7 +1854,9 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold' & input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    showNotification("debug3a")
     if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p = plot_overlay(p, list(tissue=a_tissue_mapping()))
+    showNotification("debug2b")
     
     # collapse/combine labels from multiple overlay
     if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)

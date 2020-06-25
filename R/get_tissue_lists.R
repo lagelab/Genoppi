@@ -2,6 +2,7 @@
 #' @description Create gene list data.frame from input traits
 #' @param tissue vector of tissue names (character). See details for acceptable names.
 #' @param table either hpa_table or GTEX_table
+#' @export
 #' @details
 #' 
 #' The following 33 tissues are available for Human Protein Atlas:
@@ -41,7 +42,6 @@
 #' * 'vagina'
 #' 
 #' @md
-#' @export
 
 
 get_tissue_lists <- function(tissue, table = hpa_table){

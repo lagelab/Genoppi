@@ -21,7 +21,6 @@ Depends:
     shiny,
     shinydashboard,
     plotly,
-    shinycssloaders,
 Suggests:
     devtools,
     covr,
@@ -37,6 +36,7 @@ Imports:
     VennDiagram,
     colourpicker,
     futile.logger,
+    shinycssloaders,
     DT,
     limma,
 Encoding: UTF-8
