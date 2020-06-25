@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 0.4.6
+Version: 0.4.7
 Authors@R: 
     c(person(given = "Frederik",
              family = "Lassen",
@@ -21,6 +21,7 @@ Depends:
     shiny,
     shinydashboard,
     plotly,
+    shinycssloaders,
 Suggests:
     devtools,
     covr,
@@ -31,7 +32,6 @@ Imports:
     stats,
     ggrepel,
     shinyjs,
-    shinycssloaders,
     data.table,
     RColorBrewer,
     VennDiagram,
