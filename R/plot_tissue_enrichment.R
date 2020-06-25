@@ -9,7 +9,7 @@
 #' @family ggplot
 #' @export
 
-plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue', ylab = '-log10(Hypergeometric P-value)', pvalue.line = 0.05){
+plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue', ylab = '-log10(Hypergeometric P-value)', pvalue.line = NULL){
   
   p = ggplot(data, aes_string(x = col.tissue, y = col.value)) +
     geom_bar(stat="identity", color = 'black', position = 'dodge', fill = 'orange') +
@@ -31,15 +31,36 @@ plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue',
 #' @param ylab string. y label.
 #' @param title string. title of plot.
 #' @param xlim vector of length 2.
+#' @param color.significant color of significant values. default is red.
+#' @param color.other color of non-signfificant values. Default is orange.
+#' @param col.value.order string that is either 'increasing' or 'decreasing'. Orders barplot accordingly.
 #' @family plotly
-#' @export
 #' @export
 
 plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text = NULL, pvalue.line = NULL, 
-                                     xlab = '', ylab = '', title = '', xlim = NULL){
+                                     xlab = '', ylab = '', title = '', xlim = NULL, color.significant = 'red', 
+                                     color.other = 'orange', col.value.order = NULL){
   
+  # check input
+  if (col.tissue %nin% colnames(data)) stop(paste(col.tissue),' was not found in column names!')
+  if (col.value %nin% colnames(data)) stop(paste(col.value),' was not found in column names!')
+  if (missing(col.value.text)) col.value.text <- col.value
+  if ('significant' %nin% colnames(data)){
+    data$significant = F
+  } 
+  
+  # order by col value
+  if (!is.null(col.value.order)){
+    if (col.value.order == 'decreasing'){
+      data[[col.tissue]] <- factor(data[[col.tissue]], levels = data[[col.tissue]][order(data[[col.value]])])
+    } 
+    if (col.value.order == 'increasing'){
+      data[[col.tissue]] <- factor(data[[col.tissue]], levels = data[[col.tissue]][rev(order(data[[col.value]]))])
+    }
+  }
+
   # color scheme (constant for now)
-  data$color <- ifelse(data$significant == 'significant', 'red', 'orange')
+  data$color <- ifelse(data$significant == T, color.significant, color.other)
   params.colors = set_names_by_dataset(data, marker = 'color', by = 'significant') 
   
   # main plotting
@@ -66,7 +87,8 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
     tick0 = 0,
     dtick = 0.25,
     tickcolor = toRGB("blue"),
-    range = c(0, xlim)
+    range = c(0, xlim),
+    side = 'top'
   )
   
   yaxis <- list(

@@ -56,5 +56,19 @@ test_that('is_col working as expected',{
   
 })
 
+test_that('plotly hline and vline',{
+  
+  df = example_data
+  p = plot_ly(df, x = ~rep1, y = ~rep2, type = 'scatter', mode = 'markers')
+  p = layout(p, shapes = list(vline(5), hline(5, color = 'blue')))
+  l1 = p$x$layoutAttrs[[1]]$shapes[[1]]
+  l2 = p$x$layoutAttrs[[1]]$shapes[[2]]
+  expect_equal(l1$type, 'line')
+  expect_equal(l1$x0, 5)
+  expect_equal(l2$type, 'line')
+  expect_equal(l2$y0, 5)
+  
+})
+
 
 

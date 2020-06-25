@@ -13,7 +13,10 @@ plotly_tissue_enrichment(
   xlab = "",
   ylab = "",
   title = "",
-  xlim = NULL
+  xlim = NULL,
+  color.significant = "red",
+  color.other = "orange",
+  col.value.order = NULL
 )
 }
 \arguments{
@@ -34,6 +37,12 @@ plotly_tissue_enrichment(
 \item{title}{string. title of plot.}
 
 \item{xlim}{vector of length 2.}
+
+\item{color.significant}{color of significant values. default is red.}
+
+\item{color.other}{color of non-signfificant values. Default is orange.}
+
+\item{col.value.order}{string that is either 'increasing' or 'decreasing'. Orders barplot accordingly.}
 }
 \description{
 constructs a bar chart using ggplot to plot tissue enrichment.

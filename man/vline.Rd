@@ -4,7 +4,7 @@
 \alias{vline}
 \title{vertical line}
 \usage{
-vline(x = 0, color = "red", width = 1)
+vline(x = 0, color = "red", width = 1, dash = "dash")
 }
 \arguments{
 \item{x}{x-value, numeric.}
@@ -12,6 +12,8 @@ vline(x = 0, color = "red", width = 1)
 \item{color}{color, string.}
 
 \item{width}{line width, numeric.}
+
+\item{dash}{string. 'solid, 'dot' or 'dash'.}
 }
 \description{
 vertical plotly line

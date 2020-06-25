@@ -10,7 +10,7 @@ plot_tissue_enrichment(
   col.value,
   xlab = "tissue",
   ylab = "-log10(Hypergeometric P-value)",
-  pvalue.line = 0.05
+  pvalue.line = NULL
 )
 }
 \arguments{

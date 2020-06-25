@@ -4,7 +4,7 @@
 \alias{hline}
 \title{horizontal line}
 \usage{
-hline(y = 0, color = "blue", width = 1)
+hline(y = 0, color = "blue", width = 1, dash = "dash")
 }
 \arguments{
 \item{y}{y-value, numeric.}
@@ -12,6 +12,8 @@ hline(y = 0, color = "blue", width = 1)
 \item{color}{color, string.}
 
 \item{width}{line width, numeric.}
+
+\item{dash}{string. 'solid', 'dot' or 'dash'.}
 }
 \description{
 horizontal plotly line

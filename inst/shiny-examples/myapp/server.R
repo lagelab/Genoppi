@@ -448,7 +448,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_gtex_tissue_ui <- renderUI({
-    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate genes in tissue with elevated expression (GTEX)', sort(unique(GTEX_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate genes in tissue with elevated expression (GTEx)', sort(unique(GTEX_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
   })
   
   output$a_tissue_select_ui <- renderUI({
@@ -458,7 +458,7 @@ shinyServer(function(input, output, session){
   
   # tissue enrichment (Tissue specificity tab)
   output$a_tissue_enrichment_slider_ui <- renderUI({
-    sliderInput('a_tissue_enrichment_slider', 'Select significance threshold', 0, 1, value = 0.05, step = 0.001)
+    sliderInput('a_tissue_enrichment_slider', 'Select significance threshold', 0.001, 1, value = 0.05, step = 0.001)
   })
   
   output$a_tissue_enrichment_type_select_ui <- renderUI({
@@ -472,7 +472,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_tissue_enrichment_scientific_notation_ui <- renderUI({
-    checkboxInput('a_tissue_enrichment_scientific_notation', 'Scientific notations')
+    checkboxInput('a_tissue_enrichment_scientific_notation', 'Scientific notations', value = TRUE)
   })
   
   # Search for replicates in data
@@ -1091,8 +1091,6 @@ shinyServer(function(input, output, session){
     hovertext = tissue_enrichment_hovertext()
     df$significant = as.factor(ifelse(df[[layout$xaxis]] > layout$sig_line, 'significant', 'not-significant'))
     df$details = hovertext
-
-    browser()
     
     # plot data
     plotly_tissue_enrichment(df, 
