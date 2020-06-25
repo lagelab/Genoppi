@@ -1,0 +1,1 @@
+<b>InWeb hash table</b> <br><i>description</i>: A hash table containing InWeb database protein interactions for 18,551 genes. <br><i>format</i>: hash object with each of 18,551 genes as key, vector of its InWeb interactors as value

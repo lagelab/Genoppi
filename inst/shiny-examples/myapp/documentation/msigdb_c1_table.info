@@ -1,0 +1,1 @@
+<b>MSigDB C1 collection (positional gene sets) annotation table</b> <br><i>description</i>: A table containing 38,340 MSigDB positional gene set annotations (38,340 unique gene symbols, 299 unique gene sets). <br><i>format</i>: data.frame object with: Gene.symbol, Set.name

@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 0.4.9
+Version: 0.4.10
 Authors@R: 
     c(person(given = "Frederik",
              family = "Lassen",
@@ -76,6 +76,7 @@ Collate:
     'map_gene_id.R'
     'misc.R'
     'parse_uploaded_file.R'
+    'parse_rd.R'
     'plot_overlay.R'
     'plot_scatter_basic.R'
     'plot_tissue_enrichment.R'

@@ -593,6 +593,23 @@ body <- dashboardBody(
                   ),
               column(3, '')
             )
+    ),
+    tabItem(tabName = "documentation",
+            fluidRow(
+              column(1, ''),
+              column(10, 
+                     # top of table
+                     fluidRow(style = "padding-top:100px",
+                              column(12, align = 'left',
+                                     h1(strong("Data sources"), style = "font-size:30px;"),
+                                     br(),
+                                     h5('coming soon..')
+                                     #uiOutput('documentation_ui')
+                              )
+                     )
+              ),
+              column(1, '')
+            )
     )
    )
   )
@@ -601,8 +618,9 @@ body <- dashboardBody(
 sidebar <- dashboardSidebar(
   sidebarMenu(id = "sidebarmenu",
               #h6(as.character(genoppi.ver)),
-              menuItem("Quick start", tabName = "start", icon = icon("stream"), badgeLabel = "new", badgeColor = "green"),
+              menuItem("Quick start", tabName = "start", icon = icon("stream")),
               menuItem("Guide", tabName = "guide", icon = icon("info-circle")),
+              menuItem("Documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",

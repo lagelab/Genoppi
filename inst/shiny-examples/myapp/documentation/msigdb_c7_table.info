@@ -1,0 +1,1 @@
+<b>MSigDB C7 collection (immunologic signatures) annotation table</b> <br><i>description</i>: A table containing 947,586 MSigDB immunologic signature annotations (20,235 unique gene symbols, 4872 unique gene sets). <br><i>format</i>: data.frame object with: Gene.symbol, Set.name

@@ -1,0 +1,1 @@
+<b>GOA biological process annotation table</b> <br><i>description</i>: A table containing 140,067 GO biological process annotations (17,814 unique gene symbols, 12,362 unique GO BP terms). <br><i>format</i>: data.frame object with: Gene.symbol, GO.ID, GO.name

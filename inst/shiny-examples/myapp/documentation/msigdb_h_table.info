@@ -1,0 +1,1 @@
+<b>MSigDB H collection (hallmark gene sets) annotation table</b> <br><i>description</i>: A table containing 7,321 MSigDB hallmark gene set annotations (4,383 unique gene symbols, 50 unique gene sets). <br><i>format</i>: data.frame object with: Gene.symbol, Set.name

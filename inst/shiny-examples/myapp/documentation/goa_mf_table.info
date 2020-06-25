@@ -1,0 +1,1 @@
+<b>GOA molecular function annotation table</b> <br><i>description</i>: A table containing 65,891 GO molecular function annotations (17,654 unique gene symbols, 4,271 unique GO MF terms). <br><i>format</i>: data.frame object with: Gene.symbol, GO.ID, GO.name

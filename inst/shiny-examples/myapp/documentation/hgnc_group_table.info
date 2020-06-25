@@ -1,0 +1,1 @@
+<b>HGNC gene group annotation table</b> <br><i>description</i>: A table containing 28,677 gene group annotations from HGNC (23,874 unique symbols, 1415 unique groups). <br><i>format</i>: data.frame object with: Gene.symbol, Group.name

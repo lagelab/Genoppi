@@ -1,0 +1,1 @@
+<b>MSigDB C6 collection (oncogenic signatures) annotation table</b> <br><i>description</i>: A table containing 30,469 MSigDB oncogenic signature annotations (10,897 unique gene symbols, 189 unique gene sets). <br><i>format</i>: data.frame object with: Gene.symbol, Set.name

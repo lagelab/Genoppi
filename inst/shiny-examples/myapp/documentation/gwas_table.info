@@ -1,0 +1,1 @@
+<b>GWAS catalog table</b> <br><i>description</i>: A table containing 190,668 genetic associations in GWAS catalog. SNP data are based on dbSNP Build 152. <br><i>format</i>: data.frame object with: PUBMEDID, DISEASE.TRAIT, SNP, P.VALUE, SUTDY.ACCESSION

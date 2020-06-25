@@ -1,0 +1,1 @@
+<b>SNP-to-gene mapping hash table</b> <br><i>description</i>: A hash table containing 18,116 genes mapped to LD loci of 1KG phase 3 SNPs. <br><i>format</i>: hash object with gene name as key, vector of SNPs as value

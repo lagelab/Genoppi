@@ -1,0 +1,1 @@
+<b>MSigDB C5 collection (GO gene sets) annotation table</b> <br><i>description</i>: A table containing 868,350 MSigDB GO gene set annotations (18,046 unique gene symbols, 10,192 unique gene sets). <br><i>format</i>: data.frame object with: Gene.symbol, Set.name

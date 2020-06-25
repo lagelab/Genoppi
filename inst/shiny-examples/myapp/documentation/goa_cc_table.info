@@ -1,0 +1,1 @@
+<b>GOA cellular component annotation table</b> <br><i>description</i>: A table containing 83,029 GO cellular component annotations (18,880 unique gene symbols, 1,765 unique GO CC terms). <br><i>format</i>: data.frame object with: Gene.symbol, GO.ID, GO.name

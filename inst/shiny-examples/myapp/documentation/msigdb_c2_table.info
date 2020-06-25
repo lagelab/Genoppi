@@ -1,0 +1,1 @@
+<b>MSigDB C2 collection (curated gene sets) annotation table</b> <br><i>description</i>: A table containing 479,444 MSigDB curated gene set annotations (20,738 unique gene symbols, 5,529 unique gene sets). <br><i>format</i>: data.frame object with: Gene.symbol, Set.name

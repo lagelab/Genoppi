@@ -12,6 +12,10 @@ add_marker_gradient <- readLines(file.path(main, 'color_markers_gradient.txt'))
 allowed_colors = c(add_marker_gradient,'#808080', '#A52A2A')
 spinner_type = 8
 
+# load documentation
+documentation = lapply(list.files('documentation/', full.names = T), readLines)
+documentation = paste(documentation, collapse = '<br><br>')
+
 ##---------------------------
 # global default variables
 
@@ -69,7 +73,6 @@ myDownloadButton <- function(outputId, label = "Download", img = icon("camera"))
   tags$a(id = outputId, class = "btn btn-default shiny-download-link", href = "", 
          target = "_blank", download = NA, img, label)
 }
-
 
 # tmp load data
 data('hpa_table')

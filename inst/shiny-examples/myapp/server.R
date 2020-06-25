@@ -11,6 +11,15 @@ shinyServer(function(input, output, session){
     updateTabsetPanel(session, "basic", selected = "p1")
   })
   
+  
+  ##### VISUALIZATIONS START ##### 
+  
+  ## documentation tab
+  
+  output$documentation_ui <- renderText({
+    return(HTML(documentation))
+  })
+  
   # hide developer tabs when starting app
   hideTab('basic','p5')
   
@@ -19,8 +28,7 @@ shinyServer(function(input, output, session){
     showTab('basic','p5')
     developer(TRUE)
   })
-
-  ##### VISUALIZATIONS START ##### 
+  
   output$a_example_file_ui <- renderUI({
     fileInput('a_file_pulldown_extra', 'Upload a proteomic data file to get started!', accept = files_accepted)
   })

@@ -1,0 +1,1 @@
+<b>example proteomic data (1)</b> <br><i>description</i>: Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates <br><i>format</i>: data.frame object with columns: gene, rep1, rep2, rep3

@@ -1,0 +1,1 @@
+<b>gnomAD table</b> <br><i>description</i>: The gnomAD v2 data set contains data from 125,748 exomes and 15,708 whole genomes, all mapped to the GRCh37/hg19 reference sequence. <br><i>format</i>: data.frame from gnomAD V 2.1.1

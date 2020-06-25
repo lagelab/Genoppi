@@ -1,0 +1,1 @@
+<b>gene ID mapping table</b> <br><i>description</i>: A table containing 67,519 entries of accession_number to gene (HGNC symbol) mapping. <br><i>format</i>: data.frame object with columns: accession_number, gene
