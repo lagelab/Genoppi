@@ -14,10 +14,11 @@ shinyServer(function(input, output, session){
   # hide developer tabs when starting app
   hideTab('basic','p5')
   
+  developer <- reactiveVal(value = FALSE)
   observeEvent(input$enable_dev_mode,{
     showTab('basic','p5')
+    developer(TRUE)
   })
-
 
   ##### VISUALIZATIONS START ##### 
   output$a_example_file_ui <- renderUI({
@@ -25,8 +26,8 @@ shinyServer(function(input, output, session){
   })
   
   output$a_get_example_file_ui <- renderUI({
-    HTML(paste('or try the',actionLink('a_get_example_file', 'single file'), 'analysis or a',
-               actionLink('a_get_example_multiple_files', 'multiple files'),'comparison!'))
+    HTML(paste('Try a single',actionLink('a_get_example_file', 'example file'), 'or',
+               actionLink('a_get_example_multiple_files', 'multiple example files'),'!'))
   })
   
   output$a_file <- renderUI({
@@ -1005,7 +1006,6 @@ shinyServer(function(input, output, session){
       tissue$symbol = input$a_symbol_tissue
       tissue$label = input$a_label_tissue
       tissue$alt_label = paste0('Tissue elevated gene in ', tissue$tissue,'.')
-      showNotification(paste(head(tissue, n = 1), collapse = ' '), duration = 30)
       return(tissue)
     } else {
       return(NULL)
@@ -1092,6 +1092,8 @@ shinyServer(function(input, output, session){
     df$significant = as.factor(ifelse(df[[layout$xaxis]] > layout$sig_line, 'significant', 'not-significant'))
     df$details = hovertext
 
+    browser()
+    
     # plot data
     plotly_tissue_enrichment(df, 
                              'list_name', 
@@ -1308,7 +1310,7 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) & input$a_select_gnomad_pli_type == 'threshold')})
-  #observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() & !is.null(a_tissue_mapping())))})
+  #observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() & !is.null(a_tissue_mapping())))}) # this seems to cause GCP to crash?
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
   observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(a_tissue_enrichment()))})  
   
@@ -1841,8 +1843,7 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold' & input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
     if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p = plot_overlay(p, list(tissuemap=a_tissue_mapping()))
     
-    showNotification('next')
-    showNotification(paste(head(p$overlay, n = 1), collapse = ' '), duration = 30)
+    if (developer()) showNotification(paste(head(p$overlay, n = 1), collapse = ' '), duration = 10)
     
     # collapse/combine labels from multiple overlay
     if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)
