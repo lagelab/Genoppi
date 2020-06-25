@@ -2321,8 +2321,6 @@ shinyServer(function(input, output, session){
                choices = reps)
  })
  
- ##
- 
  # Search for replicates in data
  b_file_2_available_replicates <- reactive({
    validate(need(b_file_2_rep_bool(), ""))
@@ -2338,7 +2336,6 @@ shinyServer(function(input, output, session){
  # render select scatter plot
  output$b_file_2_select_scatterplot_ui <- renderUI({
    req(b_file_2_available_replicates())
-   
    rep_input = b_file_2_available_replicates()
    reps_verbatim = gsub('rep','replicate ', rep_input)
    reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
@@ -2348,8 +2345,6 @@ shinyServer(function(input, output, session){
                'Replicates to compare in scatter plot', 
                choices = reps)
  })
- 
- ##
  
  # Search for replicates in data
  b_file_3_available_replicates <- reactive({
@@ -2376,6 +2371,61 @@ shinyServer(function(input, output, session){
                'Replicates to compare in scatter plot', 
                choices = reps)
  })
+ 
+ # lists of data for basic summary
+ b_file_1_summary <- reactive({
+   
+   req(b_file_1_sp_gg_all(), b_file_1_monitor_thresholds(), b_file_1_significant())
+   reps = lapply(b_file_1_sp_gg_all(), function(x) x$correlation)
+   return(genoppi:::get_replicate_summary_text(b_file_1_monitor_thresholds(), b_file_1_significant(), reps))
+   
+ })
+ 
+ b_file_2_summary <- reactive({
+   
+   req(b_file_2_sp_gg_all(), b_file_2_monitor_thresholds(), b_file_2_significant())
+   reps = lapply(b_file_2_sp_gg_all(), function(x) x$correlation)
+   return(genoppi:::get_replicate_summary_text(b_file_2_monitor_thresholds(), b_file_2_significant(), reps))
+   
+ })
+ 
+ 
+ b_file_3_summary <- reactive({
+   
+   req(b_file_3_sp_gg_all(), b_file_3_monitor_thresholds(), b_file_3_significant())
+   reps = lapply(b_file_3_sp_gg_all(), function(x) x$correlation)
+   return(genoppi:::get_replicate_summary_text(b_file_3_monitor_thresholds(), b_file_3_significant(), reps))
+   
+ })
+ 
+ # summary text
+ 
+ output$b_file_1_summary_text_ui <- renderText({
+   b_file_1_summary()$outtext
+ })
+ 
+ output$b_file_2_summary_text_ui <- renderText({
+   b_file_2_summary()$outtext
+ })
+ 
+ output$b_file_3_summary_text_ui <- renderText({
+   b_file_3_summary()$outtext
+ })
+ 
+ # summary table
+ 
+ output$b_file_1_summary_table_ui <- renderTable({
+   b_file_1_summary()$outtable
+ })
+ 
+ output$b_file_2_summary_table_ui <- renderTable({
+   b_file_2_summary()$outtable
+ })
+ 
+ output$b_file_3_summary_table_ui <- renderTable({
+   b_file_3_summary()$outtable
+ })
+ 
  
  # get significance thresholds for each file
  # file 1
@@ -2518,6 +2568,7 @@ shinyServer(function(input, output, session){
  ## track thresholds 
 
  b_file_1_monitor_thresholds <- reactive({
+   
    
    html_translate_significance_thresholds(fc = input$b_file_1_logFC_thresh,
                                          fc_dir = input$b_file_1_logfc_direction, 
@@ -2676,11 +2727,19 @@ shinyServer(function(input, output, session){
    
  })
  
+ b_file_1_sp_gg_all <- reactive({
+   
+   req(b_file_1_significant())
+   d <- b_file_1_significant()
+   p <- plot_scatter_basic_all(d)
+   return(p)
+   
+ })
+ 
  b_file_1_sp_gg <- reactive({
    
-   req(b_file_1_significant(), input$b_file_1_select_scatterplot)
-   d <- b_file_1_significant()
-   p <- plot_scatter_basic_all(d)[[input$b_file_1_select_scatterplot]]$ggplot
+   req(b_file_1_sp_gg_all(), input$b_file_1_select_scatterplot)
+   p <- b_file_1_sp_gg_all()[[input$b_file_1_select_scatterplot]]$ggplot
    p$r <- p$correlation
    p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
    return(p)
@@ -2744,11 +2803,19 @@ shinyServer(function(input, output, session){
    
  })
  
+ b_file_2_sp_gg_all <- reactive({
+   
+   req(b_file_2_significant())
+   d <- b_file_2_significant()
+   p <- plot_scatter_basic_all(d)
+   return(p)
+   
+ })
+ 
  b_file_2_sp_gg <- reactive({
    
-   req(b_file_2_significant(), input$b_file_2_select_scatterplot)
-   d <- b_file_2_significant()
-   p <- plot_scatter_basic_all(d)[[input$b_file_2_select_scatterplot]]$ggplot
+   req(b_file_2_sp_gg_all(), input$b_file_2_select_scatterplot)
+   p <- b_file_2_sp_gg_all()[[input$b_file_2_select_scatterplot]]$ggplot
    p$r <- p$correlation
    p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
    return(p)
@@ -2811,11 +2878,19 @@ shinyServer(function(input, output, session){
    
  })
  
+ b_file_3_sp_gg_all <- reactive({
+   
+   req(b_file_3_significant())
+   d <- b_file_3_significant()
+   p <- plot_scatter_basic_all(d)
+   return(p)
+   
+ })
+ 
  b_file_3_sp_gg <- reactive({
    
-   req(b_file_3_significant(), input$b_file_3_select_scatterplot)
-   d <- b_file_3_significant()
-   p <- plot_scatter_basic_all(d)[[input$b_file_3_select_scatterplot]]$ggplot
+   req(b_file_3_sp_gg_all(), input$b_file_3_select_scatterplot)
+   p <- b_file_3_sp_gg_all()[[input$b_file_3_select_scatterplot]]$ggplot
    p$r <- p$correlation
    p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
    return(p)

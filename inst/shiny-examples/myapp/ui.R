@@ -391,6 +391,19 @@ body <- dashboardBody(
                                           )
                                         ),
                                         box(
+                                          title = 'Summary for file 1', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE, collapsed = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   column(12, 
+                                                          uiOutput("b_file_1_summary_text_ui")
+                                                   ),
+                                                   column(12,
+                                                          tableOutput('b_file_1_summary_table_ui')
+                                                   )
+                                                 )
+                                          )
+                                        ),
+                                        box(
                                           title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
                                           column(12,
                                                  fluidRow(
@@ -430,6 +443,19 @@ body <- dashboardBody(
                                                  ),
                                                  fluidRow(
                                                    uiOutput('b_file_2_select_scatterplot_ui')
+                                                 )
+                                          )
+                                        ),
+                                        box(
+                                          title = 'Summary for file 2', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE, collapsed = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   column(12, 
+                                                          uiOutput("b_file_2_summary_text_ui")
+                                                   ),
+                                                   column(12,
+                                                          tableOutput('b_file_2_summary_table_ui')
+                                                   )
                                                  )
                                           )
                                         ),
@@ -475,6 +501,19 @@ body <- dashboardBody(
                                                    uiOutput('b_file_3_select_scatterplot_ui')
                                                  )
                                                 )
+                                        ),
+                                        box(
+                                          title = 'Summary for file 3', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE, collapsed = TRUE,
+                                          column(12,
+                                                 fluidRow(
+                                                   column(12, 
+                                                          uiOutput("b_file_3_summary_text_ui")
+                                                   ),
+                                                   column(12,
+                                                          tableOutput('b_file_3_summary_table_ui')
+                                                   )
+                                                 )
+                                          )
                                         ),
                                         box(
                                           title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
@@ -550,8 +589,6 @@ body <- dashboardBody(
                                         
                                  )
                                  
-                                 
-                                 #column(4, ),
                         )
             
             )
@@ -601,10 +638,9 @@ body <- dashboardBody(
                      # top of table
                      fluidRow(style = "padding-top:100px",
                               column(12, align = 'left',
-                                     h1(strong("Data sources"), style = "font-size:30px;"),
+                                     h1(strong("Data documentation"), style = "font-size:30px;"),
                                      br(),
-                                     h5('coming soon..')
-                                     #uiOutput('documentation_ui')
+                                     uiOutput('documentation_ui')
                               )
                      )
               ),
@@ -620,7 +656,7 @@ sidebar <- dashboardSidebar(
               #h6(as.character(genoppi.ver)),
               menuItem("Quick start", tabName = "start", icon = icon("stream")),
               menuItem("Guide", tabName = "guide", icon = icon("info-circle")),
-              menuItem("Documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
+              menuItem("Data documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",

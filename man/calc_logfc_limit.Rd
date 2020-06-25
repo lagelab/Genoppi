@@ -19,6 +19,7 @@ returns the maximum absoluate values plus 0.5 of the logFC.
 Other shiny: 
 \code{\link{add_plotly_markers_search_pathway}()},
 \code{\link{add_plotly_markers_search}()},
+\code{\link{get_replicate_summary_text}()},
 \code{\link{parse_uploaded_file}()}
 }
 \concept{shiny}
