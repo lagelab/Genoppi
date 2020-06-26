@@ -3,20 +3,33 @@
 \docType{data}
 \name{gwas_table}
 \alias{gwas_table}
-\title{GWAS catalog table}
-\format{data.frame object with: PUBMEDID, DISEASE.TRAIT, SNP, P.VALUE, SUTDY.ACCESSION}
+\title{NHGRI-EBI GWAS catalog genetic associations}
+\format{
+A data frame with 188,925 rows and 5 variables:
+\describe{
+  \item{PUBMEDID}{PubMed identification number}
+  \item{DISEASE.TRAIT}{Disease or trait examined in study}
+  \item{SNP}{SNP rsID}
+  \item{P.VALUE}{Reported p-value}
+  \item{SUTDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
+}
+}
 \source{
-gwas_catalog_v1.0.2-associations_e98_r2020-03-08.tsv file downloaded from GWAS catalog: https://www.ebi.ac.uk/gwas/docs/file-downloads.
+All associations v1.0.2 dataset (2020-03-08 release) downloaded on 2020-03-17 from:
+\url{https://www.ebi.ac.uk/gwas/docs/file-downloads}
 }
 \usage{
 gwas_table
 }
 \description{
-A table containing 190,668 genetic associations in GWAS catalog. SNP data are based on dbSNP Build 152.
+A dataset containing 188,925 published trait-SNP associations in the NHGRI-EBI GWAS catalog.
+}
+\references{
+Buniello A, MacArthur JAL, Cerezo M, et al. The NHGRI-EBI GWAS Catalog of published genome-wide association studies,
+targeted arrays and summary statistics 2019. Nucleic Acids Res. 2019;47(D1):D1005-D1012. doi:10.1093/nar/gky1120
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -26,6 +39,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},
 \code{\link{inweb_hash}},

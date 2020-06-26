@@ -3,20 +3,30 @@
 \docType{data}
 \name{genes_snps}
 \alias{genes_snps}
-\title{SNP-to-gene mapping hash table}
-\format{hash object with gene name as key, vector of SNPs as value}
+\title{1000 Genomes SNP to HGNC gene symbol mapping}
+\format{
+A hash object with each of 18,116 genes as key and a vector of SNPs as value
+}
 \source{
-Genoppi-v3 snp_to_gene.Rdata file created by April Kim.
+snp_to_gene.Rdata file created by April Kim.
 }
 \usage{
 genes_snps
 }
 \description{
-A hash table containing 18,116 genes mapped to LD loci of 1KG phase 3 SNPs.
+A dataset containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 
+18,116 gene symbols, using linkage disequilibrium information from the CEU population. See cited Genoppi
+reference for details on mapping method.
+}
+\references{
+1000 Genomes Project Consortium, Auton A, Brooks LD, et al. A global reference for human genetic variation.
+Nature. 2015;526(7571):68-74. doi:10.1038/nature15393 
+
+Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
+for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -25,6 +35,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

@@ -3,20 +3,33 @@
 \docType{data}
 \name{msigdb_c1_table}
 \alias{msigdb_c1_table}
-\title{MSigDB C1 collection (positional gene sets) annotation table}
-\format{data.frame object with: Gene.symbol, Set.name}
+\title{MSigDB C1 collection (positional gene sets) annotations}
+\format{
+A data frame with 38,340 rows and 2 variables:
+\describe{
+  \item{Gene.symbol}{HGNC gene symbol}
+  \item{Set.name}{Gene set name}
+}
+}
 \source{
-c1.all.v7.1.symbols.gmt file downloaded on 2020-04-03 (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#H).
+C1: positional gene sets dataset (v7.1) downloaded on 2020-04-03 from:
+\url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 }
 \usage{
 msigdb_c1_table
 }
 \description{
-A table containing 38,340 MSigDB positional gene set annotations (38,340 unique gene symbols, 299 unique gene sets).
+A dataset containing annotations for 38,340 genes in 299 MSigDB positional gene sets.
+}
+\references{
+Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
+genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+
+Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
+hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -26,6 +39,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

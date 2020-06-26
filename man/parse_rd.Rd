@@ -29,7 +29,7 @@ that has been written in \code{devtools::document}.
 }
 \examples{
 \dontrun{
-content = readLines('man/GTEX_table.Rd')
+content = readLines('man/gtex_table.Rd')
 parse_rd(content)
 }
 }

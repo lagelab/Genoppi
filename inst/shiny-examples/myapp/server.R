@@ -456,7 +456,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_gtex_tissue_ui <- renderUI({
-    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate genes in tissue with elevated expression (GTEx)', sort(unique(GTEX_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate genes in tissue with elevated expression (GTEx)', sort(unique(gtex_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
   })
   
   output$a_tissue_select_ui <- renderUI({
@@ -993,7 +993,7 @@ shinyServer(function(input, output, session){
     if (selected %in% 'hpa' & length(input$a_hpa_tissue) > 0){
       return(get_tissue_lists(tissue = as.character(input$a_hpa_tissue), table = hpa_table))
     } else if (selected %in% 'gtex' & length(input$a_gtex_tissue) > 0){
-      return(get_tissue_lists(tissue = as.character(input$a_gtex_tissue), table = GTEX_table))
+      return(get_tissue_lists(tissue = as.character(input$a_gtex_tissue), table = gtex_table))
     } else {
       return(NULL)
     }
@@ -1027,7 +1027,7 @@ shinyServer(function(input, output, session){
     if (input$a_tissue_enrichment_type_select == 'hpa') {
       return(hpa_table)
     } else {
-      return(GTEX_table)
+      return(gtex_table)
     }
   })
   

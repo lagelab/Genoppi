@@ -3,20 +3,34 @@
 \docType{data}
 \name{goa_cc_table}
 \alias{goa_cc_table}
-\title{GOA cellular component annotation table}
-\format{data.frame object with: Gene.symbol, GO.ID, GO.name}
+\title{GO cellular component annotations}
+\format{
+A data frame with 83,029 rows and 3 variables:
+\describe{
+  \item{Gene.symbol}{HGNC gene symbol}
+  \item{GO.ID}{GO term ID}
+  \item{GO.name}{GO term name}
+}
+}
 \source{
-GOA Homo sapiens protein dataset, 2020-03-23 release. Downloaded on 2020-03-30 (http://current.geneontology.org/products/pages/downloads.html).
+Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2020-03-23 release) downloaded on 2020-03-30 from:
+\url{http://current.geneontology.org/products/pages/downloads.html}
 }
 \usage{
 goa_cc_table
 }
 \description{
-A table containing 83,029 GO cellular component annotations (18,880 unique gene symbols, 1,765 unique GO CC terms).
+A dataset containing annotations for 18,880 genes in 1,765 GO cellular component terms.
+}
+\references{
+Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
+The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556
+
+The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
+Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -25,6 +39,7 @@ Other datasets:
 \code{\link{gnomad_table}},
 \code{\link{goa_bp_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

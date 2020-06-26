@@ -8,7 +8,7 @@
 #' @param combine.with string. What should the vectors be collapsed with.
 #' @examples 
 #' \dontrun{
-#' content = readLines('man/GTEX_table.Rd')
+#' content = readLines('man/gtex_table.Rd')
 #' parse_rd(content)
 #' }
 

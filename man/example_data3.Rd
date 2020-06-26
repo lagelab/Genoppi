@@ -3,20 +3,24 @@
 \docType{data}
 \name{example_data3}
 \alias{example_data3}
-\title{example proteomic data (3)}
-\format{data.frame object with columns: gene, rep1, rep2, rep3}
-\source{
-simulated data, do not represent true biology.
+\title{Example proteomic data (3)}
+\format{
+A data frame with 577 rows and 4 variables:
+\describe{
+  \item{gene}{HGNC gene symbol}
+  \item{rep1}{replicate 1 log2 fold change}
+  \item{rep2}{replicate 2 log2 fold change}
+  \item{rep3}{replicate 3 log2 fold change}
+}
 }
 \usage{
 example_data3
 }
 \description{
-Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates
+Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates.
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data}},
@@ -25,6 +29,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

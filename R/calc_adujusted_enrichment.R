@@ -8,10 +8,10 @@
 #' @examples
 #' \dontrun{
 #' # check for enrichment in GTEx
-#' data(GTEX_table)
+#' data(gtex_table)
 #' data(example_data)
 #' data = example_data %>% calc_mod_ttest %>% id_enriched_proteins()
-#' gtex_enrichment = calc_adjusted_enrichment(data, GTEX_table)
+#' gtex_enrichment = calc_adjusted_enrichment(data, gtex_table)
 #' gtex_enrichment
 #' }
 #' @export

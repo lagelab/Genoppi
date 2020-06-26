@@ -9,7 +9,7 @@ get_tissue_lists(tissue, table = hpa_table)
 \arguments{
 \item{tissue}{vector of tissue names (character). See details for acceptable names.}
 
-\item{table}{either hpa_table or GTEX_table}
+\item{table}{either hpa_table or gtex_table}
 }
 \description{
 Create gene list data.frame from input traits

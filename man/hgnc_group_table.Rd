@@ -3,20 +3,30 @@
 \docType{data}
 \name{hgnc_group_table}
 \alias{hgnc_group_table}
-\title{HGNC gene group annotation table}
-\format{data.frame object with: Gene.symbol, Group.name}
+\title{HGNC gene group annotations}
+\format{
+A data frame with 28,677 rows and 2 variables:
+\describe{
+  \item{Gene.symbol}{HGNC gene symbol}
+  \item{Group.name}{Gene group name}
+}
+}
 \source{
-HGNC genes within groups dataset. Downloaded on 2020-03-30 (https://www.genenames.org/download/statistics-and-files/).
+HGNC genes within groups dataset downloaded on 2020-03-30 from:
+\url{https://www.genenames.org/download/statistics-and-files/}
 }
 \usage{
 hgnc_group_table
 }
 \description{
-A table containing 28,677 gene group annotations from HGNC (23,874 unique symbols, 1415 unique groups).
+A dataset containing annotations for 23,874 genes in 1,415 HGNC gene groups.
+}
+\references{
+Yates B, Braschi B, Gray KA, Seal RL, Tweedie S, Bruford EA. Genenames.org: the HGNC and VGNC resources in 2017.
+Nucleic Acids Res. 2017;45(D1):D619-D625. doi:10.1093/nar/gkw1033
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -26,6 +36,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hpa_table}},
 \code{\link{inweb_hash}},

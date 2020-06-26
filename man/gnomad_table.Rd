@@ -3,20 +3,33 @@
 \docType{data}
 \name{gnomad_table}
 \alias{gnomad_table}
-\title{gnomAD table}
-\format{data.frame from gnomAD V 2.1.1}
+\title{gnomAD mutational constraint (pLI) annotations}
+\format{
+A data frame with 19,704 rows and 2 variables:
+\describe{
+  \item{gene}{HGNC gene symbol}
+  \item{pLI}{pLI score}
+}
+}
 \source{
-https://storage.googleapis.com/gnomad-public/release/2.1.1/constraint/gnomad.v2.1.1.lof_metrics.by_gene.txt.bgz
+pLoF Metrics by Gene dataset (v2.1.1) downloaded from:
+\url{https://gnomad.broadinstitute.org/downloads#v2-constraint}
 }
 \usage{
 gnomad_table
 }
 \description{
-The gnomAD v2 data set contains data from 125,748 exomes and 15,708 whole genomes, all mapped to the GRCh37/hg19 reference sequence.
+A dataset containing gnomAD pLI scores for 19,704 genes. The pLI score estimates the probability
+}
+\references{
+Lek M, Karczewski KJ, Minikel EV, et al. Analysis of protein-coding genetic variation in 60,706 humans.
+Nature. 2016;536(7616):285-291. doi:10.1038/nature19057
+
+Karczewski KJ, Francioli LC, Tiao G, et al. The mutational constraint spectrum quantified from variation in 141,456 humans.
+Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -25,6 +38,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

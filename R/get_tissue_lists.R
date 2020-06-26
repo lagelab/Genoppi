@@ -1,7 +1,7 @@
 #' @title Retreive Human Protein Atlas specific data
 #' @description Create gene list data.frame from input traits
 #' @param tissue vector of tissue names (character). See details for acceptable names.
-#' @param table either hpa_table or GTEX_table
+#' @param table either hpa_table or gtex_table
 #' @export
 #' @details
 #' 

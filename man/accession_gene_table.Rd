@@ -3,20 +3,30 @@
 \docType{data}
 \name{accession_gene_table}
 \alias{accession_gene_table}
-\title{gene ID mapping table}
-\format{data.frame object with columns: accession_number, gene}
+\title{Uniprot protein accession number to HGNC gene symbol mapping}
+\format{
+A data frame with 67,519 rows and 2 variables:
+\describe{
+  \item{accession_number}{Uniprot accession number (e.g. P10415)}
+  \item{gene}{HGNC gene symbol (e.g. BCL2)}
+}
+}
 \source{
-Protein-coding genes downloaded from Uniprot.
+ID mapping data for human protein-coding genes downloaded from Uniprot:  
+\url{https://www.uniprot.org}
 }
 \usage{
 accession_gene_table
 }
 \description{
-A table containing 67,519 entries of accession_number to gene (HGNC symbol) mapping.
+A dataset containing 67,519 Uniprot accession number to HGNC gene symbol pairings.
+}
+\references{
+UniProt Consortium. UniProt: a worldwide hub of protein knowledge. Nucleic Acids Res.
+2019;47(D1):D506-D515. doi:10.1093/nar/gky1049
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},
@@ -25,6 +35,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

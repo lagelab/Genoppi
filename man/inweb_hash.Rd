@@ -3,20 +3,25 @@
 \docType{data}
 \name{inweb_hash}
 \alias{inweb_hash}
-\title{InWeb hash table}
-\format{hash object with each of 18,551 genes as key, vector of its InWeb interactors as value}
+\title{InWeb_InBioMap protein-protein interactions}
+\format{
+A hash object with each of 18,551 genes as key and a vector of its InWeb interactors as value
+}
 \source{
-Genoppi-v3 InWeb_Combined_Oct2018.Rdata file created by April Kim, modified to add 73 genes as keys.
+InWeb_Combined_Oct2018.Rdata file created by April Kim, modified to add 73 genes as keys.
 }
 \usage{
 inweb_hash
 }
 \description{
-A hash table containing InWeb database protein interactions for 18,551 genes.
+A dataset containing published protein-protein interactions for 18,551 genes in InWeb_InBioMap.
+}
+\references{
+Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to
+catalyze genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -26,6 +31,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},

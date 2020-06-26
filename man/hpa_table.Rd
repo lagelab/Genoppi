@@ -3,25 +3,34 @@
 \docType{data}
 \name{hpa_table}
 \alias{hpa_table}
-\title{Subsetted Human Protein Atlas annotation table}
-\format{data.frame object with: tissue, gene, significant (indicating whether the gene is elvated in the tissue.)}
+\title{Human Protein Atlas (HPA) tissue specificity annotations}
+\format{
+A data frame with 571,504 rows and 3 variables:
+\describe{
+  \item{tissue}{Tissue name}
+  \item{gene}{HGNC gene symbol}
+  \item{significant}{Logical variable: "TRUE" = gene has elevated expression in tissue;
+                     "FALSE" = gene is detected (but not elevated) in tissue} 
+}
+}
 \source{
-merge between proteinatlas.tsv.zip and normal_tissue.tsv.zip downloaded on 2020-06-12 (https://www.proteinatlas.org/about/download).
+normal_tissue.tsv.zip and proteinatlas.tsv.zip datasets (v19.3) downloaded on 2020-06-12 from:
+\url{https://www.proteinatlas.org/about/download}
 }
 \usage{
 hpa_table
 }
 \description{
-A table containing classification of all human protein-coding genes based on transcript expression levels in 33 tissues
-(19,634 unique genes). Only tissue with elevated expression has been included.
+A dataset containing tissue specificity annotations for 19,634 genes in 33 tissues derived from 
+HPA RNA-sequencing data. See cited reference and \url{https://www.proteinatlas.org/humanproteome/tissue/tissue+specific}
+for details on definition of tissue-specific (i.e. tissue-elevated) genes.
 }
-\note{
-some tissue is divided into sub-categories, e.g. Small intestine (Intestine) and Small intestine (Intestine). See table 2-3 at \url{https://www.proteinatlas.org/humanproteome/tissue/tissue+specific} 
-for additional details.
+\references{
+Uhlén M, Fagerberg L, Hallström BM, et al. Proteomics. Tissue-based map of the human proteome.
+Science. 2015;347(6220):1260419. doi:10.1126/science.1260419
 }
 \seealso{
 Other datasets: 
-\code{\link{GTEX_table}},
 \code{\link{accession_gene_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
@@ -31,6 +40,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{inweb_hash}},
