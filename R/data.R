@@ -70,7 +70,7 @@
 
 #' @title gnomAD mutational constraint (pLI) annotations
 #' @description A dataset containing gnomAD pLI scores for 19,704 genes. The pLI score estimates the probability
-# that a gene is intolerant of loss-of-function mutations.
+#' that a gene is intolerant of loss-of-function mutations.
 #' @format A data frame with 19,704 rows and 2 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
@@ -367,8 +367,8 @@
 #' @title GTEx tissue specificity annotations
 #' @description A dataset containing tissue specificty annotations for 20,025 genes in 53 tissues derived from
 #' GTEx RNA-sequencing data. See cited reference for details on the definition of tissue-specific genes.
-#' In brief, genes that rank in the top 10% of a tissue-based t-statistic distribution are defined as the specific
-#' genes for the tissue.
+#' In brief, genes that rank in the top 10 percent of a tissue-based t-statistic distribution are defined as
+#' the specific genes for the tissue.
 #' @format A data frame with 1,316,785 rows and 3 variables:
 #' \describe{
 #'   \item{tissue}{Tissue name}
