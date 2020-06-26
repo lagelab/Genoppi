@@ -66,6 +66,7 @@ Collate:
     'get_gwas_lists.R'
     'get_inweb_list.R'
     'get_pathways.R'
+    'get_replicate_summary_text.R'
     'get_shiny_errors.R'
     'get_snp_lists.R'
     'get_tissue_lists.R'

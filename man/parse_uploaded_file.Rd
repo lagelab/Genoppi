@@ -26,6 +26,7 @@ file tab in shiny.
 Other shiny: 
 \code{\link{add_plotly_markers_search_pathway}()},
 \code{\link{add_plotly_markers_search}()},
-\code{\link{calc_logfc_limit}()}
+\code{\link{calc_logfc_limit}()},
+\code{\link{get_replicate_summary_text}()}
 }
 \concept{shiny}

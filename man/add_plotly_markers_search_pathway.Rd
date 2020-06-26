@@ -25,6 +25,7 @@ internal
 Other shiny: 
 \code{\link{add_plotly_markers_search}()},
 \code{\link{calc_logfc_limit}()},
+\code{\link{get_replicate_summary_text}()},
 \code{\link{parse_uploaded_file}()}
 }
 \concept{shiny}
