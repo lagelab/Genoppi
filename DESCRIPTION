@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 0.4.12
+Version: 0.4.13
 Authors@R: 
     c(person(given = "Frederik",
              family = "Lassen",
@@ -10,7 +10,6 @@ Authors@R:
              family = "Hsu",
              role = c("aut"),
              email = "yuhanhsu@broadinstitute.org"))
-Maintainer: Frederik Lassen <flassen@broadinstitute.org>
 Description: An open-source software for robust and standardized integration of proteomic and genetic data.
 License: MIT + file LICENSE
 LazyData: true

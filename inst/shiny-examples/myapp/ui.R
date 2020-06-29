@@ -190,7 +190,7 @@ body <- dashboardBody(
                                       column(3, uiOutput("a_symbol_gnomad_ui"))
                                     ),
                                     fluidRow(
-                                      column(3, h5('Tissue enrichment')),
+                                      column(3, h5('Tissue-specific genes')),
                                       column(3, uiOutput("a_color_tissue_sig_ui")),
                                       column(3, uiOutput("a_color_tissue_insig_ui")),
                                       column(3, uiOutput("a_symbol_tissue_ui"))

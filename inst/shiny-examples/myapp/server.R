@@ -167,7 +167,7 @@ shinyServer(function(input, output, session){
   
   output$a_color_theme_indv_insig <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'and', monitor_logfc_threshold()$insig))))
+    label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'or', monitor_logfc_threshold()$insig))))
     colourpicker::colourInput('a_color_indv_insig', label, value = val_a_color_theme_indv_insig(), showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
@@ -461,7 +461,7 @@ shinyServer(function(input, output, session){
   
   output$a_tissue_select_ui <- renderUI({
     selectInput('a_tissue_select', 'Select reference database',  c("Human Protein Atlas" = "hpa",
-                                                                   "Genome Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+                                                                   "Genotype Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   # tissue enrichment (Tissue specificity tab)
@@ -471,7 +471,7 @@ shinyServer(function(input, output, session){
   
   output$a_tissue_enrichment_type_select_ui <- renderUI({
     selectInput('a_tissue_enrichment_type_select', 'Select reference database',  c("Human Protein Atlas" = "hpa",
-                                                                                   "Genome Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+                                                                                   "Genotype Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   output$a_tissue_enrichment_xaxis_ui <- renderUI({
