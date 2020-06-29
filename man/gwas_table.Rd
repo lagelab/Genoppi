@@ -11,7 +11,7 @@ A data frame with 188,925 rows and 5 variables:
   \item{DISEASE.TRAIT}{Disease or trait examined in study}
   \item{SNP}{SNP rsID}
   \item{P.VALUE}{Reported p-value}
-  \item{SUTDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
+  \item{STUDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
 }
 }
 \source{

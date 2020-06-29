@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 0.4.11
+Version: 0.4.12
 Authors@R: 
     c(person(given = "Frederik",
              family = "Lassen",

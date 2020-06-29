@@ -20,6 +20,7 @@ gnomad_table
 }
 \description{
 A dataset containing gnomAD pLI scores for 19,704 genes. The pLI score estimates the probability
+that a gene is intolerant of loss-of-function mutations.
 }
 \references{
 Lek M, Karczewski KJ, Minikel EV, et al. Analysis of protein-coding genetic variation in 60,706 humans.

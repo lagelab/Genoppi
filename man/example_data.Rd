@@ -17,7 +17,7 @@ A data frame with 556 rows and 4 variables:
 example_data
 }
 \description{
-Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates.
+Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
 }
 \seealso{
 Other datasets: 

@@ -55,7 +55,7 @@
 #'   \item{DISEASE.TRAIT}{Disease or trait examined in study}
 #'   \item{SNP}{SNP rsID}
 #'   \item{P.VALUE}{Reported p-value}
-#'   \item{SUTDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
+#'   \item{STUDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
 #' }
 #' @family datasets
 #' @docType data
@@ -387,7 +387,7 @@
 
 
 #' @title Example proteomic data (1)
-#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates.
+#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
 #' @format A data frame with 556 rows and 4 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
@@ -402,7 +402,7 @@
 
 
 #' @title Example proteomic data (2)
-#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates.
+#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
 #' @format A data frame with 685 rows and 4 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
@@ -417,7 +417,7 @@
 
 
 #' @title Example proteomic data (3)
-#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replciates.
+#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
 #' @format A data frame with 577 rows and 4 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}

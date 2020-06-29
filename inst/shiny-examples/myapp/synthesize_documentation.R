@@ -23,8 +23,9 @@ documentation_to_html <- function(content){
 for (file in data.documentation){
   
   # write documentation files
-  content = null_omit(genoppi:::parse_rd(readLines(file), combine.with = ' '))
+  content = null_omit(genoppi:::parse_rd(readLines(file), what = c("title", "description", "source", "references"), combine.with = ' '))
   content_html = documentation_to_html(content)
+  content_html = gsub('\\\\url\\{','',content_html)
   newfile = paste0(tools::file_path_sans_ext(basename(file)),'.info')
   write(content_html, file = paste0('inst/shiny-examples/myapp/documentation/', newfile))
   

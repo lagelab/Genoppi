@@ -257,3 +257,16 @@ hline <- function(y = 0, color = "blue", width = 1, dash = 'dash') {
 }
   
 
+#' @title hyperlink
+#' @description convert a string into a hyperlink
+#' @param url what is the url?
+#' @param text what should be displayed? Default is NULL,
+#' which just displays the URL.
+#' @export
+#' @family html
+
+hyperlink <- function(url, text){
+  return(paste0("<a href='",mydata$url,"'>",mydata$url,"</a>"))
+}
+
+
