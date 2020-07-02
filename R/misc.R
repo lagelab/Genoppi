@@ -269,4 +269,10 @@ hyperlink <- function(url, text){
   return(paste0("<a href='",mydata$url,"'>",mydata$url,"</a>"))
 }
 
+#' @title line_unity
+#' @description plots a unity line
+#' @export
+
+line_unity <- function(){geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2)}
+
 

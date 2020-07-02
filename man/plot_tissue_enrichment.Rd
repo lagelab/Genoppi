@@ -29,4 +29,8 @@ plot_tissue_enrichment(
 \description{
 constructs a bar chart using ggplot to plot tissue enrichment.
 }
+\seealso{
+Other ggplot: 
+\code{\link{scatter_theme}()}
+}
 \concept{ggplot}

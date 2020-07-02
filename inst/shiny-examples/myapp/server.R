@@ -685,6 +685,7 @@ shinyServer(function(input, output, session){
   # check pulldown input format for inconsistencies
   a_input_errors <- reactive({
     req(a_file_pulldown_r() )
+    browser()
     d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
     errs = get_shiny_errors(d$data)
     return(errs)

@@ -58,6 +58,7 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
 #' @param col_other color for other protein interactors.
 #' @return a list of gg scatter plots.
 #' @export
+
 plot_scatter_basic_all <- function(df, size_point = 3, col_significant = "#41AB5D", col_other = 'grey'){
   
   # check input
