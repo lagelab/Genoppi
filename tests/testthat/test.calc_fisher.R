@@ -18,13 +18,13 @@ test_that('calc_fisher can return correct overlap results',{
 
   # InWeb
   result <- calc_fisher(sigDf,inwebDf,inwebInterDf,"BCL2")
-  expect_equal(format(result[[1]]$pvalue,digits=3),"0.175")
-  expect_true(all(result[[2]][["InWeb"]]$overlap_genes %in% c("HSP90AA1","BAX","RPL8","RPLP2")))
+  expect_equal(format(result[[1]]$pvalue,digits=3),"0.908")
+  expect_true(all(result[[2]][["InWeb"]]$overlap_genes %in% c("LARP1")))
 
   # gene list
   result <- calc_fisher(sigDf,geneDf,intersectDf,"BCL2")
-  expect_equal(format(result[[1]]$pvalue,digits=3),"0.567")
-  expect_true(result[[2]][["ALS"]]$overlap_genes %in% c("HNRNPA2B1"))
+  expect_equal(format(result[[1]]$pvalue,digits=3),"0.00513")
+  expect_true(all(result[[2]][["ALS"]]$overlap_genes %in% c("ATXN2","FUS","PFN1","TAF15")))
 
 })
 

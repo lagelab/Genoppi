@@ -1,6 +1,5 @@
 context('calc_adjusted_enrichment')
 
-data("example_data")
 data(gtex_table)
 data(example_data)
 
@@ -12,9 +11,9 @@ test_that("Basic functionality GTEX", {
   
   # exepcted p values and expected calc_hypers counts
   gtex_enrichment = calc_adjusted_enrichment(data, gtex_table, bait = 'BCL2')
-  expect_equal(sum(gtex_enrichment$pvalue), 31.54759, tolerance = 10e-5)
-  expect_equal(sum(gtex_enrichment$successInSample_count), 253)
-  expect_equal(mean(gtex_enrichment$BH.FDR), 0.991033, tolerance = 10e-5)
+  expect_equal(sum(gtex_enrichment$pvalue), 29.51632, tolerance = 10e-5)
+  expect_equal(sum(gtex_enrichment$successInSample_count), 245)
+  expect_equal(mean(gtex_enrichment$BH.FDR), 0.7670999, tolerance = 10e-5)
   
 })
 

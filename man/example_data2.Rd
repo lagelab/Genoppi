@@ -5,7 +5,7 @@
 \alias{example_data2}
 \title{Example proteomic data (2)}
 \format{
-A data frame with 685 rows and 4 variables:
+A data frame with 556 rows and 4 variables:
 \describe{
   \item{gene}{HGNC gene symbol}
   \item{rep1}{replicate 1 log2 fold change}
@@ -13,13 +13,43 @@ A data frame with 685 rows and 4 variables:
   \item{rep3}{replicate 3 log2 fold change}
 }
 }
+\source{
+Genoppi IP-MS experiment
+}
 \usage{
 example_data2
 }
 \description{
-Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
+A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375). See cited Genoppi reference for detailed methods.
+}
+\references{
+Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
+for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
 }
 \seealso{
+Other datasets: 
+\code{\link{accession_gene_table}},
+\code{\link{example_data3}},
+\code{\link{example_data}},
+\code{\link{genes_snps}},
+\code{\link{gnomad_table}},
+\code{\link{goa_bp_table}},
+\code{\link{goa_cc_table}},
+\code{\link{goa_mf_table}},
+\code{\link{gtex_table}},
+\code{\link{gwas_table}},
+\code{\link{hgnc_group_table}},
+\code{\link{hpa_table}},
+\code{\link{inweb_hash}},
+\code{\link{msigdb_c1_table}},
+\code{\link{msigdb_c2_table}},
+\code{\link{msigdb_c3_table}},
+\code{\link{msigdb_c4_table}},
+\code{\link{msigdb_c5_table}},
+\code{\link{msigdb_c6_table}},
+\code{\link{msigdb_c7_table}},
+\code{\link{msigdb_h_table}}
+
 Other datasets: 
 \code{\link{accession_gene_table}},
 \code{\link{example_data3}},

@@ -5,7 +5,7 @@
 \alias{example_data3}
 \title{Example proteomic data (3)}
 \format{
-A data frame with 577 rows and 4 variables:
+A data frame with 556 rows and 4 variables:
 \describe{
   \item{gene}{HGNC gene symbol}
   \item{rep1}{replicate 1 log2 fold change}
@@ -13,11 +13,18 @@ A data frame with 577 rows and 4 variables:
   \item{rep3}{replicate 3 log2 fold change}
 }
 }
+\source{
+Genoppi IP-MS experiment
+}
 \usage{
 example_data3
 }
 \description{
-Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
+A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (G401). See cited Genoppi reference for detailed methods.
+}
+\references{
+Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
+for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
 }
 \seealso{
 Other datasets: 

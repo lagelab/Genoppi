@@ -523,7 +523,7 @@ shinyServer(function(input, output, session){
     # rename reps
     
     rep_input = available_replicates()
-    #if (!is.null(rep_input)) browser()
+    #if (!is.null(rep_input)) 
     
     reps_verbatim = gsub('rep','replicate ', rep_input)
     reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
@@ -685,7 +685,6 @@ shinyServer(function(input, output, session){
   # check pulldown input format for inconsistencies
   a_input_errors <- reactive({
     req(a_file_pulldown_r() )
-    browser()
     d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
     errs = get_shiny_errors(d$data)
     return(errs)

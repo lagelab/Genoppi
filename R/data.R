@@ -387,7 +387,7 @@
 
 
 #' @title Example proteomic data (1)
-#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
+#' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a neuron cell line (GPiN). See cited Genoppi reference for detailed methods. 
 #' @format A data frame with 556 rows and 4 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
@@ -397,13 +397,19 @@
 #' }
 #' @family datasets
 #' @docType data
+#' @source Genoppi IP-MS experiment
+#' @references
+#' Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
+#' for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
 
 "example_data"
 
 
 #' @title Example proteomic data (2)
-#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
-#' @format A data frame with 685 rows and 4 variables:
+#' @family datasets
+#' @docType data
+#' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375). See cited Genoppi reference for detailed methods. 
+#' @format A data frame with 556 rows and 4 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
 #'   \item{rep1}{replicate 1 log2 fold change}
@@ -412,13 +418,17 @@
 #' }
 #' @family datasets
 #' @docType data
+#' @source Genoppi IP-MS experiment
+#' @references
+#' Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
+#' for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
 
 "example_data2"
 
 
 #' @title Example proteomic data (3)
-#' @description Simulated proteomic dataset containing gene symbol and corresponding log2 fold change values for 3 replicates.
-#' @format A data frame with 577 rows and 4 variables:
+#' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (G401). See cited Genoppi reference for detailed methods. 
+#' @format A data frame with 556 rows and 4 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
 #'   \item{rep1}{replicate 1 log2 fold change}
@@ -427,6 +437,10 @@
 #' }
 #' @family datasets
 #' @docType data
+#' @source Genoppi IP-MS experiment
+#' @references
+#' Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
+#' for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
 
 "example_data3"
 
