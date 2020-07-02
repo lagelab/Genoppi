@@ -41,8 +41,13 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   # check for allowed input
   if (!inherits(reference, "list")) stop('argumnt reference must be a named list.')
   
+  # only allow overlay significant references
+  if (!is.null(reference$significant)){
+    df <- df[df$significant, ]
+  }
+  
   # convert reference to a single data.frame and omit non informative columns
-  overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x)))
+  overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x, rm.sig = T)))
   plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group')]
   overlay =  merge(plot.data, validate_reference(overlay, warn = F), by = match)
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))

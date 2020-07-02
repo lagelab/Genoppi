@@ -9,6 +9,11 @@ theme_genoppi()
 \description{
 Set's up the classic genoppi theme for ggplot2.
 }
-\author{
-April/Frederik
+\seealso{
+Other ggplot: 
+\code{\link{plot_tissue_enrichment}()},
+\code{\link{scatter_theme}()},
+\code{\link{theme_genoppi_bar}()},
+\code{\link{volcano_theme}()}
 }
+\concept{ggplot}

@@ -19,8 +19,10 @@ parse_rd <- function(content, what = c('description', 'title', 'format', 'refere
   n = length(content)
   
   parsed_content = lapply(what, function(x) {
-  
-    if (any(grepl(x, content))){
+    
+    tag = paste0('@', x)
+    
+    if (any(grepl(tag, content))){
       
       string_start = paste0('\\\\', x,'\\{')
       string_end = '}'

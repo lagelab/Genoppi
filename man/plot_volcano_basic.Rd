@@ -28,3 +28,19 @@ takes in a data.frane with the columns gene, logFC, pvalue and significant
 to draw a volcano. Optionally, a column indicating 'color' (string) can be supplied to 
 indicate the volcano color scheme and whether to draw names of specific proteins.
 }
+\examples{
+\dontrun{
+
+# run example data
+p = example_data \%>\% 
+calc_mod_ttest() \%>\%
+  id_enriched_proteins(fdr_cutoff = 0.1) \%>\%
+  plot_volcano_basic() \%>\%
+  plot_overlay(as.bait('BCL2')) \%>\%
+  volcano_theme()
+
+# add a ggplot title
+p + ggtitle('Example volcano plot') 
+
+}
+}

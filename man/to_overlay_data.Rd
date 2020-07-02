@@ -4,12 +4,14 @@
 \alias{to_overlay_data}
 \title{to overlay data}
 \usage{
-to_overlay_data(df, dataset = NULL)
+to_overlay_data(df, dataset = NULL, rm.sig = F)
 }
 \arguments{
 \item{df}{a data.frame}
 
 \item{dataset}{optional string, if dataset is not provided in df.}
+
+\item{rm.sig}{boolean. should signicicant items be removed?}
 }
 \description{
 Adds columns to a data.frame (e.g. one used for overlay)

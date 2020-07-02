@@ -70,11 +70,13 @@ example_data %>%
   calc_mod_ttest() %>%
   id_enriched_proteins() %>%
   plot_volcano_basic() %>%
-  plot_overlay(as.bait("BCL2"))
+  plot_overlay(as.bait("BCL2")) %>% 
+  theme_volcano()
 
 
 # interactive volcano plot
-make_interactive(bait_volcano) %>%
+bait_volcano %>%
+  make_interactive() %>%
   add_plotly_layout_volcano()
 
 
@@ -82,10 +84,7 @@ make_interactive(bait_volcano) %>%
 ### (2) Integrated analyses (using InWeb data as example)
 
 # query InWeb interactors for a bait protein (e.g. BCL2)
-inweb_df <- data.frame(listName="InWeb",get_inweb_list("BCL2"))
-
-# overlaid volcano plot labeling InWeb interactors
-inweb_list <- list(InWeb=inweb_df[inweb_df$significant, ])
+inweb_list <- list(inweb = get_inweb_list("BCL2"))
 plot_overlay(bait_volcano,inweb_list)
 
 # assess overlap b/w enriched proteins and InWeb interactors

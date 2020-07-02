@@ -7,9 +7,24 @@
 #' @param sig_text string. text for significant interactor to be displayed in legend.
 #' @param col_other the color of non-significnt proteins/rows.
 #' @param gg.size the size of the points. 
+#' @examples 
+#' \dontrun{
+#' 
+#' # run example data
+#' p = example_data %>% 
+#' calc_mod_ttest() %>%
+#'   id_enriched_proteins(fdr_cutoff = 0.1) %>%
+#'   plot_volcano_basic() %>%
+#'   plot_overlay(as.bait('BCL2')) %>%
+#'   volcano_theme()
+#'
+#' # add a ggplot title
+#' p + ggtitle('Example volcano plot') 
+#' 
+#' }
 #' @export
 #' @importFrom ggplot2 ggplot geom_point geom_hline geom_vline xlab ylab theme aes_ aes aes_string geom_text
-#' 
+
 
 plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(enriched)', gg.size = 3){
   

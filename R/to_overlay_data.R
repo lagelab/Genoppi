@@ -3,11 +3,18 @@
 #' that are required for downstream functionality in genoppi/
 #' @param df a data.frame
 #' @param dataset optional string, if dataset is not provided in df.
+#' @param rm.sig boolean. should signicicant items be removed?
 #' @export
 #' @family interactive
 
-to_overlay_data <- function(df, dataset=NULL) {
+to_overlay_data <- function(df, dataset=NULL, rm.sig = F) {
   cnames = colnames(df)
+  
+  # remove all non-significant rows
+  if (!is.null(df$significant) & rm.sig){
+    df <- df[df$significant, ]
+  }
+  
   # if the following columns are not specified in the reference
   # they are set to the default in this function.
   if ('dataset' %nin% cnames) df$dataset = dataset
@@ -15,6 +22,7 @@ to_overlay_data <- function(df, dataset=NULL) {
   if ('stroke' %nin% cnames) df$stroke <- TRUE
   if ('col_significant' %nin% cnames) df$col_significant <- 'yellow'
   if ('col_other' %nin% cnames) df$col_other <- 'grey'
+  if ('col_border' %nin% cnames) df$col_border <- 'black'
   if ('alt_label' %nin% cnames) df$alt_label <- NA
   if ('label_size' %nin% cnames) df$label_size = 3
   if ('pLI' %nin% cnames) df$pLI <- NA
