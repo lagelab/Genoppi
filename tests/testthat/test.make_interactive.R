@@ -46,6 +46,8 @@ test_that('plot without any overlay can be made interactive',{
 
 test_that('plot_overlay arguments are translates to plotly',{
 
+  inweb = list(inweb = get_inweb_list('BCL2'))
+  
   # only bait label
   volcano = sig_df %>% 
     plot_volcano_basic() %>%
