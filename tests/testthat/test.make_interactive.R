@@ -2,13 +2,15 @@ context('make_interactive')
 
 data("example_data")
 
+# perform moderated t-test
+stats_df <- suppressWarnings(calc_mod_ttest(example_data))
+
+# identify enriched proteins
+sig_df <- id_enriched_proteins(stats_df)
+
 test_that('basic test to see if function works',{
   
-  # perform moderated t-test
-  stats_df <- suppressWarnings(calc_mod_ttest(example_data))
-  
-  # identify enriched proteins
-  sig_df <- id_enriched_proteins(stats_df)
+
   
   # generate volcano plot with bait protein labeled
   basic_volcano <- plot_volcano_basic(sig_df)
@@ -29,12 +31,6 @@ test_that('basic test to see if function works',{
 
 test_that('plot without any overlay can be made interactive',{
   
-  # perform moderated t-test
-  stats_df <- suppressWarnings(calc_mod_ttest(example_data))
-  
-  # identify enriched proteins
-  sig_df <- id_enriched_proteins(stats_df)
-  
   # generate volcano plot with bait protein labeled
   basic_volcano <- plot_volcano_basic(sig_df)
   result = make_interactive(basic_volcano)
@@ -45,6 +41,41 @@ test_that('plot without any overlay can be made interactive',{
   expect_equal(quo_name(m$x),'logFC')
   expect_equal(quo_name(m$y),'-log10(pvalue)')
   expect_equal(quo_name(m$text),'~gene') # no bait
+  
+})
+
+test_that('plot_overlay arguments are translates to plotly',{
+
+  # only bait label
+  volcano = sig_df %>% 
+    plot_volcano_basic() %>%
+    plot_overlay(as.bait('BCL2')) %>%
+    plot_overlay(inweb, label = F) %>%
+    volcano_theme(ylims = c(0, 4)) %>%
+    make_interactive()
+  
+  expect_equal(as.character(volcano$x$layoutAttrs[[1]]$annotations$text), 'BCL2')
+  
+  # no labels at all
+  volcano = sig_df %>% 
+    plot_volcano_basic() %>%
+    plot_overlay(as.bait('BCL2'), label = F) %>%
+    plot_overlay(inweb, label = F) %>%
+    volcano_theme(ylims = c(0, 4)) %>%
+    make_interactive()
+  
+  expect_true(identical(as.character(volcano$x$layoutAttrs[[1]]$annotations$text), character(0)))
+  
+  # only inweb label
+  volcano = sig_df %>% 
+    plot_volcano_basic() %>%
+    plot_overlay(as.bait('BCL2'), label = F) %>%
+    plot_overlay(inweb) %>%
+    volcano_theme(ylims = c(0, 4)) %>%
+    make_interactive()
+  
+  expect_equal(length(volcano$x$layoutAttrs[[1]]$annotations$text), 34)
+  
   
 })
 

@@ -77,7 +77,9 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
                        arrow=arrow(length=unit(label.arrowhead.size, 'npc')),
                        box.padding=unit(label.box.padding, "lines"),
                        point.padding=unit(label.point.padding, "lines"))
-                  
+  
+  # change data.frame if arguments are passed directly to function (for downstream plotly rendering)
+  if (!is.null(label)) overlay$label <- label
   
   # make running list of overlay
   if (!is.null(p1$overlay)) {p1$overlay = rbind(p1$overlay, overlay)} else {p1$overlay = overlay}

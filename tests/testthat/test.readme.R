@@ -41,11 +41,12 @@ test_that('Readme data can be run',{
   # note, this must be named list, e.g: 
   inweb = list(inweb = get_inweb_list('BCL2'))
   
-  volcano_inweb = df_sig %>% 
+  df_sig %>% 
     plot_volcano_basic() %>%
     plot_overlay(as.bait('BCL2')) %>%
-    plot_overlay(list(inweb = inweb), label = T) %>%
-    volcano_theme(ylims = c(0, 4))
+    plot_overlay(inweb, label = F) %>%
+    volcano_theme(ylims = c(0, 4)) %>%
+    make_interactive()
   
   # Calculate p-value for enrichment
   
