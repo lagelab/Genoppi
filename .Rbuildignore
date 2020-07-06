@@ -5,3 +5,4 @@
 ^appveyor\.yml$
 ^Dockerfile$
 ^cloudbuild.yaml$
+^images$

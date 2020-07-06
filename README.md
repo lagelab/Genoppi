@@ -36,13 +36,13 @@ launch_genoppi()
 
 ```
 
-## R package usage example
 
+## Getting started
 ```R
 
 library(genoppi)
 
-# load example proteomic data
+
 data("example_data")
 
 

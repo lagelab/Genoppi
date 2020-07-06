@@ -91,6 +91,9 @@ body <- dashboardBody(
                                        column(4, uiOutput("a_overlay_inweb_ui")),
                                        column(4, shinyjs::hidden(myDownloadButton("a_inweb_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      ),
+                                     fluidRow(
+                                       column(12, uiOutput("info_inweb_ui"))
+                                     )
                                     ),
                                     box(
                                       title = tagList(shiny::icon('list-alt'), "GWAS catalog"), width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
@@ -105,6 +108,9 @@ body <- dashboardBody(
                                       fluidRow(
                                         column(12, uiOutput('a_gwas_subset_traits_by_data'))
                                         #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
+                                      ),
+                                      fluidRow(
+                                        column(12, uiOutput("info_gwas_ui"))
                                       )
                                     ),
                                     box(
@@ -121,6 +127,9 @@ body <- dashboardBody(
                                         column(4, uiOutput("a_label_gnomad_ui")),
                                         column(4, uiOutput("a_overlay_gnomad_ui")),
                                         column(4, shinyjs::hidden(myDownloadButton("a_gnomad_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                      ),
+                                      fluidRow(
+                                        column(12, uiOutput("info_gnomad_ui"))
                                       )
                                       #fluidRow(column(12, uiOutput('a_gnomad_constraints_available_ui'))),
                                       #fluidRow(column(12, tableOutput("a_table_gnomad_constraints_ui")))
@@ -136,6 +145,9 @@ body <- dashboardBody(
                                         column(4, uiOutput("a_overlay_tissue_ui")),
                                         column(4, uiOutput("a_label_tissue_ui")),
                                         column(4, shinyjs::hidden(myDownloadButton("a_tissue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                      ),
+                                      fluidRow(
+                                        column(12, uiOutput("info_tissue_ui"))
                                       )
                                     ),
                                     box(
@@ -285,8 +297,8 @@ body <- dashboardBody(
                                             uiOutput('a_tissue_enrichment_slider_ui'),  
                                             uiOutput('a_tissue_enrichment_xaxis_ui'),
                                             uiOutput('a_tissue_enrichment_scientific_notation_ui'),
-                                            shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome")))
-                                            
+                                            shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome"))),
+                                            uiOutput("info_tissue_enrichment_ui")
                                           )
                                         )
                                       )
@@ -323,6 +335,9 @@ body <- dashboardBody(
                                       fluidRow(
                                         column(8,''),
                                         column(4, shinyjs::hidden(myDownloadButton("a_pathway_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                      ),
+                                      fluidRow(
+                                        column(12, uiOutput("info_geneset_ui"))
                                       )
                                    )
                                  ),
@@ -399,7 +414,9 @@ body <- dashboardBody(
                                                    ),
                                                    column(12,
                                                           tableOutput('b_file_1_summary_table_ui')
-                                                   )
+                                                   ),
+                                                   column(12, 
+                                                          shinyjs::hidden(myDownloadButton("b_file_1_mapping_download", 'Proteomic data', icon("download"))))
                                                  )
                                           )
                                         ),
@@ -455,7 +472,10 @@ body <- dashboardBody(
                                                    ),
                                                    column(12,
                                                           tableOutput('b_file_2_summary_table_ui')
-                                                   )
+                                                   ),
+                                                   column(12,
+                                                          shinyjs::hidden(myDownloadButton("b_file_2_mapping_download", 'Proteomic data', icon("download")))
+                                                          )
                                                  )
                                           )
                                         ),
@@ -511,7 +531,10 @@ body <- dashboardBody(
                                                    ),
                                                    column(12,
                                                           tableOutput('b_file_3_summary_table_ui')
-                                                   )
+                                                   ),
+                                                   column(12,
+                                                          shinyjs::hidden(myDownloadButton("b_file_3_mapping_download", 'Proteomic data', icon("download")))
+                                                          )
                                                  )
                                           )
                                         ),
@@ -654,9 +677,9 @@ body <- dashboardBody(
 sidebar <- dashboardSidebar(
   sidebarMenu(id = "sidebarmenu",
               #h6(as.character(genoppi.ver)),
-              menuItem("Quick start", tabName = "start", icon = icon("stream")),
+              menuItem("Quick Start", tabName = "start", icon = icon("stream")),
               menuItem("Guide", tabName = "guide", icon = icon("info-circle")),
-              menuItem("Data documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
+              menuItem("Data Documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",

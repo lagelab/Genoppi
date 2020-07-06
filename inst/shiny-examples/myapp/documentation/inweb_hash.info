@@ -1,1 +1,1 @@
-<b></b>
+<b>InWeb_InBioMap protein-protein interactions</b> <br><i>description</i>: A dataset containing published protein-protein interactions for 18,551 genes in InWeb_InBioMap. <br><i>source</i>: InWeb_Combined_Oct2018.Rdata file created by April Kim, modified to add 73 genes as keys. <br><i>references</i>: Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to catalyze genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083

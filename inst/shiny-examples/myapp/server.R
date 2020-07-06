@@ -3050,10 +3050,23 @@ shinyServer(function(input, output, session){
             height = global.img.scatter.download.height)
    })
  
+ 
+ # download proteomic data
+ output$b_file_1_mapping_download <- downloadHandler(
+   filename = function() {
+     paste("genoppi-f1-multiple-comparison",".csv", sep="")
+   },
+   content = function(file) {
+     write.csv(b_file_1_significant(), file, row.names = F)
+   }
+ )
+ 
+ 
  # show/hide buttons
  observeEvent(b_file_1_significant(),{
    shinyjs::show("b_file_1_volcano_download")
    shinyjs::show("b_file_1_scatter_download")
+   shinyjs::show("b_file_1_mapping_download")
  })
  
  ##
@@ -3085,10 +3098,21 @@ shinyServer(function(input, output, session){
             height = global.img.scatter.download.height)
    })
  
+ # download proteomic data
+ output$b_file_2_mapping_download <- downloadHandler(
+   filename = function() {
+     paste("genoppi-f2-multiple-comparison",".csv", sep="")
+   },
+   content = function(file) {
+     write.csv(b_file_2_significant(), file, row.names = F)
+   }
+ )
+ 
  # show/hide buttons
  observeEvent(b_file_2_significant(),{
    shinyjs::show("b_file_2_volcano_download")
    shinyjs::show("b_file_2_scatter_download")
+   shinyjs::show("b_file_2_mapping_download")
  })
  
  
@@ -3119,10 +3143,21 @@ shinyServer(function(input, output, session){
             height = global.img.scatter.download.height)
    })
  
+ # download mapping
+ output$b_file_3_mapping_download <- downloadHandler(
+   filename = function() {
+     paste("genoppi-f3-multiple-comparison",".csv", sep="")
+   },
+   content = function(file) {
+     write.csv(b_file_3_significant(), file, row.names = F)
+   }
+ )
+ 
  # show/hide buttons
  observeEvent(b_file_3_significant(),{
    shinyjs::show("b_file_3_volcano_download")
    shinyjs::show("b_file_3_scatter_download")
+   shinyjs::show("b_file_3_mapping_download")
  })
  
  # download protein family mapping? gene annotations
@@ -3135,16 +3170,57 @@ shinyServer(function(input, output, session){
     write.csv(df, file, row.names = F)
    }
  )
+
+ 
+
+ 
+ 
+ 
  
  
   
   ##### GENERAL #####
   #documentation
+ 
+  output$info_inweb_ui <- renderUI({actionLink('info_inweb', ' ', icon = icon('question-circle'))})
+  observeEvent(input$info_inweb,{
+    text = paste(readLines('documentation/inweb_hash.info'))
+    showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'InWeb'))
+  })
   
+  output$info_gwas_ui <- renderUI({actionLink('info_gwas', ' ', icon = icon('question-circle'))})
+  observeEvent(input$info_gwas,{
+    text = paste(readLines('documentation/gwas_table.info'))
+    showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'GWAS catalog'))
+  })
+  
+  output$info_gnomad_ui <- renderUI({actionLink('info_gnomad', ' ', icon = icon('question-circle'))})
+  observeEvent(input$info_gnomad,{
+    text = paste(readLines('documentation/gnomad_table.info'))
+    showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'gnomAD'))
+  })
+  
+  output$info_tissue_ui <- renderUI({actionLink('info_tissue', ' ', icon = icon('question-circle'))})
+  observeEvent(input$info_tissue,{
+    text = paste(readLines('documentation/hpa_table.info'), '<br> <br>', readLines('documentation/GTEX_table.info'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Tissue-specific genes'))
+  })
+  
+  output$info_tissue_enrichment_ui <- renderUI({actionLink('info_tissue_enrichment', ' ', icon = icon('question-circle'))})
+  observeEvent(input$info_tissue_enrichment,{
+    text = paste(readLines('documentation/hpa_table.info'), '<br> <br>', readLines('documentation/GTEX_table.info'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Tissue-specificity data'))
+  })
+  
+  output$info_geneset_ui <- renderUI({actionLink('info_geneset', ' ', icon = icon('question-circle'))})
+  observeEvent(input$info_geneset,{
+    files = list.files('documentation/', full.names = T)
+    files = files[grepl(files, pattern = '(msigdb)|(go)|(hgnc)')]
+    text = paste(lapply(files, function(x) readLines(x)), collapse = '<br> <br>')
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Geneset annotations'))
+  })
+
   getPage_guide<-function() {
-    
-    
-    
     
     #return(tags$iframe(src = "welcome_guide_200509.pdf",
     #                   style="width:100%;",  #frameborder="0"
