@@ -78,7 +78,7 @@ body <- dashboardBody(
                                         )
                                  )
                         ),
-                        tabPanel("Integrated plotting", value = "p2", 
+                        tabPanel("Integrated plotting", id = 'integratedplot', value = "p2", 
                                 br(),
                                  column(width = 4, 
                                     box(

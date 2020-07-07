@@ -17,6 +17,7 @@ returns true for x not in y
 \seealso{
 Other misc: 
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{bold}()},
 \code{\link{catf}()},
 \code{\link{color_distinct}()},

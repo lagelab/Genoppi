@@ -12,7 +12,8 @@ draw_genoppi_venn(
   cat.cex = 1.1,
   cat.dist = 0.05,
   sub.pos = 0,
-  fill = NULL
+  fill = NULL,
+  margin = 0.05
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ draw_genoppi_venn(
 \item{sub.pos}{numeric. the position of the labels.}
 
 \item{fill}{the fill color of the venn diagrams.}
+
+\item{margin}{margin around the plot.}
 }
 \description{
 drwas a simple 1 by 1 overlap venn diagram.

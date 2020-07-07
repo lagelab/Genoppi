@@ -13,12 +13,13 @@ get_gg_legend(a.gplot)
 gets a ggplot legend
 }
 \note{
-code snippet from \url{https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2}
+modified from \url{https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2}
 }
 \seealso{
 Other misc: 
 \code{\link{\%nin\%}()},
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{bold}()},
 \code{\link{catf}()},
 \code{\link{color_distinct}()},

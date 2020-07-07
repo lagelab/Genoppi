@@ -30,7 +30,8 @@ volcano_theme(
 \item{grid_width}{the width of the grid.}
 }
 \description{
-Setups a volcano theme, with a yaxis at x=0, and a grid.
+Setups a volcano theme, with a yaxis at x=0, and a grid. Note, 
+that the user will have to adjust the limits of x and y axis.
 }
 \note{
 gridlines can be entirely removed by subsequently calling \code{theme_void()}.

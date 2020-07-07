@@ -63,3 +63,35 @@ The following data.frame headers for a reference are accepted:
 }
 See ?validate_reference or additional details.
 }
+\examples{
+\dontrun{
+df <- example_data \%>\%
+  calc_mod_ttest() \%>\%
+  id_enriched_proteins()
+
+# overlay simple  a bait
+df \%>\% 
+  plot_volcano_basic() \%>\%
+  plot_overlay(as.bait('BCL2')) \%>\%
+  volcano_theme()
+
+# make a custom overlay
+myoverlay = data.frame(gene = c('FUS', 'RBMX'),
+                       col_significant = c('cyan', 'blue'),
+                       col_other = c('grey', 'grey'), 
+                       dataset = c('group 1', 'group 2'))
+
+# plot overlay
+df \%>\% 
+  plot_volcano_basic() \%>\%
+  plot_overlay(list(overlay = myoverlay)) \%>\%
+  volcano_theme() 
+
+# plot multiple overlays
+df \%>\% 
+  plot_volcano_basic() \%>\%
+  plot_overlay(list(overlay = myoverlay)) \%>\%
+  plot_overlay(as.bait('BCL2')) \%>\%
+  volcano_theme() 
+}
+}

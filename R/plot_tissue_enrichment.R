@@ -9,7 +9,7 @@
 #' @family ggplot
 #' @export
 
-plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue', ylab = '-log10(Hypergeometric P-value)', pvalue.line = NULL){
+plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue', ylab = 'Hypergeometric P-value', pvalue.line = NULL){
   
   p = ggplot(data, aes_string(x = col.tissue, y = col.value)) +
     geom_bar(stat="identity", color = 'black', position = 'dodge', fill = 'orange') +

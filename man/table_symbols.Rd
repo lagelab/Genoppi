@@ -9,6 +9,8 @@ table_symbols()
 \description{
 get a table for translating
 between plotly symbols and ggplot shapes.
+This is primiarly used in the shiny application
+to ensure consistency between ggplot and plotly.
 }
 \concept{misc
 circle', # 13

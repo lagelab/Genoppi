@@ -16,6 +16,7 @@ translate plotly symbols to ggplot shapes
 Other misc: 
 \code{\link{\%nin\%}()},
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{bold}()},
 \code{\link{catf}()},
 \code{\link{color_distinct}()},

@@ -18,6 +18,7 @@ sends a message to stderr (i.e shiny)
 Other misc: 
 \code{\link{\%nin\%}()},
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{bold}()},
 \code{\link{color_distinct}()},
 \code{\link{color_gradient}()},

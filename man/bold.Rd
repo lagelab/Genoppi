@@ -16,6 +16,7 @@ make text html bold
 Other misc: 
 \code{\link{\%nin\%}()},
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{catf}()},
 \code{\link{color_distinct}()},
 \code{\link{color_gradient}()},

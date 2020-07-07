@@ -40,7 +40,8 @@ theme_genoppi_bar <- function(rotate = F){
 
 #' @title scatter theme
 #' @description Setups a centered x-y axis scatter plot with label ticks. Note,
-#' that No aes will be inherited from the original ggplot. 
+#' that No aes will be inherited from the original ggplot. Also, he user will 
+#' have to adjust the limits of x and y axis.
 #' @param p the ggplot to be converted
 #' @param axis_begin the x and y limits start of the axis
 #' @param axis_end the x and y limits end of the axis.
@@ -102,7 +103,8 @@ scatter_theme <- function(p, axis_begin, axis_end, total_ticks = 11, grid_width 
 
 
 #' @title volcano theme
-#' @description Setups a volcano theme, with a yaxis at x=0, and a grid.
+#' @description Setups a volcano theme, with a yaxis at x=0, and a grid. Note, 
+#' that the user will have to adjust the limits of x and y axis.
 #' @param p the ggplot to be converted
 #' @param xlims vector. the lower and upper bound of x-axis.
 #' @param ylims vector. the lower and upper bound of y-axis.

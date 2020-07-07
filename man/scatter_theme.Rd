@@ -22,7 +22,8 @@ scatter_theme(p, axis_begin, axis_end, total_ticks = 11, grid_width = 1)
 }
 \description{
 Setups a centered x-y axis scatter plot with label ticks. Note,
-that No aes will be inherited from the original ggplot.
+that No aes will be inherited from the original ggplot. Also, he user will 
+have to adjust the limits of x and y axis.
 }
 \note{
 gridlines can be entirely removed by subsequently calling \code{theme_void()}.

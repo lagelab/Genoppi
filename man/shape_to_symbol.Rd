@@ -12,10 +12,14 @@ shape_to_symbol(vec)
 \description{
 translate ggplot shapes to plotly symbols
 }
+\note{
+see ?table_symbols for allowed shapes and symbols.
+}
 \seealso{
 Other misc: 
 \code{\link{\%nin\%}()},
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{bold}()},
 \code{\link{catf}()},
 \code{\link{color_distinct}()},

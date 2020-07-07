@@ -16,8 +16,29 @@ make_interactive(p, source = NULL, legend = T, sig_text = "")
 \item{sig_text}{what legend text should be added to a significant item?}
 }
 \description{
-Takes a ggplot and turns it into 
-an interactive plot.
+Convert a ggplot (with an overlay) to an interactive
+plotly objects. These plots can be investigated interactively and 
+exported as an interactive html object. See examples for additional 
+details.
+}
+\examples{
+\dontrun{
+df <- example_data \%>\%
+  calc_mod_ttest() \%>\%
+  id_enriched_proteins()
+
+# overlay simple a bait and make interactive
+plt <- df \%>\% 
+  plot_volcano_basic() \%>\%
+  plot_overlay(as.bait('BCL2')) \%>\%
+ volcano_theme() \%>\% 
+  make_interactive()
+
+plt
+
+# save as html widget (requires htmlwidgets package)
+htmlwidgets::saveWidget(as_widget(plt), "index.html")
+}
 }
 \seealso{
 Other interactivity: 

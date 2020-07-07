@@ -1,5 +1,5 @@
 #' @title Perform hypergeometric test
-#' @description Use one-tailed hypergeometric test to calcualte overlap enrichment between proteomic data and other datasets (e.g. InWeb, gene lists, etc.)
+#' @description Use one-tailed hypergeometric test to calculate overlap enrichment between proteomic data and other datasets (e.g. InWeb, gene lists, etc.)
 #' @param df data.frame containing proteomic data, with gene and significant columns
 #' @param listDf data.frame containing data to overlap, with listName, gene and significant columns
 #' @param intersectDf data.frame contaning listName and intersectN columns intersectN = vector of boolean variables indicating if total population should be intersect of the two datasets
@@ -15,21 +15,22 @@
 #' }
 #' @export
 
-calc_hyper <- function(df, listDf, intersectDf, bait=NULL){
+calc_hyper <- function(df, listDf, intersectDf = data.frame(intersectN = T), bait=NULL){
 
   outDf <- NULL
   outList <- list()
   
   # check input
+  if (!any(c('gene', 'significant') %nin% df)) stop('expected column "gene" and "significant" in argument df!')
+  if (!inherits(intersectDf, "data.frame")) stop('argument "intersectDF" must be a valid data.frame. See examples ?calc_hyper.')
+  if (!inherits(listDf, "data.frame")) stop('argument "listDf" must be  valid data.frame!')
+  if ('intersectN' %nin% colnames(intersectDf)) stop('column "intersectN" not found in data.frame intersectDf! See ?calc_hyper')
   if (is.null(bait)) warning('argument "bait=NULL", no bait was removed.')
-  if (!is.data.frame(intersectDf)) stop('argument intersectDF but be a valid data.frame. See examples ?calc_hyper.')
   
-  # intersect df is no longer required by default. Perhaps give a warning?
-  #if (is.null(intersectDf)) data.frame(listName=df$listName, intersectN=T)
-  #if (!is.null(intersectDf)){
-  #  if (intersectDf == T) data.frame(listName=df$listName, intersectN=T)
-  #  if (intersectDf == F) data.frame(listName=df$listName, intersectN=F)
-  #}
+  # if no listName has been given, assume same list
+  if (is.null(listDf$listName) & is.null(intersectDf$listName))  listDf$listName <- 'mylist'
+  if (is.null(listDf$listName) & !is.null(intersectDf$listName))  listDf$listName <- unique(intersectDf$listName)
+  if (!is.null(listDf$listName) & is.null(intersectDf$listName))  intersectDf$listName <- unique(listDf$listName)
   
   # perform separate enrichment test for each listName in listDf
   for (l in unique(listDf$listName)) {

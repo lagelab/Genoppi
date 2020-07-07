@@ -31,6 +31,25 @@ test_that('venn diagram with triple comparison',{
   
 })
 
+test_that('check that the venn diagram can be drawn',{
+  
+  # double
+  double_venn = list(A=letters[1:10],B=letters[8:15])
+  output = draw_genoppi_venn(double_venn)
+  plot_venn(output, scale = 0.4)
+  
+  # triple
+  triple_venn = list(A=letters[1:10],
+                     B=letters[8:15],
+                     C=c('h',letters[18:23]))
+  output = draw_genoppi_venn(triple_venn, margin = 0)
+  plot_venn(output, scale = 0.9)
+  
+  
+  
+})
+
+
 test_that('check errors',{
   
   # a venn diagram needs at least a vector of length 2

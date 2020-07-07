@@ -16,6 +16,7 @@ generates vector of 74 distinct colors from RColorBrewer.
 Other misc: 
 \code{\link{\%nin\%}()},
 \code{\link{as.bait}()},
+\code{\link{as.goi}()},
 \code{\link{bold}()},
 \code{\link{catf}()},
 \code{\link{color_gradient}()},

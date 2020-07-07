@@ -33,11 +33,48 @@ catf <- function(msg, file = stderr()){
 }
 
 #' @title as.bait
-#' @description quickly format the bait so that it can be used by various overlay functions.
+#' @description quickly format a gene as a bait so that it can be used by various overlay functions.
+#' This functional will create a named data.frame with column 'gene', 'col_significant' and
+#' 'col_other', that can be directly inputted into plot_overlay.
 #' @param bait string indicating the bait.
 #' @family misc
+#' @examples 
+#' \dontrun{
+#' # overlay the bait
+#' example_data %>%
+#'   calc_mod_ttest() %>%
+#'   id_enriched_proteins() %>%
+#'   plot_volcano_basic() %>%
+#'   plot_overlay(as.bait('BCL2')) %>%
+#' }
 #' @export
-as.bait <- function(bait) return(list(bait=data.frame(gene=bait, col_significant='red', col_other='orange')))
+as.bait <- function(bait) return(list(bait=data.frame(gene=bait, col_significant='red', col_other='orange', dataset = 'bait')))
+
+
+#' @title as gene of interest
+#' @description quickly format the gene so that it can be used by various overlay functions.
+#' This functional will create a named data.frame with column 'gene', 'col_significant' and
+#' 'col_other', that can be directly inputted into plot_overlay.
+#' @param genes string indicating the bait.
+#' @param col_significant color of significant interactor.
+#' @param col_other color of non-significant interactor.
+#' @param shape numeric. 21 is default for circle.
+#' @param dataset used internally in genoppi to plot multiple datasets.
+#' @family misc
+#' @examples 
+#' \dontrun{
+#' # overlay the bait
+#' example_data %>%
+#'  calc_mod_ttest() %>%
+#'  id_enriched_proteins() %>%
+#'  plot_volcano_basic() %>%
+#'  plot_overlay(as.goi(c('BCL2', 'FUS', 'TRIM28')))
+#' }
+#' @export
+as.goi <- function(genes, col_significant = 'cyan', col_other = 'grey', shape = 21, dataset = 'GOI') {
+  df = data.frame(gene=genes, col_significant=col_significant, col_other=col_other, shape=shape, dataset=dataset)
+  return(list(goi=df))
+}
 
 
 #' @title strsplit.nchar
@@ -127,6 +164,8 @@ italics <- function(x){paste('<i>',x,'</i>', sep='')}
 #' @title get table of plotly/ggplot symbols
 #' @description get a table for translating
 #' between plotly symbols and ggplot shapes.
+#' This is primiarly used in the shiny application
+#' to ensure consistency between ggplot and plotly.
 #' @export
 #' @family misc
 table_symbols <- function() {
@@ -168,10 +207,12 @@ table_symbols <- function() {
 #' @title translate ggplot shapes to plotly symbols
 #' @param vec a character vector of ggplot shapes.
 #' @family misc
+#' @note see ?table_symbols for allowed shapes and symbols.
 #' @export
 #' 
 shape_to_symbol <- function(vec){
   tabl = table_symbols()
+  stopifnot(is.numeric(vec))
   stopifnot(all(vec %in% tabl$shape))
   res = unlist(lapply(vec, function(x){tabl$symbol[tabl$shape == x]}))
   return(res)
@@ -192,7 +233,7 @@ symbol_to_shape <- function(vec){
 #' @title get ggplot legend
 #' @description gets a ggplot legend
 #' @param a.gplot a ggplot
-#' @note code snippet from \url{https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2}
+#' @note modified from \url{https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2}
 #' @family misc
 #' @export
 #' 

@@ -4,7 +4,7 @@
 \alias{calc_hyper}
 \title{Perform hypergeometric test}
 \usage{
-calc_hyper(df, listDf, intersectDf, bait = NULL)
+calc_hyper(df, listDf, intersectDf = data.frame(intersectN = T), bait = NULL)
 }
 \arguments{
 \item{df}{data.frame containing proteomic data, with gene and significant columns}
@@ -19,7 +19,7 @@ calc_hyper(df, listDf, intersectDf, bait = NULL)
 list of data.frame and list. Data.frame contains list_name, successInSample_count (x), sample_count (n), notSample_count (N-n), success_count (k), population_count (N), pvalue. List of lists (for each listName) contains genes names corresponding to each group (successInSample_genes, sample_genes, notSample_genes, success_genes, population_genes).
 }
 \description{
-Use one-tailed hypergeometric test to calcualte overlap enrichment between proteomic data and other datasets (e.g. InWeb, gene lists, etc.)
+Use one-tailed hypergeometric test to calculate overlap enrichment between proteomic data and other datasets (e.g. InWeb, gene lists, etc.)
 }
 \examples{
 \dontrun{

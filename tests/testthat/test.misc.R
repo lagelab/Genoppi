@@ -6,7 +6,8 @@ test_that('various misc functions',{
   expect_equal(lun(c(1,2,3,1)), 3)
   expect_equal(c('a','q') %nin% letters, !c('a','q') %in% letters)
   expect_equal(null_omit(list(x=NULL,y=1,Z=NULL)), list(y=1))
-  expect_equal(as.bait('BCL2'), list(bait=data.frame(gene='BCL2',col_significant='red',col_other='orange')))
+  expect_equal(as.bait('BCL2'), list(bait=data.frame(gene='BCL2',col_significant='red',col_other='orange', dataset= 'bait')))
+  expect_equal(as.goi(c('BCL2','FUS')), list(goi=data.frame(gene=c('BCL2','FUS'),col_significant='cyan',col_other='grey', shape=21, dataset='GOI')))
   expect_equal(italics('BCL2'), '<i>BCL2</i>')
   expect_output(catf('hi',file=stdout()),'hi')
   
@@ -69,6 +70,4 @@ test_that('plotly hline and vline',{
   expect_equal(l2$y0, 5)
   
 })
-
-
 

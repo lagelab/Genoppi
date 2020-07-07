@@ -365,8 +365,7 @@ shinyServer(function(input, output, session){
     sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
                 min = 0, max = 1, value = 0.5, step = 0.01)
   })
-
-
+  
   # intgrated plot, tissue
   output$a_color_tissue_sig_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
@@ -2939,8 +2938,9 @@ shinyServer(function(input, output, session){
      colors = unlist(lapply(names(diagram), function(x) color_dict[[x]]))
      names(diagram) = gsub('f', 'file ', names(diagram))
      v = draw_genoppi_venn(diagram, color = colors, main = '')
-     grid::grid.newpage()
-     grid::grid.draw(v)
+     grid.newpage()
+     pushViewport(viewport(width=unit(0.9, "npc"), height = unit(0.9, "npc")))
+     grid.draw(v)
    } else return(NULL)
 
  })
