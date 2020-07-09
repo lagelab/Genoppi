@@ -65,11 +65,11 @@ scatter_theme <- function(p, axis_begin, axis_end, total_ticks = 11, grid_width 
     # y axis line
     geom_segment(x = 0, xend = 0, 
                  y = lab_frame$lab[1], yend = tail(lab_frame$lab, 1),
-                 size = 0.5) +
+                 size = 0.5, inherit.aes = F) +
     # x axis line
     geom_segment(y = 0, yend = 0, 
                  x = lab_frame$lab[1], xend = tail(lab_frame$lab, 1),
-                 size = 0.5) +
+                 size = 0.5, inherit.aes = F) +
     # x ticks
     geom_segment(data = tick_frame, 
                  aes(x = ticks, xend = ticks, 
@@ -136,11 +136,11 @@ volcano_theme <- function(p, xlims = c(-10, 10), ylims = c(0, 5), x_ticks = 11, 
     # y axis line
     geom_segment(x = 0, xend = 0, 
                  y = 0, yend = tail(lab_frame_y$lab, 1),
-                 size = 0.5) +
+                 size = 0.5, inherit.aes = F) +
     # x axis line
     geom_segment(y = 0, yend = 0, 
                  x = lab_frame_x$lab[1], xend = tail(lab_frame_x$lab, 1),
-                 size = 0.5) +
+                 size = 0.5, inherit.aes = F) +
     # x ticks
     geom_segment(data = tick_frame_x, 
                  aes(x = ticks, xend = ticks, 

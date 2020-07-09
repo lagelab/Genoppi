@@ -9,7 +9,10 @@ plot_volcano_basic(
   col_significant = "#41AB5D",
   col_other = "grey",
   sig_text = "(enriched)",
-  gg.size = 3
+  gg.size = 3,
+  shape = 21,
+  stroke = 0.2,
+  col_border = NULL
 )
 }
 \arguments{
@@ -22,11 +25,18 @@ plot_volcano_basic(
 \item{sig_text}{string. text for significant interactor to be displayed in legend.}
 
 \item{gg.size}{the size of the points.}
+
+\item{shape}{the shape of the points. Default is 21 corresponding to circles.}
+
+\item{stroke}{numeric. stroke width.}
+
+\item{col_border}{string. a color for the outline of points.}
 }
 \description{
 takes in a data.frane with the columns gene, logFC, pvalue and significant 
 to draw a volcano. Optionally, a column indicating 'color' (string) can be supplied to 
-indicate the volcano color scheme and whether to draw names of specific proteins.
+indicate the volcano color scheme and whether to draw names of specific proteins. See
+details section for plotting aesthetics.
 }
 \examples{
 \dontrun{

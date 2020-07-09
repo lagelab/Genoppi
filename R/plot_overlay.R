@@ -27,6 +27,7 @@
 #' @param label.arrowhead.size The size of the arrowhead. 0 means no arrowhead.
 #' @param legend.nchar.max maximum amount of allowed characters in the legend.
 #' @param nchar.max.collapse what charcter should be used for line break? Default is HTML line break \code{"<br>".}
+#' @param stroke numeric. The width of the outline/borders. 
 #' 
 #' @return a ggplot
 #' 
@@ -68,7 +69,7 @@
 
 plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size = NULL, label.color = 'black', 
                          label.box.padding = 0.30, label.point.padding = 0.50, label.arrowhead.size = 0.01,
-                         legend.nchar.max = NULL, nchar.max.collapse = '<br>') {
+                         legend.nchar.max = NULL, nchar.max.collapse = '<br>', stroke = 0.75) {
   
   # check for allowed input
   if (!inherits(reference, "list")) stop('argumnt reference must be a named list.')
@@ -80,22 +81,24 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   
   # convert reference to a single data.frame and omit non informative columns
   overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x, rm.sig = T)))
-  plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group')]
+  plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group', 'col_border')]
   overlay =  merge(plot.data, validate_reference(overlay, warn = F), by = match)
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
   overlay = append_to_column(overlay, to = 'group', nchar_max = legend.nchar.max, nchar_max_collapse = nchar.max.collapse)
   
-  # reset color scale using the original plot data, the prevvious overlay and the current overlay
+  # reset color scales using the original plot data, the previous overlay and the current overlay
   global_colors = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group')
   global_shapes = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group', marker = 'shape')
+  global_borders = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group', marker = 'col_border')
   p$scales$scales[[1]] <- scale_fill_manual(values = global_colors)
   p$scales$scales[[2]] <- scale_shape_manual(values = global_shapes)
-  
+  p$scales$scales[[3]] <- scale_color_manual(values = global_borders)
+
   # add the overlay to the ggplot
   p1 = p + ggplot2::geom_point(data = overlay, 
                  mapping = aes_string(x=p$mapping$x, y=p$mapping$y, fill = p$mapping$fill, shape = p$mapping$shape),
                  size = overlay$gg.size,
-                 stroke = 0.75,
+                 stroke = stroke,
                  alpha = overlay$opacity) 
   
   # add guides for maintaining legend size

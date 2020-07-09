@@ -7,11 +7,15 @@
 #' @param col_significant color for significant protein interactors.
 #' @param col_other color for other protein interactors.
 #' @param sig_text string. text for significant interactor to be displayed in legend.
+#' @param shape numeric. the shape of the point. Default is 21 (circle).
+#' @param stroke numeric. the stroke width.
+#' @param col_border the color of the borders/outline.
 #' @return a gg scatter plot.
 #' @importFrom ggplot2 ggplot geom_point geom_abline labs theme_minimal
 #' @export
 
-plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(enriched)'){
+plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col_significant = "#41AB5D", col_other = 'grey', 
+                               sig_text = '(enriched)', shape = 21, stroke = 0.2, col_border = NULL){
   
   # check input
   if (!is.numeric(df[,repA])) stop('repA must be a numeric column.')
@@ -22,16 +26,19 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
   if (is.null(df$dataset)) df$dataset = 'proteomic data'
   if (is.null(df$size)) df$size = 7
   if (is.null(df$shape)) df$shape = 21
+  if (is.null(df$col_border)) df$col_border = df$color
+  if (is.null(df$col_border)) df$col_border = unlist(ifelse(is.null(col_border), list(df$color), col_border))
   
   # discriminate between significant and non-significant 
   df = append_to_column(df, sig_text = sig_text, to = 'group')
   global_colors = set_names_by_dataset(list(df), by = 'group')
   global_shapes = set_names_by_dataset(list(df), by = 'group', marker = 'shape')
+  global_borders = set_names_by_dataset(list(df), by = 'group', marker = 'col_border')
   
   # plot singlebasic scatter plot
   correlation = stats::cor(df[,repA], df[,repB])
-  p = ggplot(df, mapping=aes_(x=as.name(repA), y=as.name(repB), fill = as.name("group"), shape = as.name('group'))) + 
-    geom_point(alpha=1, size=size_point, stroke = 0, color = 'black') +
+  p = ggplot(df, mapping=aes_(x=as.name(repA), y=as.name(repB), fill = as.name("group"), shape = as.name('group'), color = as.name('group'))) + 
+    geom_point(alpha=1, size=size_point, stroke = stroke) +
     geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2) +
     labs(title = paste("r =",format(correlation,digits=3))) + 
     xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~log[2]~'[Fold Change]')) +
@@ -41,6 +48,7 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
                             panel.background = element_blank()) +
     scale_fill_manual(values = global_colors) +
     scale_shape_manual(values = global_shapes) +
+    scale_color_manual(values = global_borders)
     theme_classic()
   
   # set parameters for downstream processing

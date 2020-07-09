@@ -15,7 +15,8 @@ plot_overlay(
   label.point.padding = 0.5,
   label.arrowhead.size = 0.01,
   legend.nchar.max = NULL,
-  nchar.max.collapse = "<br>"
+  nchar.max.collapse = "<br>",
+  stroke = 0.75
 )
 }
 \arguments{
@@ -42,6 +43,8 @@ for more details.}
 \item{legend.nchar.max}{maximum amount of allowed characters in the legend.}
 
 \item{nchar.max.collapse}{what charcter should be used for line break? Default is HTML line break \code{"<br>".}}
+
+\item{stroke}{numeric. The width of the outline/borders.}
 }
 \value{
 a ggplot

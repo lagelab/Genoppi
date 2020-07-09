@@ -86,7 +86,7 @@ test_that('ggplot is built correctlty',{
   p = plot_volcano_basic(df)
 
   # check for both manuel shape and fill
-  expect_equal(unlist(lapply(p$scales$scales, function(x) x[['aesthetics']])), c('fill','shape'))
+  expect_equal(unlist(lapply(p$scales$scales, function(x) x[['aesthetics']])), c('fill','shape','colour'))
   
   # build plot
   g = ggplot_build(p)  
