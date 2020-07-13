@@ -12,6 +12,7 @@ plot_scatter_basic(
   col_significant = "#41AB5D",
   col_other = "grey",
   sig_text = "(enriched)",
+  insig_text = "(not enriched)",
   shape = 21,
   stroke = 0.2,
   col_border = NULL
@@ -31,6 +32,8 @@ plot_scatter_basic(
 \item{col_other}{color for other protein interactors.}
 
 \item{sig_text}{string. text for significant interactor to be displayed in legend.}
+
+\item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
 
 \item{shape}{numeric. the shape of the point. Default is 21 (circle).}
 

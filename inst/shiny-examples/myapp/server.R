@@ -2066,7 +2066,6 @@ shinyServer(function(input, output, session){
     p <- p + theme(legend.key.height=unit(0.75, "cm"))
     
     # extract legend from plot
-
     req(p)
     legend = get_gg_legend(p)
     grid.newpage()

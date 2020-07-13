@@ -5,8 +5,9 @@
 #' details section for plotting aesthetics. 
 #' @param df a data.frame with at least columns gene, logFC, pvalue and significant.
 #' @param col_significant the color of significant proteins/rows.
-#' @param sig_text string. text for significant interactor to be displayed in legend.
 #' @param col_other the color of non-significnt proteins/rows.
+#' @param sig_text string. text for significant interactor to be displayed in legend.
+#' @param insig_text string. Text for non-significant interactors to be displayed in legend.
 #' @param gg.size the size of the points. 
 #' @param shape the shape of the points. Default is 21 corresponding to circles.
 #' @param stroke numeric. stroke width.
@@ -31,7 +32,8 @@
 
 
 plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(enriched)', 
-                               gg.size = 3, shape = 21, stroke = 0.2, col_border = NULL){
+                               insig_text = '(not enriched)', gg.size = 3, shape = 21, stroke = 0.2, 
+                               col_border = NULL){
   
   # check input
   stop_invalid_columns(df,'plot_volcano_basic',c('gene','logFC', 'pvalue', 'significant'))
@@ -42,9 +44,9 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   if (is.null(df$size)) df$size = 7
   if (is.null(df$shape)) df$shape = shape
   if (is.null(df$col_border)) df$col_border = unlist(ifelse(is.null(col_border), list(df$color), col_border))
-
+  
   # discriminate between significant and non-significant 
-  df = append_to_column(df, sig_text = sig_text, to = 'group')
+  df = append_to_column(df, sig_text = sig_text, insig_text = insig_text, to = 'group')
   global_colors = set_names_by_dataset(list(df), by = 'group')
   global_shapes = set_names_by_dataset(list(df), by = 'group', marker = 'shape')
   global_borders = set_names_by_dataset(list(df), by = 'group', marker = 'col_border')
@@ -62,6 +64,9 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
     scale_fill_manual(values = global_colors) +
     scale_shape_manual(values = global_shapes) +
     scale_color_manual(values = global_borders)
+  
+  # settings used downstream
+  p$settings <- list(sig_text = sig_text, insig_text = insig_text)
   
   return(p)
 }

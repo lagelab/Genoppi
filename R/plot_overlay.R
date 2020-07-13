@@ -28,6 +28,8 @@
 #' @param legend.nchar.max maximum amount of allowed characters in the legend.
 #' @param nchar.max.collapse what charcter should be used for line break? Default is HTML line break \code{"<br>".}
 #' @param stroke numeric. The width of the outline/borders. 
+#' @param sig_text string. text for enriched interactors to be displayed in legend. 
+#' @param insig_text string. Text for non-enriched interactors to be displayed in legend.
 #' 
 #' @return a ggplot
 #' 
@@ -67,7 +69,8 @@
 #' @export
 
 
-plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size = NULL, label.color = 'black', 
+plot_overlay <- function(p, reference, match = 'gene', sig_text = NULL, insig_text = NULL,
+                         label = NULL, label.size = NULL, label.color = 'black', 
                          label.box.padding = 0.30, label.point.padding = 0.50, label.arrowhead.size = 0.01,
                          legend.nchar.max = NULL, nchar.max.collapse = '<br>', stroke = 0.75) {
   
@@ -84,7 +87,12 @@ plot_overlay <- function(p, reference, match = 'gene', label = NULL, label.size 
   plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group', 'col_border')]
   overlay =  merge(plot.data, validate_reference(overlay, warn = F), by = match)
   overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
-  overlay = append_to_column(overlay, to = 'group', nchar_max = legend.nchar.max, nchar_max_collapse = nchar.max.collapse)
+  overlay = append_to_column(overlay, 
+                             sig_text = ifelse(is.null(sig_text), p$settings$sig_text, sig_text),
+                             insig_text = ifelse(is.null(insig_text), p$settings$insig_text, insig_text),
+                             to = 'group', 
+                             nchar_max = legend.nchar.max, 
+                             nchar_max_collapse = nchar.max.collapse)
   
   # reset color scales using the original plot data, the previous overlay and the current overlay
   global_colors = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group')

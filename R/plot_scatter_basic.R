@@ -7,6 +7,7 @@
 #' @param col_significant color for significant protein interactors.
 #' @param col_other color for other protein interactors.
 #' @param sig_text string. text for significant interactor to be displayed in legend.
+#' @param insig_text string. Text for non-significant interactors to be displayed in legend.
 #' @param shape numeric. the shape of the point. Default is 21 (circle).
 #' @param stroke numeric. the stroke width.
 #' @param col_border the color of the borders/outline.
@@ -15,7 +16,7 @@
 #' @export
 
 plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col_significant = "#41AB5D", col_other = 'grey', 
-                               sig_text = '(enriched)', shape = 21, stroke = 0.2, col_border = NULL){
+                               sig_text = '(enriched)', insig_text = '(not enriched)', shape = 21, stroke = 0.2, col_border = NULL){
   
   # check input
   if (!is.numeric(df[,repA])) stop('repA must be a numeric column.')
@@ -30,7 +31,7 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
   if (is.null(df$col_border)) df$col_border = unlist(ifelse(is.null(col_border), list(df$color), col_border))
   
   # discriminate between significant and non-significant 
-  df = append_to_column(df, sig_text = sig_text, to = 'group')
+  df = append_to_column(df, sig_text = sig_text, insig_text = insig_text, to = 'group')
   global_colors = set_names_by_dataset(list(df), by = 'group')
   global_shapes = set_names_by_dataset(list(df), by = 'group', marker = 'shape')
   global_borders = set_names_by_dataset(list(df), by = 'group', marker = 'col_border')
@@ -53,7 +54,9 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col
   
   # set parameters for downstream processing
   #p$visual = list(volcano=F, x=repA, y=repB)
+  p$settings <- list(sig_text = sig_text, insig_text = insig_text)
   p$correlation = correlation
+  
   return(p)
 }
 

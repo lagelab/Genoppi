@@ -8,6 +8,8 @@ plot_overlay(
   p,
   reference,
   match = "gene",
+  sig_text = NULL,
+  insig_text = NULL,
   label = NULL,
   label.size = NULL,
   label.color = "black",
@@ -26,6 +28,10 @@ plot_overlay(
 the data.frame as the column 'dataset'. Alternatively, the dataset can have a column name dataset.}
 
 \item{match}{by what string should the ggplot and overlay be merged? Default is 'gene'.}
+
+\item{sig_text}{string. text for enriched interactors to be displayed in legend.}
+
+\item{insig_text}{string. Text for non-enriched interactors to be displayed in legend.}
 
 \item{label}{A boolean. This will overwrite the \code{label} column in the reference data.frame.}
 
