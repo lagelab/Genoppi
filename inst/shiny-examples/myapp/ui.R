@@ -82,7 +82,7 @@ body <- dashboardBody(
                                 br(),
                                  column(width = 4, 
                                     box(
-                                     title = tagList(img(src='icon_inweb.png',width='20px'), "InWeb InBiomap"), width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
+                                     title = "InWeb InBiomap", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
                                      fluidRow(
                                        column(12, uiOutput("a_bait_layer"))
                                      ),
@@ -96,7 +96,7 @@ body <- dashboardBody(
                                      )
                                     ),
                                     box(
-                                      title = tagList(shiny::icon('list-alt'), "GWAS catalog"), width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                      title = "GWAS catalog", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
                                         column(12, uiOutput('a_gwas_catalogue_ui'))
                                       ),

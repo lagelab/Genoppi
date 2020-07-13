@@ -2043,7 +2043,6 @@ shinyServer(function(input, output, session){
     return(overlay)
   })
   
-  
   # make the ggplot with legend
   a_pathway_plot_tmp_gg <- reactive({
     data = a_pulldown_significant()
@@ -2067,13 +2066,12 @@ shinyServer(function(input, output, session){
     p <- p + theme(legend.key.height=unit(0.75, "cm"))
     
     # extract legend from plot
+
     req(p)
     legend = get_gg_legend(p)
-    grid.arrange(legend, )
     grid.newpage()
     grid.draw(legend) 
-    
-    
+  
   })
   
   # make the ggplot with legend

@@ -158,8 +158,7 @@ volcano_theme <- function(p, xlims = c(-10, 10), ylims = c(0, 5), x_ticks = 11, 
     
     # pvalue label (note, that this step w/ parse = t, takes a long time.)
     annotate('text', x = 0.5, y = tail(tick_frame_y$ticks, 1)-0.5, 
-              label =  deparse(p$labels$y), angle = 90, parse = T,
-              family = 'Times', vjust=1.5) +
+              label =  deparse(p$labels$y), angle = 90, parse = T, vjust=1.5) +
     
     # setup grid and axis
     theme_minimal() +  
