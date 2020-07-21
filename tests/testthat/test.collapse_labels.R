@@ -1,7 +1,7 @@
 context('collapse_labels')
 
-# read in test data
-df <- read_input("data/test.data.txt", sep="\t")$data
+# read in test data (BCL2 vs. IgG in A375)
+df <- read_input("data/test.data2.txt", sep="\t")$data
 df <- suppressWarnings(calc_mod_ttest(df))
 
 test_that('basic functionality, i.e. columns are collapsed as expeced',{
@@ -17,7 +17,7 @@ test_that('basic functionality, i.e. columns are collapsed as expeced',{
   p2 = suppressWarnings(plot_overlay(p1, inweb, label = F))
   
   # fake overlay
-  myoverlay = list(myoverlay=head(data.frame(inweb$inweb, col_significant = 'brown', col_other = 'brown')))
+  myoverlay = list(myoverlay=data.frame(inweb$inweb[1:20,], col_significant = 'brown', col_other = 'brown'))
   p3 = suppressWarnings(plot_overlay(p2, myoverlay, label = F))
   
   # Expect only two of myoverlay to be present in data
@@ -53,7 +53,7 @@ test_that('NAs in alt label are discarded',{
   p2 = suppressWarnings(plot_overlay(p1, inweb, label = F))
 
   # no alt label result in no change and NAs are removed
-  expect_equal(p2$overlay$dataset, collapse_labels(p2$overlay)$alt_label)
+  expect_equal(as.character(p2$overlay$dataset), collapse_labels(p2$overlay)$alt_label)
   
   
   # manually changing some alt labels

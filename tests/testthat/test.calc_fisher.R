@@ -1,8 +1,8 @@
 context('calc_fisher')
 
-# read in test data
-df <- read_input("data/test.data.txt", sep="\t")$data
-statsDf <- calc_mod_ttest(df)
+# read in test data (BCL2 vs. IgG in A375)
+df <- read_input("data/test.data2.txt", sep="\t")$data
+statsDf <- suppressWarnings(calc_mod_ttest(df))
 sigDf <- id_enriched_proteins(statsDf)
 
 # InWeb df
@@ -18,13 +18,13 @@ test_that('calc_fisher can return correct overlap results',{
 
   # InWeb
   result <- calc_fisher(sigDf,inwebDf,inwebInterDf,"BCL2")
-  expect_equal(format(result[[1]]$pvalue,digits=3),"0.908")
-  expect_true(all(result[[2]][["InWeb"]]$overlap_genes %in% c("LARP1")))
+  expect_equal(format(result[[1]]$pvalue,digits=3),"0.598")
+  expect_true(all(result[[2]][["InWeb"]]$overlap_genes %in% c("BAX","DYNLL1","HNRNPD")))
 
   # gene list
   result <- calc_fisher(sigDf,geneDf,intersectDf,"BCL2")
-  expect_equal(format(result[[1]]$pvalue,digits=3),"0.00513")
-  expect_true(all(result[[2]][["ALS"]]$overlap_genes %in% c("ATXN2","FUS","PFN1","TAF15")))
+  expect_equal(format(result[[1]]$pvalue,digits=3),"0.833")
+  expect_true(all(result[[2]][["ALS"]]$overlap_genes %in% c("ATXN2","MATR3")))
 
 })
 

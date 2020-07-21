@@ -16,17 +16,28 @@
 "accession_gene_table"
 
 
-#' @title InWeb_InBioMap protein-protein interactions
-#' @description A dataset containing published protein-protein interactions for 18,551 genes in InWeb_InBioMap.
-#' @format A hash object with each of 18,551 genes as key and a vector of its InWeb interactors as value
+#' @title InWeb protein-protein interactions
+#' @description A dataset containing published protein-protein interactions for 18,814 human genes in
+#' InWeb_InBioMap (InWeb_IM) or InWeb3.
+#' @format A data frame with 883,356 rows and 4 variables:
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein}
+#'   \item{Gene2}{HGNC gene symbol of second protein}
+#'   \item{Score}{Interaction confidence score}
+#'   \item{Source}{InWeb source version, "InWeb_IM" or "InWeb3"}
+#' }
 #' @family datasets
 #' @docType data
-#' @source InWeb_Combined_Oct2018.Rdata file created by April Kim, modified to add 73 genes as keys.
+#' @source See cited references; InWeb_IM data (2016-9-12 release) downloaded from:
+#' \url{https://inbio-discover.intomics.com/map.html#downloads}
 #' @references
-#' Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to
-#' catalyze genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083
+#' Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to catalyze
+#' genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083
+#'
+#' Lage K, Karlberg EO, Størling ZM, et al. A human phenome-interactome network of protein complexes implicated
+#' in genetic disorders. Nat Biotechnol. 2007;25(3):309-316. doi:10.1038/nbt1295 
 
-"inweb_hash"
+"inweb_table"
 
 
 #' @title 1000 Genomes SNP to HGNC gene symbol mapping

@@ -4,8 +4,8 @@ context('set_names_by_dataset')
 test_that('colors by dataset and inweb',{
   
   # make dataset
-  df <- read_input("data/test.data.txt", sep="\t")$data
-  df <- calc_mod_ttest(df)
+  df <- read_input("data/test.data2.txt", sep="\t")$data
+  df <- suppressWarnings(calc_mod_ttest(df))
   df <- id_enriched_proteins(df)
   df$dataset = 'pulldown'
   
@@ -25,8 +25,8 @@ test_that('colors by dataset and inweb',{
   
   # check function
   global_colors = set_names_by_dataset(list(data, overlay))
-  expect_equal(names(global_colors), c("pulldown (enriched)", "pulldown (not enriched)", "bait (enriched)", "inweb (not enriched)", "inweb (enriched)"))
-  expect_equal(as.vector(global_colors), c("#41AB5D", "grey", "red", "grey", "yellow"))
+  expect_equal(names(global_colors), c("pulldown (enriched)", "pulldown (not enriched)", "bait (enriched)", "inweb (enriched)", "inweb (not enriched)"))
+  expect_equal(as.vector(global_colors), c("#41AB5D", "grey", "red", "yellow", "grey"))
   
   # check errors
   expect_error(set_names_by_dataset(data, overlay))

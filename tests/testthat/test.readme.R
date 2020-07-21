@@ -1,18 +1,16 @@
 context('README')
 
-
-
 test_that('Readme data can be run',{
   
   
   ### Visualizing changes in protein abundance
   
   # processed IP-MS/MS data BCL2 vs IgG control in GPiNs
-  data("example_data")
+  data("example_data2")
   
   # calculate what proteins are enriched in bait (BCL2) compared 
   # to control using a false discovery rate of 0.1
-  df_stat <- calc_mod_ttest(example_data)
+  df_stat <- calc_mod_ttest(example_data2)
   df_sig <- id_enriched_proteins(df_stat, fdr_cutoff = 0.1, logfc_dir = 'positive')
     
   # visualize enrichment
@@ -95,14 +93,14 @@ if (F){
   library(genoppi)
   
   
-  data("example_data")
+  data("example_data2")
   
   
   ### ------------------------------------------------------------------
   ### (1) Basic analyses
   
   # perform moderated t-test
-  stats_df <- calc_mod_ttest(example_data)
+  stats_df <- calc_mod_ttest(example_data2)
   
   # identify enriched proteins
   sig_df <- id_enriched_proteins(stats_df)
@@ -118,7 +116,7 @@ if (F){
   print(bait_scatter)
   
   # NOTE: the piping (%>%) command can be used to streamline steps, e.g.: 
-  example_data %>%
+  example_data2 %>%
     calc_mod_ttest() %>%
     id_enriched_proteins() %>%
     plot_volcano_basic() %>%

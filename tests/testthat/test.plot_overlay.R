@@ -6,10 +6,8 @@ source('functions/compare_image.R')
 func = 'plot_overlay'
 
 # read in test data
-df <- read_input("data/test.data.txt", sep="\t")$data
-df <- calc_mod_ttest(df)
-
-
+df <- read_input("data/test.data2.txt", sep="\t")$data
+df <- suppressWarnings(calc_mod_ttest(df))
 
 
 test_that('simple overlay of a bait',{
@@ -116,8 +114,8 @@ test_that('invalid columns in overlay gives warning and errors',{
 test_that('ggplot shapes are correctly translated to plotly symbols',{
   
   # read data
-  df <- read_input("data/test.data.txt", sep="\t")$data
-  df <- calc_mod_ttest(df)
+  df <- read_input("data/test.data2.txt", sep="\t")$data
+  df <- suppressWarnings(calc_mod_ttest(df))
   
   # setup basic test
   id = 'D1'

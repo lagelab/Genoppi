@@ -1,16 +1,14 @@
 context('make_interactive')
 
-data("example_data")
+data("example_data2")
 
 # perform moderated t-test
-stats_df <- suppressWarnings(calc_mod_ttest(example_data))
+stats_df <- suppressWarnings(calc_mod_ttest(example_data2))
 
 # identify enriched proteins
 sig_df <- id_enriched_proteins(stats_df)
 
 test_that('basic test to see if function works',{
-  
-
   
   # generate volcano plot with bait protein labeled
   basic_volcano <- plot_volcano_basic(sig_df)
@@ -21,7 +19,7 @@ test_that('basic test to see if function works',{
     add_plotly_layout_volcano(width = NULL, height = NULL)
   expect_true(!is.null(result))
   
-  # look at nnotations
+  # look at annotations
   m = result$x$layoutAttrs[[1]]$annotations
   expect_equal(quo_name(m$x),'logFC')
   expect_equal(quo_name(m$y),'-log10(pvalue)')
@@ -76,10 +74,7 @@ test_that('plot_overlay arguments are translates to plotly',{
     volcano_theme(ylims = c(0, 4)) %>%
     make_interactive()
   
-  expect_equal(length(volcano$x$layoutAttrs[[1]]$annotations$text), 34)
-  
+  expect_equal(length(volcano$x$layoutAttrs[[1]]$annotations$text), 12)  
   
 })
-
-
 

@@ -4,14 +4,23 @@
 \alias{get_inweb_list}
 \title{Retrieve InWeb data for a given bait}
 \usage{
-get_inweb_list(bait)
+get_inweb_list(bait, type = "all")
 }
 \arguments{
 \item{bait}{name of bait protein}
+
+\item{type}{string ("all","hc","gs") indicating types of interactors to return (all, high-confidence, or gold-standard)}
 }
 \value{
-data.frame containing gene and significant columns for all InWeb genes (significant=T for InWeb interactors of bait). NULL if bait not found in InWeb.
+data.frame containing gene and significant columns for all non-bait InWeb genes (significant=T for InWeb interactors of bait). NULL if bait not found in InWeb.
 }
 \description{
-Use inweb_hash data to get InWeb interactors and non-interactors of bait.
+Use inweb_table data to get InWeb interactors and non-interactors of bait.
+}
+\examples{
+\dontrun{
+df1 <- get_inweb_list('BCL2',type='all')
+df2 <- get_inweb_list('BCL2',type='hc')
+df3 <- get_inweb_list('BCL2',type='gs')
+}
 }
