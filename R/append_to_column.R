@@ -14,7 +14,7 @@
 #' This function appends the dataset column with a significance text. 
 #' @export
 
-append_to_column <- function(data, sig_text = '(enriched)', insig_text = '(not enriched)', from = 'dataset', to = 'dataset', 
+append_to_column <- function(data, sig_text = '(significant)', insig_text = '(not significant)', from = 'dataset', to = 'dataset', 
                              nchar_max = NULL, nchar_max_collapse = '<br>'){
   
   # check input

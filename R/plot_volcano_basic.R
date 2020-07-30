@@ -31,8 +31,8 @@
 #' @importFrom ggplot2 ggplot geom_point geom_hline geom_vline xlab ylab theme aes_ aes aes_string geom_text
 
 
-plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(enriched)', 
-                               insig_text = '(not enriched)', gg.size = 3, shape = 21, stroke = 0.2, 
+plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(significant)', 
+                               insig_text = '(not significant)', gg.size = 3, shape = 21, stroke = 0.2, 
                                col_border = NULL){
   
   # check input

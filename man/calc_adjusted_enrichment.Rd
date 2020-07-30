@@ -9,7 +9,8 @@ calc_adjusted_enrichment(
   reference,
   col.by = "tissue",
   bait = NULL,
-  p.adj.method = "fdr"
+  p.adj.method = "fdr",
+  intersectN = T
 )
 }
 \arguments{
@@ -22,9 +23,13 @@ calc_adjusted_enrichment(
 \item{bait}{bait. String. Passed to \code{?calc_hyper}.}
 
 \item{p.adj.method}{Default is fdr. See p.adjust.methods in \code{?stats::p.adjust}.}
+
+\item{intersectN}{Boolean indicating if the total population should be the intersect
+of the two datasets, when calculating hypergeometric overlap.}
 }
 \description{
-calculate benjamin-hochberg adjusted enrichment of genes in tissue.
+calculate hypergeometric enrichment of genes in tissue and 
+subsequent adjusting for multiple testing.
 }
 \examples{
 \dontrun{

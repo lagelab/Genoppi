@@ -16,7 +16,7 @@
 #' @export
 
 plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_point = 3, col_significant = "#41AB5D", col_other = 'grey', 
-                               sig_text = '(enriched)', insig_text = '(not enriched)', shape = 21, stroke = 0.2, col_border = NULL){
+                               sig_text = '(significant)', insig_text = '(not significant)', shape = 21, stroke = 0.2, col_border = NULL){
   
   # check input
   if (!is.numeric(df[,repA])) stop('repA must be a numeric column.')

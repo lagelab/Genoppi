@@ -11,8 +11,8 @@ plot_scatter_basic(
   size_point = 3,
   col_significant = "#41AB5D",
   col_other = "grey",
-  sig_text = "(enriched)",
-  insig_text = "(not enriched)",
+  sig_text = "(significant)",
+  insig_text = "(not significant)",
   shape = 21,
   stroke = 0.2,
   col_border = NULL

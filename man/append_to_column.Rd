@@ -6,8 +6,8 @@
 \usage{
 append_to_column(
   data,
-  sig_text = "(enriched)",
-  insig_text = "(not enriched)",
+  sig_text = "(significant)",
+  insig_text = "(not significant)",
   from = "dataset",
   to = "dataset",
   nchar_max = NULL,
