@@ -9,29 +9,53 @@ modified from https://stackoverflow.com/questions/17753101/center-x-and-y-axis-w
 \usage{
 volcano_theme(
   p,
-  xlims = c(-10, 10),
-  ylims = c(0, 5),
-  x_ticks = 11,
-  y_ticks = 11,
-  grid_width = 1
+  tick_sz_x = -0.15,
+  tick_sz_y = NULL,
+  normalize_tick_sz = T,
+  axes_width = 0.5,
+  ticks_width = 0.7,
+  ticks_labs_cex = 4,
+  ticks_labs_x_vjust = 2,
+  ticks_labs_y_hjust = 2,
+  xlab_vjust = 0.6,
+  xlab_hjust = 0.38,
+  ylab_vjust = 1.5,
+  ylab_hjust = 0,
+  font_family = "Helvetica"
 )
 }
 \arguments{
 \item{p}{the ggplot to be converted}
 
-\item{xlims}{vector. the lower and upper bound of x-axis.}
+\item{tick_sz_x}{Tick-size.}
 
-\item{ylims}{vector. the lower and upper bound of y-axis.}
+\item{tick_sz_y}{tick size.}
 
-\item{x_ticks}{total ticks on x-axis.}
+\item{normalize_tick_sz}{Boolean. If TRUE, the tick_sz_y will be normalized according to argument tick_sz_x.}
 
-\item{y_ticks}{total ticks on y-axis.}
+\item{axes_width}{the width of the x and y-axis.}
 
-\item{grid_width}{the width of the grid.}
+\item{ticks_width}{the width of the ticks.}
+
+\item{ticks_labs_cex}{the character expansion factor of tick labels.}
+
+\item{ticks_labs_x_vjust}{Vertical adjustment of tick labels on x axis.}
+
+\item{ticks_labs_y_hjust}{Horizontal adjustment of tick labels on y axis.}
+
+\item{xlab_vjust}{Vertical adjustment on label on x-axis.}
+
+\item{xlab_hjust}{Horizontal adjustment on label on x-axis.}
+
+\item{ylab_vjust}{Vertical adjustment on label on y-axis.}
+
+\item{ylab_hjust}{Horizontal adjustment on label on y-axis.}
+
+\item{font_family}{string for the font family.}
 }
 \description{
-Setups a volcano theme, with a yaxis at x=0, and a grid. Note, 
-that the user will have to adjust the limits of x and y axis.
+Setups a volcano theme using limits from ggplot. The user will have to manually specify aesthetics, such
+as axis widths, tick sizes etc.
 }
 \note{
 gridlines can be entirely removed by subsequently calling \code{theme_void()}.

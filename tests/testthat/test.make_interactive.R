@@ -51,7 +51,7 @@ test_that('plot_overlay arguments are translates to plotly',{
     plot_volcano_basic() %>%
     plot_overlay(as.bait('BCL2')) %>%
     plot_overlay(inweb, label = F) %>%
-    volcano_theme(ylims = c(0, 4)) %>%
+    volcano_theme() %>%
     make_interactive()
   
   expect_equal(as.character(volcano$x$layoutAttrs[[1]]$annotations$text), 'BCL2')
@@ -61,7 +61,7 @@ test_that('plot_overlay arguments are translates to plotly',{
     plot_volcano_basic() %>%
     plot_overlay(as.bait('BCL2'), label = F) %>%
     plot_overlay(inweb, label = F) %>%
-    volcano_theme(ylims = c(0, 4)) %>%
+    volcano_theme() %>%
     make_interactive()
   
   expect_true(identical(as.character(volcano$x$layoutAttrs[[1]]$annotations$text), character(0)))
@@ -71,7 +71,7 @@ test_that('plot_overlay arguments are translates to plotly',{
     plot_volcano_basic() %>%
     plot_overlay(as.bait('BCL2'), label = F) %>%
     plot_overlay(inweb) %>%
-    volcano_theme(ylims = c(0, 4)) %>%
+    volcano_theme() %>%
     make_interactive()
   
   expect_equal(length(volcano$x$layoutAttrs[[1]]$annotations$text), 12)  

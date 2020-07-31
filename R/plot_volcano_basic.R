@@ -12,6 +12,7 @@
 #' @param shape the shape of the points. Default is 21 corresponding to circles.
 #' @param stroke numeric. stroke width.
 #' @param col_border string. a color for the outline of points.
+#' @param plot_segments plot volcano plot segments, i.e. two lines with x and y axis intercept.
 #' @examples 
 #' \dontrun{
 #' 
@@ -33,7 +34,7 @@
 
 plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(significant)', 
                                insig_text = '(not significant)', gg.size = 3, shape = 21, stroke = 0.2, 
-                               col_border = NULL){
+                               col_border = NULL, plot_segments = T){
   
   # check input
   stop_invalid_columns(df,'plot_volcano_basic',c('gene','logFC', 'pvalue', 'significant'))
@@ -53,11 +54,17 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   
   # setup plotting  
   p <- ggplot(df, aes(x = logFC, y = -log10(pvalue), fill = group, shape = group, color = group)) +
-    geom_point(alpha=1, size=gg.size, stroke = stroke) + 
-    geom_hline(yintercept=0, color="black") + 
-    geom_vline(xintercept=0, color="black") +
-    xlab(bquote(log[2]*"[fold change]")) + 
-    ylab(bquote(-log[10]*"["*italic(.("P"))*"-value]")) + 
+    geom_point(alpha=1, size=gg.size, stroke = stroke) 
+    
+  if (plot_segments){
+    p <- p  +
+      geom_hline(yintercept=0, color="black") + 
+      geom_vline(xintercept=0, color="black")
+  }
+
+  # setup aesthetics
+  p <- p + xlab(bquote(log[2]*"(Fold change)")) + 
+    ylab(bquote(-log[10]*"("*italic(.("P"))*"-value)")) + 
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           panel.background = element_blank()) +

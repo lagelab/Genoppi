@@ -13,7 +13,8 @@ plot_volcano_basic(
   gg.size = 3,
   shape = 21,
   stroke = 0.2,
-  col_border = NULL
+  col_border = NULL,
+  plot_segments = T
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ plot_volcano_basic(
 \item{stroke}{numeric. stroke width.}
 
 \item{col_border}{string. a color for the outline of points.}
+
+\item{plot_segments}{plot volcano plot segments, i.e. two lines with x and y axis intercept.}
 }
 \description{
 takes in a data.frane with the columns gene, logFC, pvalue and significant 

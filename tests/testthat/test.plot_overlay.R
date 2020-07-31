@@ -1,7 +1,7 @@
 context('plot_overlay')
 
 # for comparing images
-library(png)
+#library(png)
 source('functions/compare_image.R')
 func = 'plot_overlay'
 

@@ -83,7 +83,7 @@ launch_genoppi()
     plot_volcano_basic() %>%
     plot_overlay(as.bait('BCL2')) %>%
     plot_overlay(inweb_list, label = F) %>%
-    volcano_theme(ylims = c(0, 4)) %>%
+    volcano_theme() %>%
     make_interactive()
   
   # assess overlap b/w enriched proteins and InWeb interactors
