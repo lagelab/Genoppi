@@ -35,7 +35,7 @@ test_that('aesthethic themes work',{
   # scatter
   basic_scatter <- plot_scatter_basic(sig_df)
   bait_scatter <- plot_overlay(basic_scatter,as.bait('BCL2'))
-  bait_scatter_theme <- scatter_theme(bait_scatter, axis_begin = -10, axis_end = 10)
+  bait_scatter_theme <- scatter_theme(bait_scatter)
   expect_true(!is.null(bait_volcano_theme))
   
 })

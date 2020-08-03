@@ -31,6 +31,7 @@ constructs a bar chart using ggplot to plot tissue enrichment.
 }
 \seealso{
 Other ggplot: 
+\code{\link{scatter_theme_old}()},
 \code{\link{scatter_theme}()},
 \code{\link{theme_genoppi_bar}()},
 \code{\link{theme_genoppi}()},

@@ -3,9 +3,6 @@
 \name{volcano_theme}
 \alias{volcano_theme}
 \title{volcano theme}
-\source{
-modified from https://stackoverflow.com/questions/17753101/center-x-and-y-axis-with-ggplot2
-}
 \usage{
 volcano_theme(
   p,
@@ -54,15 +51,13 @@ volcano_theme(
 \item{font_family}{string for the font family.}
 }
 \description{
-Setups a volcano theme using limits from ggplot. The user will have to manually specify aesthetics, such
+Setups a scatter cross theme using limits from ggplot. The user will have to manually specify aesthetics, such
 as axis widths, tick sizes etc.
-}
-\note{
-gridlines can be entirely removed by subsequently calling \code{theme_void()}.
 }
 \seealso{
 Other ggplot: 
 \code{\link{plot_tissue_enrichment}()},
+\code{\link{scatter_theme_old}()},
 \code{\link{scatter_theme}()},
 \code{\link{theme_genoppi_bar}()},
 \code{\link{theme_genoppi}()}
