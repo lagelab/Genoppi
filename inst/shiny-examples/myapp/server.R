@@ -2018,7 +2018,8 @@ shinyServer(function(input, output, session){
       overlay$alt_label = overlay$pathway
       overlay$size = overlay$Freq/max(a_pathway_mapping_values()$Freq)
       overlay$size = 9+exp(3*overlay$size)
-      overlay$gg.size = overlay$size/2
+      overlay$gg.size = overlay$size/2 # deprectated name
+      overlay$size_gg = overlay$size/2
       overlay$col_significant = overlay$color
       overlay$col_other = overlay$color
       overlay$symbol = 'square'
@@ -2050,7 +2051,7 @@ shinyServer(function(input, output, session){
     p <- a_vp_gg()
     if (sum(data$significant) > 0){
       if (nrow(a_pathway_mapping_subset()) > 0) {
-        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)
+        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
       }
     }
     return(p)
@@ -2062,7 +2063,7 @@ shinyServer(function(input, output, session){
     
     # generate ggplot with \n 
     p <- a_vp_gg()
-    p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend, nchar.max.collapse = '\n')
+    p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend, nchar_max_collapse = '\n')
     p <- p + theme(legend.key.height=unit(0.75, "cm"))
     
     # extract legend from plot
@@ -2080,7 +2081,7 @@ shinyServer(function(input, output, session){
     p <- a_vp_gg()
     if (sum(data$significant) > 0){
       if (nrow(a_pathway_mapping_subset()) > 0) {
-        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend.nchar.max = max.nchar.legend)
+        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
       }
     }
     return(p)

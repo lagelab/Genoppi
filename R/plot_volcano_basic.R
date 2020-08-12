@@ -8,7 +8,7 @@
 #' @param col_other the color of non-significnt proteins/rows.
 #' @param sig_text string. text for significant interactor to be displayed in legend.
 #' @param insig_text string. Text for non-significant interactors to be displayed in legend.
-#' @param gg.size the size of the points. 
+#' @param size_gg the size of the points. 
 #' @param shape the shape of the points. Default is 21 corresponding to circles.
 #' @param stroke numeric. stroke width.
 #' @param col_border string. a color for the outline of points.
@@ -33,7 +33,7 @@
 
 
 plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(significant)', 
-                               insig_text = '(not significant)', gg.size = 3, shape = 21, stroke = 0.2, 
+                               insig_text = '(not significant)', size_gg = 3, shape = 21, stroke = 0.2, 
                                col_border = NULL, plot_segments = T){
   
   # check input
@@ -43,6 +43,7 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   df$color <- ifelse(df$significant, col_significant, col_other)
   if (is.null(df$dataset)) df$dataset = 'proteomic data'
   if (is.null(df$size)) df$size = 7
+  if (is.null(df$size_gg)) df$size_gg = size_gg
   if (is.null(df$shape)) df$shape = shape
   if (is.null(df$col_border)) df$col_border = unlist(ifelse(is.null(col_border), list(df$color), col_border))
   
@@ -54,7 +55,7 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   
   # setup plotting  
   p <- ggplot(df, aes(x = logFC, y = -log10(pvalue), fill = group, shape = group, color = group)) +
-    geom_point(alpha=1, size=gg.size, stroke = stroke) 
+    geom_point(alpha=1, size=size_gg, stroke = stroke) 
     
   if (plot_segments){
     p <- p  +

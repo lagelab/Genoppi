@@ -10,7 +10,7 @@ plot_volcano_basic(
   col_other = "grey",
   sig_text = "(significant)",
   insig_text = "(not significant)",
-  gg.size = 3,
+  size_gg = 3,
   shape = 21,
   stroke = 0.2,
   col_border = NULL,
@@ -28,7 +28,7 @@ plot_volcano_basic(
 
 \item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
 
-\item{gg.size}{the size of the points.}
+\item{size_gg}{the size of the points.}
 
 \item{shape}{the shape of the points. Default is 21 corresponding to circles.}
 

@@ -121,6 +121,10 @@ scatter_theme_old <- function(p, axis_begin, axis_end, total_ticks = 11, grid_wi
 #' @param ylab_vjust Vertical adjustment on label on y-axis.
 #' @param ylab_hjust Horizontal adjustment on label on y-axis.
 #' @param font_family string for the font family.
+#' @param grid_lines Boolean. Draw grid lines?
+#' @param xlab String. alternative x label.
+#' @param ylab String. alternative y label.
+#' 
 #' 
 #' @family ggplot
 #' @export
@@ -129,8 +133,8 @@ volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
                           axes_width = 0.50, ticks_width = 0.70, ticks_labs_cex = 4, 
                           ticks_labs_x_vjust = 2, ticks_labs_y_hjust = 2,
                           xlab_vjust = 0.60, xlab_hjust = 0.38, ylab_vjust = 1.5, ylab_hjust = 0,
-                          font_family = 'Helvetica'){
-
+                          font_family = 'Helvetica', grid_lines = F, xlab = NULL, ylab = NULL){
+  
   # get axis limits
   ggbuild <- ggplot_build(p)
   xlims <- ggbuild$layout$panel_params[[1]]$x.range
@@ -200,12 +204,12 @@ volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
     
     # axis labels
     annotate('text', x = 0.5, y = tail(tick_frame_y$ticks, 1)-0.5, 
-            label =  deparse(p$labels$y), angle = 90, parse = T, 
+            label =  ifelse(is.null(ylab), deparse(p$labels$y), ylab), angle = 90, parse = T, 
             vjust= ylab_vjust, hjust = ylab_hjust,
             family = font_family) +
     
     annotate('text', x = 0, y = -0.3, 
-             label =  deparse(p$labels$x), parse = T, 
+             label =  ifelse(is.null(xlab) ,deparse(p$labels$x), xlab), parse = T, 
              vjust = xlab_vjust, hjust = xlab_hjust,
              family = font_family)
   
@@ -218,7 +222,12 @@ volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
           axis.ticks.y=element_blank(),
           axis.title.y = element_blank())
     
-          
+    if (grid_lines == F){
+      plt = plt + theme(panel.grid.major = element_blank(), 
+                        panel.grid.minor = element_blank(),
+                        panel.background = element_blank())  
+        
+    }    
     #panel.grid.major = element_line(size = (0.25)),
     #panel.grid.minor = element_line(size = (0.25))) +
     #scale_y_continuous(minor_breaks = seq(ylims[1], ylims[2], grid_width/2), breaks = seq(ylims[1], ylims[2], grid_width)) +
@@ -246,6 +255,7 @@ volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
 #' @param ylab_vjust Vertical adjustment on label on y-axis.
 #' @param ylab_hjust Horizontal adjustment on label on y-axis.
 #' @param font_family string for the font family.
+#' @param grid_lines Boolean. Draw grid lines?
 #' 
 #' @note gridlines can be entirely removed by subsequently calling \code{theme_void()}.
 #' 
@@ -258,7 +268,7 @@ scatter_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
                           axes_width = 0.50, ticks_width = 0.70, ticks_labs_cex = 4, 
                           ticks_labs_x_vjust = 2, ticks_labs_y_hjust = 2,
                           xlab_vjust = 0.60, xlab_hjust = 0.38, ylab_vjust = 1.5, ylab_hjust = 0,
-                          font_family = 'Helvetica'){
+                          font_family = 'Helvetica', grid_lines = F){
   
   # get axis limits
   ggbuild <- ggplot_build(p)
@@ -325,6 +335,12 @@ scatter_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
           axis.ticks.y=element_blank())
           #axis.title.y = element_blank())
   
+  if (grid_lines == F){
+    plt = plt + theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      panel.background = element_blank())  
+    
+  }    
   
   #panel.grid.major = element_line(size = (0.25)),
   #panel.grid.minor = element_line(size = (0.25))) +

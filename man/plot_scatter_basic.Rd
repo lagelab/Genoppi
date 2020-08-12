@@ -8,7 +8,7 @@ plot_scatter_basic(
   df,
   repA = "rep1",
   repB = "rep2",
-  size_point = 3,
+  size_gg = 3,
   col_significant = "#41AB5D",
   col_other = "grey",
   sig_text = "(significant)",
@@ -25,7 +25,7 @@ plot_scatter_basic(
 
 \item{repB}{string that is column in df.}
 
-\item{size_point}{size of point.}
+\item{size_gg}{size of point.}
 
 \item{col_significant}{color for significant protein interactors.}
 

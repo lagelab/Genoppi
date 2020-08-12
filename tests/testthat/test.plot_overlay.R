@@ -146,3 +146,18 @@ test_that('ggplot shapes are correctly translated to plotly symbols',{
   expect_true(all(as.vector(built2$x$attrs[[2]]$symbols) == c("circle", "circle", "square", "diamond", "diamond")))
   
 })
+
+
+test_that('ggplot sizes are correctly inherited',{
+  
+  #df = id_enriched_proteins(df)
+  
+  df <- read_input("data/test.data2.txt", sep="\t")$data
+  df <- suppressWarnings(calc_mod_ttest(df))
+  df <- id_enriched_proteins(df)
+  p = plot_volcano_basic(df, size_gg = 4, plot_segments = F) %>%
+    plot_overlay(as.bait('BCL2'), size_gg = 4.5, stroke = 1, label_size = 10, label_box_padding = 0.3) %>%
+    volcano_theme()
+  
+})
+  

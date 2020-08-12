@@ -42,7 +42,7 @@ test_that('plot without any overlay can be made interactive',{
   
 })
 
-test_that('plot_overlay arguments are translates to plotly',{
+test_that('plot_overlay arguments are translated to plotly',{
 
   inweb = list(inweb = get_inweb_list('BCL2'))
   

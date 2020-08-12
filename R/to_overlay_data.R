@@ -28,7 +28,8 @@ to_overlay_data <- function(df, dataset=NULL, rm.sig = F) {
   if ('pLI' %nin% cnames) df$pLI <- NA
   if ('shape' %nin% cnames) df$shape <- 21
   if ('opacity' %nin% cnames) df$opacity <- 1
-  if ('gg.size' %nin% cnames) df$gg.size <- 3.5
+  #if ('gg.size' %nin% cnames) df$gg.size <- 3.5 # deprecated
+  if ('size_gg' %nin% cnames) df$size_gg <- 3.5
   if ('gene' %nin% cnames) df$gene <- NA
   if ('size' %nin% cnames) df$size <- 9
   if ('legend_order' %nin% cnames) df$legend_order <- NA 

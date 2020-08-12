@@ -6,7 +6,7 @@
 \usage{
 plot_scatter_basic_all(
   df,
-  size_point = 3,
+  size_gg = 3,
   col_significant = "#41AB5D",
   col_other = "grey"
 )
@@ -14,7 +14,7 @@ plot_scatter_basic_all(
 \arguments{
 \item{df}{A data.frame containing at least gene, significant, replicate/triplicate columns.}
 
-\item{size_point}{size of point.}
+\item{size_gg}{size of point.}
 
 \item{col_significant}{color for significant protein interactors.}
 

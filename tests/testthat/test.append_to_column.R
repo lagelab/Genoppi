@@ -29,7 +29,7 @@ test_that('nchar_max is specified and mapping constraitns are violated',{
   
   # unambigious mappoing is not working
   overlay = get_geneset_overlay(df, database = 'bp')
-  df1 = df %>% plot_volcano_basic() %>% plot_overlay(overlay, legend.nchar.max = 50) %>% make_interactive()
+  df1 = df %>% plot_volcano_basic() %>% plot_overlay(overlay, legend_nchar_max = 50) %>% make_interactive()
   expect_true(!is.null(df1))
   
 })

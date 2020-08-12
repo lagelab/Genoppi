@@ -8,17 +8,18 @@ plot_overlay(
   p,
   reference,
   match = "gene",
+  size_gg = 3.5,
+  stroke = 0.75,
   sig_text = NULL,
   insig_text = NULL,
   label = NULL,
-  label.size = NULL,
-  label.color = "black",
-  label.box.padding = 0.3,
-  label.point.padding = 0.5,
-  label.arrowhead.size = 0.01,
-  legend.nchar.max = NULL,
-  nchar.max.collapse = "<br>",
-  stroke = 0.75
+  label_size = NULL,
+  label_color = "black",
+  label_box_padding = 0.3,
+  label_point_padding = 0.5,
+  label_arrowhead_size = 0.01,
+  legend_nchar_max = NULL,
+  nchar_max_collapse = "<br>"
 )
 }
 \arguments{
@@ -29,28 +30,30 @@ the data.frame as the column 'dataset'. Alternatively, the dataset can have a co
 
 \item{match}{by what string should the ggplot and overlay be merged? Default is 'gene'.}
 
+\item{size_gg}{size of ggplot points.}
+
+\item{stroke}{numeric. The width of the outline/borders.}
+
 \item{sig_text}{string. text for enriched interactors to be displayed in legend.}
 
 \item{insig_text}{string. Text for non-enriched interactors to be displayed in legend.}
 
 \item{label}{A boolean. This will overwrite the \code{label} column in the reference data.frame.}
 
-\item{label.size}{numeric. Size of label. This will overwrite the \code{label.size} column in the reference data.frame.}
+\item{label_size}{numeric. Size of label. This will overwrite the \code{label.size} column in the reference data.frame.}
 
-\item{label.color}{the color of the label. Default is black.}
+\item{label_color}{the color of the label. Default is black.}
 
-\item{label.box.padding}{Amount of padding around bounding box. See \code{?ggrepel::geom_text_repel} 
+\item{label_box_padding}{Amount of padding around bounding box. See \code{?ggrepel::geom_text_repel} 
 for more details.}
 
-\item{label.point.padding}{Amount of padding around label. See \code{?ggrepel::geom_text_repel}.}
+\item{label_point_padding}{Amount of padding around label. See \code{?ggrepel::geom_text_repel}.}
 
-\item{label.arrowhead.size}{The size of the arrowhead. 0 means no arrowhead.}
+\item{label_arrowhead_size}{The size of the arrowhead. 0 means no arrowhead.}
 
-\item{legend.nchar.max}{maximum amount of allowed characters in the legend.}
+\item{legend_nchar_max}{maximum amount of allowed characters in the legend.}
 
-\item{nchar.max.collapse}{what charcter should be used for line break? Default is HTML line break \code{"<br>".}}
-
-\item{stroke}{numeric. The width of the outline/borders.}
+\item{nchar_max_collapse}{what charcter should be used for line break? Default is HTML line break \code{"<br>".}}
 }
 \value{
 a ggplot

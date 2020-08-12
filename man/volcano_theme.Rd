@@ -18,7 +18,10 @@ volcano_theme(
   xlab_hjust = 0.38,
   ylab_vjust = 1.5,
   ylab_hjust = 0,
-  font_family = "Helvetica"
+  font_family = "Helvetica",
+  grid_lines = F,
+  xlab = NULL,
+  ylab = NULL
 )
 }
 \arguments{
@@ -49,6 +52,12 @@ volcano_theme(
 \item{ylab_hjust}{Horizontal adjustment on label on y-axis.}
 
 \item{font_family}{string for the font family.}
+
+\item{grid_lines}{Boolean. Draw grid lines?}
+
+\item{xlab}{String. alternative x label.}
+
+\item{ylab}{String. alternative y label.}
 }
 \description{
 Setups a scatter cross theme using limits from ggplot. The user will have to manually specify aesthetics, such
