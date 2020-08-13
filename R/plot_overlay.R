@@ -75,27 +75,13 @@ plot_overlay <- function(p, reference, match = 'gene', size_gg = 3.5, stroke = 0
                          label_box_padding = 0.30, label_point_padding = 0.50, label_arrowhead_size = 0.01,
                          legend_nchar_max = NULL, nchar_max_collapse = '<br>') {
   
-  # check for allowed input
-  if (!inherits(reference, "list")) stop('argumnt reference must be a named list.')
+
+  # collapse references to a single data.frame and omit non informative columns, this
+  # function does all the hard work, by ensuring that information from the plot is being inherited.
+  overlay = get_overlay_df(p, reference, match, sig_text, insig_text, legend_nchar_max, nchar_max_collapse)
   
-  # only allow overlay significant references
-  if (!is.null(reference$significant)){
-    df <- df[df$significant, ]
-  }
-  
-  # convert reference to a single data.frame and omit non informative columns
-  overlay = do.call(rbind, lapply(names(reference), function(x) to_overlay_data(reference[[x]], x, rm.sig = T)))
-  plot.data = p$plot_env$df[,colnames(p$plot_env$df) %nin% c('dataset','color', 'size', 'shape', 'group', 'col_border')]
-  overlay =  merge(plot.data, validate_reference(overlay, warn = F), by = match)
-  overlay$color = ifelse(overlay$significant, as.character(overlay$col_significant), as.character(overlay$col_other))
-  overlay = append_to_column(overlay, 
-                             sig_text = ifelse(is.null(sig_text), p$settings$sig_text, sig_text),
-                             insig_text = ifelse(is.null(insig_text), p$settings$insig_text, insig_text),
-                             to = 'group', 
-                             nchar_max = legend_nchar_max, 
-                             nchar_max_collapse = nchar_max_collapse)
-  
-  # reset color scales using the original plot data, the previous overlay and the current overlay
+  # reset color scales using the original plot data, the previous overlay and the current overlay. This
+  # is needed since we need to dynamincally add colors, shapes, borders.
   global_colors = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group')
   global_shapes = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group', marker = 'shape')
   global_borders = set_names_by_dataset(null_omit(list(p$data, overlay, p$overlay)), by = 'group', marker = 'col_border')
@@ -105,7 +91,10 @@ plot_overlay <- function(p, reference, match = 'gene', size_gg = 3.5, stroke = 0
   
   # add the overlay to the ggplot
   p1 = p + ggplot2::geom_point(data = overlay, 
-                 mapping = aes_string(x=p$mapping$x, y=p$mapping$y, fill = p$mapping$fill, shape = p$mapping$shape),
+                 mapping = aes_string(x=p$mapping$x, 
+                                      y=p$mapping$y, 
+                                      fill = p$mapping$fill, 
+                                      shape = p$mapping$shape),
                  size = ifelse(is.null(size_gg), overlay$size_gg, size_gg), # gg.size
                  stroke = stroke,
                  alpha = overlay$opacity) 

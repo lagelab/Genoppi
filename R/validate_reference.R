@@ -26,7 +26,6 @@ validate_reference <- function(df, warn = T, valid = c('gene',
                                              'opacity', 
                                              'size', 
                                              'size_gg',
-                                             'gg.size', # deprecated
                                              'legend_order')){
   
   bool = colnames(df) %in% valid
