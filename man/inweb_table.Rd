@@ -26,7 +26,7 @@ InWeb_InBioMap (InWeb_IM) or InWeb3.
 }
 \references{
 Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to catalyze
-genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083
+genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083  
 
 Lage K, Karlberg EO, Størling ZM, et al. A human phenome-interactome network of protein complexes implicated
 in genetic disorders. Nat Biotechnol. 2007;25(3):309-316. doi:10.1038/nbt1295

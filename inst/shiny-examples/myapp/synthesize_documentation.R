@@ -5,13 +5,21 @@ library(shiny)
 data.files = tools::file_path_sans_ext(list.files('data/', full.names = F))
 data.documentation = file.path('man//',paste0(data.files, '.Rd'))
 
+# convert double spaces to new line
+doublespacenewline <- function(x) gsub('\\ \\ +', '<br>', x)
+
 # function for combining list of strings
 documentation_to_html <- function(content){
   
   content_wo_title = content[names(content) %nin% 'title']
   title = bold(content[['title']])
+  
+  # add newlines to references
+  content_wo_title$references <- doublespacenewline(content_wo_title$references)
+
+  # Create header content
   header_content = unlist(lapply(names(content_wo_title), function(header){
-    return(paste0('<br>', italics(header),': ',content[[header]]))
+    return(paste0('<br>', italics(header),': ', content_wo_title[[header]]))
   }))
   
   title_header_content = paste(c(title, header_content), collapse = ' ')
@@ -21,6 +29,7 @@ documentation_to_html <- function(content){
 
 # go over each file and parse
 for (file in data.documentation){
+  
   
   # write documentation files
   content = null_omit(genoppi:::parse_rd(readLines(file), what = c("title", "description", "source", "references"), combine.with = ' '))

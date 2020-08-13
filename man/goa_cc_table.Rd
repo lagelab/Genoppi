@@ -24,7 +24,7 @@ A dataset containing annotations for 18,880 genes in 1,765 GO cellular component
 }
 \references{
 Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
-The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556
+The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 
 The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
 Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055

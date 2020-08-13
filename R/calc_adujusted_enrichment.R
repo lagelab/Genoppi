@@ -18,9 +18,6 @@
 #' gtex_enrichment
 #' }
 #' @export
-#' 
-#' 
-
 
 calc_adjusted_enrichment <- function(data, reference, col.by = 'tissue', bait = NULL, p.adj.method = 'fdr', intersectN = T){
   

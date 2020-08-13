@@ -32,8 +32,8 @@
 #' \url{https://inbio-discover.intomics.com/map.html#downloads}
 #' @references
 #' Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to catalyze
-#' genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083
-#'
+#' genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083  
+#' 
 #' Lage K, Karlberg EO, Størling ZM, et al. A human phenome-interactome network of protein complexes implicated
 #' in genetic disorders. Nat Biotechnol. 2007;25(3):309-316. doi:10.1038/nbt1295 
 
@@ -50,7 +50,7 @@
 #' @source snp_to_gene.Rdata file created by April Kim.
 #' @references
 #' 1000 Genomes Project Consortium, Auton A, Brooks LD, et al. A global reference for human genetic variation.
-#' Nature. 2015;526(7571):68-74. doi:10.1038/nature15393 
+#' Nature. 2015;526(7571):68-74. doi:10.1038/nature15393  
 #'
 #' Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
 #' for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034  
@@ -93,7 +93,7 @@
 #' \url{https://gnomad.broadinstitute.org/downloads#v2-constraint}
 #' @references
 #' Lek M, Karczewski KJ, Minikel EV, et al. Analysis of protein-coding genetic variation in 60,706 humans.
-#' Nature. 2016;536(7616):285-291. doi:10.1038/nature19057
+#' Nature. 2016;536(7616):285-291. doi:10.1038/nature19057  
 #'
 #' Karczewski KJ, Francioli LC, Tiao G, et al. The mutational constraint spectrum quantified from variation in 141,456 humans.
 #' Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7 
@@ -133,7 +133,7 @@
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
-#' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556
+#' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 #'
 #' The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
 #' Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
@@ -155,7 +155,7 @@
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
-#' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556
+#' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 #'
 #' The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
 #' Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
@@ -177,7 +177,7 @@
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
-#' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556
+#' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 #'
 #' The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
 #' Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
@@ -198,7 +198,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
@@ -219,7 +219,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
@@ -240,7 +240,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
@@ -261,7 +261,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
@@ -282,7 +282,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
@@ -303,7 +303,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
@@ -324,7 +324,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
@@ -345,7 +345,7 @@
 #' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
 #' @references
 #' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102 
+#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
 #'
 #' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
 #' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 

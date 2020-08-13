@@ -20,7 +20,7 @@ reference for details on mapping method.
 }
 \references{
 1000 Genomes Project Consortium, Auton A, Brooks LD, et al. A global reference for human genetic variation.
-Nature. 2015;526(7571):68-74. doi:10.1038/nature15393 
+Nature. 2015;526(7571):68-74. doi:10.1038/nature15393  
 
 Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
 for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034

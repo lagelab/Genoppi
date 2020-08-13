@@ -407,6 +407,13 @@ shinyServer(function(input, output, session){
     textInput("a_bait_rep", value = "", "Input HGNC symbol to search for InWeb protein interactors (e.g. ZBTB7A)")
   })
   
+  output$a_inweb_type <- renderUI({
+    selectInput('a_inweb_type', 'Select interactor type', c("All" = 'all',
+                                                    "High-confidence" = 'hc',
+                                                    "Gold-standard" = 'gs'))
+
+  })
+  
   output$a_bait_search <- renderUI({
     textInput("a_bait_search_rep", "Input bait (HGNC symbol, e.g. BCL2)")
   })
@@ -888,7 +895,7 @@ shinyServer(function(input, output, session){
   # map inweb prorteins
   a_inweb_mapping <- reactive({
     req(input$a_bait_rep, a_pulldown())
-    mapping = get_inweb_list(input$a_bait_rep)
+    mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)
     if (!is.null(mapping)){
         mapping = mapping[mapping$significant, ]
         mapping$col_significant = input$a_color_inweb_sig

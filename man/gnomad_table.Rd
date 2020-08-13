@@ -24,7 +24,7 @@ that a gene is intolerant of loss-of-function mutations.
 }
 \references{
 Lek M, Karczewski KJ, Minikel EV, et al. Analysis of protein-coding genetic variation in 60,706 humans.
-Nature. 2016;536(7616):285-291. doi:10.1038/nature19057
+Nature. 2016;536(7616):285-291. doi:10.1038/nature19057  
 
 Karczewski KJ, Francioli LC, Tiao G, et al. The mutational constraint spectrum quantified from variation in 141,456 humans.
 Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7

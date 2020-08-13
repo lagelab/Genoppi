@@ -84,7 +84,8 @@ body <- dashboardBody(
                                     box(
                                      title = "InWeb InBiomap", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
                                      fluidRow(
-                                       column(12, uiOutput("a_bait_layer"))
+                                       column(8, uiOutput("a_bait_layer")),
+                                       column(4, uiOutput("a_inweb_type"))
                                      ),
                                      fluidRow(
                                        column(4, uiOutput("a_label_inweb_ui"), uiOutput("a_inweb_message")),
