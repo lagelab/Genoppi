@@ -24,7 +24,7 @@ add_plotly_layout_scatter(
 
 \item{width}{the width of the plotly object.}
 
-\item{height}{the heigh of the plotly object.}
+\item{height}{the height of the plotly object.}
 
 \item{orientation}{piped to plotly. Can be 'v'ertical or 'h'orisontal.}
 

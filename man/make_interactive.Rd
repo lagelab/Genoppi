@@ -25,7 +25,7 @@ details.
 \dontrun{
 df <- example_data \%>\%
   calc_mod_ttest() \%>\%
-  id_enriched_proteins()
+  id_significant_proteins()
 
 # overlay simple a bait and make interactive
 plt <- df \%>\% 

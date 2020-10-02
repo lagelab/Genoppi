@@ -1788,13 +1788,13 @@ shinyServer(function(input, output, session){
   # basic plot gene count summary
   a_verbatim_count <- reactive({
     d <- a_pulldown_significant()
-    HTML(paste(bold(sum(d$significant)), 'proteins out of', bold(nrow(d)), 'proteins enriched.'))
+    HTML(paste(bold(sum(d$significant)), 'proteins out of', bold(nrow(d)), 'proteins significant.'))
   })
   
   # basic plot significance text
   a_vp_count_text <- reactive({
     if(!is.null(a_verbatim_count())){
-      enriched <- paste(c('Enrichment threshold:',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))
+      enriched <- paste(c('Significance threshold:',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))
       HTML(enriched)
     }
   })
@@ -1865,7 +1865,7 @@ shinyServer(function(input, output, session){
   
   # convert into plotly graphics
   a_integrated_plot <- reactive({
-    sig_label = '(enriched)' #paste0(monitor_significance_thresholds()$sig) #, ', ', monitor_logfc_threshold_non_html()$sig)
+    sig_label = '(Significant)' #paste0(monitor_significance_thresholds()$sig) #, ', ', monitor_logfc_threshold_non_html()$sig)
     p <- a_integrated_plot_gg()
     p <- make_interactive(p, source = "Multi_VolcanoPlot", legend = T, sig_text = sig_label)
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction,  sig_type = input$a_significance_type)
@@ -2956,13 +2956,13 @@ shinyServer(function(input, output, session){
    input = unique(names(b_mapping()))
    
    text = list(
-     f1 = paste(bold('f1:'), 'enriched proteins unique to file1 (red)'),
-     f2 = paste(bold('f2:'), 'enriched proteins unique to file2 (yellow)'),
-     f3 = paste(bold('f3:'), 'enriched proteins unique to file3 (blue)'),
-     f12 = paste(bold('f12:'), 'enriched proteins identified in file1 and file2 (orange)'),
-     f13 = paste(bold('f13:'), 'enriched proteins identified in file1 and file3 (purple)'),
-     f23 = paste(bold('f23:'), 'enriched proteins identified in file2 and file3 (green)'),
-     f123 = paste(bold('f123:'), 'enriched proteins identified in file1, file2, and file3 (white)')
+     f1 = paste(bold('f1:'), 'significant proteins unique to file1 (red)'),
+     f2 = paste(bold('f2:'), 'significant proteins unique to file2 (yellow)'),
+     f3 = paste(bold('f3:'), 'significant proteins unique to file3 (blue)'),
+     f12 = paste(bold('f12:'), 'significant proteins identified in file1 and file2 (orange)'),
+     f13 = paste(bold('f13:'), 'significant proteins identified in file1 and file3 (purple)'),
+     f23 = paste(bold('f23:'), 'significant proteins identified in file2 and file3 (green)'),
+     f123 = paste(bold('f123:'), 'significant proteins identified in file1, file2, and file3 (white)')
    )
    
   return(HTML(paste(text[names(text) %in% input], collapse = "<br/>")))

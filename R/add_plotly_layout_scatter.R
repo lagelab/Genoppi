@@ -3,7 +3,7 @@
 #' @param p a plotly object.
 #' @param title the title of the plot.
 #' @param legend_title the title of the legend.
-#' @param height the heigh of the plotly object.
+#' @param height the height of the plotly object.
 #' @param width the width of the plotly object.
 #' @param orientation piped to plotly. Can be 'v'ertical or 'h'orisontal.
 #' @param legend.x shift legend by x-axis.

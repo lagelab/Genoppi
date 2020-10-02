@@ -43,7 +43,7 @@ catf <- function(msg, file = stderr()){
 #' # overlay the bait
 #' example_data %>%
 #'   calc_mod_ttest() %>%
-#'   id_enriched_proteins() %>%
+#'   id_significant_proteins() %>%
 #'   plot_volcano_basic() %>%
 #'   plot_overlay(as.bait('BCL2')) %>%
 #' }
@@ -66,7 +66,7 @@ as.bait <- function(bait) return(list(bait=data.frame(gene=bait, col_significant
 #' # overlay the bait
 #' example_data %>%
 #'  calc_mod_ttest() %>%
-#'  id_enriched_proteins() %>%
+#'  id_significant_proteins() %>%
 #'  plot_volcano_basic() %>%
 #'  plot_overlay(as.goi(c('BCL2', 'FUS', 'TRIM28')))
 #' }

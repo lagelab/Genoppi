@@ -33,7 +33,7 @@ This functional will create a named data.frame with column 'gene', 'col_signific
 # overlay the bait
 example_data \%>\%
  calc_mod_ttest() \%>\%
- id_enriched_proteins() \%>\%
+ id_significant_proteins() \%>\%
  plot_volcano_basic() \%>\%
  plot_overlay(as.goi(c('BCL2', 'FUS', 'TRIM28')))
 }

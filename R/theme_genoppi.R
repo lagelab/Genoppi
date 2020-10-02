@@ -124,6 +124,7 @@ scatter_theme_old <- function(p, axis_begin, axis_end, total_ticks = 11, grid_wi
 #' @param grid_lines Boolean. Draw grid lines?
 #' @param xlab String. alternative x label.
 #' @param ylab String. alternative y label.
+#' @param lab_cex numeric. Character expansion factor for labels.
 #' 
 #' 
 #' @family ggplot
@@ -131,7 +132,7 @@ scatter_theme_old <- function(p, axis_begin, axis_end, total_ticks = 11, grid_wi
 
 volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick_sz = T,
                           axes_width = 0.50, ticks_width = 0.70, ticks_labs_cex = 4, 
-                          ticks_labs_x_vjust = 2, ticks_labs_y_hjust = 2,
+                          ticks_labs_x_vjust = 2, ticks_labs_y_hjust = 2, lab_cex = 2,
                           xlab_vjust = 0.60, xlab_hjust = 0.38, ylab_vjust = 1.5, ylab_hjust = 0,
                           font_family = 'Helvetica', grid_lines = F, xlab = NULL, ylab = NULL){
   
@@ -206,12 +207,14 @@ volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
     annotate('text', x = 0.5, y = tail(tick_frame_y$ticks, 1)-0.5, 
             label =  ifelse(is.null(ylab), deparse(p$labels$y), ylab), angle = 90, parse = T, 
             vjust= ylab_vjust, hjust = ylab_hjust,
-            family = font_family) +
+            family = font_family,
+            size = lab_cex) +
     
     annotate('text', x = 0, y = -0.3, 
              label =  ifelse(is.null(xlab) ,deparse(p$labels$x), xlab), parse = T, 
              vjust = xlab_vjust, hjust = xlab_hjust,
-             family = font_family)
+             family = font_family,
+             size = lab_cex)
   
     # setup grid and axis
     plt = plt + theme_minimal() +  

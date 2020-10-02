@@ -14,6 +14,7 @@ volcano_theme(
   ticks_labs_cex = 4,
   ticks_labs_x_vjust = 2,
   ticks_labs_y_hjust = 2,
+  lab_cex = 2,
   xlab_vjust = 0.6,
   xlab_hjust = 0.38,
   ylab_vjust = 1.5,
@@ -42,6 +43,8 @@ volcano_theme(
 \item{ticks_labs_x_vjust}{Vertical adjustment of tick labels on x axis.}
 
 \item{ticks_labs_y_hjust}{Horizontal adjustment of tick labels on y axis.}
+
+\item{lab_cex}{numeric. Character expansion factor for labels.}
 
 \item{xlab_vjust}{Vertical adjustment on label on x-axis.}
 
