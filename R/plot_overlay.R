@@ -29,8 +29,8 @@
 #' @param legend_nchar_max maximum amount of allowed characters in the legend.
 #' @param nchar_max_collapse what charcter should be used for line break? Default is HTML line break \code{"<br>".}
 #' @param stroke numeric. The width of the outline/borders. 
-#' @param sig_text string. text for enriched interactors to be displayed in legend. 
-#' @param insig_text string. Text for non-enriched interactors to be displayed in legend.
+#' @param sig_text string. text for significant interactors to be displayed in legend. 
+#' @param insig_text string. Text for non-significant interactors to be displayed in legend.
 #' 
 #' @return a ggplot
 #' 
@@ -40,7 +40,7 @@
 #' \dontrun{
 #' df <- example_data %>%
 #'   calc_mod_ttest() %>%
-#'   id_enriched_proteins()
+#'   id_significant_proteins()
 #' 
 #' # overlay simple  a bait
 #' df %>% 

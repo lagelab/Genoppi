@@ -34,9 +34,9 @@ the data.frame as the column 'dataset'. Alternatively, the dataset can have a co
 
 \item{stroke}{numeric. The width of the outline/borders.}
 
-\item{sig_text}{string. text for enriched interactors to be displayed in legend.}
+\item{sig_text}{string. text for significant interactors to be displayed in legend.}
 
-\item{insig_text}{string. Text for non-enriched interactors to be displayed in legend.}
+\item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
 
 \item{label}{A boolean. This will overwrite the \code{label} column in the reference data.frame.}
 
@@ -79,7 +79,7 @@ See ?validate_reference or additional details.
 \dontrun{
 df <- example_data \%>\%
   calc_mod_ttest() \%>\%
-  id_enriched_proteins()
+  id_significant_proteins()
 
 # overlay simple  a bait
 df \%>\% 

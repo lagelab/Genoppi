@@ -50,7 +50,7 @@ details section for plotting aesthetics.
 # run example data
 p = example_data \%>\% 
 calc_mod_ttest() \%>\%
-  id_enriched_proteins(fdr_cutoff = 0.1) \%>\%
+  id_significant_proteins(fdr_cutoff = 0.1) \%>\%
   plot_volcano_basic() \%>\%
   plot_overlay(as.bait('BCL2')) \%>\%
   volcano_theme()
