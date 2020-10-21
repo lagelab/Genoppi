@@ -39,6 +39,7 @@ Other datasets:
 \code{\link{gnomad_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_proteome_table}},
 \code{\link{gtex_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},

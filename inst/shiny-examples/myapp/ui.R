@@ -294,6 +294,8 @@ body <- dashboardBody(
                                         title = tagList('Settings'), width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
                                         column(12, 
                                           fluidRow(
+                                            uiOutput('a_tissue_select_source_ui'),
+                                            uiOutput('a_tissue_enrichment_upload_ui'),
                                             uiOutput('a_tissue_enrichment_type_select_ui'),
                                             uiOutput('a_tissue_enrichment_slider_ui'),  
                                             uiOutput('a_tissue_enrichment_xaxis_ui'),

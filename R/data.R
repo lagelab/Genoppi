@@ -396,6 +396,25 @@
 
 "gtex_table"
 
+#' @title GTEx tissue specificity annotations for protein expression
+#' @description A dataset containing tissue specificty annotations for 12.000 genes in 32 tissues derived from
+#' Mass Spectrometr. See cited reference for details on the definition of tissue-specific genes.
+#' @format A data frame with 686,624 rows and 3 variables:
+#' \describe{
+#'   \item{tissue}{Tissue name}
+#'   \item{gene}{HGNC gene symbol}
+#'   \item{significant}{Logical variable indicating whether or not the gene is tissue-specific} 
+#' }
+#' @family datasets
+#' @docType data
+#' @source Table S2, (TS dataset) downloaded on 2020-10-21 from:
+#' \url{https://www.sciencedirect.com/science/article/pii/S0092867420310783}):.
+#' @references
+#' Jiang L et al. A Quantitative Proteome Map of the Human Body. Cell. 2020.
+#' 
+
+"gtex_proteome_table"
+
 
 #' @title Example proteomic data (1)
 #' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a neuron cell line (GPiN). See cited Genoppi reference for detailed methods. 

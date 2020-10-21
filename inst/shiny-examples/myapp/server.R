@@ -466,8 +466,8 @@ shinyServer(function(input, output, session){
   })
   
   output$a_tissue_select_ui <- renderUI({
-    selectInput('a_tissue_select', 'Select reference database',  c("Human Protein Atlas" = "hpa",
-                                                                   "Genotype Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_select', 'Select reference database',  c("Human Protein Atlas (RNA)" = "hpa",
+                                                                   "Genotype Tissue Expression project - GTEx (RNA)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   # tissue enrichment (Tissue specificity tab)
@@ -475,9 +475,19 @@ shinyServer(function(input, output, session){
     sliderInput('a_tissue_enrichment_slider', 'Select significance threshold', 0.001, 1, value = 0.05, step = 0.001)
   })
   
+  
+  output$a_tissue_enrichment_upload_ui <- renderUI({
+    fileInput('a_tissue_enrichment_upload', 'Upload reference')                                                                  
+  })
+  
+  
+  output$a_tissue_select_source_ui <- renderUI({
+    selectInput('a_tissue_select_source', 'Source data',  c("Use pre-existing dataset" = "genoppi", "Upload data" = "upload"), multiple=F, selectize=TRUE, selected = "grey")
+  })
+  
   output$a_tissue_enrichment_type_select_ui <- renderUI({
-    selectInput('a_tissue_enrichment_type_select', 'Select reference database',  c("Human Protein Atlas" = "hpa",
-                                                                                   "Genotype Tissue Expression project (GTEx)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_enrichment_type_select', 'Select reference database',  c("Human Protein Atlas (RNA)" = "hpa",
+                                                                                   "Genotype Tissue Expression -GTEx (RNA)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   output$a_tissue_enrichment_xaxis_ui <- renderUI({
@@ -990,6 +1000,21 @@ shinyServer(function(input, output, session){
   })
   
   
+  ## upload own tissue enrichment in 'long' format (tissue, gene, sig)
+  ## upload own tissue enrichment in matrix format (tissue x gene with sig in each cell)
+  
+  # upload own tissue list
+  a_verify_tissue_upload <- reactive({
+    req(input$a_tissue_enrichment_upload)
+    mat = input$a_tissue_enrichment_upload
+    colnames(mat) = tolower(colnames(mat))
+    # verify dimensions and column names
+    if (ncol(mat) == 3 & nrow(mat) > 0 & all(c('gene', 'significant') %in% colnames(mat))){
+        return(TRUE)
+    } else {
+      return(NULL)
+    }
+  })
   
   
   # return HPA or GTEx query
@@ -1311,7 +1336,6 @@ shinyServer(function(input, output, session){
       mapping = a_genes_upload()$data[,c('gene','listName')]
       mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
       write.csv(mymerge, file, row.names = F)
-      
     }
   )
   
@@ -1325,7 +1349,7 @@ shinyServer(function(input, output, session){
   #observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() & !is.null(a_tissue_mapping())))}) # this seems to cause GCP to crash?
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
   observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(a_tissue_enrichment()))})  
-  
+
   # venn diagrams
   observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
   observe({shinyjs::toggle(id="a_snp_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_SNP_rep$datapath))})
@@ -1337,9 +1361,13 @@ shinyServer(function(input, output, session){
   # show hide select buttons
   observe({shinyjs::toggle(id="a_hpa_tissue", condition = input$a_tissue_select == 'hpa')})
   observe({shinyjs::toggle(id="a_gtex_tissue", condition = input$a_tissue_select == 'gtex')})
+  observe({shinyjs::toggle(id="a_tissue_enrichment_type_select", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'genoppi')})
+  observe({shinyjs::toggle(id="a_tissue_enrichment_upload", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'upload')})
   
   # show/hide plot download buttons
   observeEvent(!is.null(a_pulldown_significant()),{
+    #shinyjs::show("a_tissue_select_source")
+    #shinyjs::show("a_tissue_enrichment_type_select")
     shinyjs::show("a_volcano_plot_download")
     shinyjs::show("a_scatter_plot_download")
     shinyjs::show("a_integrated_plot_download")
@@ -1788,7 +1816,7 @@ shinyServer(function(input, output, session){
   # basic plot gene count summary
   a_verbatim_count <- reactive({
     d <- a_pulldown_significant()
-    HTML(paste(bold(sum(d$significant)), 'proteins out of', bold(nrow(d)), 'proteins significant.'))
+    HTML(paste(bold(sum(d$significant)), 'out of', bold(nrow(d)), 'proteins significant.'))
   })
   
   # basic plot significance text

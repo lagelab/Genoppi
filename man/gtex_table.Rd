@@ -40,6 +40,7 @@ Other datasets:
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},
 \code{\link{goa_mf_table}},
+\code{\link{gtex_proteome_table}},
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_table}},
