@@ -40,6 +40,9 @@ global.img.volcano.download.height = 8
 global.img.scatter.download.width = 12
 global.img.scatter.download.height = 8
 
+# upload size
+options(shiny.maxRequestSize=30*1024^2) # max 30MB upload
+
 # what is the allowed palette of symbols in plotly
 plotly_symbols = table_symbols()$symbol
 #plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values
@@ -77,4 +80,5 @@ myDownloadButton <- function(outputId, label = "Download", img = icon("camera"))
 # tmp load data
 data('hpa_table')
 data('gtex_table')
+
 

@@ -1004,13 +1004,13 @@ shinyServer(function(input, output, session){
   ## upload own tissue enrichment in matrix format (tissue x gene with sig in each cell)
   
   # upload own tissue list
-  a_verify_tissue_upload <- reactive({
-    req(input$a_tissue_enrichment_upload)
-    mat = input$a_tissue_enrichment_upload
-    colnames(mat) = tolower(colnames(mat))
-    # verify dimensions and column names
-    if (ncol(mat) == 3 & nrow(mat) > 0 & all(c('gene', 'significant') %in% colnames(mat))){
-        return(TRUE)
+  a_get_tissue_upload <- reactive({
+    req(input$a_tissue_enrichment_upload, input$a_tissue_select_source)
+    validate(need(input$a_tissue_select_source == 'upload'  , ""))
+    file = input$a_tissue_enrichment_upload
+    table = read.table(file$datapath, header = T)
+    if (ncol(table) == 3){
+      return(table)
     } else {
       return(NULL)
     }
@@ -1030,7 +1030,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  # setup main gnomad mapping
+  # setup main mapping
   a_tissue_mapping <- reactive({
     req(a_pulldown_significant(), a_get_tissue_list())
     tissue = a_get_tissue_list() 
@@ -1055,11 +1055,18 @@ shinyServer(function(input, output, session){
   # get the tissue enrichment table that have been selected by user
   a_tissue_enrichment_table <- reactive({
     req(a_pulldown_significant(), input$a_tissue_enrichment_type_select)
-    if (input$a_tissue_enrichment_type_select == 'hpa') {
-      return(hpa_table)
+    tissue = input$a_tissue_enrichment_type_select
+    source = input$a_tissue_select_source
+    if (source == 'genoppi'){
+      if (input$a_tissue_enrichment_type_select == 'hpa') {
+        return(hpa_table)
+      } else {
+        return(gtex_table)
+      }
     } else {
-      return(gtex_table)
+      return(a_get_tissue_upload())
     }
+
   })
   
   # get tissue with elevated expression and calculate FDR.

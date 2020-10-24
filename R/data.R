@@ -366,7 +366,7 @@
 #' }
 #' @family datasets
 #' @docType data
-#' @source normal_tissue.tsv.zip and proteinatlas.tsv.zip datasets (v19.3) downloaded on 2020-06-12 from:
+#' @source proteinatlas.tsv.zip datasets (v19.3) downloaded on 2020-06-12 from:
 #' \url{https://www.proteinatlas.org/about/download}  
 #' @references
 #' Uhlén M, Fagerberg L, Hallström BM, et al. Proteomics. Tissue-based map of the human proteome.

@@ -14,7 +14,7 @@ A data frame with 571,504 rows and 3 variables:
 }
 }
 \source{
-normal_tissue.tsv.zip and proteinatlas.tsv.zip datasets (v19.3) downloaded on 2020-06-12 from:
+proteinatlas.tsv.zip datasets (v19.3) downloaded on 2020-06-12 from:
 \url{https://www.proteinatlas.org/about/download}
 }
 \usage{
