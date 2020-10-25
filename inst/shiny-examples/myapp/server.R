@@ -456,28 +456,27 @@ shinyServer(function(input, output, session){
   })
   
   
-  # Select GTEX or HPA
-  output$a_hpa_tissue_ui <- renderUI({
-    selectInput('a_hpa_tissue', 'Annotate genes in tissue with elevated expression (HPA)', sort(unique(hpa_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
-  })
-  
+  # Select GTEx or HPA
   output$a_gtex_tissue_ui <- renderUI({
-    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate genes in tissue with elevated expression (GTEx)', sort(unique(gtex_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
   })
-  
+ 
+  output$a_hpa_tissue_ui <- renderUI({
+    selectInput('a_hpa_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(hpa_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
+  })  
+ 
   output$a_tissue_select_ui <- renderUI({
-    selectInput('a_tissue_select', 'Select reference database',  c("Human Protein Atlas (RNA)" = "hpa",
-                                                                   "Genotype Tissue Expression project - GTEx (RNA)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_select', 'Select reference dataset',  c("GTEx - RNA" = "gtex","HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
-  # tissue enrichment (Tissue specificity tab)
+  # tissue enrichment (Tissue enrichment tab)
   output$a_tissue_enrichment_slider_ui <- renderUI({
     sliderInput('a_tissue_enrichment_slider', 'Select significance threshold', 0.001, 1, value = 0.05, step = 0.001)
   })
   
   
   output$a_tissue_enrichment_upload_ui <- renderUI({
-    fileInput('a_tissue_enrichment_upload', 'Upload reference')                                                                  
+    fileInput('a_tissue_enrichment_upload', 'Upload dataset')                                                                  
   })
   
   
@@ -486,8 +485,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_tissue_enrichment_type_select_ui <- renderUI({
-    selectInput('a_tissue_enrichment_type_select', 'Select reference database',  c("Human Protein Atlas (RNA)" = "hpa",
-                                                                                   "Genotype Tissue Expression -GTEx (RNA)" = "gtex"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_enrichment_type_select', 'Select reference dataset', c("GTEx - RNA" = "gtex","HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   output$a_tissue_enrichment_xaxis_ui <- renderUI({
@@ -1008,7 +1006,7 @@ shinyServer(function(input, output, session){
     req(input$a_tissue_enrichment_upload, input$a_tissue_select_source)
     validate(need(input$a_tissue_select_source == 'upload'  , ""))
     file = input$a_tissue_enrichment_upload
-    table = read.table(file$datapath, header = T)
+    table = read.table(file$datapath, header = T, sep="\t")
     if (ncol(table) == 3){
       return(table)
     } else {
@@ -1244,7 +1242,7 @@ shinyServer(function(input, output, session){
   # download tissue enrichment data
   output$a_tissue_enrichment_download <- downloadHandler(
     filename = function() {
-      paste("genoppi-tissue-specificity",".csv", sep="")
+      paste("genoppi-tissue-enrichment",".csv", sep="")
     },
     content = function(file) {
       result = a_tissue_enrichment()
@@ -3243,13 +3241,13 @@ shinyServer(function(input, output, session){
   output$info_tissue_ui <- renderUI({actionLink('info_tissue', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue,{
     text = paste(readLines('documentation/hpa_table.info'), '<br> <br>', readLines('documentation/GTEX_table.info'))
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Tissue-specific genes'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx or HPA'))
   })
   
   output$info_tissue_enrichment_ui <- renderUI({actionLink('info_tissue_enrichment', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue_enrichment,{
     text = paste(readLines('documentation/hpa_table.info'), '<br> <br>', readLines('documentation/GTEX_table.info'))
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Tissue-specificity data'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Tissue-enrichment data'))
   })
   
   output$info_geneset_ui <- renderUI({actionLink('info_geneset', ' ', icon = icon('question-circle'))})

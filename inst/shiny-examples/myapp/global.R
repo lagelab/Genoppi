@@ -78,7 +78,7 @@ myDownloadButton <- function(outputId, label = "Download", img = icon("camera"))
 }
 
 # tmp load data
-data('hpa_table')
-data('gtex_table')
+#data('hpa_table')
+#data('gtex_table')
 
 

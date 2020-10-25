@@ -82,7 +82,7 @@ body <- dashboardBody(
                                 br(),
                                  column(width = 4, 
                                     box(
-                                     title = "InWeb InBiomap", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
+                                     title = "InWeb_InBioMap", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
                                      fluidRow(
                                        column(8, uiOutput("a_bait_layer")),
                                        column(4, uiOutput("a_inweb_type"))
@@ -136,7 +136,7 @@ body <- dashboardBody(
                                       #fluidRow(column(12, tableOutput("a_table_gnomad_constraints_ui")))
                                     ),
                                     box(
-                                      title = "Tissue-specific genes", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                      title = "GTEx or HPA", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
                                         column(12, uiOutput('a_tissue_select_ui'),
                                                uiOutput("a_gtex_tissue_ui"),
@@ -203,7 +203,7 @@ body <- dashboardBody(
                                       column(3, uiOutput("a_symbol_gnomad_ui"))
                                     ),
                                     fluidRow(
-                                      column(3, h5('Tissue-specific genes')),
+                                      column(3, h5('GTEx or HPA')),
                                       column(3, uiOutput("a_color_tissue_sig_ui")),
                                       column(3, uiOutput("a_color_tissue_insig_ui")),
                                       column(3, uiOutput("a_symbol_tissue_ui"))
@@ -258,7 +258,7 @@ body <- dashboardBody(
                                                  column(3, shinyjs::hidden(myDownloadButton("a_gnomad_venn_mapping_download", 'Genes', icon("download"))))
                                                )
                                       ),
-                                      tabPanel('Tissue enrichment',
+                                      tabPanel('GTEx or HPA',
                                                fluidRow(
                                                  column(4, plotOutput('a_tissue_venn_ui', width = "220px", height = "220px")),
                                                  column(5, br(), br(), br(), br(), uiOutput("a_tissue_venn_verbatim_ui")),
@@ -286,37 +286,6 @@ body <- dashboardBody(
                                       )
                                     )
                                 )
-                        ),
-                        tabPanel("Tissue specificity", value = "p4",
-                                 br(),
-                                 column(4,
-                                      box(
-                                        title = tagList('Settings'), width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
-                                        column(12, 
-                                          fluidRow(
-                                            uiOutput('a_tissue_select_source_ui'),
-                                            uiOutput('a_tissue_enrichment_upload_ui'),
-                                            uiOutput('a_tissue_enrichment_type_select_ui'),
-                                            uiOutput('a_tissue_enrichment_slider_ui'),  
-                                            uiOutput('a_tissue_enrichment_xaxis_ui'),
-                                            uiOutput('a_tissue_enrichment_scientific_notation_ui'),
-                                            shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome"))),
-                                            uiOutput("info_tissue_enrichment_ui")
-                                          )
-                                        )
-                                      )
-                                 ),
-                                 column(8,
-                                        box(
-                                          title = tagList('Tissue-specific enrichment'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, height = 1000,
-                                          fluidRow(
-                                            column(12,
-                                                   shinycssloaders::withSpinner(plotlyOutput('a_tissue_enrichment_ui'), spinner_type)
-                                                   )
-                                          )
-                                        )
-                                 )
-                                      
                         ),
                         tabPanel("Gene set annotations", value = "p4",
                                  br(),
@@ -364,14 +333,37 @@ body <- dashboardBody(
                                         )
                                  )
                         ),
-                        #tabPanel("Tissue specificity", value = "p6",
-                        #         br(),
-                        #         column(12,
-                        #                fluidRow(
-                        #                  h4('TBA')
-                        #                )
-                        #         )
-                        #),
+                        tabPanel("Tissue enrichment", value = "p4",
+                                 br(),
+                                 column(4,
+                                      box(
+                                        title = tagList('Settings'), width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
+                                        column(12, 
+                                          fluidRow(
+                                            uiOutput('a_tissue_select_source_ui'),
+                                            uiOutput('a_tissue_enrichment_upload_ui'),
+                                            uiOutput('a_tissue_enrichment_type_select_ui'),
+                                            uiOutput('a_tissue_enrichment_slider_ui'),  
+                                            uiOutput('a_tissue_enrichment_xaxis_ui'),
+                                            uiOutput('a_tissue_enrichment_scientific_notation_ui'),
+                                            shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome"))),
+                                            uiOutput("info_tissue_enrichment_ui")
+                                          )
+                                        )
+                                      )
+                                 ),
+                                 column(8,
+                                        box(
+                                          title = tagList('Enrichment bar plot'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, height = 1000,
+                                          fluidRow(
+                                            column(12,
+                                                   shinycssloaders::withSpinner(plotlyOutput('a_tissue_enrichment_ui'), spinner_type)
+                                                   )
+                                          )
+                                        )
+                                 )
+                                      
+                        ),
                         tabPanel("Inspect uploaded data (dev)", value = "p5",
                             fluidRow(
                               column(12,
