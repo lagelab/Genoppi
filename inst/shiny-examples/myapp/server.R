@@ -466,7 +466,7 @@ shinyServer(function(input, output, session){
   })  
  
   output$a_tissue_select_ui <- renderUI({
-    selectInput('a_tissue_select', 'Select reference dataset',  c("GTEx - RNA" = "gtex","HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_select', 'Select reference dataset',  c("GTEx - RNA" = "gtex", "GTEx - Protein" = "gtexprotein","HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   # tissue enrichment (Tissue enrichment tab)
@@ -485,7 +485,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_tissue_enrichment_type_select_ui <- renderUI({
-    selectInput('a_tissue_enrichment_type_select', 'Select reference dataset', c("GTEx - RNA" = "gtex","HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_enrichment_type_select', 'Select reference dataset', c("GTEx - RNA" = "gtex", "GTEx - Protein" = "gtexprotein", "HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   output$a_tissue_enrichment_xaxis_ui <- renderUI({
@@ -1059,8 +1059,10 @@ shinyServer(function(input, output, session){
     if (source == 'genoppi'){
       if (input$a_tissue_enrichment_type_select == 'hpa') {
         return(hpa_table)
-      } else {
+      } else if (input$a_tissue_enrichment_type_select == 'gtex') {
         return(gtex_table)
+      } else {
+        return(gtex_proteome_table)
       }
     } else {
       return(a_get_tissue_upload())
