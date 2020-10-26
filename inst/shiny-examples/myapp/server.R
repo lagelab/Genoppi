@@ -898,6 +898,7 @@ shinyServer(function(input, output, session){
     mapping$dataset = 'SNP upload'
     mapping$alt_label = mapping$SNP
     if (lun(mapping$listName) > 1) mapping$alt_label <- paste0(mapping$alt_label, ' (',mapping$listName,')')
+    return(mapping)
   })
   
   # map inweb prorteins
