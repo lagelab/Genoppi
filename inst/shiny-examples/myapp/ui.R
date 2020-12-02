@@ -139,8 +139,9 @@ body <- dashboardBody(
                                       title = "GTEx or HPA", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
                                         column(12, uiOutput('a_tissue_select_ui'),
-                                               uiOutput("a_gtex_tissue_ui"),
-                                               uiOutput("a_hpa_tissue_ui")),
+                                               uiOutput("a_gtex_rna_tissue_ui"),
+                                               uiOutput("a_gtex_protein_tissue_ui"),
+                                               uiOutput("a_hpa_rna_tissue_ui")),
                                       ),
                                       fluidRow(
                                         column(4, uiOutput("a_overlay_tissue_ui")),

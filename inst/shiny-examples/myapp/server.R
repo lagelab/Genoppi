@@ -458,12 +458,16 @@ shinyServer(function(input, output, session){
   
   
   # Select GTEx or HPA
-  output$a_gtex_tissue_ui <- renderUI({
-    shinyjs::hidden(selectInput('a_gtex_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+  output$a_gtex_rna_tissue_ui <- renderUI({ 
+    shinyjs::hidden(selectInput('a_gtex_rna_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_rna$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+  })
+  
+  output$a_gtex_protein_tissue_ui <- renderUI({
+    shinyjs::hidden(selectInput('a_gtex_protein_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_protein$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
   })
  
-  output$a_hpa_tissue_ui <- renderUI({
-    selectInput('a_hpa_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(hpa_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
+  output$a_hpa_rna_tissue_ui <- renderUI({
+    selectInput('a_hpa_rna_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(hpa_rna$tissue)), multiple=T, selectize=TRUE, selected = "grey")
   })  
  
   output$a_tissue_select_ui <- renderUI({
@@ -1021,10 +1025,15 @@ shinyServer(function(input, output, session){
   a_get_tissue_list <- reactive({
     selected = input$a_tissue_select
     req(a_pulldown_significant(), selected)
-    if (selected %in% 'HPA - RNA' & length(input$a_hpa_tissue) > 0){
-      return(get_tissue_lists(tissue = as.character(input$a_hpa_tissue), table = hpa_table))
-    } else if (selected %in% 'GTEx - RNA' & length(input$a_gtex_tissue) > 0){
-      return(get_tissue_lists(tissue = as.character(input$a_gtex_tissue), table = gtex_table))
+    if (selected %in% 'HPA - RNA' & length(input$a_hpa_rna_tissue) > 0){
+      return(get_tissue_lists(tissue = as.character(input$a_hpa_rna_tissue), table = hpa_rna))
+    
+    } else if (selected %in% 'GTEx - RNA' & length(input$a_gtex_rna_tissue) > 0){
+      return(get_tissue_lists(tissue = as.character(input$a_gtex_rna_tissue), table = gtex_rna))
+    
+    } else if (selected %in% 'GTEx - Protein' & length(input$a_gtex_protein_tissue) > 0){
+      return(get_tissue_lists(tissue = as.character(input$a_gtex_protein_tissue), table = gtex_protein))
+   
     } else {
       return(NULL)
     }
@@ -1038,8 +1047,7 @@ shinyServer(function(input, output, session){
     pulldown = a_pulldown_significant()
     tissue = merge(pulldown, tissue, by = 'gene')
     if (nrow(tissue)){
-      #tissue_dict = c("GTEx - RNA" = "gtex", "GTEx - Protein" = "gtexprotein","HPA - RNA" = "hpa")
-      #tissue$dataset = names(tissue_dict)[input$a_tissue_select == tissue_dict]
+      #if (input$a_tissue_select != 'GTEx - Protein') browser()
       tissue$dataset = input$a_tissue_select
       tissue$col_significant = input$a_color_tissue_sig 
       tissue$col_other = input$a_color_tissue_insig 
@@ -1061,11 +1069,11 @@ shinyServer(function(input, output, session){
     source = input$a_tissue_select_source
     if (source == 'genoppi'){
       if (input$a_tissue_enrichment_type_select == 'HPA - RNA') {
-        return(hpa_table)
+        return(hpa_rna)
       } else if (input$a_tissue_enrichment_type_select == 'GTEx - RNA') {
-        return(gtex_table)
+        return(gtex_rna)
       } else {
-        return(gtex_proteome_table)
+        return(gtex_protein)
       }
     } else {
       return(a_get_tissue_upload())
@@ -1110,7 +1118,7 @@ shinyServer(function(input, output, session){
     layout$xlab = make_xlab(input$a_tissue_enrichment_xaxis)
     layout$title = ifelse(input$a_tissue_enrichment_type_select == 'HPA - RNA',
                           'Proteomic data enriched in Human Protein Atlas',
-                          'Protemoc data enriched in GTEx')
+                          'Proteomic data enriched in GTEx')
 
     return(layout)
   })
@@ -1370,8 +1378,9 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_tissue_select))})
   
   # show hide select buttons
-  observe({shinyjs::toggle(id="a_hpa_tissue", condition = input$a_tissue_select == 'HPA - RNA')})
-  observe({shinyjs::toggle(id="a_gtex_tissue", condition = input$a_tissue_select == 'GTEx - RNA')})
+  observe({shinyjs::toggle(id="a_hpa_rna_tissue", condition = input$a_tissue_select == 'HPA - RNA')})
+  observe({shinyjs::toggle(id="a_gtex_rna_tissue", condition = input$a_tissue_select == 'GTEx - RNA')})
+  observe({shinyjs::toggle(id="a_gtex_protein_tissue", condition = input$a_tissue_select == 'GTEx - Protein')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_type_select", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'genoppi')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_upload", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'upload')})
   
@@ -1568,7 +1577,7 @@ shinyServer(function(input, output, session){
     # get text to be displayed
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     dataset = ifelse(input$a_tissue_select == 'HPA - RNA', 'Human Protein Atlas', 'GTEx')
-    tissue = unlist(ifelse(input$a_tissue_select == 'HPA - RNA', list(input$a_hpa_tissue), list(input$a_gtex_tissue)))
+    tissue = unlist(ifelse(input$a_tissue_select == 'HPA - RNA', list(input$a_hpa_rna_tissue), list(input$a_gtex_rna_tissue)))
     
     # get hypergeometric stats
     hyper = a_tissue_calc_hyper()

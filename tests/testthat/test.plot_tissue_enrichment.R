@@ -1,10 +1,10 @@
 context('plot_tissue_enrichment')
 
-data("gtex_table")
+data("gtex_rna")
 data("example_data")
 stats_df <- calc_mod_ttest(example_data)
 sig_df <- id_enriched_proteins(stats_df)
-gtex_enrichment = calc_adjusted_enrichment(sig_df, gtex_table, bait = 'BCL2')
+gtex_enrichment = calc_adjusted_enrichment(sig_df, gtex_rna, bait = 'BCL2')
   
 test_that('plot_tissue_enrichemnt', {
   
