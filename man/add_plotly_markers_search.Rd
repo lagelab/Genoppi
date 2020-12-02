@@ -10,6 +10,8 @@ add_plotly_markers_search(p, genes, alpha = 0.5)
 \item{p}{a ggplot}
 
 \item{genes}{a vector of genes}
+
+\item{alpha}{a numeric value between 0 (invisible) to 1 (visible).}
 }
 \description{
 Adds search markers to a plot. Requires a plotly object.

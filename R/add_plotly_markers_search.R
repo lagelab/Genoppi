@@ -2,6 +2,7 @@
 #' @description Adds search markers to a plot. Requires a plotly object.
 #' @param p a ggplot
 #' @param genes a vector of genes
+#' @param alpha a numeric value between 0 (invisible) to 1 (visible).
 #' @note internal
 #' @importFrom plotly add_markers
 #' @export
