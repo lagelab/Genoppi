@@ -348,20 +348,21 @@ shinyServer(function(input, output, session){
   # integrated plot, gnomad
   output$a_overlay_gnomad_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
-    checkboxInput("a_overlay_gnomad", label = "Toggle overlay", value = TRUE)
+    checkboxInput("a_overlay_gnomad", label = "Toggle overlay", value = FALSE)
   })
 
   # integrated plot, gnomad 
   output$a_select_gnomad_pli_type_ui <- renderUI({
     validate(need(a_file_pulldown_r()  != '', ""))
     radioButtons("a_select_gnomad_pli_type", label = 'Select pLI type', 
-                 choiceNames = list('None','Threshold'),
-                 choiceValues = list('none','threshold'))
+                 choiceNames = list('Threshold'),
+                 choiceValues = list('threshold'))
   })
   
   # integrated plot, gnomad slider
   output$a_slide_gnomad_pli_threshold_ui <- renderUI({
-    validate(need(input$a_select_gnomad_pli_type == 'threshold', ""))
+    validate(need(a_file_pulldown_r()  != '', ""))
+    #validate(need(input$a_select_gnomad_pli_type == 'threshold', ""))
     sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
                 min = 0, max = 1, value = 0.5, step = 0.01)
   })
@@ -466,7 +467,7 @@ shinyServer(function(input, output, session){
   })  
  
   output$a_tissue_select_ui <- renderUI({
-    selectInput('a_tissue_select', 'Select reference dataset',  c("GTEx - RNA" = "gtex", "GTEx - Protein" = "gtexprotein","HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_select', 'Select reference dataset',  c("GTEx - RNA" = "GTEx - RNA", "GTEx - Protein" = "GTEx - Protein","HPA - RNA" = "HPA - RNA"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   # tissue enrichment (Tissue enrichment tab)
@@ -485,7 +486,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_tissue_enrichment_type_select_ui <- renderUI({
-    selectInput('a_tissue_enrichment_type_select', 'Select reference dataset', c("GTEx - RNA" = "gtex", "GTEx - Protein" = "gtexprotein", "HPA - RNA" = "hpa"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_tissue_enrichment_type_select', 'Select reference dataset', c("GTEx - RNA" = "GTEx - RNA", "GTEx - Protein" = "GTEx - Protein", "HPA - RNA" = "HPA - RNA"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   output$a_tissue_enrichment_xaxis_ui <- renderUI({
@@ -984,19 +985,19 @@ shinyServer(function(input, output, session){
   })
   
   # hide show gnomad tab
-  observe({
-    if (!is.null(input$a_select_gnomad_pli_type)){
-      if (input$a_select_gnomad_pli_type == 'none'){
-        shinyjs::hide("a_slide_gnomad_pli_threshold_ui")
-        #shinyjs::show("a_gnomad_colorscale_ui")
-        #shinyjs::show("a_gnomad_colorscale_text_ui")
-      } else {
-        shinyjs::show("a_slide_gnomad_pli_threshold_ui")
-        #shinyjs::hide("a_gnomad_colorscale_ui")
-        #shinyjs::hide("a_gnomad_colorscale_text_ui")
-      }
-    }
-  })
+  #observe({
+  #  if (!is.null(input$a_select_gnomad_pli_type)){
+  #    if (input$a_select_gnomad_pli_type == 'none'){
+  #      shinyjs::hide("a_slide_gnomad_pli_threshold_ui")
+  #      #shinyjs::show("a_gnomad_colorscale_ui")
+  #      #shinyjs::show("a_gnomad_colorscale_text_ui")
+  #    } else {
+  #      shinyjs::show("a_slide_gnomad_pli_threshold_ui")
+  #      #shinyjs::hide("a_gnomad_colorscale_ui")
+  #      #shinyjs::hide("a_gnomad_colorscale_text_ui")
+  #    }
+  #  }
+  #})
   
   
   ## upload own tissue enrichment in 'long' format (tissue, gene, sig)
@@ -1020,9 +1021,9 @@ shinyServer(function(input, output, session){
   a_get_tissue_list <- reactive({
     selected = input$a_tissue_select
     req(a_pulldown_significant(), selected)
-    if (selected %in% 'hpa' & length(input$a_hpa_tissue) > 0){
+    if (selected %in% 'HPA - RNA' & length(input$a_hpa_tissue) > 0){
       return(get_tissue_lists(tissue = as.character(input$a_hpa_tissue), table = hpa_table))
-    } else if (selected %in% 'gtex' & length(input$a_gtex_tissue) > 0){
+    } else if (selected %in% 'GTEx - RNA' & length(input$a_gtex_tissue) > 0){
       return(get_tissue_lists(tissue = as.character(input$a_gtex_tissue), table = gtex_table))
     } else {
       return(NULL)
@@ -1037,7 +1038,9 @@ shinyServer(function(input, output, session){
     pulldown = a_pulldown_significant()
     tissue = merge(pulldown, tissue, by = 'gene')
     if (nrow(tissue)){
-      tissue$dataset = toupper(input$a_tissue_select)
+      #tissue_dict = c("GTEx - RNA" = "gtex", "GTEx - Protein" = "gtexprotein","HPA - RNA" = "hpa")
+      #tissue$dataset = names(tissue_dict)[input$a_tissue_select == tissue_dict]
+      tissue$dataset = input$a_tissue_select
       tissue$col_significant = input$a_color_tissue_sig 
       tissue$col_other = input$a_color_tissue_insig 
       tissue$shape = symbol_to_shape(input$a_symbol_tissue)
@@ -1057,9 +1060,9 @@ shinyServer(function(input, output, session){
     tissue = input$a_tissue_enrichment_type_select
     source = input$a_tissue_select_source
     if (source == 'genoppi'){
-      if (input$a_tissue_enrichment_type_select == 'hpa') {
+      if (input$a_tissue_enrichment_type_select == 'HPA - RNA') {
         return(hpa_table)
-      } else if (input$a_tissue_enrichment_type_select == 'gtex') {
+      } else if (input$a_tissue_enrichment_type_select == 'GTEx - RNA') {
         return(gtex_table)
       } else {
         return(gtex_proteome_table)
@@ -1105,7 +1108,7 @@ shinyServer(function(input, output, session){
     layout$xaxis = input$a_tissue_enrichment_xaxis
     layout$sig_line = -log10(input$a_tissue_enrichment_slider)
     layout$xlab = make_xlab(input$a_tissue_enrichment_xaxis)
-    layout$title = ifelse(input$a_tissue_enrichment_type_select == 'hpa',
+    layout$title = ifelse(input$a_tissue_enrichment_type_select == 'HPA - RNA',
                           'Proteomic data enriched in Human Protein Atlas',
                           'Protemoc data enriched in GTEx')
 
@@ -1353,7 +1356,7 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_snp_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_SNP_rep$datapath))})
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
-  observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) & input$a_select_gnomad_pli_type == 'threshold')})
+  observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) )})
   #observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() & !is.null(a_tissue_mapping())))}) # this seems to cause GCP to crash?
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
   observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(a_tissue_enrichment()))})  
@@ -1363,12 +1366,12 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_snp_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_SNP_rep$datapath))})
   observe({shinyjs::toggle(id="a_genes_upload_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
-  observe({shinyjs::toggle(id="a_gnomad_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(a_gnomad_mapping_threshold()) & input$a_select_gnomad_pli_type == 'threshold')})
+  observe({shinyjs::toggle(id="a_gnomad_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(a_gnomad_mapping_threshold()) )})
   observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_tissue_select))})
   
   # show hide select buttons
-  observe({shinyjs::toggle(id="a_hpa_tissue", condition = input$a_tissue_select == 'hpa')})
-  observe({shinyjs::toggle(id="a_gtex_tissue", condition = input$a_tissue_select == 'gtex')})
+  observe({shinyjs::toggle(id="a_hpa_tissue", condition = input$a_tissue_select == 'HPA - RNA')})
+  observe({shinyjs::toggle(id="a_gtex_tissue", condition = input$a_tissue_select == 'GTEx - RNA')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_type_select", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'genoppi')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_upload", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'upload')})
   
@@ -1564,8 +1567,8 @@ shinyServer(function(input, output, session){
     
     # get text to be displayed
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
-    dataset = ifelse(input$a_tissue_select == 'hpa', 'Human Protein Atlas', 'GTEx')
-    tissue = unlist(ifelse(input$a_tissue_select == 'hpa', list(input$a_hpa_tissue), list(input$a_gtex_tissue)))
+    dataset = ifelse(input$a_tissue_select == 'HPA - RNA', 'Human Protein Atlas', 'GTEx')
+    tissue = unlist(ifelse(input$a_tissue_select == 'HPA - RNA', list(input$a_hpa_tissue), list(input$a_gtex_tissue)))
     
     # get hypergeometric stats
     hyper = a_tissue_calc_hyper()
@@ -1848,7 +1851,6 @@ shinyServer(function(input, output, session){
   
     # what replicates are inputted
     req(input$a_select_scatterplot, a_pulldown_significant())
-    
     rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
     p = a_sp_gg_all()
 
@@ -1870,8 +1872,12 @@ shinyServer(function(input, output, session){
     # convert into interactive graphics
     p1 = make_interactive(p1)
     if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene())
-    p1 = add_plotly_layout_scatter(p1, paste0('r=',r), width = global.basic.scatter.width, height = global.basic.scatter.height)
+    p1 = add_plotly_layout_scatter(p1, paste0('r=',r), 
+                                   width = global.basic.scatter.width, 
+                                   height = global.basic.scatter.height,
+                                   orientation = 'v')
     p1 = add_plotly_line_unity(p1)
+    p1 %>%  layout(legend=list(yanchor="right", x = 1, y = 1))
     #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
     
   })
@@ -1888,7 +1894,7 @@ shinyServer(function(input, output, session){
     if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2) & input$a_overlay_inweb) p = plot_overlay(p, list(inweb=a_inweb_mapping()))
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
-    if (!is.null(input$a_select_gnomad_pli_type)) if (input$a_select_gnomad_pli_type == 'threshold' & input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
+    if (!is.null(input$a_overlay_gnomad)) if (input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
     if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p = plot_overlay(p, list(tissuemap=a_tissue_mapping()))
     
     if (developer()) showNotification(paste(head(p$overlay, n = 1), collapse = ' '), duration = 10)
@@ -2112,8 +2118,8 @@ shinyServer(function(input, output, session){
     # extract legend from plot
     req(p)
     legend = get_gg_legend(p)
-    grid.newpage()
-    grid.draw(legend) 
+    grid::grid.newpage()
+    grid::grid.draw(legend) 
   
   })
   
@@ -2979,9 +2985,9 @@ shinyServer(function(input, output, session){
      colors = unlist(lapply(names(diagram), function(x) color_dict[[x]]))
      names(diagram) = gsub('f', 'file ', names(diagram))
      v = draw_genoppi_venn(diagram, color = colors, main = '')
-     grid.newpage()
-     pushViewport(viewport(width=unit(0.9, "npc"), height = unit(0.9, "npc")))
-     grid.draw(v)
+     grid::grid.newpage()
+     grid::pushViewport(viewport(width=unit(0.9, "npc"), height = unit(0.9, "npc")))
+     grid::grid.draw(v)
    } else return(NULL)
 
  })

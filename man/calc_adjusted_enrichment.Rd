@@ -10,7 +10,8 @@ calc_adjusted_enrichment(
   col.by = "tissue",
   bait = NULL,
   p.adj.method = "fdr",
-  intersectN = T
+  intersectN = T,
+  verbose = F
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ calc_adjusted_enrichment(
 
 \item{intersectN}{Boolean indicating if the total population should be the intersect
 of the two datasets, when calculating hypergeometric overlap.}
+
+\item{verbose}{print out progress}
 }
 \description{
 calculate hypergeometric enrichment of genes in tissue and 

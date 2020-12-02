@@ -4,12 +4,14 @@
 \alias{calc_mod_ttest}
 \title{Perform one-sample moderated t-test}
 \usage{
-calc_mod_ttest(df, iter = 1000)
+calc_mod_ttest(df, iter = 2000, order = T)
 }
 \arguments{
 \item{df}{data.frame containing gene and rep[0-9] (replicate logFC) columns.}
 
 \item{iter}{integer indicating maximum number of iterations to perform in limma::limFit().}
+
+\item{order}{boolean. Should the result be ordered by logFC and FDR?}
 }
 \value{
 data.frame containing input df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR.

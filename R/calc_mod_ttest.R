@@ -3,6 +3,7 @@
 #' See \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
 #' @param df data.frame containing gene and rep[0-9] (replicate logFC) columns.
 #' @param iter integer indicating maximum number of iterations to perform in limma::limFit().
+#' @param order boolean. Should the result be ordered by logFC and FDR?
 #' @return data.frame containing input df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR.
 #' @export
 #' @examples
@@ -12,7 +13,7 @@
 #' }
 #'
 
-calc_mod_ttest <- function(df, iter=1000){
+calc_mod_ttest <- function(df, iter=2000, order = T){
   
   # check input
   stopifnot(is.data.frame(df))
@@ -32,7 +33,7 @@ calc_mod_ttest <- function(df, iter=1000){
   result <- data.frame(cbind(df, modtest[,-c(2,3,6)]))
   
   # order columns
-  result <- result[with(result, order(-logFC, FDR)),] 
+  if (order) result <- result[with(result, order(-logFC, FDR)),] 
 
   return(result)
 
