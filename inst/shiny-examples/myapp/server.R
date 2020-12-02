@@ -1576,8 +1576,10 @@ shinyServer(function(input, output, session){
     
     # get text to be displayed
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
-    dataset = ifelse(input$a_tissue_select == 'HPA - RNA', 'Human Protein Atlas', 'GTEx')
-    tissue = unlist(ifelse(input$a_tissue_select == 'HPA - RNA', list(input$a_hpa_rna_tissue), list(input$a_gtex_rna_tissue)))
+    dataset = input$a_tissue_select
+    if (input$a_tissue_select == 'HPA - RNA') tissue <- input$a_hpa_rna_tissue
+    if (input$a_tissue_select == 'GTEx - Protein') tissue <- input$a_gtex_protein_tissue
+    if (input$a_tissue_select == 'GTEx - RNA') tissue <- input$a_gtex_rna_tissue
     
     # get hypergeometric stats
     hyper = a_tissue_calc_hyper()
