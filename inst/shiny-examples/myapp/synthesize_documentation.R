@@ -1,6 +1,9 @@
 library(genoppi) # Genoppi >= 0.4.10 required
 library(shiny)
 
+# run this script from start to end, in order to generate 
+# documentation that is used in the shiny app.
+
 # get data files to be documented
 data.files = tools::file_path_sans_ext(list.files('data/', full.names = F))
 data.documentation = file.path('man//',paste0(data.files, '.Rd'))

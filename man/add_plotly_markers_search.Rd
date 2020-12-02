@@ -4,7 +4,7 @@
 \alias{add_plotly_markers_search}
 \title{search volcano plots}
 \usage{
-add_plotly_markers_search(p, genes)
+add_plotly_markers_search(p, genes, alpha = 0.5)
 }
 \arguments{
 \item{p}{a ggplot}

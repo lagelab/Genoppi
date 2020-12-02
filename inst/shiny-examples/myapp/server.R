@@ -3271,14 +3271,18 @@ shinyServer(function(input, output, session){
   
   output$info_tissue_ui <- renderUI({actionLink('info_tissue', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue,{
-    text = paste(readLines('documentation/hpa_table.info'), '<br> <br>', readLines('documentation/GTEX_table.info'))
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx or HPA'))
+    text = paste(readLines('documentation/hpa_rna.info'), '<br> <br>', 
+                 readLines('documentation/gtex_rna.info'), '<br> <br>', 
+                 readLines('documentation/gtex_protein.info'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
   })
   
   output$info_tissue_enrichment_ui <- renderUI({actionLink('info_tissue_enrichment', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue_enrichment,{
-    text = paste(readLines('documentation/hpa_table.info'), '<br> <br>', readLines('documentation/GTEX_table.info'))
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Tissue-enrichment data'))
+    text = paste(readLines('documentation/hpa_rna.info'), '<br> <br>', 
+                 readLines('documentation/gtex_rna.info'), '<br> <br>', 
+                 readLines('documentation/gtex_protein.info'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
   })
   
   output$info_geneset_ui <- renderUI({actionLink('info_geneset', ' ', icon = icon('question-circle'))})
