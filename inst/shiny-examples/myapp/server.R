@@ -429,6 +429,9 @@ shinyServer(function(input, output, session){
     textInput("a_goi_search_rep", "Search HGNC symbol")
   })
   
+  output$a_GOI_search_alpha <- renderUI({
+    shinyjs::hidden(sliderInput('a_goi_search_rep_alpha', 'Adjust alpha', min = 0, max = 1, value = 0.8, step = 0.05))
+  })
   
   # GWAS catalog traits
   gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
@@ -1384,6 +1387,10 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_tissue_enrichment_type_select", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'genoppi')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_upload", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'upload')})
   
+  # show hide alpha sliders
+  observe({shinyjs::toggle(id="a_goi_search_rep_alpha", condition = input$a_goi_search_rep != '')})
+  observe({shinyjs::toggle(id="b_goi_search_rep_alpha", condition = input$b_goi_search_rep != '')})
+  
   # show/hide plot download buttons
   observeEvent(!is.null(a_pulldown_significant()),{
     #shinyjs::show("a_tissue_select_source")
@@ -1827,7 +1834,7 @@ shinyServer(function(input, output, session){
     req(a_vp_gg(), input$a_pval_thresh, input$a_logFC_thresh, input$a_logfc_direction, input$a_significance_type)
     p <- a_vp_gg()
     p <- make_interactive(p, legend = T)
-    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
+    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
     p <- add_plotly_layout_volcano(p, width = global.basic.volcano.width, height = global.basic.volcano.height)
     
@@ -1882,7 +1889,7 @@ shinyServer(function(input, output, session){
     
     # convert into interactive graphics
     p1 = make_interactive(p1)
-    if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene())
+    if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
     p1 = add_plotly_layout_scatter(p1, paste0('r=',r), 
                                    width = global.basic.scatter.width, 
                                    height = global.basic.scatter.height,
@@ -1922,7 +1929,7 @@ shinyServer(function(input, output, session){
     p <- a_integrated_plot_gg()
     p <- make_interactive(p, source = "Multi_VolcanoPlot", legend = T, sig_text = sig_label)
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction,  sig_type = input$a_significance_type)
-    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
+    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
     p <- add_plotly_layout_volcano(p, width = global.integrated.volcano.width, height = global.integrated.volcano.height) # error in searching overlay here when layout width/height supplied. 
     p
   })
@@ -2171,7 +2178,7 @@ shinyServer(function(input, output, session){
                                     list(rev(order(p$overlay$size))), list(order(p$overlay$dataset))))
     
     p <- make_interactive(p, legend = T)
-    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene())
+    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
     if (!is.null(input$a_pathway_mapping_search)) p <- add_plotly_markers_search_pathway(p, input$a_pathway_mapping_search, mapping = a_pathway_mapping_initial())
     p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
     p <- add_plotly_layout_volcano(p, width = global.genesets.volcano.width, height = global.genesets.volcano.height)
@@ -2341,6 +2348,10 @@ shinyServer(function(input, output, session){
  #
  output$b_GOI_search <- renderUI({
    textInput("b_goi_search_rep", "Search HGNC symbol")
+ })
+ 
+ output$b_GOI_search_alpha <- renderUI({
+   shinyjs::hidden(sliderInput('b_goi_search_rep_alpha', 'Adjust alpha', min = 0, max = 1, value = 0.8, step = 0.05))
  })
  
  # needed for searching gene
@@ -2809,7 +2820,7 @@ shinyServer(function(input, output, session){
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
    p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
@@ -2820,7 +2831,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_1_sp_gg()
    p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
    p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
    return(p)
    
@@ -2885,7 +2896,7 @@ shinyServer(function(input, output, session){
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
    p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
@@ -2896,7 +2907,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_2_sp_gg()
    p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
    p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
    
    return(p)
@@ -2960,7 +2971,7 @@ shinyServer(function(input, output, session){
    p$overlay = p$overlay[order(p$overlay$dataset),]
    p$overlay$legend_order = 1:nrow(p$overlay)
    p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
    p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
    return(p)
@@ -2971,7 +2982,7 @@ shinyServer(function(input, output, session){
    
    p <- b_file_3_sp_gg()
    p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene())
+   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
    p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
    return(p)
    

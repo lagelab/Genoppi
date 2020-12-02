@@ -685,6 +685,7 @@ sidebar <- dashboardSidebar(
                                HTML('<hr style="border-color: #D6DBE0;">'),
                                uiOutput("a_bait_search"),
                                uiOutput("a_GOI_search"),
+                               uiOutput("a_GOI_search_alpha"),
                                #uiOutput("a_color_scheme"),
                                uiOutput("a_color_style"),
                                uiOutput("a_file_color"),
@@ -699,7 +700,8 @@ sidebar <- dashboardSidebar(
                                uiOutput("b_file_2_ui"),
                                uiOutput("b_file_3_ui"),
                                HTML('<hr style="border-color: #D6DBE0;">'),
-                               uiOutput("b_GOI_search")
+                               uiOutput("b_GOI_search"),
+                               uiOutput("b_GOI_search_alpha")
               ),
               br(),
               tags$footer(
