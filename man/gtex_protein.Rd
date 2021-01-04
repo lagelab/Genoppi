@@ -29,6 +29,7 @@ Jiang L et al. A Quantitative Proteome Map of the Human Body. Cell. 2020.
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

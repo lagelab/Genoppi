@@ -32,6 +32,7 @@ Science. 2015;347(6220):1260419. doi:10.1126/science.1260419
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

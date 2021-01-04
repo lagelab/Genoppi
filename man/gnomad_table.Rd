@@ -32,6 +32,7 @@ Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

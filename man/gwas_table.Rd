@@ -31,6 +31,7 @@ targeted arrays and summary statistics 2019. Nucleic Acids Res. 2019;47(D1):D100
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

@@ -32,6 +32,7 @@ disease-relevant tissues and cell types. Nat Genet. 2018;50(4):621-629. doi:10.1
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

@@ -28,6 +28,7 @@ Nucleic Acids Res. 2017;45(D1):D619-D625. doi:10.1093/nar/gkw1033
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

@@ -39,6 +39,25 @@
 
 "inweb_table"
 
+#' @title Bioplex 3.0 protein-protein interactions
+#' @description A dataset containing 118,162 protein-protein interactions. Generated through AP-MS of 
+#' 10,128 baits in HEK293T cell lines.
+#' @format A data frame with 883,356 rows and 4 variables:
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein (bait)}
+#'   \item{Gene2}{HGNC gene symbol of second protein (prey)}
+#'   \item{pW}{The probability that the bait-prey pair corresponds to a wrong identification.}
+#'   \item{pNI}{The probability of the bait-prey pair being a background protein.}
+#'   \item{pInt}{The probability of the bait-prey being high Confidence interacting proteins.}
+#' }
+#' @family datasets
+#' @docType data
+#' @source See cited references; downloaded from: \url{https://bioplex.hms.harvard.edu/interactions.php}
+#' @references
+#' Huttlin et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling of the Human Interactome.
+#' 2020 bioRxiv doi: 10.1101/2020.01.19.905109.
+
+"bioplex_table"
 
 #' @title 1000 Genomes SNP to HGNC gene symbol mapping
 #' @description A dataset containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 

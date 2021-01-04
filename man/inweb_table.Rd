@@ -34,6 +34,7 @@ in genetic disorders. Nat Biotechnol. 2007;25(3):309-316. doi:10.1038/nbt1295
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

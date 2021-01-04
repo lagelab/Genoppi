@@ -27,6 +27,7 @@ UniProt Consortium. UniProt: a worldwide hub of protein knowledge. Nucleic Acids
 }
 \seealso{
 Other datasets: 
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

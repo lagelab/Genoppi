@@ -31,6 +31,7 @@ hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data2}},
 \code{\link{example_data3}},
 \code{\link{example_data}},

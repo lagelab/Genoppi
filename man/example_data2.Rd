@@ -29,6 +29,7 @@ for robust and standardized integration of proteomic and genetic data. bioRxiv. 
 \seealso{
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data3}},
 \code{\link{example_data}},
 \code{\link{genes_snps}},
@@ -53,6 +54,7 @@ Other datasets:
 
 Other datasets: 
 \code{\link{accession_gene_table}},
+\code{\link{bioplex_table}},
 \code{\link{example_data3}},
 \code{\link{example_data}},
 \code{\link{genes_snps}},
