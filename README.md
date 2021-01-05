@@ -6,7 +6,6 @@
 <!-- badges: end -->
 
 
-
 # Overview
 
 Genoppi is an open-source software for performing quality control and analyzing quantitative proteomic data. In particular, it streamlines the integration of proteomic data with external datasets such as known protein-protein interactions in published literature, data from genetic studies, gene set annotations, or other user-defined inputs.
@@ -17,18 +16,16 @@ In addition, we provide a [welcome guide](inst/shiny-examples/myapp/www/welcome_
 
 
 ## Installation
-
 ```R
 
 # download and install Genoppi using the devtools package:
-install.packages("devtools")
+install.packages('devtools')
 library(devtools)
-devtools::install_github("lagelab/Genoppi")
+devtools::install_github('lagelab/Genoppi')
 
 ```
 
 ## Launching shiny application
-
 ```R
 
 library(genoppi)
@@ -36,102 +33,128 @@ launch_genoppi()
 
 ```
 
+## Using R package functions
 
-## Getting started
-
-### example 1: Visualizing changes in protein abundance
+### Example 1: analyzing and visualizing significant changes in protein abundance
 ```R
   
-  # processed IP-MS/MS data BCL2 vs IgG control in GPiNs
-  data("example_data")
-  
-  # calculate what proteins are enriched in bait (BCL2) compared 
-  # to control using a false discovery rate of 0.1
-  df_stat <- calc_mod_ttest(example_data)
-  df_sig <- id_enriched_proteins(df_stat, fdr_cutoff = 0.1, logfc_dir = 'positive')
-    
-  # visualize enrichment
-  volcano <- plot_volcano_basic(df_sig)
-  volcano <- plot_overlay(volcano, as.bait('BCL2'))
-  volcano_tidy <- volcano_theme(volcano)
-  print(volcano_tidy)
-  
-  scatter <- plot_scatter_basic(df_sig, repA='rep1', repB='rep2')
-  scatter_tidy <- scatter_theme(scatter, -10, 10)
-  print(scatter_tidy)
-  
-  # customize with classic ggplot notation
-  volcano_gg <- volcano +
-    ggtitle('BCL2 vs IgG control in GPiNs (Triplicate)')
-  
-  # use plotly to interact with plots
-  plt <- make_interactive(volcano_tidy)
-  add_plotly_layout_volcano(plt)
+# processed IP-MS/MS data BCL2 vs IgG control in GPiNs
+data('example_data')
+
+# identify significant proteins in bait (BCL2) IP samples compared 
+# to controls using a false discovery rate of 0.1
+df_stat <- calc_mod_ttest(example_data)
+df_sig <- id_enriched_proteins(df_stat, fdr_cutoff = 0.1, logfc_dir = 'positive')
+
+# visualize protein log2 fold change and corresponding statistical significance
+volcano <- plot_volcano_basic(df_sig)
+volcano <- plot_overlay(volcano, as.bait('BCL2'))
+volcano_tidy <- volcano_theme(volcano)
+print(volcano_tidy)
+
+scatter <- plot_scatter_basic(df_sig, repA = 'rep1', repB = 'rep2')
+scatter_tidy <- scatter_theme(scatter, -10, 10)
+print(scatter_tidy)
+
+# customize with classic ggplot notation
+volcano_gg <- volcano + ggtitle('BCL2 vs IgG control in GPiNs (Triplicate)')
+
+# use plotly to interact with plots
+plt <- make_interactive(volcano_tidy)
+add_plotly_layout_volcano(plt)
 
 ```
 
-
-### example 2: Integrating and visualizing auxilliary genetic data 
+### Example 2: integrating and visualizing auxiliary datasets 
 ```R
 
-  ## enrichment of InWeb
-  
-  # note, this must be named list, e.g: 
-  inweb_list = list(inweb_df = get_inweb_list('BCL2'))
-  
-  df_sig %>% 
-    plot_volcano_basic() %>%
-    plot_overlay(as.bait('BCL2')) %>%
-    plot_overlay(inweb_list, label = F) %>%
-    volcano_theme() %>%
-    make_interactive()
-  
-  # assess overlap b/w enriched proteins and InWeb interactors
-  overlap = calc_hyper(df_sig, 
-    inweb_list$inweb_df, 
-    data.frame(listName = 'InWeb', intersectN=T), bait="BCL2")
-  
-  # explore result
-  overlap$statistics
-  
-  # Venn diagram of overlap
-  venn <- list(Enriched=overlap$genes$InWeb$success_genes, InWeb=overlap$genes$InWeb$sample_genes)
-  venn_diagram <- draw_genoppi_venn(venn)
-  plot_venn(venn_diagram, 0.9)
-  
-  ## Integrated analyses using gene set annotations   
-  genesets = get_geneset_overlay(df_sig, 'hgnc')
-  
-  # plot with ggplot
-  plot_volcano_basic(df_sig) %>%
-    plot_overlay(genesets)
-  
-  # explore via plotly
-  plot_volcano_basic(df_sig) %>%
-    plot_overlay(genesets) %>%
-    make_interactive()
+## known InWeb interactors of bait (BCL2)
+
+# note, this must be named list, e.g: 
+inweb_list <- list(inweb_df = get_inweb_list('BCL2'))
+
+df_sig %>% 
+  plot_volcano_basic() %>%
+  plot_overlay(as.bait('BCL2')) %>%
+  plot_overlay(inweb_list, label = F) %>%
+  volcano_theme() %>%
+  make_interactive()
+
+# assess overlap b/w enriched proteins and InWeb interactors
+overlap <- calc_hyper(df_sig, inweb_list$inweb_df, 
+  data.frame(listName = 'InWeb', intersectN = T), bait = 'BCL2')
+
+# explore results
+overlap$statistics
+
+# Venn diagram of overlap
+venn <- list(Enriched = overlap$genes$InWeb$success_genes,
+  InWeb = overlap$genes$InWeb$sample_genes)
+venn_diagram <- draw_genoppi_venn(venn)
+plot_venn(venn_diagram, 0.9)
 
 
+## gene set annotations from HGNC 
+genesets <- get_geneset_overlay(df_sig, 'hgnc')
+
+# plot with ggplot
+plot_volcano_basic(df_sig) %>%
+  plot_overlay(genesets)
+
+# explore via plotly
+plot_volcano_basic(df_sig) %>%
+  plot_overlay(genesets) %>%
+  make_interactive()
 
 ```
 
-### calculating and visualizing tissue-specific enrichment
-
+### Example 3: calculating and visualizing tissue-specific enrichment
 ```R
-  # look for tissue-specific enrichment
-  gtex_enrichment = calc_adjusted_enrichment(df_sig, gtex_rna, bait = 'BCL2')
-  head(gtex_enrichment)
-  
-  # plot result
-  plot_tissue_enrichment(gtex_enrichment, 'list_name', col.value = 'BH.FDR', ylab = 'FDR')
-  
-  # explore Brain_Hippocampus with relatively low FDR
-  tissue = get_tissue_lists('Brain_Hippocampus',table=gtex_rna)
-  
-  # view in volcano plot
-  plot_volcano_basic(df_sig) %>%
-    plot_overlay(list(hippocampus=tissue), label = T) %>%
-    make_interactive()
+
+# calculate tissue-specific enrichment using GTEx RNA data
+gtex_enrichment <- calc_adjusted_enrichment(df_sig, gtex_rna, bait = 'BCL2')
+head(gtex_enrichment)
+
+# plot result
+plot_tissue_enrichment(gtex_enrichment, 'list_name', col.value = 'BH.FDR', ylab = 'FDR')
+
+# explore 'Brain_Hippocampus' with relatively low FDR
+tissue <- get_tissue_lists('Brain_Hippocampus',table = gtex_rna)
+
+# view in volcano plot
+plot_volcano_basic(df_sig) %>%
+  plot_overlay(list(hippocampus=tissue), label = T) %>%
+  make_interactive()
+
 ```
 
+### Example 4: using significant proteins identified by alternative software as input for downstream Genoppi analyses
+```R
+
+# read in example output file generate by SAINTexpress (PMID: 24513533)
+df <- read.table('tests/testthat/data/test.SAINTexpress.txt',
+  header = T,sep = '\t',stringsAsFactors = F)
+df$gene <- df$PreyGene
+
+# define significant proteins (BFDR <= 0.1 in SAINTexpress output)
+df$significant <- df$BFDR<=0.1
+
+# perform downstream Genoppi analyses similar to Examples 2-3 above
+# e.g. assess overlap with known InWeb interactors
+inweb_list <- list(inweb_df = get_inweb_list('BCL2'))
+
+# assess overlap b/w enriched proteins and InWeb interactors
+overlap <- calc_hyper(df[,c('gene','significant')], inweb_list$inweb_df,
+  data.frame(listName = 'InWeb', intersectN=T), bait = 'BCL2')
+
+# explore results
+overlap$statistics
+
+# Venn diagram of overlap
+venn <- list(Enriched = overlap$genes$InWeb$success_genes,
+  InWeb = overlap$genes$InWeb$sample_genes)
+venn_diagram <- draw_genoppi_venn(venn)
+plot_venn(venn_diagram, 0.9)
+
+``` 
 
