@@ -15,7 +15,7 @@ A data frame with 883,356 rows and 4 variables:
 }
 }
 \source{
-See cited references; downloaded from: \url{https://bioplex.hms.harvard.edu/interactions.php}
+See cited references; downloaded from : \url{https://bioplex.hms.harvard.edu/interactions.php} on 4-Jan-2021.
 }
 \usage{
 bioplex_table
@@ -45,6 +45,7 @@ Other datasets:
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna}},
 \code{\link{inweb_table}},
+\code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
 \code{\link{msigdb_c2_table}},
 \code{\link{msigdb_c3_table}},

@@ -42,6 +42,7 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hpa_rna}},
 \code{\link{inweb_table}},
+\code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
 \code{\link{msigdb_c2_table}},
 \code{\link{msigdb_c3_table}},

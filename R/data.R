@@ -52,12 +52,39 @@
 #' }
 #' @family datasets
 #' @docType data
-#' @source See cited references; downloaded from: \url{https://bioplex.hms.harvard.edu/interactions.php}
+#' @source See cited references; downloaded from : \url{https://bioplex.hms.harvard.edu/interactions.php} on 4-Jan-2021.
 #' @references
 #' Huttlin et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling of the Human Interactome.
 #' 2020 bioRxiv doi: 10.1101/2020.01.19.905109.
+#' 
+
 
 "bioplex_table"
+
+#' @title IRefIndex 17.0 interaction data.base
+#' @description A dataset containing 406,902 protein-protein interactions for human 17,437 genes.
+#' @format  A data frame with 406,902 rows and 5 variables:
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein (bait/prey)}
+#'   \item{Gene2}{HGNC gene symbol of second protein (bait/prey)}
+#'   \item{Score.hpr.max}{Highest PubMed Identifier (PMID) Reuse.}
+#'   \item{Score.lpr.max}{Lowest PubMed Identifier (PMID) Reuse.}
+#'   \item{Score.np.max}{Number of publications.}
+#' }
+#' @details Understanding score.x.max: Since a binary interaction may appear multiple times in IRefIndex, 
+#' each score entry: 'hpr', 'lpr' and 'np' were aggregated and the maximum values 
+#' were kept.
+#' 
+#' @family datasets
+#' @docType data
+#' @source iRefIndex 17.0 (9606.mitab.27062020.txt) downloaded on Jan-06-2021 
+#' from \url{https://irefindex.vib.be/download/irefindex/data/archive/release_17.0/psi_mitab/MITAB2.6/}
+#' @references
+# Razick, S., Magklaras, G. & Donaldson, I.M. iRefIndex: A consolidated protein interaction database with provenance. 
+# BMC Bioinformatics 9, 405 (2008). https://doi.org/10.1186/1471-2105-9-405
+
+
+"irefindex_table"
 
 #' @title 1000 Genomes SNP to HGNC gene symbol mapping
 #' @description A dataset containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 

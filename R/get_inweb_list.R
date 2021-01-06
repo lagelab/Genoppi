@@ -2,7 +2,9 @@
 #' @description Use inweb_table data to get InWeb interactors and non-interactors of bait.
 #' @param bait name of bait protein
 #' @param type string ("all","hc","gs") indicating types of interactors to return (all, high-confidence, or gold-standard)
+#' 
 #' @return data.frame containing gene and significant columns for all non-bait InWeb genes (significant=T for InWeb interactors of bait). NULL if bait not found in InWeb.
+#' 
 #' @export
 #' @examples
 #' \dontrun{
