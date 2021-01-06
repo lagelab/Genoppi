@@ -5,7 +5,7 @@
 \alias{irefindex_table}
 \title{IRefIndex 17.0 interaction data.base}
 \format{
-A data frame with 406,902 rows and 5 variables:
+A data frame with 396,984 rows and 5 variables:
 \describe{
   \item{Gene1}{HGNC gene symbol of first protein (bait/prey)}
   \item{Gene2}{HGNC gene symbol of second protein (bait/prey)}
@@ -22,7 +22,7 @@ from \url{https://irefindex.vib.be/download/irefindex/data/archive/release_17.0/
 irefindex_table
 }
 \description{
-A dataset containing 406,902 protein-protein interactions for human 17,437 genes.
+A dataset containing 396,984 unique protein-protein interactions for human 17,437 genes.
 }
 \details{
 Understanding score.x.max: Since a binary interaction may appear multiple times in IRefIndex, 
@@ -30,7 +30,8 @@ each score entry: 'hpr', 'lpr' and 'np' were aggregated and the maximum values
 were kept.
 }
 \references{
-
+Razick, S., Magklaras, G. & Donaldson, I.M. iRefIndex: A consolidated protein interaction database with provenance. 
+BMC Bioinformatics 9, 405 (2008). https://doi.org/10.1186/1471-2105-9-405
 }
 \seealso{
 Other datasets: 
