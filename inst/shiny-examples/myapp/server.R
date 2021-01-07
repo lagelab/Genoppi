@@ -402,7 +402,7 @@ shinyServer(function(input, output, session){
   ## PPI databases
   
   output$a_bait_layer <- renderUI({
-    textInput("a_bait_rep", value = "", "Input HGNC symbol to search for InWeb protein interactors (e.g. ZBTB7A)")
+    textInput("a_bait_rep", value = "", "Input HGNC symbol to search for protein interactors (e.g. ZBTB7A)")
   })
   
   output$a_inweb_type <- renderUI({
@@ -940,7 +940,7 @@ shinyServer(function(input, output, session){
   })
   
   # map inweb proteins
-  a_inweb_mapping <- reactive({
+  a_ppi_mapping_df <- reactive({
     req(input$a_bait_rep, a_pulldown(), a_ppi_mapping())
     mapping = a_ppi_mapping()
     #mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)
@@ -1200,13 +1200,13 @@ shinyServer(function(input, output, session){
   # download different mappings and hide/show download buttons
   
   # download inweb mapping
-  output$a_inweb_mapping_download <- downloadHandler(
+  output$a_ppi_mapping_df_download <- downloadHandler(
     filename = function() {
       paste("genoppi-inweb-mapping",".csv", sep="")
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
-      inweb = a_inweb_mapping()[,c("dataset","gene")]
+      inweb = a_ppi_mapping_df()[,c("dataset","gene")]
       mymerge = merge(pulldown, inweb, by = 'gene')
       write.csv(mymerge, file, row.names = F)
     }
@@ -1396,7 +1396,7 @@ shinyServer(function(input, output, session){
   
   # show/hide data download buttons
   observeEvent(a_file_pulldown_r() , {shinyjs::toggle(id="a_mttest_mapping_download", condition=!is.null(a_file_pulldown_r() ))})
-  observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
+  observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_ppi_mapping_df_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
   observe({shinyjs::toggle(id="a_snp_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_SNP_rep$datapath))})
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
@@ -1479,7 +1479,7 @@ shinyServer(function(input, output, session){
   })
   
   # plot below venn diagram inweb
-  a_inweb_venn_verbatim <- reactive({
+  a_ppi_venn_verbatim <- reactive({
     req(a_pulldown_significant(), a_inweb_calc_hyper(), input$a_bait_rep, a_ppi_mapping_name())
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     db = a_ppi_mapping_name()
@@ -1492,11 +1492,12 @@ shinyServer(function(input, output, session){
   
   # message if Inweb can not be found
   output$a_inweb_message <- renderUI({
+    db = a_ppi_mapping_name()
     query = input$a_bait_rep
-    mapping = a_inweb_mapping()
+    mapping = a_ppi_mapping_df()
     data = a_pulldown_significant()
     if (is.null(mapping)){
-      return(HTML(paste(query, 'was not found in InWeb!')))
+      return(HTML(paste(query, 'was not found in', db)))
     } else if (query %nin% data$gene){
       return(HTML(paste(query, 'was not found ind data!')))
     }
@@ -1514,8 +1515,8 @@ shinyServer(function(input, output, session){
   })
   
   # print to ui
-  output$a_inweb_venn_verbatim_ui <- renderUI({
-    output <- a_inweb_venn_verbatim()
+  output$a_ppi_venn_verbatim_ui <- renderUI({
+    output <- a_ppi_venn_verbatim()
     HTML(paste(output$total, output$A, output$B, sep = "<br/>"))
   })
   
@@ -1952,7 +1953,7 @@ shinyServer(function(input, output, session){
     p = a_vp_gg()
     
     if (!is.null(input$a_gwas_catalogue)) if (input$a_gwas_catalogue != '' & input$a_overlay_gwas_cat) p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
-    if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2) & input$a_overlay_inweb) p = plot_overlay(p, list(inweb=a_inweb_mapping()))
+    if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2) & input$a_overlay_inweb) p = plot_overlay(p, list(inweb=a_ppi_mapping_df()))
     if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
     if (!is.null(input$a_overlay_gnomad)) if (input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))

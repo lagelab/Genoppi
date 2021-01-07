@@ -93,14 +93,15 @@ body <- dashboardBody(
                                        column(4, 
                                               uiOutput("a_inweb_type"),
                                               uiOutput("a_bioplex_type_ui"),
-                                              uiOutput("a_irefindex_type_ui"))
+                                              uiOutput("a_irefindex_type_ui")
+                                              )
                                      ),
                                      
                                      # footer
                                      fluidRow(
                                        column(4, uiOutput("a_overlay_inweb_ui"), uiOutput("a_inweb_message")),
                                        column(4, uiOutput("a_label_inweb_ui")),
-                                       column(4, shinyjs::hidden(myDownloadButton("a_inweb_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                       column(4, shinyjs::hidden(myDownloadButton("a_ppi_mapping_df_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      ),
                                      fluidRow(
                                        column(12, uiOutput("info_inweb_ui"))
@@ -251,7 +252,7 @@ body <- dashboardBody(
                                       tabPanel('InWeb',
                                         fluidRow(
                                           column(4, plotOutput('a_inweb_venn_ui', width = "220px", height = "220px")),
-                                          column(5, br(), br(), br(), br(), uiOutput("a_inweb_venn_verbatim_ui")),
+                                          column(5, br(), br(), br(), br(), uiOutput("a_ppi_venn_verbatim_ui")),
                                           column(3, shinyjs::hidden(myDownloadButton("a_inweb_venn_mapping_download", 'Genes', icon("download"))))
                                          ),
                                       ),
