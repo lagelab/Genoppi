@@ -3,7 +3,7 @@ context('calc_hyper')
 # read in test data (BCL2 vs. IgG in A375)
 df <- read_input("data/test.data2.txt", sep="\t")$data
 statsDf <- suppressWarnings(calc_mod_ttest(df))
-sigDf <- id_enriched_proteins(statsDf)
+sigDf <- id_significant_proteins(statsDf)
 
 # InWeb df
 inwebDf <- data.frame(listName="InWeb", get_inweb_list("BCL2"))

@@ -6,7 +6,7 @@ test_that('pathway search',{
   
   # perform moderated t-test
   stats_df <- calc_mod_ttest(example_data)
-  sig_df <- id_enriched_proteins(stats_df)
+  sig_df <- id_significant_proteins(stats_df)
   
   # generate volcano plot with bait protein labeled
   basic_volcano <- plot_volcano_basic(sig_df)

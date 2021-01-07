@@ -8,7 +8,7 @@ test_that('function fails when no mapping is not provided',{
   
 })
 
-test_that('characters are split by \n when nchar_max is specified and collapse_type is trunated',{
+#test_that('characters are split by \n when nchar_max is specified and collapse_type is trunated',{
   
   #l = paste(rep(letters, 2), collapse = '')
   #L = paste(rep(LETTERS, 2), collapse = '')
@@ -17,7 +17,7 @@ test_that('characters are split by \n when nchar_max is specified and collapse_t
   #df = append_to_column(df, nchar_max = 5)
   #expect_equal(df$dataset,s)
   
-})
+#})
 
 data("example_data")
 
@@ -25,7 +25,7 @@ test_that('nchar_max is specified and mapping constraitns are violated',{
   
   df = example_data %>%
     calc_mod_ttest() %>%
-    id_enriched_proteins()
+    id_significant_proteins()
   
   # unambigious mappoing is not working
   overlay = get_geneset_overlay(df, database = 'bp')

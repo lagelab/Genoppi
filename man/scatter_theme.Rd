@@ -58,7 +58,7 @@ scatter_theme(
 }
 \description{
 Setups a volcano theme using limits from ggplot. The user will have to manually specify aesthetics, such
-as axis widths, tick sizes etc.
+as axis widths, tick sizes etc. This is still a work in progress.
 }
 \note{
 gridlines can be entirely removed by subsequently calling \code{theme_void()}.
@@ -66,7 +66,6 @@ gridlines can be entirely removed by subsequently calling \code{theme_void()}.
 \seealso{
 Other ggplot: 
 \code{\link{plot_tissue_enrichment}()},
-\code{\link{scatter_theme_old}()},
 \code{\link{theme_genoppi_bar}()},
 \code{\link{theme_genoppi}()},
 \code{\link{volcano_theme}()}

@@ -15,7 +15,6 @@ genoppi themed bar for shiny
 \seealso{
 Other ggplot: 
 \code{\link{plot_tissue_enrichment}()},
-\code{\link{scatter_theme_old}()},
 \code{\link{scatter_theme}()},
 \code{\link{theme_genoppi}()},
 \code{\link{volcano_theme}()}

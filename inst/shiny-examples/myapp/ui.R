@@ -195,7 +195,7 @@ body <- dashboardBody(
                                     ),
                                     #fluidRow(column(12, h5('InWeb'))),
                                     fluidRow(
-                                      column(3, h5('InWeb')),
+                                      column(3, h5('PPI Database')),
                                       column(3, uiOutput("a_color_inweb_sig_ui")),
                                       column(3, uiOutput("a_color_inweb_insig_ui")),
                                       column(3, uiOutput("a_symbol_inweb_ui"))
@@ -249,7 +249,7 @@ body <- dashboardBody(
                                     ),
                                     tabBox(
                                       title = tagList(img(src='icon_venn_a.png',width='22px'), 'Venn diagrams'),  width = 12, #status = 'success', collapsible = TRUE,
-                                      tabPanel('InWeb',
+                                      tabPanel('PPI Database',
                                         fluidRow(
                                           column(4, plotOutput('a_inweb_venn_ui', width = "220px", height = "220px")),
                                           column(5, br(), br(), br(), br(), uiOutput("a_ppi_venn_verbatim_ui")),

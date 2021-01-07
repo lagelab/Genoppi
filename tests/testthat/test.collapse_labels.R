@@ -7,7 +7,7 @@ df <- suppressWarnings(calc_mod_ttest(df))
 test_that('basic functionality, i.e. columns are collapsed as expeced',{
 
   # setup basic plot
-  df <- id_enriched_proteins(df, fdr_cutoff=0.1)
+  df <- id_significant_proteins(df, fdr_cutoff=0.1)
   p = plot_volcano_basic(df) + ggtitle('BCL2 vs IgG in GPiNs') 
   p1 = plot_overlay(p, as.bait('BCL2'))
   
@@ -43,7 +43,7 @@ test_that('basic functionality, i.e. columns are collapsed as expeced',{
 test_that('NAs in alt label are discarded',{
   
   # setup basic plot
-  df <- id_enriched_proteins(df, fdr_cutoff=0.1)
+  df <- id_significant_proteins(df, fdr_cutoff=0.1)
   p = plot_volcano_basic(df) + ggtitle('BCL2 vs IgG in GPiNs') 
   p1 = plot_overlay(p, as.bait('BCL2'))
   

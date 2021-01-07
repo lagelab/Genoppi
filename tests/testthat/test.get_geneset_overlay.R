@@ -4,7 +4,7 @@ context('get_geneset_overlay')
 data("example_data")
 df = example_data %>% 
   calc_mod_ttest() %>% 
-  id_enriched_proteins()
+  id_significant_proteins()
 
 # get all genesets
 genes_sig = df$gene[df$significant]

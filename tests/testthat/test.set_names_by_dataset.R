@@ -6,7 +6,7 @@ test_that('colors by dataset and inweb',{
   # make dataset
   df <- read_input("data/test.data2.txt", sep="\t")$data
   df <- suppressWarnings(calc_mod_ttest(df))
-  df <- id_enriched_proteins(df)
+  df <- id_significant_proteins(df)
   df$dataset = 'pulldown'
   
   # first plot

@@ -11,7 +11,7 @@ test_that('Readme data can be run',{
   # calculate what proteins are enriched in bait (BCL2) compared 
   # to control using a false discovery rate of 0.1
   df_stat <- calc_mod_ttest(example_data2)
-  df_sig <- id_enriched_proteins(df_stat, fdr_cutoff = 0.1, logfc_dir = 'positive')
+  df_sig <- id_significant_proteins(df_stat, fdr_cutoff = 0.1, logfc_dir = 'positive')
     
   # visualize enrichment
   volcano <- plot_volcano_basic(df_sig)
@@ -86,6 +86,7 @@ test_that('Readme data can be run',{
     make_interactive()
   
   
+  expect_true(TRUE) # run till here without errors
 })
 
 
@@ -103,7 +104,7 @@ if (F){
   stats_df <- calc_mod_ttest(example_data2)
   
   # identify enriched proteins
-  sig_df <- id_enriched_proteins(stats_df)
+  sig_df <- id_significant_proteins(stats_df)
   
   # generate volcano plot with bait protein labeled
   basic_volcano <- plot_volcano_basic(sig_df)
@@ -118,7 +119,7 @@ if (F){
   # NOTE: the piping (%>%) command can be used to streamline steps, e.g.: 
   example_data2 %>%
     calc_mod_ttest() %>%
-    id_enriched_proteins() %>%
+    id_significant_proteins() %>%
     plot_volcano_basic() %>%
     plot_overlay(as.bait("BCL2")) %>% 
     theme_volcano()

@@ -64,12 +64,11 @@ volcano_theme(
 }
 \description{
 Setups a scatter cross theme using limits from ggplot. The user will have to manually specify aesthetics, such
-as axis widths, tick sizes etc.
+as axis widths, tick sizes etc. This is still a work in progress.
 }
 \seealso{
 Other ggplot: 
 \code{\link{plot_tissue_enrichment}()},
-\code{\link{scatter_theme_old}()},
 \code{\link{scatter_theme}()},
 \code{\link{theme_genoppi_bar}()},
 \code{\link{theme_genoppi}()}

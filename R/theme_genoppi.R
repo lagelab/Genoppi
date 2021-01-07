@@ -37,76 +37,9 @@ theme_genoppi_bar <- function(rotate = F){
   p
 }
 
-
-#' @title scatter theme old
-#' @description Setups a centered x-y axis scatter plot with label ticks. Note,
-#' that No aes will be inherited from the original ggplot. Also, he user will 
-#' have to adjust the limits of x and y axis.
-#' @param p the ggplot to be converted
-#' @param axis_begin the x and y limits start of the axis
-#' @param axis_end the x and y limits end of the axis.
-#' @param total_ticks total ticks on each axis. Ideally an uneven number.
-#' @param grid_width the width of the grid.
-#' @note gridlines can be entirely removed by subsequently calling \code{theme_void()}.
-#' @source modified from https://stackoverflow.com/questions/17753101/center-x-and-y-axis-with-ggplot2
-#' @family ggplot
-#' @export
-
-scatter_theme_old <- function(p, axis_begin, axis_end, total_ticks = 11, grid_width = 1){
-  
-  warning('depreacted. Will be removed in future release.')
-  
-  # setup tick frequency and axis
-  tick_frame <- data.frame(ticks = seq(axis_begin, axis_end, length.out = total_ticks), zero=0)
-  tick_frame = tick_frame[tick_frame$ticks != 0, ]
-  lab_frame <- data.frame(lab = seq(axis_begin, axis_end), zero = 0)
-  lab_frame <- lab_frame[lab_frame$lab != 0 & lab_frame$lab %in% round(tick_frame$ticks), ]
-  tick_sz <- (tail(lab_frame$lab, 1) -  lab_frame$lab[1]) / 128
-
-  plt <- p +
-    # y axis line
-    geom_segment(x = 0, xend = 0, 
-                 y = lab_frame$lab[1], yend = tail(lab_frame$lab, 1),
-                 size = 0.5, inherit.aes = F) +
-    # x axis line
-    geom_segment(y = 0, yend = 0, 
-                 x = lab_frame$lab[1], xend = tail(lab_frame$lab, 1),
-                 size = 0.5, inherit.aes = F) +
-    # x ticks
-    geom_segment(data = tick_frame, 
-                 aes(x = ticks, xend = ticks, 
-                     y = zero, yend = zero + tick_sz), inherit.aes = F) +
-    # y ticks
-    geom_segment(data = tick_frame, 
-                 aes(x = zero, xend = zero + tick_sz, 
-                     y = ticks, yend = ticks), inherit.aes = F) + 
-    
-    # labels
-    geom_text(data=lab_frame, aes(x=lab, y=zero, label=lab),
-              family = 'Times', vjust=1.5, inherit.aes = F) +
-    geom_text(data=lab_frame, aes(x=zero, y=lab, label=lab),
-              family = 'Times', hjust=1.5, inherit.aes = F) +
-    
-    # setup grid and axis
-    theme_minimal() +  
-    theme(axis.text.x=element_blank(),
-          axis.ticks.x=element_blank(),
-          axis.text.y=element_blank(),
-          axis.ticks.y=element_blank(),
-          panel.grid.major = element_line(size = (0.25)),
-          panel.grid.minor = element_line(size = (0.25))) +
-    scale_y_continuous(minor_breaks = seq(axis_begin, axis_end, grid_width), 
-                       breaks = seq(axis_begin, axis_end, grid_width*2)) +
-    scale_x_continuous(minor_breaks = seq(axis_begin, axis_end, grid_width), 
-                       breaks = seq(axis_begin, axis_end, grid_width*2))
-  
-  return(plt)
-}
-
-
 #' @title volcano theme
 #' @description Setups a scatter cross theme using limits from ggplot. The user will have to manually specify aesthetics, such
-#' as axis widths, tick sizes etc.
+#' as axis widths, tick sizes etc. This is still a work in progress.
 #' @param p the ggplot to be converted
 #' @param tick_sz_x Tick-size. 
 #' @param tick_sz_y tick size. 
@@ -125,8 +58,6 @@ scatter_theme_old <- function(p, axis_begin, axis_end, total_ticks = 11, grid_wi
 #' @param xlab String. alternative x label.
 #' @param ylab String. alternative y label.
 #' @param lab_cex numeric. Character expansion factor for labels.
-#' 
-#' 
 #' @family ggplot
 #' @export
 
@@ -243,7 +174,7 @@ volcano_theme <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick
 
 #' @title volcano theme
 #' @description Setups a volcano theme using limits from ggplot. The user will have to manually specify aesthetics, such
-#' as axis widths, tick sizes etc.
+#' as axis widths, tick sizes etc. This is still a work in progress.
 #' @param p the ggplot to be converted
 #' @param tick_sz_x Tick-size. 
 #' @param tick_sz_y tick size. 

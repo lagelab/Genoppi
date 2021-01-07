@@ -3,7 +3,7 @@ context('plot_scatter_basic')
 # read in test data
 data <- read_input("data/test.data.txt", sep="\t")$data
 data <- suppressWarnings(calc_mod_ttest(data))
-data = id_enriched_proteins(data)
+data = id_significant_proteins(data)
 
 test_that('plot scatter basic single',{
   

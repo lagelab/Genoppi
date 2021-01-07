@@ -44,7 +44,7 @@ test_that('check that the venn diagram can be drawn',{
                      C=c('h',letters[18:23]))
   output = draw_genoppi_venn(triple_venn, margin = 0)
   plot_venn(output, scale = 0.9)
-  
+  expect_true(!is.null(output)) # expect all these lines to run without error
   
   
 })

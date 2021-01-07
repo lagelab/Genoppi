@@ -4,7 +4,7 @@ data(gtex_rna)
 data(example_data)
 
 # run data
-data = example_data %>% calc_mod_ttest %>% id_enriched_proteins()
+data = example_data %>% calc_mod_ttest %>% id_significant_proteins()
 
 
 test_that("Basic functionality GTEX", {

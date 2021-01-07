@@ -39,7 +39,7 @@ test_that('check_input can describe different datasets',{
 
 })
 
-test_that('column names are accepted but column content is invalid',{
+#test_that('column names are accepted but column content is invalid',{
   
   # expected numeric columns
   #df1a = df1
@@ -52,9 +52,7 @@ test_that('column names are accepted but column content is invalid',{
   #expect_error(check_input(df1b))
   
   
-  
-  
-})
+#})
 
 
 

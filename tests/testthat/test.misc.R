@@ -46,7 +46,7 @@ test_that('translate plotly symbols and ggplot shapes',{
   
 })
 
-test_that('is_col working as expected',{
+#test_that('is_col working as expected',{
   
   #df = data.frame(gene=letters, rep1=runif(26), rep2=runif(26))
   #expect_true(is_cols(df, 'rep1', is.numeric))
@@ -55,7 +55,7 @@ test_that('is_col working as expected',{
   #expect_true(is_cols(df, 'gene', is.factor))
   #expect_error(is_cols(df, 'fwafa', is.factor))
   
-})
+#})
 
 test_that('plotly hline and vline',{
   

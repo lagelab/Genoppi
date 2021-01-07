@@ -8,7 +8,7 @@ test_that('basic test to see if function works',{
   stats_df <- calc_mod_ttest(example_data)
   
   # identify enriched proteins
-  sig_df <- id_enriched_proteins(stats_df)
+  sig_df <- id_significant_proteins(stats_df)
   
   # generate volcano plot with bait protein labeled
   p <- plot_volcano_basic(sig_df)
