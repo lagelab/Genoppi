@@ -96,10 +96,9 @@ body <- dashboardBody(
                                               uiOutput("a_irefindex_type_ui")
                                               )
                                      ),
-                                     
                                      # footer
                                      fluidRow(
-                                       column(4, uiOutput("a_overlay_inweb_ui"), uiOutput("a_inweb_message")),
+                                       column(4, uiOutput("a_overlay_inweb_ui"), uiOutput("a_ppi_message")),
                                        column(4, uiOutput("a_label_inweb_ui")),
                                        column(4, shinyjs::hidden(myDownloadButton("a_ppi_mapping_df_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                      ),

@@ -922,9 +922,9 @@ shinyServer(function(input, output, session){
     req(input$a_bait_rep, a_pulldown(), input$a_ppi_select)
     mapping = NULL
     db = input$a_ppi_select
-    if (db == 'inweb') if (!is.null(input$a_inweb_type)) mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)
-    if (db == 'bioplex') if (!is.null(input$a_bioplex_type)) mapping = get_bioplex_list(input$a_bait_rep, p = input$a_bioplex_type)
-    if (db == 'irefindex') if (!is.null(input$a_irefindex_type)) mapping = get_irefindex_list(input$a_bait_rep, n = input$a_irefindex_type)
+    if (db == 'inweb') {if (!is.null(input$a_inweb_type)) mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)}
+    if (db == 'bioplex') {if (!is.null(input$a_bioplex_type)) mapping = get_bioplex_list(input$a_bait_rep, p = input$a_bioplex_type)}
+    if (db == 'irefindex') {if (!is.null(input$a_irefindex_type)) mapping = get_irefindex_list(input$a_bait_rep, n = input$a_irefindex_type)}
     return(mapping)
   })
   
@@ -1491,15 +1491,19 @@ shinyServer(function(input, output, session){
   })
   
   # message if Inweb can not be found
-  output$a_inweb_message <- renderUI({
-    db = a_ppi_mapping_name()
+  output$a_ppi_message <- renderUI({
+    req(input$a_bait_rep, a_pulldown(), input$a_ppi_select)
+    
+    # get info about current selection
     query = input$a_bait_rep
-    mapping = a_ppi_mapping_df()
+    mapping = a_ppi_mapping()
     data = a_pulldown_significant()
+    
+    # send message to UI
     if (is.null(mapping)){
-      return(HTML(paste(query, 'was not found in', db)))
+      return(HTML(paste(query, 'was not found in the database!')))
     } else if (query %nin% data$gene){
-      return(HTML(paste(query, 'was not found ind data!')))
+      return(HTML(paste(query,'was not found in proteomic data.')))
     }
   })
   
@@ -3297,7 +3301,10 @@ shinyServer(function(input, output, session){
  
   output$info_inweb_ui <- renderUI({actionLink('info_inweb', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_inweb,{
-    text = paste(readLines('documentation/inweb_table.info'))
+    #text = paste(readLines('documentation/inweb_table.info'))
+    text = paste(readLines('documentation/inweb_table.info'), '<br> <br>', 
+                 readLines('documentation/irefindex_table.info'), '<br> <br>', 
+                 readLines('documentation/bioplex_table.info'))
     showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'InWeb'))
   })
   

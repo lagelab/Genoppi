@@ -5,7 +5,7 @@
 \alias{bioplex_table}
 \title{Bioplex 3.0 protein-protein interactions}
 \format{
-A data frame with 883,356 rows and 4 variables:
+A data.frame with 883,356 rows and 4 variables:
 \describe{
   \item{Gene1}{HGNC gene symbol of first protein (bait)}
   \item{Gene2}{HGNC gene symbol of second protein (prey)}
@@ -15,14 +15,14 @@ A data frame with 883,356 rows and 4 variables:
 }
 }
 \source{
-See cited references; downloaded from : \url{https://bioplex.hms.harvard.edu/interactions.php} on 4-Jan-2021.
+See cited references; downloaded 4-Jan-2021 from \url{https://bioplex.hms.harvard.edu/interactions.php}.
 }
 \usage{
 bioplex_table
 }
 \description{
 A dataset containing 118,162 protein-protein interactions. Generated through AP-MS of 
-10,128 baits in HEK293T cell lines.
+10,128 baits in HEK293T cell lines. See the source for more details about included columns.
 }
 \references{
 Huttlin et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling of the Human Interactome.

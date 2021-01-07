@@ -14,7 +14,7 @@ snp_to_gene.Rdata file created by April Kim.
 genes_snps
 }
 \description{
-A dataset containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 
+A data set containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 
 18,116 gene symbols, using linkage disequilibrium information from the CEU population. See cited Genoppi
 reference for details on mapping method.
 }
