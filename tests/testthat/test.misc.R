@@ -71,3 +71,16 @@ test_that('plotly hline and vline',{
   
 })
 
+test_that('get gglengend',{
+  
+  plt = ggplot(mtcars, aes(mpg, wt, color = cyl)) + geom_point()
+  expect_true(!is.null(get_gg_legend(plt)))
+
+})
+
+test_that('strsplit.nchar works',{
+  
+  expect_equal(unlist(strsplit.nchar('Hi there, friend', 2, suffix = '!')), 'Hi!')
+  
+})
+
