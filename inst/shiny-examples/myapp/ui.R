@@ -82,11 +82,21 @@ body <- dashboardBody(
                                 br(),
                                  column(width = 4, 
                                     box(
-                                     title = "InWeb_InBioMap", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
+                                     title = "PPI Databases", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
+                                     fluidRow(
+                                       column(12, 
+                                              uiOutput("a_ppi_select_ui"))
+                                     ),
+                                     # InWeb
                                      fluidRow(
                                        column(8, uiOutput("a_bait_layer")),
-                                       column(4, uiOutput("a_inweb_type"))
+                                       column(4, 
+                                              uiOutput("a_inweb_type"),
+                                              uiOutput("a_bioplex_type_ui"),
+                                              uiOutput("a_irefindex_type_ui"))
                                      ),
+                                     
+                                     # footer
                                      fluidRow(
                                        column(4, uiOutput("a_overlay_inweb_ui"), uiOutput("a_inweb_message")),
                                        column(4, uiOutput("a_label_inweb_ui")),

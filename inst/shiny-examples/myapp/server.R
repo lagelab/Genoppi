@@ -398,21 +398,23 @@ shinyServer(function(input, output, session){
   })
   
 
-  # toggle search bar labels in gene set annotations
-  #output$a_label_pathway_search_ui <- renderUI({
-  #  validate(need(a_file_pulldown_r()  != '', ""))
-  #  checkboxInput("a_label_pathway_search", label = "Toggle labels", value = TRUE)
-  #})
+
+  ## PPI databases
   
   output$a_bait_layer <- renderUI({
     textInput("a_bait_rep", value = "", "Input HGNC symbol to search for InWeb protein interactors (e.g. ZBTB7A)")
   })
   
   output$a_inweb_type <- renderUI({
-    selectInput('a_inweb_type', 'Select interactor type', c("All" = 'all',
-                                                    "High-confidence" = 'hc',
-                                                    "Gold-standard" = 'gs'))
-
+    selectInput('a_inweb_type', 'Select interactor type', c("All" = 'all',"High-confidence" = 'hc',"Gold-standard" = 'gs'))
+  })
+  
+  output$a_bioplex_type_ui <- renderUI({
+    sliderInput('a_bioplex_type', 'Select bioplex probability', 0, 1, 0.9, 0.01)
+  })
+  
+  output$a_irefindex_type_ui <- renderUI({
+    sliderInput('a_irefindex_type', 'Select min IRefIndex publications', min = 1, max = max(irefindex_table$Score.np.max), value = 1, step = 1)
   })
   
   output$a_bait_search <- renderUI({
@@ -457,6 +459,12 @@ shinyServer(function(input, output, session){
     } else {
       gwas_traits(unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
     }
+  })
+  
+  
+  # select PPI DB
+  output$a_ppi_select_ui <- renderUI({
+    selectInput('a_ppi_select', 'Select PPI Database',  c("InWeb_InBiomap" = "inweb", "IRefIndex 17.0" = "irefindex", "Bioplex 3.0" = "bioplex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   
@@ -909,10 +917,33 @@ shinyServer(function(input, output, session){
     return(mapping)
   })
   
-  # map inweb prorteins
+  # take selected bait and find preys in selcted PPI database
+  a_ppi_mapping <- reactive({
+    req(input$a_bait_rep, a_pulldown(), input$a_ppi_select)
+    mapping = NULL
+    db = input$a_ppi_select
+    if (db == 'inweb') if (!is.null(input$a_inweb_type)) mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)
+    if (db == 'bioplex') if (!is.null(input$a_bioplex_type)) mapping = get_bioplex_list(input$a_bait_rep, p = input$a_bioplex_type)
+    if (db == 'irefindex') if (!is.null(input$a_irefindex_type)) mapping = get_irefindex_list(input$a_bait_rep, n = input$a_irefindex_type)
+    return(mapping)
+  })
+  
+  # keep track of name of PPI database, and add lower/upper case
+  a_ppi_mapping_name <- reactive({
+    req(a_ppi_mapping())
+    name = NULL
+    db = input$a_ppi_select
+    if (db == 'inweb') name = 'Inweb'
+    if (db == 'bioplex') name = 'Bioplex'
+    if (db == 'irefindex') name = 'IRefIndex'
+    return(name)
+  })
+  
+  # map inweb proteins
   a_inweb_mapping <- reactive({
-    req(input$a_bait_rep, a_pulldown())
-    mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)
+    req(input$a_bait_rep, a_pulldown(), a_ppi_mapping())
+    mapping = a_ppi_mapping()
+    #mapping = get_inweb_list(input$a_bait_rep, type = input$a_inweb_type)
     if (!is.null(mapping)){
         mapping = mapping[mapping$significant, ]
         mapping$col_significant = input$a_color_inweb_sig
@@ -920,7 +951,7 @@ shinyServer(function(input, output, session){
         mapping$shape = symbol_to_shape(input$a_symbol_inweb)
         mapping$symbol = input$a_symbol_inweb
         mapping$label = input$a_label_inweb
-        mapping$dataset = 'InWeb'
+        mapping$dataset = a_ppi_mapping_name()
         return(mapping)
     } 
   })
@@ -1361,6 +1392,8 @@ shinyServer(function(input, output, session){
     }
   )
   
+  
+  
   # show/hide data download buttons
   observeEvent(a_file_pulldown_r() , {shinyjs::toggle(id="a_mttest_mapping_download", condition=!is.null(a_file_pulldown_r() ))})
   observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
@@ -1380,12 +1413,17 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_gnomad_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(a_gnomad_mapping_threshold()) )})
   observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_tissue_select))})
   
-  # show hide select buttons
+  # show hide select buttons (HPA/GTEx)
   observe({shinyjs::toggle(id="a_hpa_rna_tissue", condition = input$a_tissue_select == 'HPA - RNA')})
   observe({shinyjs::toggle(id="a_gtex_rna_tissue", condition = input$a_tissue_select == 'GTEx - RNA')})
   observe({shinyjs::toggle(id="a_gtex_protein_tissue", condition = input$a_tissue_select == 'GTEx - Protein')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_type_select", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'genoppi')})
   observe({shinyjs::toggle(id="a_tissue_enrichment_upload", condition=!is.null(a_pulldown_significant()) & input$a_tissue_select_source == 'upload')})
+  
+  # show hide select PPI DBs
+  observe({shinyjs::toggle(id="a_inweb_type", condition = input$a_ppi_select == 'inweb')})
+  observe({shinyjs::toggle(id="a_bioplex_type", condition = input$a_ppi_select == 'bioplex')})
+  observe({shinyjs::toggle(id="a_irefindex_type", condition = input$a_ppi_select == 'irefindex')})  
   
   # show hide alpha sliders
   observe({shinyjs::toggle(id="a_goi_search_rep_alpha", condition = input$a_goi_search_rep != '')})
@@ -1408,19 +1446,23 @@ shinyServer(function(input, output, session){
   # INWEB
   # inweb hypergeometric overlap
   a_inweb_calc_hyper <- reactive({
-    req(input$a_bait_rep, a_pulldown_significant())
-    inweb_output = get_inweb_list(input$a_bait_rep)
-    if (!is.null(inweb_output)){
+    req(input$a_bait_rep, a_pulldown_significant(), a_ppi_mapping(), a_ppi_mapping_name())
+    
+    #inweb_output = get_inweb_list(input$a_bait_rep)
+    mapping_output = a_ppi_mapping()
+    dbname = a_ppi_mapping_name()
+    
+    if (!is.null(mapping_output)){
       
-      # gather all inweb data
-      inweb_list = data.frame(listName="InWeb", inweb_output)
-      inweb_intersect = data.frame(listName="InWeb", intersectN=T)
+      # gather all ppi data
+      ppi_list = data.frame(listName=dbname, mapping_output)
+      ppi_intersect = data.frame(listName=dbname, intersectN=T)
       data = a_pulldown_significant()
       
       # compile venn diagram information
-      hyper = calc_hyper(data, inweb_list, inweb_intersect, bait = a_bait_parsed())
-      hyper[['venn']][['A']] <- hyper$genes$InWeb$success_genes # pulldown
-      hyper[['venn' ]][['B']] <- hyper$genes$InWeb$sample_genes # inweb
+      hyper = calc_hyper(data, ppi_list, ppi_intersect, bait = a_bait_parsed())
+      hyper[['venn']][['A']] <- hyper$genes[[dbname]]$success_genes # pulldown
+      hyper[['venn' ]][['B']] <- hyper$genes[[dbname]]$sample_genes # ppi 
       return(hyper)
     } else {NULL}
   })
@@ -1438,12 +1480,13 @@ shinyServer(function(input, output, session){
   
   # plot below venn diagram inweb
   a_inweb_venn_verbatim <- reactive({
-    req(a_pulldown_significant(), a_inweb_calc_hyper(), input$a_bait_rep)
+    req(a_pulldown_significant(), a_inweb_calc_hyper(), input$a_bait_rep, a_ppi_mapping_name())
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+    db = a_ppi_mapping_name()
     hyper = a_inweb_calc_hyper()
     A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
-    B <- paste0("B = ", bold(input$a_bait_rep)," InWeb interactors", " &#40;", bold(hyper$statistics$sample_count), "&#41;")
-    total <- paste0("Total population = proteomic data &cap; InWeb &#40;", bold(hyper$statistics$population_count), "&#41;")
+    B <- paste0("B = ", bold(input$a_bait_rep)," ", db," interactors", " &#40;", bold(hyper$statistics$sample_count), "&#41;")
+    total <- paste0("Total population = proteomic data &cap; ", db," &#40;", bold(hyper$statistics$population_count), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
