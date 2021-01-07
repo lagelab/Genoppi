@@ -414,7 +414,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_irefindex_type_ui <- renderUI({
-    sliderInput('a_irefindex_type', 'Select min IRefIndex publications', min = 1, max = max(irefindex_table$Score.np.max), value = 1, step = 1)
+    sliderInput('a_irefindex_type', 'Select min. publications', min = 1, max = max(irefindex_table$Score.np.max), value = 1, step = 1)
   })
   
   output$a_bait_search <- renderUI({

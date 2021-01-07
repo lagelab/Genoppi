@@ -16,7 +16,7 @@ test_that('get_bioplex_list can return correct Bioplex data',{
   result2 <- get_bioplex_list("RRS1", p = 0.95)
   reference2 <- bioplex_table[(bioplex_table$Gene1 == 'RRS1' | bioplex_table$Gene2 == 'RRS1') & bioplex_table$pInt >= 0.95,]
   expect_equal(nrow(reference2), sum(result2$significant))
-  expect_equal(nrow(reference2), result2, 47)
+  expect_equal(nrow(reference2), 47)
   
   # bait not found
   expect_true(is.null(get_bioplex_list("FAKEBAIT")))
