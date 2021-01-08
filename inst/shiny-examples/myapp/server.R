@@ -464,7 +464,7 @@ shinyServer(function(input, output, session){
   
   # select PPI DB
   output$a_ppi_select_ui <- renderUI({
-    selectInput('a_ppi_select', 'Select PPI Database',  c("InWeb_InBiomap" = "inweb", "IRefIndex 17.0" = "irefindex", "Bioplex 3.0" = "bioplex"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_ppi_select', 'select PPI database',  c("InWeb_InBioMap" = "inweb", "iRefIndex 17.0" = "irefindex", "BioPlex 3.0" = "bioplex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   

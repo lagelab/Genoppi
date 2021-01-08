@@ -3,30 +3,34 @@
 \docType{data}
 \name{bioplex_table}
 \alias{bioplex_table}
-\title{Bioplex 3.0 protein-protein interactions}
+\title{BioPlex protein-protein interactions}
 \format{
 A data.frame with 883,356 rows and 4 variables:
 \describe{
   \item{Gene1}{HGNC gene symbol of first protein (bait)}
   \item{Gene2}{HGNC gene symbol of second protein (prey)}
-  \item{pW}{The probability that the bait-prey pair corresponds to a wrong identification.}
-  \item{pNI}{The probability of the bait-prey pair being a background protein.}
-  \item{pInt}{The probability of the bait-prey being high Confidence interacting proteins.}
+  \item{pW}{Probability that the prey is a wrong identification}
+  \item{pNI}{Probability of the prey is a background protein}
+  \item{pInt}{Probability of the prey is a high-confidence interacting protein}
 }
 }
 \source{
-See cited references; downloaded 4-Jan-2021 from \url{https://bioplex.hms.harvard.edu/interactions.php}.
+BioPlex data (v3.0) downloaded on 2021-01-04 from:
+\url{https://bioplex.hms.harvard.edu/interactions.php}
 }
 \usage{
 bioplex_table
 }
 \description{
-A dataset containing 118,162 protein-protein interactions. Generated through AP-MS of 
-10,128 baits in HEK293T cell lines. See the source for more details about included columns.
+A dataset containing 118,162 protein-protein interactions in BioPlex 3.0,
+identified through AP-MS of 10,128 human bait proteins in HEK293T cells.
 }
 \references{
-Huttlin et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling of the Human Interactome.
-2020 bioRxiv doi: 10.1101/2020.01.19.905109.
+Huttlin EL, Ting L, Bruckner RJ, et al. The BioPlex Network: A Systematic Exploration of the Human Interactome.
+Cell. 2015;162(2):425-440. doi:10.1016/j.cell.2015.06.043
+
+Huttlin EL, Bruckner RJ, Navarrete-Perea J, et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling
+of the Human Interactome. bioRxiv. 2020. doi:10.1101/2020.01.19.905109
 }
 \seealso{
 Other datasets: 

@@ -82,7 +82,7 @@ body <- dashboardBody(
                                 br(),
                                  column(width = 4, 
                                     box(
-                                     title = "PPI Databases", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
+                                     title = "InWeb / iRefIndex / BioPlex", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
                                      fluidRow(
                                        column(12, 
                                               uiOutput("a_ppi_select_ui"))
@@ -92,8 +92,8 @@ body <- dashboardBody(
                                        column(8, uiOutput("a_bait_layer")),
                                        column(4, 
                                               uiOutput("a_inweb_type"),
-                                              uiOutput("a_bioplex_type_ui"),
-                                              uiOutput("a_irefindex_type_ui")
+                                              uiOutput("a_irefindex_type_ui"),
+                                              uiOutput("a_bioplex_type_ui")
                                               )
                                      ),
                                      # footer
@@ -146,7 +146,7 @@ body <- dashboardBody(
                                       #fluidRow(column(12, tableOutput("a_table_gnomad_constraints_ui")))
                                     ),
                                     box(
-                                      title = "GTEx or HPA", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                      title = "GTEx / HPA", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
                                         column(12, uiOutput('a_tissue_select_ui'),
                                                uiOutput("a_gtex_rna_tissue_ui"),
@@ -194,7 +194,7 @@ body <- dashboardBody(
                                     ),
                                     #fluidRow(column(12, h5('InWeb'))),
                                     fluidRow(
-                                      column(3, h5('PPI Database')),
+                                      column(3, h5('InWeb / iRefIndex / BioPlex')),
                                       column(3, uiOutput("a_color_inweb_sig_ui")),
                                       column(3, uiOutput("a_color_inweb_insig_ui")),
                                       column(3, uiOutput("a_symbol_inweb_ui"))
@@ -214,7 +214,7 @@ body <- dashboardBody(
                                       column(3, uiOutput("a_symbol_gnomad_ui"))
                                     ),
                                     fluidRow(
-                                      column(3, h5('GTEx or HPA')),
+                                      column(3, h5('GTEx / HPA')),
                                       column(3, uiOutput("a_color_tissue_sig_ui")),
                                       column(3, uiOutput("a_color_tissue_insig_ui")),
                                       column(3, uiOutput("a_symbol_tissue_ui"))
@@ -248,7 +248,7 @@ body <- dashboardBody(
                                     ),
                                     tabBox(
                                       title = tagList(img(src='icon_venn_a.png',width='22px'), 'Venn diagrams'),  width = 12, #status = 'success', collapsible = TRUE,
-                                      tabPanel('PPI Database',
+                                      tabPanel('InWeb / iRefIndex / BioPlex',
                                         fluidRow(
                                           column(4, plotOutput('a_inweb_venn_ui', width = "220px", height = "220px")),
                                           column(5, br(), br(), br(), br(), uiOutput("a_ppi_venn_verbatim_ui")),
@@ -269,7 +269,7 @@ body <- dashboardBody(
                                                  column(3, shinyjs::hidden(myDownloadButton("a_gnomad_venn_mapping_download", 'Genes', icon("download"))))
                                                )
                                       ),
-                                      tabPanel('GTEx or HPA',
+                                      tabPanel('GTEx / HPA',
                                                fluidRow(
                                                  column(4, plotOutput('a_tissue_venn_ui', width = "220px", height = "220px")),
                                                  column(5, br(), br(), br(), br(), uiOutput("a_tissue_venn_verbatim_ui")),

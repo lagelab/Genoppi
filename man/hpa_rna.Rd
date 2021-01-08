@@ -3,7 +3,7 @@
 \docType{data}
 \name{hpa_rna}
 \alias{hpa_rna}
-\title{Human Protein Atlas (HPA) tissue specificity annotations}
+\title{Human Protein Atlas (HPA) RNA tissue specificity annotations}
 \format{
 A data frame with 571,504 rows and 3 variables:
 \describe{

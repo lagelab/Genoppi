@@ -3,7 +3,7 @@
 \docType{data}
 \name{gtex_rna}
 \alias{gtex_rna}
-\title{GTEx tissue specificity annotations}
+\title{GTEx RNA tissue specificity annotations}
 \format{
 A data frame with 1,316,785 rows and 3 variables:
 \describe{
@@ -14,7 +14,7 @@ A data frame with 1,316,785 rows and 3 variables:
 }
 \source{
 GTEx.tstat.tsv dataset (2018-06-25 release) downloaded on 2020-06-15 from:
-\url{https://data.broadinstitute.org/alkesgroup/LDSCORE/LDSC_SEG_ldscores/tstats/}):.
+\url{https://data.broadinstitute.org/alkesgroup/LDSCORE/LDSC_SEG_ldscores/tstats/}
 }
 \usage{
 gtex_rna
