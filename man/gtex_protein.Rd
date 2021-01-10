@@ -3,7 +3,7 @@
 \docType{data}
 \name{gtex_protein}
 \alias{gtex_protein}
-\title{GTEx tissue specificity annotations for protein expression}
+\title{GTEx protein tissue specificity annotations}
 \format{
 A data frame with 686,624 rows and 3 variables:
 \describe{
@@ -13,18 +13,19 @@ A data frame with 686,624 rows and 3 variables:
 }
 }
 \source{
-Table S2, (TS dataset) downloaded on 2020-10-21 from:
-\url{https://www.sciencedirect.com/science/article/pii/S0092867420310783}):.
+Table S2 (TS dataset) downloaded on 2020-10-21 from:
+\url{https://www.sciencedirect.com/science/article/pii/S0092867420310783}
 }
 \usage{
 gtex_protein
 }
 \description{
-A dataset containing tissue specificity annotations for 12.184 genes in 32 tissues derived from
-Mass Spectrometry. See cited reference for details on the definition of tissue-specific genes.
+A dataset containing tissue specificity annotations for 12,184 genes in 32 tissues derived from
+proteomic data. See cited reference for details on the definition of tissue-specific genes.
 }
 \references{
-Jiang L et al. A Quantitative Proteome Map of the Human Body. Cell. 2020.
+Jiang L, Wang M, Lin S, et al. A Quantitative Proteome Map of the Human Body.
+Cell. 2020;183(1):269-283.e19. doi:10.1016/j.cell.2020.08.036
 }
 \seealso{
 Other datasets: 

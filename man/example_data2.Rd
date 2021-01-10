@@ -20,7 +20,8 @@ Genoppi IP-MS experiment
 example_data2
 }
 \description{
-A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates, derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375). See cited Genoppi reference for detailed methods.
+A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates,
+derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375).
 }
 \references{
 Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
