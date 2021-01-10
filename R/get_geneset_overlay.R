@@ -10,7 +10,7 @@
 #' data("example_data")
 #' df = example_data %>% 
 #'    calc_mod_ttest() %>% 
-#'    id_enriched_proteins()
+#'    id_significant_proteins()
 #'    
 #' plot_volcano_basic(df) %>% 
 #'    plot_overlay(get_geneset_overlay(df, 'hgnc', k = 25)) %>% 

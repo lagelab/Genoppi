@@ -2,7 +2,7 @@
 % Please edit documentation in R/calc_adujusted_enrichment.R
 \name{calc_adjusted_enrichment}
 \alias{calc_adjusted_enrichment}
-\title{calculate adjusted enrichment}
+\title{Apply calc_hyper to multiple datasets}
 \usage{
 calc_adjusted_enrichment(
   data,
@@ -39,7 +39,7 @@ subsequent adjusting for multiple testing.
 # check for enrichment in GTEx
 data(gtex_table)
 data(example_data)
-data = example_data \%>\% calc_mod_ttest \%>\% id_enriched_proteins()
+data = example_data \%>\% calc_mod_ttest \%>\% id_significant_proteins()
 gtex_enrichment = calc_adjusted_enrichment(data, gtex_table)
 gtex_enrichment
 }
