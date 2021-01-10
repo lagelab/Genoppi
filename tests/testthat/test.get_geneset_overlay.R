@@ -66,6 +66,8 @@ test_that('common fuction call', {
       plot_overlay(get_geneset_overlay(df, 'hgnc', k = 25)) %>% 
       make_interactive()
   
+  expect_true(TRUE) # exepect function to get here without error
+  
   
 })
 

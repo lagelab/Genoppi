@@ -71,7 +71,7 @@ test_that('Readme data can be run',{
   ### calculating and visualizing tissue-specific enrichment
   
   # look for tissue-specific enrichment
-  gtex_enrichment = calc_adjusted_enrichment(df_sig, gtex_rna, bait = 'BCL2')
+  gtex_enrichment = lapply_calc_hyper(df_sig, gtex_rna, bait = 'BCL2')
   head(gtex_enrichment)
   
   # plot result

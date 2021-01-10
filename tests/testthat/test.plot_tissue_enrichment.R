@@ -4,7 +4,7 @@ data("gtex_rna")
 data("example_data")
 stats_df <- calc_mod_ttest(example_data)
 sig_df <- id_significant_proteins(stats_df)
-gtex_enrichment = calc_adjusted_enrichment(sig_df, gtex_rna, bait = 'BCL2')
+gtex_enrichment = lapply_calc_hyper(sig_df, gtex_rna, bait = 'BCL2')
   
 test_that('plot_tissue_enrichemnt', {
   

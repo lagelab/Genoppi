@@ -17,3 +17,12 @@ a list of genes (if invert is FALSE)
 \description{
 Create gene list data.frame from input SNP lists
 }
+\details{
+Applies the SNP-to-gene mapping described in the paper. Please, see
+the paper for details about reference panel and ancestry.
+}
+\examples{
+\dontrun{
+get_gene_from_snp('rs12516') # BRCA1
+}
+}

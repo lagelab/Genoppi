@@ -21,6 +21,7 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_gg = 3, col_si
   # check input
   if (!is.numeric(df[,repA])) stop('repA must be a numeric column.')
   if (!is.numeric(df[,repB])) stop('repB must be a numeric column.')
+  if (sig_text == insig_text) insig_text = paste0(insig_text, ' ')
   
   # set default parameters
   df$color = ifelse(df$significant, col_significant, col_other)
@@ -74,7 +75,7 @@ plot_scatter_basic_all <- function(df, size_gg = 3, col_significant = "#41AB5D",
   
   # check input
   expected_columns = c('logFC', 'FDR', 'pvalue', 'significant', 'gene')
-  stop_invalid_columns(df, 'plot_scatte_basic_all', expected_columns)
+  stop_invalid_columns(df, 'plot_scatter_basic_all', expected_columns)
   
   # enumerate all combinations replicate
   reps = regmatches(colnames(df), regexpr('rep[0-9]',colnames(df)))

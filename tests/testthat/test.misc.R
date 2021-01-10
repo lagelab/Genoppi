@@ -84,3 +84,5 @@ test_that('strsplit.nchar works',{
   
 })
 
+
+

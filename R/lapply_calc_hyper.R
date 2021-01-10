@@ -1,4 +1,4 @@
-#' @title Apply calc_hyper to multiple datasets
+#' @title lapply calc_hyper to multiple datasets
 #' @description calculate hypergeometric enrichment of genes in tissue and 
 #' subsequent adjusting for multiple testing.
 #' @param data proteomic data with gene and significant columns.
@@ -15,12 +15,12 @@
 #' data(gtex_table)
 #' data(example_data)
 #' data = example_data %>% calc_mod_ttest %>% id_significant_proteins()
-#' gtex_enrichment = calc_adjusted_enrichment(data, gtex_table)
+#' gtex_enrichment = lapply_calc_hyper(data, gtex_table)
 #' gtex_enrichment
 #' }
 #' @export
 
-calc_adjusted_enrichment <- function(data, reference, col.by = 'tissue', bait = NULL, p.adj.method = 'fdr', intersectN = T, verbose = F){
+lapply_calc_hyper <- function(data, reference, col.by = 'tissue', bait = NULL, p.adj.method = 'fdr', intersectN = T, verbose = F){
   
   # check input
   stopifnot(all(c('gene', 'significant') %in% colnames(data)))
@@ -56,6 +56,7 @@ calc_adjusted_enrichment <- function(data, reference, col.by = 'tissue', bait = 
   
   return(statistics)
 }
+
 
 #apply_calc_hyper <- function(data, reference, col.by = 'tissue', bait = NULL, p.adj.method = 'fdr', verbose = F){
 #  

@@ -7,7 +7,7 @@
 #' @param col_significant the color of significant proteins/rows.
 #' @param col_other the color of non-significnt proteins/rows.
 #' @param sig_text string. text for significant interactor to be displayed in legend.
-#' @param insig_text string. Text for non-significant interactors to be displayed in legend.
+#' @param insig_text string. Text for non-significant interactors to be displayed in legend. 
 #' @param size_gg the size of the points. 
 #' @param shape the shape of the points. Default is 21 corresponding to circles.
 #' @param stroke numeric. stroke width.
@@ -38,6 +38,7 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   
   # check input
   stop_invalid_columns(df,'plot_volcano_basic',c('gene','logFC', 'pvalue', 'significant'))
+  if (sig_text == insig_text) insig_text = paste0(insig_text, ' ')
   
   # default parameters
   df$color <- ifelse(df$significant, col_significant, col_other)
@@ -78,5 +79,4 @@ plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'gre
   
   return(p)
 }
-
 

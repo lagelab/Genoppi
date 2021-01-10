@@ -6,7 +6,7 @@ data("example_data2")
 stats_df <- suppressWarnings(calc_mod_ttest(example_data2))
 
 # identify enriched proteins
-sig_df <- id_enriched_proteins(stats_df)
+sig_df <- id_significant_proteins(stats_df)
 
 test_that('basic test to see if function works',{
   

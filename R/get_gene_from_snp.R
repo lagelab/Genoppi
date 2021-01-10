@@ -1,13 +1,18 @@
 #' @title get the genes that matches a vector of SNPs
 #' @description Create gene list data.frame from input SNP lists
+#' @details Applies the SNP-to-gene mapping described in the paper. Please, see
+#' the paper for details about reference panel and ancestry.
 #' @param snp a vector or character contain snp names (rsIDs)
 #' @param invert boolean. Inverts the output, so that a list of SNPs is outputted instead.
 #' @return a list of genes (if invert is FALSE)
 #' @import hash
+#' @examples 
+#' \dontrun{
+#' get_gene_from_snp('rs12516') # BRCA1
+#' }
+#' @export
 
 get_gene_from_snp <- function(snp, invert = F){
-  
-  stopifnot(is.character(snp) | is.vector(snp))
   
   # get snp to gene mapping
   mapping = lapply(names(genes_snps), function(gene){

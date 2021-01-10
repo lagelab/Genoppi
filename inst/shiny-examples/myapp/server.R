@@ -1120,7 +1120,7 @@ shinyServer(function(input, output, session){
     req(a_pulldown_significant(), a_tissue_enrichment_table())
     pulldown = a_pulldown_significant()
     table = a_tissue_enrichment_table()
-    enrichment = calc_adjusted_enrichment(pulldown, table)
+    enrichment = lapply_calc_hyper(pulldown, table)
     enrichment$log10pvalue <- -log10(enrichment$pvalue)
     enrichment$log10qvalue <- -log10(enrichment$BH.FDR) 
     enrichment$bhfdr <- enrichment$BH.FDR
