@@ -1095,7 +1095,8 @@ shinyServer(function(input, output, session){
     }
   })
   
-  
+
+
   # get the tissue enrichment table that have been selected by user
   a_tissue_enrichment_table <- reactive({
     req(a_pulldown_significant(), input$a_tissue_enrichment_type_select)
@@ -1115,8 +1116,13 @@ shinyServer(function(input, output, session){
 
   })
   
+  # Only render when button has been pressed.
+  output$a_button_plot_tissue_enrichment_ui <- renderUI({
+    actionButton('a_button_plot_tissue_enrichment', 'Render plot')
+  })
+  
   # get tissue with elevated expression and calculate FDR.
-  a_tissue_enrichment <- reactive({
+  a_tissue_enrichment <- eventReactive(input$a_button_plot_tissue_enrichment,{
     req(a_pulldown_significant(), a_tissue_enrichment_table())
     pulldown = a_pulldown_significant()
     table = a_tissue_enrichment_table()
@@ -1135,7 +1141,7 @@ shinyServer(function(input, output, session){
   #})
   
   # controls what should be returned to enrichment plot
-  a_tissue_enrichment_layout <- reactive({
+  a_tissue_enrichment_layout <- eventReactive(input$a_button_plot_tissue_enrichment,{
     req(a_pulldown_significant(), input$a_tissue_enrichment_xaxis, input$a_tissue_enrichment_slider)
     
     # setup switches

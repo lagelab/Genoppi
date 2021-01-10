@@ -349,17 +349,22 @@ body <- dashboardBody(
                                  column(4,
                                       box(
                                         title = tagList('Settings'), width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
-                                        column(12, 
-                                          fluidRow(
+                                        fluidRow(
+                                          column(12, 
                                             uiOutput('a_tissue_select_source_ui'),
                                             uiOutput('a_tissue_enrichment_upload_ui'),
                                             uiOutput('a_tissue_enrichment_type_select_ui'),
                                             uiOutput('a_tissue_enrichment_slider_ui'),  
                                             uiOutput('a_tissue_enrichment_xaxis_ui'),
-                                            uiOutput('a_tissue_enrichment_scientific_notation_ui'),
-                                            shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome"))),
-                                            uiOutput("info_tissue_enrichment_ui")
+                                            uiOutput('a_tissue_enrichment_scientific_notation_ui')
                                           )
+                                        ),
+                                        fluidRow(
+                                          column(6, uiOutput("a_button_plot_tissue_enrichment_ui")),
+                                          column(6, shinyjs::hidden(myDownloadButton("a_tissue_enrichment_download",'Tissue enrichment', img=icon('file-alt', lib = "font-awesome"))))
+                                        ),
+                                        fluidRow(
+                                          column(12, uiOutput("info_tissue_enrichment_ui"))
                                         )
                                       )
                                  ),
