@@ -3062,7 +3062,7 @@ shinyServer(function(input, output, session){
      names(diagram) = gsub('f', 'file ', names(diagram))
      v = draw_genoppi_venn(diagram, color = colors, main = '')
      grid::grid.newpage()
-     grid::pushViewport(viewport(width=unit(0.9, "npc"), height = unit(0.9, "npc")))
+     grid::pushViewport(grid::viewport(width=unit(0.9, "npc"), height = unit(0.9, "npc")))
      grid::grid.draw(v)
    } else return(NULL)
 
