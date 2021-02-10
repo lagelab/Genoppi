@@ -12,7 +12,7 @@ Genoppi is an open-source software for performing quality control and analyzing 
 
 This README provides instructions for locally installing the Genoppi software in R (>= 3.6), which consists of two main components: an R package and an interactive shiny application. The application is also available at [www.lagelab.org/genoppi](https://www.lagelab.org/genoppi).
 
-In addition, we provide a [welcome guide](inst/shiny-examples/myapp/www/welcome_guide_210112.pdf) to describe the user interface of the application. The guide also describes the accepted format of various input files in more detail; example input files can be found in *tests/testthat/data*.
+In addition, we provide a [welcome guide](inst/shiny-examples/myapp/www/welcome_guide_v1.0.0_210210.pdf) to describe the user interface of the application. The guide also describes the accepted format of various input files in more detail; example input files can be found in *tests/testthat/data*.
 
 
 ## Installation
