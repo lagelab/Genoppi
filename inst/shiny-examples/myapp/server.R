@@ -364,7 +364,7 @@ shinyServer(function(input, output, session){
     validate(need(a_file_pulldown_r()  != '', ""))
     #validate(need(input$a_select_gnomad_pli_type == 'threshold', ""))
     sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
-                min = 0, max = 1, value = 0.5, step = 0.01)
+                min = 0, max = 1, value = 0.9, step = 0.01)
   })
   
   # intgrated plot, tissue
@@ -967,7 +967,8 @@ shinyServer(function(input, output, session){
       mapping$shape = symbol_to_shape(input$a_symbol_gwas_cat)
       mapping$symbol = input$a_symbol_gwas_cat
       mapping$label = input$a_label_gwas_cat
-      mapping$alt_label = mapping$SNP
+      #mapping$alt_label = mapping$SNP
+      mapping$alt_label = paste(mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
       mapping$dataset = 'GWAS catalog'
       if (lun(mapping$DISEASE.TRAIT) == 1) mapping$dataset = mapping$DISEASE.TRAIT
       return(mapping)
@@ -994,7 +995,7 @@ shinyServer(function(input, output, session){
     gnomad = merge(pulldown, gnomad_table, by = 'gene')
     gnomad$dataset = 'gnomAD'
     gnomad$alt_label = paste0('pLI=',gnomad$pLI)
-    gnomad
+    return(gnomad)
   })
   
   # do cutoff colorscale
@@ -1021,22 +1022,6 @@ shinyServer(function(input, output, session){
     threshold[is.na(threshold)] = FALSE
     return(data.frame(gene=gnomad_table$gene, significant=threshold))
   })
-  
-  # hide show gnomad tab
-  #observe({
-  #  if (!is.null(input$a_select_gnomad_pli_type)){
-  #    if (input$a_select_gnomad_pli_type == 'none'){
-  #      shinyjs::hide("a_slide_gnomad_pli_threshold_ui")
-  #      #shinyjs::show("a_gnomad_colorscale_ui")
-  #      #shinyjs::show("a_gnomad_colorscale_text_ui")
-  #    } else {
-  #      shinyjs::show("a_slide_gnomad_pli_threshold_ui")
-  #      #shinyjs::hide("a_gnomad_colorscale_ui")
-  #      #shinyjs::hide("a_gnomad_colorscale_text_ui")
-  #    }
-  #  }
-  #})
-  
   
   ## upload own tissue enrichment in 'long' format (tissue, gene, sig)
   ## upload own tissue enrichment in matrix format (tissue x gene with sig in each cell)
@@ -1275,7 +1260,7 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       pulldown = a_pulldown_significant()
-      gnomad = a_gnomad_mapping_threshold()[,c('gene','pLI','oe_lof','oe_lof_lower','oe_lof_upper','gene_id')]
+      gnomad = a_gnomad_mapping_threshold()[,c('gene','logFC','pvalue','FDR','significant','pLI')]
       mymerge = merge(pulldown, gnomad, by = 'gene')
       write.csv(mymerge, file, row.names = F)
     }
@@ -1417,7 +1402,7 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_genes_upload_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(a_gnomad_mapping_threshold()) )})
-  observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_tissue_select))})
+  observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_tissue_select) & !is.null(input$a_gtex_rna_tissue) )})
   
   # show hide select buttons (HPA/GTEx)
   observe({shinyjs::toggle(id="a_hpa_rna_tissue", condition = input$a_tissue_select == 'HPA - RNA')})
@@ -1777,6 +1762,7 @@ shinyServer(function(input, output, session){
   # hypergeometric overlap gnomAD
   a_gnomad_calc_hyper <- reactive({
     req(a_gnomad_sig_list(), a_pulldown_significant())
+    
     # get data for overlap calculation
     pulldown = a_pulldown_significant()
     gnomad = data.frame(listName='gnomAD',a_gnomad_sig_list())
@@ -1819,31 +1805,31 @@ shinyServer(function(input, output, session){
   #---------------------------------------------------------------
   # gnomad plot clicking integration
   
-  a_table_gnomad_constraints <- reactive({
-    hover_index = event_data("plotly_click", source = "Multi_VolcanoPlot")
-    if (!is.null(hover_index)){
-      if (hover_index$key %in% gnomad_table$gene){
-        tabl = get_gnomad_constraints(hover_index$key)
-        return(tabl)
-      }
-    }
-  })
+  #a_table_gnomad_constraints <- reactive({
+  #  hover_index = event_data("plotly_click", source = "Multi_VolcanoPlot")
+  #  if (!is.null(hover_index)){
+  #    if (hover_index$key %in% gnomad_table$gene){
+  #      tabl = get_gnomad_constraints(hover_index$key)
+  #      return(tabl)
+  #    }
+  #  }
+  #})
   
   # render text for gnomad status
-  output$a_gnomad_constraints_available_ui <- renderUI({
-    gene = event_data("plotly_click", source = "Multi_VolcanoPlot")$key
-    if (!is.null(gene)){
-      if (gene %in% gnomad_table$gene){
-        return(HTML(paste(bold(gene),'constraint info from gnomAD 2.1.1.')))
-      } else {
-        return(HTML(paste('No constraint info for', bold(gene), 'in gnomAD 2.1.1.')))
-      }
-    }
-    return('Nothing selected. Click a plot point.')
-  })
+  #output$a_gnomad_constraints_available_ui <- renderUI({
+  #  gene = event_data("plotly_click", source = "Multi_VolcanoPlot")$key
+  #  if (!is.null(gene)){
+  #    if (gene %in% gnomad_table$gene){
+  #      return(HTML(paste(bold(gene),'constraint info from gnomAD 2.1.1.')))
+  #    } else {
+  #      return(HTML(paste('No constraint info for', bold(gene), 'in gnomAD 2.1.1.')))
+  #    }
+  #  }
+  #  return('Nothing selected. Click a plot point.')
+  #})
   
   # render table
-  output$a_table_gnomad_constraints_ui <- renderTable(a_table_gnomad_constraints())
+  #output$a_table_gnomad_constraints_ui <- renderTable(a_table_gnomad_constraints())
   
   ## there is a dependency on this somewhere..do not remove for now.
   a_pf_db <- reactive({
@@ -2071,7 +2057,7 @@ shinyServer(function(input, output, session){
     db = input$a_pf_loc_option
     pulldown <- a_pulldown_significant()
     if (sum(pulldown$significant) > 0){
-      overlap <- get_pathways(db, pulldown$gene)
+      overlap <- get_pathways(db, pulldown$gene[pulldown$significant])
       overlap <- assign_freq(overlap, 'pathway')
       overlap = merge(overlap, pulldown)
       return(overlap)
