@@ -11,7 +11,7 @@ test_that('basic test to see if function works',{
   
   # generate volcano plot with bait protein labeled
   basic_volcano <- plot_volcano_basic(sig_df)
-  bait_volcano <- plot_overlay(basic_volcano,as.bait('BCL2')) + theme_genoppi()
+  bait_volcano <- theme_volcano_custom(plot_overlay(basic_volcano,as.bait('BCL2')))
   expect_true(!is.null(basic_volcano$theme$panel.background))
   expect_true(!is.null(basic_volcano$theme$panel.grid.major))
   expect_true(!is.null(basic_volcano$theme$panel.grid.minor))
@@ -29,13 +29,13 @@ test_that('aesthethic themes work',{
   # volcano
   basic_volcano <- plot_volcano_basic(sig_df)
   bait_volcano <- plot_overlay(basic_volcano,as.bait('BCL2'))
-  bait_volcano_theme <- volcano_theme(bait_volcano)
+  bait_volcano_theme <- theme_volcano(bait_volcano)
   expect_true(!is.null(bait_volcano_theme))
   
   # scatter
   basic_scatter <- plot_scatter_basic(sig_df)
   bait_scatter <- plot_overlay(basic_scatter,as.bait('BCL2'))
-  bait_scatter_theme <- scatter_theme(bait_scatter)
+  bait_scatter_theme <- theme_scatter(bait_scatter)
   expect_true(!is.null(bait_volcano_theme))
   
 })

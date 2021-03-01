@@ -968,9 +968,8 @@ shinyServer(function(input, output, session){
       mapping$symbol = input$a_symbol_gwas_cat
       mapping$label = input$a_label_gwas_cat
       #mapping$alt_label = mapping$SNP
-      mapping$alt_label = paste(mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
+      mapping$alt_label = paste(mapping$DISEASE.TRAIT,'-',mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
       mapping$dataset = 'GWAS catalog'
-      if (lun(mapping$DISEASE.TRAIT) == 1) mapping$dataset = mapping$DISEASE.TRAIT
       return(mapping)
     } 
   })
@@ -1066,7 +1065,6 @@ shinyServer(function(input, output, session){
     pulldown = a_pulldown_significant()
     tissue = merge(pulldown, tissue, by = 'gene')
     if (nrow(tissue)){
-      #if (input$a_tissue_select != 'GTEx - Protein') browser()
       tissue$dataset = input$a_tissue_select
       tissue$col_significant = input$a_color_tissue_sig 
       tissue$col_other = input$a_color_tissue_insig 
@@ -2026,7 +2024,7 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_sp_gg(), device = device, 
+      ggsave(file, plot = theme_scatter(input_sp_gg()) , device = device, 
              width = global.img.scatter.download.width,
              height = global.img.scatter.download.height)
     })
@@ -2040,7 +2038,7 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_vp_gg(), device = device, 
+      ggsave(file, plot =  theme_volcano(input_vp_gg()), device = device, 
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })
@@ -3141,7 +3139,7 @@ shinyServer(function(input, output, session){
        grDevices::png(..., width = width, height = height,
                       res = 300, units = "in")
      }
-     ggsave(file, plot = input_b_file_1_vp_gg(), device = device, 
+     ggsave(file, plot = theme_volcano(input_b_file_1_vp_gg()), device = device, 
             width = global.img.scatter.download.width,
             height = global.img.scatter.download.height)
    })
@@ -3154,7 +3152,7 @@ shinyServer(function(input, output, session){
        grDevices::png(..., width = width, height = height,
                       res = 300, units = "in")
      }
-     ggsave(file, plot = input_b_file_1_sp_gg(), device = device, 
+     ggsave(file, plot = theme_scatter(input_b_file_1_sp_gg()), device = device, 
             width = global.img.scatter.download.width,
             height = global.img.scatter.download.height)
    })
@@ -3189,7 +3187,7 @@ shinyServer(function(input, output, session){
        grDevices::png(..., width = width, height = height,
                       res = 300, units = "in")
      }
-     ggsave(file, plot = input_b_file_2_vp_gg(), device = device, 
+     ggsave(file, plot = theme_volcano(input_b_file_2_vp_gg()), device = device, 
             width = global.img.scatter.download.width,
             height = global.img.scatter.download.height)
    })
@@ -3202,7 +3200,7 @@ shinyServer(function(input, output, session){
        grDevices::png(..., width = width, height = height,
                       res = 300, units = "in")
      }
-     ggsave(file, plot = input_b_file_2_sp_gg(), device = device, 
+     ggsave(file, plot = theme_scatter(input_b_file_2_sp_gg()), device = device, 
             width = global.img.scatter.download.width,
             height = global.img.scatter.download.height)
    })
@@ -3234,7 +3232,7 @@ shinyServer(function(input, output, session){
        grDevices::png(..., width = width, height = height,
                       res = 300, units = "in")
      }
-     ggsave(file, plot = input_b_file_3_vp_gg(), device = device, 
+     ggsave(file, plot = theme_volcano(input_b_file_3_vp_gg()), device = device, 
             width = global.img.scatter.download.width,
             height = global.img.scatter.download.height)
    })
@@ -3247,7 +3245,7 @@ shinyServer(function(input, output, session){
        grDevices::png(..., width = width, height = height,
                       res = 300, units = "in")
      }
-     ggsave(file, plot = input_b_file_3_sp_gg(), device = device, 
+     ggsave(file, plot = theme_scatter(input_b_file_3_sp_gg()), device = device, 
             width = global.img.scatter.download.width,
             height = global.img.scatter.download.height)
    })

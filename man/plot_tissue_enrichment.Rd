@@ -31,9 +31,9 @@ constructs a bar chart using ggplot to plot tissue enrichment.
 }
 \seealso{
 Other ggplot: 
-\code{\link{scatter_theme}()},
 \code{\link{theme_genoppi_bar}()},
-\code{\link{theme_genoppi}()},
-\code{\link{volcano_theme}()}
+\code{\link{theme_scatter}()},
+\code{\link{theme_volcano_custom}()},
+\code{\link{theme_volcano}()}
 }
 \concept{ggplot}

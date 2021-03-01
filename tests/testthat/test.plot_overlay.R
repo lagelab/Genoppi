@@ -159,7 +159,7 @@ test_that('ggplot sizes are correctly inherited',{
   df <- id_significant_proteins(df)
   p = plot_volcano_basic(df, size_gg = 4, plot_segments = F) %>%
     plot_overlay(as.bait('BCL2'), size_gg = 4.5, stroke = 1, label_size = 10, label_box_padding = 0.3) %>%
-    volcano_theme()
+    theme_volcano()
   expect_true(!is.null(p))
   
 })

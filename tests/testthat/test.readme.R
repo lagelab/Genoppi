@@ -16,11 +16,11 @@ test_that('Readme data can be run',{
   # visualize enrichment
   volcano <- plot_volcano_basic(df_sig)
   volcano <- plot_overlay(volcano, as.bait('BCL2'))
-  volcano_tidy <- volcano_theme(volcano)
+  volcano_tidy <- theme_volcano(volcano)
   print(volcano_tidy)
   
   scatter <- plot_scatter_basic(df_sig, repA='rep1', repB='rep2')
-  scatter_tidy <- scatter_theme(scatter, -10, 10)
+  scatter_tidy <- theme_scatter(scatter)
   print(scatter_tidy)
   
   # customize with classic ggplot notation
@@ -43,7 +43,7 @@ test_that('Readme data can be run',{
     plot_volcano_basic() %>%
     plot_overlay(as.bait('BCL2')) %>%
     plot_overlay(inweb_list, label = F) %>%
-    volcano_theme() %>%
+    theme_volcano() %>%
     make_interactive()
   
   # assess overlap b/w enriched proteins and InWeb interactors
