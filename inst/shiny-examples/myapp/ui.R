@@ -72,7 +72,7 @@ body <- dashboardBody(
                                           fluidRow(
                                             column(11, shinyjs::hidden(myDownloadButton("a_scatter_plot_download", 'Scatter plot')))
                                           ),
-                                          fluidRow(
+                                          fluidRow(style = "padding-bottom:75px",
                                             column(11, shinycssloaders::withSpinner(plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
                                           )
                                         )
@@ -116,10 +116,10 @@ body <- dashboardBody(
                                         column(4, uiOutput("a_label_gwas_cat_ui")),
                                         column(4, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                       ),
-                                      #fluidRow(
-                                      #  column(12, uiOutput('a_gwas_subset_traits_by_data'))
-                                      #  #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
-                                      #),
+                                      fluidRow(
+                                        column(12, uiOutput('a_gwas_subset_traits_by_data'))
+                                        #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
+                                      ),
                                       fluidRow(
                                         column(12, uiOutput("info_gwas_ui"))
                                       )
@@ -630,7 +630,7 @@ body <- dashboardBody(
     tabItem(tabName = "guide",
             
             # works in browser format
-            tags$iframe(src = "welcome_guide_v1.0.0_210210.pdf",
+            tags$iframe(src = "welcome_guide_200509.pdf",
                                            style="width:100%;",  #frameborder="0"
                                            height = "3100px")
     ),
@@ -690,7 +690,7 @@ sidebar <- dashboardSidebar(
               #h6(as.character(genoppi.ver)),
               menuItem("Quick Start", tabName = "start", icon = icon("stream")),
               menuItem("Guide", tabName = "guide", icon = icon("info-circle")),
-              menuItem("Data Documentation", icon = icon("question-circle"), tabName = "documentation"),#, badgeLabel = "new", badgeColor = "green"),
+              menuItem("Data Documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",
