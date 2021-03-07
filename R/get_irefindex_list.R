@@ -21,7 +21,7 @@ get_irefindex_list <- function(bait, n=1){
   
   if (bait %in% dbGenes) { 
     tempDf1 <- subset(irefindex_table, (Gene1==bait | Gene2==bait) & Score.np.max >= n)
-    if (nrow(tempDf1) > 0){
+    if (nrow(tempDf1) > 1){
       ints <- unique(c(tempDf1$Gene1,tempDf1$Gene2))
       dbDf <- data.frame(gene=dbGenes[dbGenes!=bait])
       dbDf$significant <- dbDf$gene %in% ints 

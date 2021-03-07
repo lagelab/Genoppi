@@ -116,10 +116,10 @@ body <- dashboardBody(
                                         column(4, uiOutput("a_label_gwas_cat_ui")),
                                         column(4, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
                                       ),
-                                      fluidRow(
-                                        column(12, uiOutput('a_gwas_subset_traits_by_data'))
-                                        #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
-                                      ),
+                                      #fluidRow(
+                                      #  column(12, uiOutput('a_gwas_subset_traits_by_data'))
+                                      #  #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
+                                      #),
                                       fluidRow(
                                         column(12, uiOutput("info_gwas_ui"))
                                       )
