@@ -3274,8 +3274,7 @@ shinyServer(function(input, output, session){
  
 
  
- 
- 
+
  
  
   
@@ -3285,37 +3284,38 @@ shinyServer(function(input, output, session){
   output$info_inweb_ui <- renderUI({actionLink('info_inweb', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_inweb,{
     #text = paste(readLines('documentation/inweb_table.info'))
-    text = paste(readLines('documentation/inweb_table.info'), '<br> <br>', 
-                 readLines('documentation/irefindex_table.info'), '<br> <br>', 
-                 readLines('documentation/bioplex_table.info'))
+    
+    text = paste(readLines(find_docs('inweb_table.info')), '<br> <br>', 
+                 readLines(find_docs('irefindex_table.info')), '<br> <br>', 
+                 readLines(find_docs('bioplex_table.info')))
     showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'InWeb'))
   })
   
   output$info_gwas_ui <- renderUI({actionLink('info_gwas', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_gwas,{
-    text = paste(readLines('documentation/gwas_table.info'))
+    text = paste(readLines(find_docs('gwas_table.info')))
     showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'GWAS catalog'))
   })
   
   output$info_gnomad_ui <- renderUI({actionLink('info_gnomad', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_gnomad,{
-    text = paste(readLines('documentation/gnomad_table.info'))
+    text = paste(readLines(find_docs('gnomad_table.info')))
     showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'gnomAD'))
   })
   
   output$info_tissue_ui <- renderUI({actionLink('info_tissue', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue,{
-    text = paste(readLines('documentation/hpa_rna.info'), '<br> <br>', 
-                 readLines('documentation/gtex_rna.info'), '<br> <br>', 
-                 readLines('documentation/gtex_protein.info'))
+    text = paste(readLines(find_docs('hpa_rna.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_rna.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_protein.info')))
     showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
   })
   
   output$info_tissue_enrichment_ui <- renderUI({actionLink('info_tissue_enrichment', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue_enrichment,{
-    text = paste(readLines('documentation/hpa_rna.info'), '<br> <br>', 
-                 readLines('documentation/gtex_rna.info'), '<br> <br>', 
-                 readLines('documentation/gtex_protein.info'))
+    text = paste(readLines(find_docs('hpa_rna.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_rna.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_protein.info')))
     showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
   })
   

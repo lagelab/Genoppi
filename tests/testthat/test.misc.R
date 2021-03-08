@@ -84,5 +84,10 @@ test_that('strsplit.nchar works',{
   
 })
 
-
+test_that('find_docs work',{
+  
+  x = find_docs(file = 'SAINT', dir = 'data/')
+  expect_true(nchar(x) > 1)
+  
+})
 

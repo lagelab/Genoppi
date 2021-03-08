@@ -316,3 +316,16 @@ hyperlink <- function(url, text){
 
 line_unity <- function(){geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2)}
 
+
+#' @title find docs
+#' @description find documentation objects for shiny app.
+#' @param dir directory
+#' @param file file / regex pattern
+#' @export
+
+find_docs <- function(file = 'inweb_table.info', dir = 'documentation'){
+  return(list.files(dir, pattern = file, full.names = T))
+}
+
+
+
