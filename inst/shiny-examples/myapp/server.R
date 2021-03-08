@@ -414,7 +414,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_irefindex_type_ui <- renderUI({
-    sliderInput('a_irefindex_type', 'Select min. publications', min = 1, max = max(irefindex_table$Score.np.max), value = 1, step = 1)
+    sliderInput('a_irefindex_type', 'Select min. publications', min = 1, max = max(irefindex_table$Score.np.max), value = 2, step = 1)
   })
   
   output$a_bait_search <- renderUI({
@@ -1115,13 +1115,6 @@ shinyServer(function(input, output, session){
     enrichment$bhfdr <- enrichment$BH.FDR
     return(enrichment)
   })
-  
-  #a_tissue_enrichment_gg <- reactive({
-  #  req(a_tissue_enrichment())
-  #  df = a_tissue_enrichment()
-  #  p = plot_tissue_enrichment(df, 'list_name', 'log10pvalue')
-  #  return(p)
-  #})
   
   # controls what should be returned to enrichment plot
   a_tissue_enrichment_layout <- eventReactive(input$a_button_plot_tissue_enrichment,{

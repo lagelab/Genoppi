@@ -30,15 +30,20 @@ documentation_to_html <- function(content){
   
 }
 
+# go through roxygen titles, to get alphabetic order
+headers <- unlist(lapply(data.documentation, function(file){content = null_omit(genoppi:::parse_rd(readLines(file), what = c("title"), combine.with = ' '))$title}))
+data.documentation.ordered <- data.documentation[order(headers)]
+
 # go over each file and parse
-for (file in data.documentation){
+count = 0
+for (file in data.documentation.ordered){
   
-  
+  count = count + 1
   # write documentation files
   content = null_omit(genoppi:::parse_rd(readLines(file), what = c("title", "description", "source", "references"), combine.with = ' '))
   content_html = documentation_to_html(content)
   content_html = gsub('\\\\url\\{','',content_html)
-  newfile = paste0(tools::file_path_sans_ext(basename(file)),'.info')
+  newfile = paste0(count,'_',tools::file_path_sans_ext(basename(file)),'.info')
   write(content_html, file = paste0('inst/shiny-examples/myapp/documentation/', newfile))
   
 }

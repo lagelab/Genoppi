@@ -36,13 +36,24 @@ draw_genoppi_venn <- function(x, main='',colors = color_distinct(), alpha = NULL
     return(genes)
   })
   
+  # manually check if one set is bigger than the other
+  # which is required for manually ordering the venn.diagrams
+  #if (length(x) == 2) {
+  #  lens <-  unlist(lapply(x, length))
+  #  invert <- as.logical(lens[1] < lens[2])
+  #  rotation = ifelse(invert, 180, 0)
+  #}
+  
   # draw actual venn diagram
   v <- VennDiagram::venn.diagram(x,
                             col = colors[1:n], fill = fill, alpha = alpha,
                             margin=margin, filename = NULL, resolution = 900, height = 400, force.unique = T,
-                            main = main, sub = " ", sub.pos = rep(sub.pos, n), scaled = F,
+                            main = main, sub = " ", sub.pos = rep(sub.pos, n), scaled = F, #inverted = invert,
                             cat.cex = 1.1, cex = 2, cat.dist = rep(cat.dist, n),
                             fontfamily = 'sans', cat.fontfamily = 'sans', main.fontfamily = 'sans')
+  
+  #grid::grid.newpage()
+  #grid::grid.draw(v)
   
   # render the plot
   return(v)
