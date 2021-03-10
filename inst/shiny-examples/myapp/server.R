@@ -1940,9 +1940,9 @@ shinyServer(function(input, output, session){
     p = a_vp_gg()
     
     if (!is.null(input$a_gwas_catalogue)) if (input$a_gwas_catalogue != '' & input$a_overlay_gwas_cat) p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
-    if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2) & input$a_overlay_inweb) p = plot_overlay(p, list(inweb=a_ppi_mapping_df()))
-    if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
+    if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
+    if (!is.null(input$a_bait_rep)) if (input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2) & input$a_overlay_inweb) p = plot_overlay(p, list(inweb=a_ppi_mapping_df()))
     if (!is.null(input$a_overlay_gnomad)) if (input$a_overlay_gnomad) p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))
     if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p = plot_overlay(p, list(tissuemap=a_tissue_mapping()))
     
