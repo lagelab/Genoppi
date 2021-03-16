@@ -860,7 +860,7 @@ shinyServer(function(input, output, session){
     # messages
     msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
     msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
-    msg3 = paste0('These will need to have a manually specified "gene" column in for downstream analysis.')
+    msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
     
     if (length(failed) > 0){
       return(HTML(paste(msg1, msg2, msg3)))
