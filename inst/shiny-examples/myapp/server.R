@@ -820,7 +820,7 @@ shinyServer(function(input, output, session){
     # check for NAs in rows
     na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
     na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
-
+    
     # pre-rendered messages
     msg1 = paste0(bold('Error:'),' None of the inpputed column names are allowed')
     msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
@@ -856,14 +856,25 @@ shinyServer(function(input, output, session){
     failed = pulldown_mapping$accession_number[is.na(pulldown_mapping$gene)]
     absolute = paste0(length(failed),'/',nrow(pulldown_mapping))
     fraction = paste0(format(100*length(failed)/nrow(pulldown_mapping), digits = 3),'%')
-    
+  
     # messages
+    msg0 = bold(paste('ERROR: ', absolute, ' (',fraction,') accesion_numbers were not mapped to a genes. The App may crash during Integrated Plotting!'))
     msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
     msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
     msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
+    msg4 = paste0('Are you using human accession numbers?')
     
     if (length(failed) > 0){
-      return(HTML(paste(msg1, msg2, msg3)))
+      
+      # if more than 99% are unmapped give a warning:
+      if (length(failed)/nrow(pulldown_mapping) > 0.99){
+        return(HTML(paste(msg0, msg4, msg2)))
+      
+        # otherwise, print out mapping
+      } else {
+        return(HTML(paste(msg1, msg2, msg3)))
+      }
+
     } else return(NULL)
     
   }) 
@@ -960,6 +971,7 @@ shinyServer(function(input, output, session){
   a_gwas_catalogue_mapping <- reactive({
     req(input$a_gwas_catalogue, a_pulldown())
     genes = a_pulldown()$gene
+    validate(need(!all(is.na(genes)), ""))
     mapping = get_gwas_lists(input$a_gwas_catalogue, genes)
     if (!is.null(mapping)){
       mapping$col_significant = input$a_color_gwas_cat_sig
@@ -989,8 +1001,9 @@ shinyServer(function(input, output, session){
   
   # setup main gnomad mapping
   a_gnomad_mapping <- reactive({
-    req(a_pulldown())
+    req(a_pulldown(), input$a_slide_gnomad_pli_threshold)
     pulldown = a_pulldown_significant()
+    validate(need(!all(is.na(pulldown$gene)), ""))
     gnomad = merge(pulldown, gnomad_table, by = 'gene')
     gnomad$dataset = 'gnomAD'
     gnomad$alt_label = paste0('pLI=',gnomad$pLI)
@@ -1060,9 +1073,10 @@ shinyServer(function(input, output, session){
   # setup main mapping
   a_tissue_mapping <- reactive({
     req(a_pulldown_significant(), a_get_tissue_list())
+    pulldown = a_pulldown_significant()
+    validate(need(!all(is.na(pulldown$gene)), ""))
     tissue = a_get_tissue_list() 
     tissue = tissue[tissue$significant, ]
-    pulldown = a_pulldown_significant()
     tissue = merge(pulldown, tissue, by = 'gene')
     if (nrow(tissue)){
       tissue$dataset = input$a_tissue_select
@@ -2045,8 +2059,9 @@ shinyServer(function(input, output, session){
   # assign frequency 
   a_pathway_mapping_assign_freq <- reactive({
     req(a_pulldown_significant(), input$a_pf_loc_option)
-    db = input$a_pf_loc_option
     pulldown <- a_pulldown_significant()
+    validate(need(!all(is.na(pulldown$gene)), ""))
+    db = input$a_pf_loc_option
     if (sum(pulldown$significant) > 0){
       overlap <- get_pathways(db, pulldown$gene[pulldown$significant])
       overlap <- assign_freq(overlap, 'pathway')
