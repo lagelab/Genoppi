@@ -6,7 +6,6 @@ warnings_are_errors: false
 
 # test multiple operating systems
 os:
-  - osx
   - linux
 
 # environment variables set for all builds
