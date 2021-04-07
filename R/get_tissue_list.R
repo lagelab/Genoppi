@@ -11,7 +11,7 @@
 #'   id_significant_proteins() %>% 
 #'   plot_volcano_basic() %>% 
 #'   plot_overlay(as.bait('BCL2')) %>%
-#'   plot_overlay(list(brain = get_tissue_lists("Brain_Cortex",table = gtex_rna))) %>%
+#'   plot_overlay(list(brain = get_tissue_list("Brain_Cortex",table = gtex_rna))) %>%
 #'   theme_volcano()
 #' }
 #' @export
@@ -146,11 +146,23 @@
 #' @md
 
 
-get_tissue_lists <- function(tissue, table = gtex_rna){
+get_tissue_list <- function(tissue, table = gtex_rna){
   
   if (!is.character(tissue)) stop('tissue input must be character')
   if (!tissue %in% table$tissue) stop(paste(tissue,'is not a valid tissue. Please see ?get_hpa_lists for details.'))
   
   return(table[table$tissue %in% tissue, ])
+}
+
+
+#' @title deprecated. See ?get_tissue_list
+#' @description deprecated. See ?get_tissue_list
+#' @param tissue deprecated. See ?get_tissue_list
+#' @param table deprecated. See ?get_tissue_list
+#' @export
+get_tissue_lists <- function(tissue, table = gtex_rna){
+  
+  warning("'get_tisse_lists' has been deprecated. Please use 'get_tissue_list' instead.")
+  get_tissue_list(tissue, table)
 }
 
