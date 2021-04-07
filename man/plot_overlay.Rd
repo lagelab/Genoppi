@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_overlay.R
 \name{plot_overlay}
 \alias{plot_overlay}
-\title{plot overlay}
+\title{superimpose genesets onto plots}
 \usage{
 plot_overlay(
   p,
@@ -73,7 +73,7 @@ The following data.frame headers for a reference are accepted:
  \item{"label"} {A boolen that indicates whether the label should be plotted.}
  \item{"label.size"}{A numeric that indicates the size of the label items.}
 }
-See ?validate_reference or additional details.
+See ?validate_reference for additional details.
 }
 \examples{
 \dontrun{
@@ -87,7 +87,7 @@ df \%>\%
   plot_overlay(as.bait('BCL2')) \%>\%
   volcano_theme()
 
-# make a custom overlay
+# make a custom overlay with custom colors
 myoverlay = data.frame(gene = c('FUS', 'RBMX'),
                        col_significant = c('cyan', 'blue'),
                        col_other = c('grey', 'grey'), 

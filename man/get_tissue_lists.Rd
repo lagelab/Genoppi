@@ -2,20 +2,24 @@
 % Please edit documentation in R/get_tissue_lists.R
 \name{get_tissue_lists}
 \alias{get_tissue_lists}
-\title{Retreive Human Protein Atlas specific data}
+\title{Retrieve Genotype-Tissue Expression (GTEx) or
+Human Protein Atlas specific expression data}
 \usage{
-get_tissue_lists(tissue, table = hpa_table)
+get_tissue_lists(tissue, table = gtex_rna)
 }
 \arguments{
 \item{tissue}{vector of tissue names (character). See details for acceptable names.}
 
-\item{table}{either hpa_table or gtex_table}
+\item{table}{datasets from genoppi: hpa_rna, hpa_protein or gtex_rna.}
 }
 \description{
-Create gene list data.frame from input traits
+Create gene list data.frame from input traits that can be superimposed onto volcano plots
+or used for statistical enrichment analysis.
 }
 \details{
-The following 33 tissues are available for Human Protein Atlas:
+There are three datasets available: gtex_rna, hpa_rna and hpa_protein. See
+\code{?hpa_rna}, \code{?gtex_rna} or \code{?gtex_protein} for more details.
+\subsection{The following 33 tissues are available for hpa_rna:}{
 \itemize{
 \item 'adipose tissue'
 \item 'adrenal gland'
@@ -50,5 +54,112 @@ The following 33 tissues are available for Human Protein Atlas:
 \item 'tongue'
 \item 'urinary bladder'
 \item 'vagina'
+}
+}
+
+\subsection{The following 53 tissue are available for gtex_rna}{
+\itemize{
+\item 'Adipose_Subcutaneous'
+\item 'Adipose_Visceral_.Omentum.'
+\item 'Adrenal_Gland'
+\item 'Artery_Aorta'
+\item 'Artery_Coronary'
+\item 'Artery_Tibial'
+\item 'Bladder'
+\item 'Brain_Amygdala'
+\item 'Brain_Anterior_cingulate_cortex_.BA24.'
+\item 'Brain_Caudate_.basal_ganglia.'
+\item 'Brain_Cerebellar_Hemisphere'
+\item 'Brain_Cerebellum'
+\item 'Brain_Cortex'
+\item 'Brain_Frontal_Cortex_.BA9.'
+\item 'Brain_Hippocampus'
+\item 'Brain_Hypothalamus'
+\item 'Brain_Nucleus_accumbens_.basal_ganglia.'
+\item 'Brain_Putamen_.basal_ganglia.'
+\item 'Brain_Spinal_cord_.cervical_c.1.'
+\item 'Brain_Substantia_nigra'
+\item 'Breast_Mammary_Tissue'
+\item 'Cells_EBV.transformed_lymphocytes'
+\item 'Cells_Transformed_fibroblasts'
+\item 'Cervix_Ectocervix'
+\item 'Cervix_Endocervix'
+\item 'Colon_Sigmoid'
+\item 'Colon_Transverse'
+\item 'Esophagus_Gastroesophageal_Junction'
+\item 'Esophagus_Mucosa'
+\item 'Esophagus_Muscularis'
+\item 'Fallopian_Tube'
+\item 'Heart_Atrial_Appendage'
+\item 'Heart_Left_Ventricle'
+\item 'Kidney_Cortex'
+\item 'Liver'
+\item 'Lung'
+\item 'Minor_Salivary_Gland'
+\item 'Muscle_Skeletal'
+\item 'Nerve_Tibial'
+\item 'Ovary'
+\item 'Pancreas'
+\item 'Pituitary'
+\item 'Prostate'
+\item 'Skin_Not_Sun_Exposed_.Suprapubic.'
+\item 'Skin_Sun_Exposed_.Lower_leg.'
+\item 'Small_Intestine_Terminal_Ileum'
+\item 'Spleen'
+\item 'Stomach'
+\item 'Testis'
+\item 'Thyroid'
+\item 'Uterus'
+\item 'Vagina'
+\item 'Whole_Blood'
+}
+}
+
+\subsection{The following 32 tissues are avialable for hpa_protein:}{
+\itemize{
+\item 'Adrenal Gland'
+\item 'Artery Aorta'
+\item 'Artery Coronary'
+\item 'Artery Tibial'
+\item 'Brain Cerebellum'
+\item 'Brain Cortex'
+\item 'Breast'
+\item 'Colon Sigmoid'
+\item 'Colon Transverse'
+\item 'GE junction'
+\item 'Esophagus Mucosa'
+\item 'Esophagus Muscle'
+\item 'Heart Atrial'
+\item 'Heart Ventricle'
+\item 'Liver'
+\item 'Lung'
+\item 'Minor Salivary'
+\item 'Muscle Skeletal'
+\item 'Nerve Tibial'
+\item 'Ovary'
+\item 'Pancreas'
+\item 'Pituitary'
+\item 'Prostate'
+\item 'Skin Unexpo'
+\item 'Skin SunExpo'
+\item 'Small Intestine'
+\item 'Spleen'
+\item 'Stomach'
+\item 'Testis'
+\item 'Thyroid'
+\item 'Uterus'
+\item 'Vagina'
+}
+}
+}
+\examples{
+\dontrun{
+example_data \%>\% 
+  calc_mod_ttest() \%>\% 
+  id_significant_proteins() \%>\% 
+  plot_volcano_basic() \%>\% 
+  plot_overlay(as.bait('BCL2')) \%>\%
+  plot_overlay(list(brain = get_tissue_lists("Brain_Cortex",table = gtex_rna))) \%>\%
+  theme_volcano()
 }
 }

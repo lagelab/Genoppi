@@ -1,5 +1,6 @@
-#' @title plot overlay
-#' @description Takes a ggplot2 object and overlays points from a reference. 
+#' @title superimpose genesets onto plots
+#' @description 
+#' Takes a ggplot2 object and overlays points from a reference. 
 #' The function uses the mapping and plot environment from a previous ggplot to add an overlay
 #' with a matching 'reference' data.frame. This yields a new plot with items that intersect the 
 #' the original ggplot data and the reference data. Can be applied iteratively. 
@@ -12,7 +13,7 @@
 #'  \item{"label"} {A boolen that indicates whether the label should be plotted.}
 #'  \item{"label.size"}{A numeric that indicates the size of the label items.}
 #' }
-#' See ?validate_reference or additional details.
+#' See ?validate_reference for additional details.
 #' 
 #' @param p A ggplot object. Usually passed down from \code{plot_volcano_basic} or \code{plot_scatter_basic}.
 #' @param reference a list of data.frames that are preferably named. The name of the list will passed down to
@@ -48,7 +49,7 @@
 #'   plot_overlay(as.bait('BCL2')) %>%
 #'   volcano_theme()
 #'
-#' # make a custom overlay
+#' # make a custom overlay with custom colors
 #' myoverlay = data.frame(gene = c('FUS', 'RBMX'),
 #'                        col_significant = c('cyan', 'blue'),
 #'                        col_other = c('grey', 'grey'), 
