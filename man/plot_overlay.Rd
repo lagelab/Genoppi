@@ -59,7 +59,11 @@ for more details.}
 a ggplot
 }
 \description{
-Takes a ggplot2 object and overlays points from a reference. 
+Takes a ggplot2 object and overlays genes from a reference data.frame. This data.frame
+can be constructed manually or generated with a variety of functions, e.g. \code{get_inweb_list},
+\code{get_irefindex_list} or \code{get_tissue_list}.
+
+  
 The function uses the mapping and plot environment from a previous ggplot to add an overlay
 with a matching 'reference' data.frame. This yields a new plot with items that intersect the 
 the original ggplot data and the reference data. Can be applied iteratively. 

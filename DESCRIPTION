@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 1.0.9
+Version: 1.0.10
 Authors@R: 
     c(person(given = "Frederik",
              family = "Lassen",
@@ -71,7 +71,7 @@ Collate:
     'get_replicate_summary_text.R'
     'get_shiny_errors.R'
     'get_snp_lists.R'
-    'get_tissue_lists.R'
+    'get_tissue_list.R'
     'html_translate_significance_thresholds.R'
     'id_enriched_proteins.R'
     'lapply_calc_hyper.R'
