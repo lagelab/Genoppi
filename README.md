@@ -123,7 +123,7 @@ head(gtex_enrichment)
 plot_tissue_enrichment(gtex_enrichment, 'list_name', col.value = 'BH.FDR', ylab = 'FDR')
 
 # explore 'Brain_Hippocampus' with relatively low FDR
-tissue <- get_tissue_lists('Brain_Hippocampus',table = gtex_rna)
+tissue <- get_tissue_list('Brain_Hippocampus',table = gtex_rna)
 
 # view in volcano plot
 plot_volcano_basic(df_sig) %>%
