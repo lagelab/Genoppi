@@ -15,55 +15,58 @@ plot_overlay(
   label = NULL,
   label_size = NULL,
   label_color = "black",
+  col_significant = NULL,
+  col_other = NULL,
   label_box_padding = 0.3,
   label_point_padding = 0.5,
   label_arrowhead_size = 0.01,
+  label_max_overlaps = 10,
   legend_nchar_max = NULL,
   nchar_max_collapse = "<br>"
 )
 }
 \arguments{
-\item{p}{A ggplot object. Usually passed down from \code{plot_volcano_basic} or \code{plot_scatter_basic}.}
+\item{p}{A ggplot object passed down from \code{plot_volcano_basic} or \code{plot_scatter_basic}.}
 
-\item{reference}{a list of data.frames that are preferably named. The name of the list will passed down to
-the data.frame as the column 'dataset'. Alternatively, the dataset can have a column name dataset.}
+\item{reference}{a named list of data.frames.}
 
-\item{match}{by what string should the ggplot and overlay be merged? Default is 'gene'.}
+\item{match}{string. By what string should the ggplot and overlay be merged? Default is 'gene'.}
 
-\item{size_gg}{size of ggplot points.}
+\item{size_gg}{numeric. Size of ggplot points.}
 
 \item{stroke}{numeric. The width of the outline/borders.}
 
-\item{sig_text}{string. text for significant interactors to be displayed in legend.}
+\item{sig_text}{string. Text for significant interactors to be displayed in legend.}
 
 \item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
 
-\item{label}{A boolean. This will overwrite the \code{label} column in the reference data.frame.}
+\item{label}{boolean. This will overwrite the \code{label} column in the reference data.frame.}
 
 \item{label_size}{numeric. Size of label. This will overwrite the \code{label.size} column in the reference data.frame.}
 
-\item{label_color}{the color of the label. Default is black.}
+\item{label_color}{string. The color of the label. Default is black.}
 
-\item{label_box_padding}{Amount of padding around bounding box. See \code{?ggrepel::geom_text_repel} 
-for more details.}
+\item{col_significant}{string. Color of superimposed genes that are significant.}
 
-\item{label_point_padding}{Amount of padding around label. See \code{?ggrepel::geom_text_repel}.}
+\item{col_other}{string. Color of superimposed genes that are non-significant.}
 
-\item{label_arrowhead_size}{The size of the arrowhead. 0 means no arrowhead.}
+\item{label_box_padding}{numeric. Amount of padding around bounding box. See \code{?ggrepel::geom_text_repel}.}
 
-\item{legend_nchar_max}{maximum amount of allowed characters in the legend.}
+\item{label_point_padding}{numeric. Amount of padding around label. See \code{?ggrepel::geom_text_repel}.}
 
-\item{nchar_max_collapse}{what charcter should be used for line break? Default is HTML line break \code{"<br>".}}
-}
-\value{
-a ggplot
+\item{label_arrowhead_size}{numeric. The size of the arrowhead. 0 means no arrowhead.}
+
+\item{label_max_overlaps}{integer. Exclude text labels that overlap too many things. See \code{?ggrepel::geom_text_repel}.}
+
+\item{legend_nchar_max}{integer. Maximum amount of allowed characters in the legend.}
+
+\item{nchar_max_collapse}{string. What character should be used for line break? Default is HTML line break \code{"<br>".}}
 }
 \description{
-Takes a ggplot2 object and overlays genes from a reference data.frame. This data.frame
+Takes a ggplot2 object and superimoses genes from a reference data.frame. This data.frame
 can be constructed manually or generated with a variety of functions, e.g. \code{get_inweb_list},
 \code{get_irefindex_list} or \code{get_tissue_list}.
 
-  
 The function uses the mapping and plot environment from a previous ggplot to add an overlay
 with a matching 'reference' data.frame. This yields a new plot with items that intersect the 
 the original ggplot data and the reference data. Can be applied iteratively. 
@@ -88,8 +91,7 @@ df <- example_data \%>\%
 # overlay simple  a bait
 df \%>\% 
   plot_volcano_basic() \%>\%
-  plot_overlay(as.bait('BCL2')) \%>\%
-  volcano_theme()
+  plot_overlay(as.bait('BCL2')) 
 
 # make a custom overlay with custom colors
 myoverlay = data.frame(gene = c('FUS', 'RBMX'),
@@ -100,14 +102,12 @@ myoverlay = data.frame(gene = c('FUS', 'RBMX'),
 # plot overlay
 df \%>\% 
   plot_volcano_basic() \%>\%
-  plot_overlay(list(overlay = myoverlay)) \%>\%
-  volcano_theme() 
+  plot_overlay(list(overlay = myoverlay)) 
 
 # plot multiple overlays
 df \%>\% 
   plot_volcano_basic() \%>\%
   plot_overlay(list(overlay = myoverlay)) \%>\%
-  plot_overlay(as.bait('BCL2')) \%>\%
-  volcano_theme() 
+  plot_overlay(as.bait('BCL2')) 
 }
 }

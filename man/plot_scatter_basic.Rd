@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_scatter_basic.R
 \name{plot_scatter_basic}
 \alias{plot_scatter_basic}
-\title{plot a basic scatte plot}
+\title{plot a basic scatter plot of replicates}
 \usage{
 plot_scatter_basic(
   df,
@@ -19,31 +19,40 @@ plot_scatter_basic(
 )
 }
 \arguments{
-\item{df}{A data.frame containing at least gene, significant, replicate/triplicate columns.}
+\item{df}{data.frame with at least columns \code{gene}, \code{significant} and some \code{rep[0-9]}.}
 
 \item{repA}{string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.}
 
-\item{repB}{string that is column in df.}
+\item{repB}{string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.}
 
-\item{size_gg}{size of point.}
+\item{size_gg}{numeric. Size of point.}
 
-\item{col_significant}{color for significant protein interactors.}
+\item{col_significant}{string. Color for significant protein interactors.}
 
-\item{col_other}{color for other protein interactors.}
+\item{col_other}{string. Color for other protein interactors.}
 
-\item{sig_text}{string. text for significant interactor to be displayed in legend.}
+\item{sig_text}{string. Text for significant interactor to be displayed in legend.}
 
 \item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
 
-\item{shape}{numeric. the shape of the point. Default is 21 (circle).}
+\item{shape}{integer. The shape of the point. Default is 21 (circle).}
 
-\item{stroke}{numeric. the stroke width.}
+\item{stroke}{numeric. The stroke width.}
 
-\item{col_border}{the color of the borders/outline.}
-}
-\value{
-a gg scatter plot.
+\item{col_border}{string. The color of the borders/outline.}
 }
 \description{
-Draws a pair of specific replicates in a scatter plot.
+Plot protein-level data in a sactter plot.
+}
+\examples{
+\dontrun{
+# run example data
+p = example_data \%>\% 
+calc_mod_ttest() \%>\%
+  id_significant_proteins(fdr_cutoff = 0.1) \%>\%
+  plot_scatter_basic() \%>\%
+  plot_overlay(as.bait('BCL2'))
+  
+p + ggtitle('Example scatter plot')
+}
 }

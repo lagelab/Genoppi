@@ -1,19 +1,33 @@
-#' @title plot a basic scatte plot 
-#' @description Draws a pair of specific replicates in a scatter plot.
-#' @param df A data.frame containing at least gene, significant, replicate/triplicate columns.
+#' @title plot a basic scatter plot of replicates
+#' 
+#' @description Plot protein-level data in a sactter plot.
+#' 
+#' @param df data.frame with at least columns \code{gene}, \code{significant} and some \code{rep[0-9]}.
 #' @param repA string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.
-#' @param repB string that is column in df.
-#' @param size_gg size of point.
-#' @param col_significant color for significant protein interactors.
-#' @param col_other color for other protein interactors.
-#' @param sig_text string. text for significant interactor to be displayed in legend.
+#' @param repB string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.
+#' @param size_gg numeric. Size of point.
+#' @param col_significant string. Color for significant protein interactors.
+#' @param col_other string. Color for other protein interactors.
+#' @param sig_text string. Text for significant interactor to be displayed in legend.
 #' @param insig_text string. Text for non-significant interactors to be displayed in legend.
-#' @param shape numeric. the shape of the point. Default is 21 (circle).
-#' @param stroke numeric. the stroke width.
-#' @param col_border the color of the borders/outline.
-#' @return a gg scatter plot.
+#' @param shape integer. The shape of the point. Default is 21 (circle).
+#' @param stroke numeric. The stroke width.
+#' @param col_border string. The color of the borders/outline.
+#' 
+#' @examples 
+#' \dontrun{
+#' # run example data
+#' p = example_data %>% 
+#' calc_mod_ttest() %>%
+#'   id_significant_proteins(fdr_cutoff = 0.1) %>%
+#'   plot_scatter_basic() %>%
+#'   plot_overlay(as.bait('BCL2'))
+#'   
+#' p + ggtitle('Example scatter plot')
+#' }
 #' @importFrom ggplot2 ggplot geom_point geom_abline labs theme_minimal
 #' @export
+
 
 plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_gg = 3, col_significant = "#41AB5D", col_other = 'grey', 
                                sig_text = '(significant)', insig_text = '(not significant)', shape = 21, stroke = 0.2, col_border = NULL){

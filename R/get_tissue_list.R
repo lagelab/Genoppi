@@ -162,7 +162,7 @@ get_tissue_list <- function(tissue, table = gtex_rna){
 #' @export
 get_tissue_lists <- function(tissue, table = gtex_rna){
   
-  warning("'get_tisse_lists' has been deprecated. Please use 'get_tissue_list' instead.")
+  warning("'get_tissue_lists' has been deprecated. Please use 'get_tissue_list' instead.")
   get_tissue_list(tissue, table)
 }
 

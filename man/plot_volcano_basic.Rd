@@ -14,49 +14,41 @@ plot_volcano_basic(
   shape = 21,
   stroke = 0.2,
   col_border = NULL,
-  plot_segments = T
+  plot_segments = F
 )
 }
 \arguments{
-\item{df}{a data.frame with at least columns gene, logFC, pvalue and significant.}
+\item{df}{data.frame with at least columns \code{gene}, \code{logFC}, \code{pvalue} and \code{significant}.}
 
-\item{col_significant}{the color of significant proteins/rows.}
+\item{col_significant}{string. The color of significant proteins/genes.}
 
-\item{col_other}{the color of non-significnt proteins/rows.}
+\item{col_other}{string. The color of non-significant proteins/genes.}
 
-\item{sig_text}{string. text for significant interactor to be displayed in legend.}
+\item{sig_text}{string. Text for significant interactor to be displayed in legend.}
 
 \item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
 
-\item{size_gg}{the size of the points.}
+\item{size_gg}{numeric. The size of the points.}
 
-\item{shape}{the shape of the points. Default is 21 corresponding to circles.}
+\item{shape}{integer. The shape of the points. Default to 21 (circles).}
 
-\item{stroke}{numeric. stroke width.}
+\item{stroke}{numeric. Stroke width.}
 
-\item{col_border}{string. a color for the outline of points.}
+\item{col_border}{string. A color for the outline of points.}
 
-\item{plot_segments}{plot volcano plot segments, i.e. two lines with x and y axis intercept.}
+\item{plot_segments}{boolean. Plot volcano plot axis segments, i.e. two lines with x and y axis intercept.}
 }
 \description{
-takes in a data.frane with the columns gene, logFC, pvalue and significant 
-to draw a volcano. Optionally, a column indicating 'color' (string) can be supplied to 
-indicate the volcano color scheme and whether to draw names of specific proteins. See
-details section for plotting aesthetics.
+Plot protein-level data in a basic volcano plot. Can be chained with \code{plot_overlay} to produce overlays.
 }
 \examples{
 \dontrun{
-
-# run example data
 p = example_data \%>\% 
 calc_mod_ttest() \%>\%
   id_significant_proteins(fdr_cutoff = 0.1) \%>\%
   plot_volcano_basic() \%>\%
-  plot_overlay(as.bait('BCL2')) \%>\%
-  volcano_theme()
-
-# add a ggplot title
-p + ggtitle('Example volcano plot') 
+  plot_overlay(as.bait('BCL2')) 
+p + ggtitle('Example volcano plot') + theme_classic()
 
 }
 }

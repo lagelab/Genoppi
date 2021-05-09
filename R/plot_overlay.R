@@ -1,10 +1,9 @@
 #' @title superimpose genesets onto plots
 #' @description 
-#' Takes a ggplot2 object and overlays genes from a reference data.frame. This data.frame
+#' Takes a ggplot2 object and superimoses genes from a reference data.frame. This data.frame
 #' can be constructed manually or generated with a variety of functions, e.g. \code{get_inweb_list},
 #' \code{get_irefindex_list} or \code{get_tissue_list}.
 #' 
-#'   
 #' The function uses the mapping and plot environment from a previous ggplot to add an overlay
 #' with a matching 'reference' data.frame. This yields a new plot with items that intersect the 
 #' the original ggplot data and the reference data. Can be applied iteratively. 
@@ -19,25 +18,24 @@
 #' }
 #' See ?validate_reference for additional details.
 #' 
-#' @param p A ggplot object. Usually passed down from \code{plot_volcano_basic} or \code{plot_scatter_basic}.
-#' @param reference a list of data.frames that are preferably named. The name of the list will passed down to
-#' the data.frame as the column 'dataset'. Alternatively, the dataset can have a column name dataset.
-#' @param match by what string should the ggplot and overlay be merged? Default is 'gene'.
-#' @param size_gg size of ggplot points.
-#' @param label A boolean. This will overwrite the \code{label} column in the reference data.frame.
+#' @param p A ggplot object passed down from \code{plot_volcano_basic} or \code{plot_scatter_basic}.
+#' @param reference a named list of data.frames. 
+#' @param match string. By what string should the ggplot and overlay be merged? Default is 'gene'.
+#' @param size_gg numeric. Size of ggplot points.
+#' @param col_significant string. Color of superimposed genes that are significant.
+#' @param col_other string. Color of superimposed genes that are non-significant.
+#' @param label boolean. This will overwrite the \code{label} column in the reference data.frame.
 #' @param label_size numeric. Size of label. This will overwrite the \code{label.size} column in the reference data.frame.
-#' @param label_color the color of the label. Default is black.
-#' @param label_box_padding Amount of padding around bounding box. See \code{?ggrepel::geom_text_repel} 
-#' for more details.
-#' @param label_point_padding Amount of padding around label. See \code{?ggrepel::geom_text_repel}.
-#' @param label_arrowhead_size The size of the arrowhead. 0 means no arrowhead.
-#' @param legend_nchar_max maximum amount of allowed characters in the legend.
-#' @param nchar_max_collapse what charcter should be used for line break? Default is HTML line break \code{"<br>".}
+#' @param label_color string. The color of the label. Default is black.
+#' @param label_box_padding numeric. Amount of padding around bounding box. See \code{?ggrepel::geom_text_repel}.
+#' @param label_max_overlaps integer. Exclude text labels that overlap too many things. See \code{?ggrepel::geom_text_repel}.
+#' @param label_point_padding numeric. Amount of padding around label. See \code{?ggrepel::geom_text_repel}.
+#' @param label_arrowhead_size numeric. The size of the arrowhead. 0 means no arrowhead.
+#' @param legend_nchar_max integer. Maximum amount of allowed characters in the legend.
+#' @param nchar_max_collapse string. What character should be used for line break? Default is HTML line break \code{"<br>".}
 #' @param stroke numeric. The width of the outline/borders. 
-#' @param sig_text string. text for significant interactors to be displayed in legend. 
+#' @param sig_text string. Text for significant interactors to be displayed in legend. 
 #' @param insig_text string. Text for non-significant interactors to be displayed in legend.
-#' 
-#' @return a ggplot
 #' 
 #' @importFrom ggplot2 geom_point quo_name ggsave
 #' @import ggrepel
@@ -50,8 +48,7 @@
 #' # overlay simple  a bait
 #' df %>% 
 #'   plot_volcano_basic() %>%
-#'   plot_overlay(as.bait('BCL2')) %>%
-#'   volcano_theme()
+#'   plot_overlay(as.bait('BCL2')) 
 #'
 #' # make a custom overlay with custom colors
 #' myoverlay = data.frame(gene = c('FUS', 'RBMX'),
@@ -62,25 +59,27 @@
 #' # plot overlay
 #' df %>% 
 #'   plot_volcano_basic() %>%
-#'   plot_overlay(list(overlay = myoverlay)) %>%
-#'   volcano_theme() 
+#'   plot_overlay(list(overlay = myoverlay)) 
 #'
 #' # plot multiple overlays
 #' df %>% 
 #'   plot_volcano_basic() %>%
 #'   plot_overlay(list(overlay = myoverlay)) %>%
-#'   plot_overlay(as.bait('BCL2')) %>%
-#'   volcano_theme() 
+#'   plot_overlay(as.bait('BCL2')) 
 #' }
 #' @export
 
 
 plot_overlay <- function(p, reference, match = 'gene', size_gg = 3.5, stroke = 0.75, sig_text = NULL, insig_text = NULL,
-                         label = NULL, label_size = NULL, label_color = 'black', 
-                         label_box_padding = 0.30, label_point_padding = 0.50, label_arrowhead_size = 0.01,
+                         label = NULL, label_size = NULL, label_color = 'black', col_significant = NULL, col_other = NULL,
+                         label_box_padding = 0.30, label_point_padding = 0.50, label_arrowhead_size = 0.01, label_max_overlaps = 10,
                          legend_nchar_max = NULL, nchar_max_collapse = '<br>') {
   
 
+  # let the user add colors to overlays if needed
+  if (!is.null(col_significant)) reference[[1]]$col_significant <- col_significant
+  if (!is.null(col_other)) reference[[1]]$col_other <- col_other
+  
   # collapse references to a single data.frame and omit non informative columns, this
   # function does all the hard work, by ensuring that information from the plot is being inherited.
   overlay = get_overlay_df(p, reference, match, sig_text, insig_text, legend_nchar_max, nchar_max_collapse)
@@ -111,6 +110,7 @@ plot_overlay <- function(p, reference, match = 'gene', size_gg = 3.5, stroke = 0
   p1 = p1 + ggrepel::geom_text_repel(collapse_labels(overlay[unlist(ifelse(is.null(label), list(overlay$label), list(label))),]), 
                        mapping=aes(label = gene),
                        color=label_color,
+                       max.overlaps = label_max_overlaps,
                        size=ifelse(is.null(label_size), overlay$label_size, label_size),
                        arrow=arrow(length=unit(label_arrowhead_size, 'npc')),
                        box.padding=unit(label_box_padding, "lines"),

@@ -1,31 +1,25 @@
 #' @title Plot basic volcano
-#' @description takes in a data.frane with the columns gene, logFC, pvalue and significant 
-#' to draw a volcano. Optionally, a column indicating 'color' (string) can be supplied to 
-#' indicate the volcano color scheme and whether to draw names of specific proteins. See
-#' details section for plotting aesthetics. 
-#' @param df a data.frame with at least columns gene, logFC, pvalue and significant.
-#' @param col_significant the color of significant proteins/rows.
-#' @param col_other the color of non-significnt proteins/rows.
-#' @param sig_text string. text for significant interactor to be displayed in legend.
+#' @description Plot protein-level data in a basic volcano plot. Can be chained with \code{plot_overlay} to produce overlays.
+#' 
+#' @param df data.frame with at least columns \code{gene}, \code{logFC}, \code{pvalue} and \code{significant}.
+#' @param col_significant string. The color of significant proteins/genes.
+#' @param col_other string. The color of non-significant proteins/genes.
+#' @param sig_text string. Text for significant interactor to be displayed in legend.
 #' @param insig_text string. Text for non-significant interactors to be displayed in legend. 
-#' @param size_gg the size of the points. 
-#' @param shape the shape of the points. Default is 21 corresponding to circles.
-#' @param stroke numeric. stroke width.
-#' @param col_border string. a color for the outline of points.
-#' @param plot_segments plot volcano plot segments, i.e. two lines with x and y axis intercept.
+#' @param size_gg numeric. The size of the points. 
+#' @param shape integer. The shape of the points. Default to 21 (circles).
+#' @param stroke numeric. Stroke width.
+#' @param col_border string. A color for the outline of points.
+#' @param plot_segments boolean. Plot volcano plot axis segments, i.e. two lines with x and y axis intercept.
+#' 
 #' @examples 
 #' \dontrun{
-#' 
-#' # run example data
 #' p = example_data %>% 
 #' calc_mod_ttest() %>%
 #'   id_significant_proteins(fdr_cutoff = 0.1) %>%
 #'   plot_volcano_basic() %>%
-#'   plot_overlay(as.bait('BCL2')) %>%
-#'   volcano_theme()
-#'
-#' # add a ggplot title
-#' p + ggtitle('Example volcano plot') 
+#'   plot_overlay(as.bait('BCL2')) 
+#' p + ggtitle('Example volcano plot') + theme_classic()
 #' 
 #' }
 #' @export
@@ -34,7 +28,7 @@
 
 plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(significant)', 
                                insig_text = '(not significant)', size_gg = 3, shape = 21, stroke = 0.2, 
-                               col_border = NULL, plot_segments = T){
+                               col_border = NULL, plot_segments = F){
   
   # check input
   stop_invalid_columns(df,'plot_volcano_basic',c('gene','logFC', 'pvalue', 'significant'))
