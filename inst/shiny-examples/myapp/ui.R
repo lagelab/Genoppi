@@ -630,7 +630,7 @@ body <- dashboardBody(
     tabItem(tabName = "guide",
             
             # works in browser format
-            tags$iframe(src = "welcome_guide_v1.0.0_210210.pdf",
+            tags$iframe(src = "welcome_guide_v1.0_210514.pdf",
                                            style="width:100%;",  #frameborder="0"
                                            height = "3100px")
     ),

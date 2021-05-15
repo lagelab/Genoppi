@@ -24,8 +24,9 @@ A dataset containing gene symbol and corresponding log2 fold change values for 3
 derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a neuron cell line (GPiN).
 }
 \references{
-Pintacuda G, Lassen FH, Hsu Y-HH, Kim A, Martín JM, Malolepsza E et al. Genoppi: an open-source software
-for robust and standardized integration of proteomic and genetic data. bioRxiv. 2020. doi:10.1101/2020.05.04.076034
+Pintacuda G, Lassen FH, Hsu YH, Kim A, Martín JM, Malolepsza E et al. Genoppi is an open-source software
+for robust and standardized integration of proteomic and genetic data. Nat Commun. 2021;12(1):2580.
+doi:10.1038/s41467-021-22648-5
 }
 \seealso{
 Other datasets: 
