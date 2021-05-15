@@ -16,7 +16,7 @@ This README provides instructions for locally installing the Genoppi software in
 In addition, we provide a [welcome guide](inst/shiny-examples/myapp/www/welcome_guide_v1.0.0_210210.pdf) to describe the user interface of the application. The guide also describes the accepted format of various input files in more detail; example input files can be found in *tests/testthat/data*.
 
 Genoppi citation:
-Greta Pintacuda*, Frederik H. Lassen*, Yu-Han H. Hsu*, April Kim*, Jacqueline M. Martín, Edyta Malolepsza, Justin K. Lim, Nadine Fornelos, Kevin C. Eggan, Kasper Lage. Genoppi: an open-source software for robust and standardized integration of proteomic and genetic data. bioRxiv 2020.05.04.076034; doi: [https://doi.org/10.1101/2020.05.04.076034]
+Greta Pintacuda*, Frederik H. Lassen*, Yu-Han H. Hsu*, April Kim*, Jacqueline M. Martín, Edyta Malolepsza, Justin K. Lim, Nadine Fornelos, Kevin C. Eggan, Kasper Lage. [Genoppi is an open-source software for robust and standardized integration of proteomic and genetic data](https://doi.org/10.1038/s41467-021-22648-5). Nature Communications 12, 2580 (2021).
 
 
 ## Installation
