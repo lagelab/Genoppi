@@ -1,13 +1,12 @@
 #' @title Make ggplot interactive using plotly
-#' @description Convert a ggplot (with an overlay) to an interactive
-#' plotly objects. These plots can be investigated interactively and 
-#' exported as an interactive html object. See examples for additional 
-#' details.
-#' 
-#' @param p a ggplot
+#' @description Convert a volcano or scatter plot to an interactive plotly object.
+#' @param p a ggplot (See details)
 #' @param source string. Used to connect plotly object other plotly objects.
 #' @param legend boolean. Show legend for significant interactors?
 #' @param sig_text what legend text should be added to a significant item?
+#' 
+#' @details In order to make a plot interactive, they must be generated using
+#' \code{plot_volcano_basic}, \code{plot_scatter_basic} or/and \code{plot_overlay}.
 #' 
 #' @family interactivity
 #' @importFrom plotly add_markers add_annotations plot_ly plotly schema

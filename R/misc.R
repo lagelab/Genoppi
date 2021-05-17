@@ -1,5 +1,5 @@
 #' @title length of unique 
-#' @description length of unique items.
+#' @description get the length of unique items.
 #' @param x a vector or list of items.
 #' @family misc
 #' @export
@@ -77,8 +77,8 @@ as.goi <- function(genes, col_significant = 'cyan', col_other = 'grey', shape = 
 }
 
 
-#' @title strsplit.nchar
-#' @description split a string by a charcater
+#' @title split string by character numbers
+#' @description split a string by a character
 #' @param x a vector of strings.
 #' @param nchar integer.
 #' @param suffix  string. what should all strings end with?

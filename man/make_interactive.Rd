@@ -7,7 +7,7 @@
 make_interactive(p, source = NULL, legend = T, sig_text = "")
 }
 \arguments{
-\item{p}{a ggplot}
+\item{p}{a ggplot (See details)}
 
 \item{source}{string. Used to connect plotly object other plotly objects.}
 
@@ -16,10 +16,11 @@ make_interactive(p, source = NULL, legend = T, sig_text = "")
 \item{sig_text}{what legend text should be added to a significant item?}
 }
 \description{
-Convert a ggplot (with an overlay) to an interactive
-plotly objects. These plots can be investigated interactively and 
-exported as an interactive html object. See examples for additional 
-details.
+Convert a volcano or scatter plot to an interactive plotly object.
+}
+\details{
+In order to make a plot interactive, they must be generated using
+\code{plot_volcano_basic}, \code{plot_scatter_basic} or/and \code{plot_overlay}.
 }
 \examples{
 \dontrun{

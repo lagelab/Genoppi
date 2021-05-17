@@ -13,7 +13,7 @@ get_shiny_errors <- function(df){
   
   # The input format was not accepted
   if (all(!unlist(check_columns_names$check))){
-    msg[[1]] = paste('The input columns were not recognized. See the supplementary protocol on what column names are accepted.')
+    msg[[1]] = paste('The input columns were not recognized. Are you sure you are using the correct input? The header names are case sensitive. See the supplementary protocol on what column names are accepted.')
     return(msg)
   }
   

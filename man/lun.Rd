@@ -10,7 +10,7 @@ lun(x)
 \item{x}{a vector or list of items.}
 }
 \description{
-length of unique items.
+get the length of unique items.
 }
 \seealso{
 Other misc: 

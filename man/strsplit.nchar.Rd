@@ -2,7 +2,7 @@
 % Please edit documentation in R/misc.R
 \name{strsplit.nchar}
 \alias{strsplit.nchar}
-\title{strsplit.nchar}
+\title{split string by character numbers}
 \usage{
 strsplit.nchar(x, nchar, suffix = "...")
 }
@@ -14,5 +14,5 @@ strsplit.nchar(x, nchar, suffix = "...")
 \item{suffix}{string. what should all strings end with?}
 }
 \description{
-split a string by a charcater
+split a string by a character
 }

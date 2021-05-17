@@ -817,16 +817,23 @@ shinyServer(function(input, output, session){
     accepted = colnames(pulldown$data)[allowed_vec]
     discarded = colnames(pulldown$data)[!allowed_vec]
     
+    # check if gene columns have synonyms in data
+    synonyms = strsplit(pulldown$data$gene, split = '(\\;)|(\\|)')
+    synonyms_bool = unlist(lapply(synonyms, length)) > 1
+    synonym_example = pulldown$data$gene[synonyms_bool][1]
+    
     # check for NAs in rows
     na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
     na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
     
     # pre-rendered messages
-    msg1 = paste0(bold('Error:'),' None of the inpputed column names are allowed')
+    msg1 = paste0(bold('Error:'),' None of the inputted column names are allowed')
     msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
     msg3 = paste0('The following column names were invalid and discarded: ', italics(paste0(discarded, collapse = ', ')),'.')
     msg4 = paste0('See supplementary protocol for a description of allowed data inputs.')
-    msg5 = paste0(bold('Warning:'), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
+    msg5 = paste0(bold('Warning: '), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
+    msg6 = paste0(bold('Note:  '), sum(synonyms_bool),' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
+                  '". This column should only contain a single gene-name.')
     
     # no valid cols
     msg = ''
@@ -840,6 +847,9 @@ shinyServer(function(input, output, session){
     } 
     if (na_rows > 0){
       msg = paste(msg, msg5)
+    }
+    if (sum(synonyms_bool) > 0){
+      msg = paste(msg, msg6)
     }
     
     
