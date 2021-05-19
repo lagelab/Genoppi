@@ -826,6 +826,9 @@ shinyServer(function(input, output, session){
     na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
     na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
     
+    # check if p-values are already -log10 transformed
+    check_log_pvalues <- any(pulldown$data$pvalue > 1)
+    
     # pre-rendered messages
     msg1 = paste0(bold('Error:'),' None of the inputted column names are allowed')
     msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
@@ -834,6 +837,7 @@ shinyServer(function(input, output, session){
     msg5 = paste0(bold('Warning: '), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
     msg6 = paste0(bold('Note:  '), sum(synonyms_bool),' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
                   '". This column should only contain a single gene-name.')
+    msg7 = paste0(bold('Warning: '), 'It looks like you have already -log10 transformed your p-values. Please, use raw p-values to accurately display volcano plots.')
     
     # no valid cols
     msg = ''
@@ -850,6 +854,9 @@ shinyServer(function(input, output, session){
     }
     if (sum(synonyms_bool) > 0){
       msg = paste(msg, msg6)
+    }
+    if (check_log_pvalues){
+      msg = paste(msg, msg7)
     }
     
     
