@@ -1,5 +1,5 @@
 #' @title Check proteomic data format
-#' @description Check if input data.frame columns match one of the four allowed formats.
+#' @description Check if input data.frame columns match one of the six allowed formats.
 #' @param df data.frame containing proteomic data.
 #' @note An item in the approved format list can appear more than once.
 #' @return list of two lists: check and allowed. check: list of logical vairables indicating if input match an allowed format. allowed: a list of all allowed formats.
@@ -21,7 +21,9 @@ check_input <- function(df){
   # allowed formats: 4 variations
   allowed_formats = list(
     gene_rep = c('gene', 'rep[0-9]'),
+    gene_sample_control = c('gene', 'sample[0-9]', 'control[0-9]'),
     accession_rep = c('accession_number', 'rep[0-9]'),
+    accession_sample_control = c('accession_number', 'sample[0-9]', 'control[0-9]'),
     gene_signif = c('gene', 'logFC', 'pvalue', 'FDR'),
     accession_signif = c('accession_number', 'logFC', 'pvalue', 'FDR')
   )

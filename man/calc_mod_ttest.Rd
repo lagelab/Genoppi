@@ -2,28 +2,42 @@
 % Please edit documentation in R/calc_mod_ttest.R
 \name{calc_mod_ttest}
 \alias{calc_mod_ttest}
-\title{Perform one-sample moderated t-test}
+\title{Perform (one-sample or two-sample) moderated t-test}
 \usage{
-calc_mod_ttest(df, iter = 2000, order = T)
+calc_mod_ttest(df, iter = 2000, order = T, two_sample = NULL)
 }
 \arguments{
-\item{df}{data.frame containing gene and rep[0-9] (replicate logFC) columns.}
+\item{df}{data.frame containing gene, rep[0-9] (replicate logFC) columns, control[0-9] (control replicate intensity value) and
+sample[0-9] (sample replicate intensity value). For performing one-sample
+mod t-test, user must include at least 2 rep columns. And to perform
+two-sample mod t-test, user must include at least two sample columns and
+two control columns.}
 
-\item{iter}{integer indicating maximum number of iterations to perform in limma::limFit().}
+\item{iter}{integer indicating maximum number of iterations to perform in
+limma::limFit().for one-sample moderated t-test}
 
 \item{order}{boolean. Should the result be ordered by logFC and FDR?}
+
+\item{two_sample}{boolean indicates whether to use the two-sample moderated
+t-test, if \code{FALSE}, use the one-sample moderated t-test. If parameter
+is not provided, the type of mod t-test will be selected automatically and
+the user is notified of the choice through a message. Two-sample mod t-test
+will be prioritize if there are >= 2 sample columns and >=2 control
+columns.}
 }
 \value{
-data.frame containing input df + logFC, pvalue, and FDR columns; sorted by decreasing logFC, then FDR.
+data.frame containing input df + logFC, pvalue, and FDR columns;
+  sorted by decreasing logFC, then FDR.
 }
 \description{
-Use one-sample moderated t-test implemented in limma package to calculate protein logFC, pvalue, and FDR.
-See \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
+Use (one-sample or two-sample) moderated t-test implemented in
+  limma package to calculate protein logFC, pvalue, and FDR. See
+  \code{?limma::lmFit} and \code{?limma::eBayes} for more details.
 }
 \examples{
 \dontrun{
 data("example_data")
-stats_df <- calc_mod_ttest(example_data) 
+stats_df <- calc_mod_ttest(example_data)
 }
 
 }
