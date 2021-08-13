@@ -66,10 +66,3 @@ test_that('NAs in alt label are discarded',{
   
 })
 
-
-
-
-
-
-
-

@@ -5,12 +5,18 @@
 \alias{example_data3}
 \title{Example proteomic data (3)}
 \format{
-A data frame with 556 rows and 4 variables:
+A data frame with 508 rows and 10 variables:
 \describe{
   \item{gene}{HGNC gene symbol}
-  \item{rep1}{replicate 1 log2 fold change}
-  \item{rep2}{replicate 2 log2 fold change}
-  \item{rep3}{replicate 3 log2 fold change}
+  \item{sample1}{log2 protein intensity in 1st replicate of bait IP}
+  \item{control1}{log2 protein intensity in 1st replicate of control IP}
+  \item{sample2}{log2 protein intensity in 2nd replicate of bait IP}
+  \item{control2}{log2 protein intensity in 2nd replicate of control IP}
+  \item{sample3}{log2 protein intensity in 3rd replicate of bait IP}
+  \item{control3}{log2 protein intensity in 3rd replicate of control IP}
+  \item{rep1}{log2 fold change (bait over control) of replicate 1}
+  \item{rep2}{log2 fold change (bait over control) of replicate 2}
+  \item{rep3}{log2 fold change (bait over control) of replicate 3}
 }
 }
 \source{
@@ -20,8 +26,8 @@ Genoppi IP-MS experiment
 example_data3
 }
 \description{
-A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates,
-derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (G401).
+A dataset containing gene symbol and processed protein abundance values derived from 
+BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (G401).
 }
 \references{
 Pintacuda G, Lassen FH, Hsu YH, Kim A, Martín JM, Malolepsza E et al. Genoppi is an open-source software

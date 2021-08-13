@@ -3,7 +3,7 @@ context('make_interactive')
 data("example_data2")
 
 # perform moderated t-test
-stats_df <- suppressWarnings(calc_mod_ttest(example_data2))
+stats_df <- suppressWarnings(calc_mod_ttest(example_data2,two_sample=F))
 
 # identify enriched proteins
 sig_df <- id_significant_proteins(stats_df)
@@ -74,7 +74,7 @@ test_that('plot_overlay arguments are translated to plotly',{
     theme_volcano() %>%
     make_interactive()
   
-  expect_equal(length(volcano$x$layoutAttrs[[1]]$annotations$text), 12)  
+  expect_equal(length(volcano$x$layoutAttrs[[1]]$annotations$text), 11)  
   
 })
 

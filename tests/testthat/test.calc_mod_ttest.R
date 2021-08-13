@@ -2,9 +2,8 @@ context('calc_mod_ttest')
 
 # read in test data
 df <- read_input("data/test.data.txt", sep="\t")$data
-df_all_col <- read_input("data/test.data4.txt", sep="\t")$data
-df_sample_control_col <-
-  df_all_col[-which(grepl('rep[0-9]', names(df_all_col)))]
+df_rep_col <- data.frame(gene=df$gene,df[which(grepl('rep[0-9]',names(df)))])
+df_sample_control_col <- df[-which(grepl('rep[0-9]', names(df)))]
 
 test_that(
   'calc_mod_ttest two-sample results is the same as that obtained by the workflow below',
@@ -12,7 +11,7 @@ test_that(
     # process test data using two-sample mod t-test in limma directly as sanity
     # check that statistical test is running correctly
     design <- model.matrix(
-      ~ factor(c(rep('sample', 3), rep('control', 3)), 
+      ~ factor(c('sample','control','sample','control','sample','control'), 
                levels = c('control', 'sample')))
     fit <- limma::lmFit(df_sample_control_col[-1],
                         design,
@@ -51,18 +50,11 @@ test_that(
     )
 })
 
-test_that('calc_mod_ttest can return results in data.frame',{
-
-  result <- calc_mod_ttest(df) 
-  expected_cols <- c("gene","rep1","rep2","rep3","logFC","pvalue","FDR")
-  expect_identical(colnames(result),expected_cols)
-})
-
 
 test_that(
   'calc_mod_ttest handles data frame with rep columns correctly',
   {
-    result <- calc_mod_ttest(df) 
+    result <- calc_mod_ttest(df_rep_col) 
     expected_cols <-
       c(
         "gene",
@@ -74,12 +66,12 @@ test_that(
     # testing message for input with rep columns only and no parameter for
     # two-sample
     expect_message(
-      calc_mod_ttest(df),
+      calc_mod_ttest(df_rep_col),
       'Type of moderated t-test not specified \\(defaulting to one-sample mod t-test\\).'
     )
     # testing message for input with rep columns only and two-sample parameter is
     # FALSE
-    expect_message(calc_mod_ttest(df, two_sample = FALSE),
+    expect_message(calc_mod_ttest(df_rep_col, two_sample = FALSE),
                    'Using one-sample mod t-test.')
 })
 
@@ -94,7 +86,7 @@ test_that(
         "control1", "control2", "control3",
         "logFC", "pvalue", "FDR"
       )
-    expect_identical(colnames(result),expected_cols)
+    expect_true(all(colnames(result) %in% expected_cols))
     
     expect_message(
       calc_mod_ttest(df_sample_control_col),
@@ -110,7 +102,7 @@ test_that(
 test_that(
   'calc_mod_ttest handles data frame with all columns correctly',
   {
-    result <- calc_mod_ttest(df_all_col) 
+    result <- calc_mod_ttest(df) 
     expected_cols <-
       c(
         "gene",
@@ -119,18 +111,18 @@ test_that(
         "rep1", "rep2", "rep3",
         "logFC", "pvalue", "FDR"
       )
-    expect_identical(colnames(result),expected_cols)
+    expect_true(all(colnames(result) %in% expected_cols))
     
     expect_message(
-      calc_mod_ttest(df_all_col),
+      calc_mod_ttest(df),
       'Type of moderated t-test not specified \\(defaulting to two-sample mod t-test\\).'
     )
     
-    expect_message(calc_mod_ttest(df_all_col, 
+    expect_message(calc_mod_ttest(df, 
                                   two_sample = FALSE),
                    'Using one-sample mod t-test.')
     
-    expect_message(calc_mod_ttest(df_all_col, 
+    expect_message(calc_mod_ttest(df, 
                                   two_sample = TRUE),
                    'Using two-sample mod t-test.')
   }
@@ -142,7 +134,7 @@ test_that(
     # testing message for input with rep columns only and two-sample parameter
     # is FALSE
     expect_error(
-      calc_mod_ttest(df, two_sample = TRUE),
+      calc_mod_ttest(df_rep_col, two_sample = TRUE),
       'trying to use two-sample moderated t-test in calc_mod_ttest but less than 2 columns of sample or control columns is provided.'
     )
     

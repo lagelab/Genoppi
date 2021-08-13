@@ -3,7 +3,7 @@ context('plot_overlay')
 # for comparing images
 #library(png)
 source('functions/compare_image.R')
-func = 'plot_overlay'
+#func = 'plot_overlay'
 
 # read in test data
 df <- read_input("data/test.data2.txt", sep="\t")$data
@@ -19,7 +19,7 @@ test_that('simple overlay of a bait',{
   p = plot_overlay(p, as.bait('BCL2')) ## testcase here..
   
   # test that result and reference are same
-  paths = make_test_path(func, id)
+  #paths = make_test_path(func, id)
   #ggsave(paths$res, p, width = 5, height = 5)
   #test = test_png_identity(paths)
   #expect_true(test) #check_plot(func, id)

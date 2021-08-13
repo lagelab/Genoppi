@@ -2,7 +2,7 @@ context('plot_scatter_basic')
 
 # read in test data
 data <- read_input("data/test.data.txt", sep="\t")$data
-data <- suppressWarnings(calc_mod_ttest(data))
+data <- suppressWarnings(calc_mod_ttest(data,two_sample=F))
 data = id_significant_proteins(data)
 
 test_that('plot scatter basic single',{
@@ -12,7 +12,7 @@ test_that('plot scatter basic single',{
   expect_true(!is.null(x12$mapping))
   expect_equal(quo_name(x12$mapping$x), 'rep1')
   expect_equal(quo_name(x12$mapping$y), 'rep2')  
-  expect_equal(x12$correlation, 0.6908477)
+  expect_equal(x12$correlation, 0.7254594)
   
   x13 = plot_scatter_basic(data, repA = 'rep1', repB = 'rep3')
   expect_true(!is.null(x13$mapping))
@@ -33,7 +33,7 @@ test_that('plot scatter basic all',{
   expect_true(length(res) == 3)
   expect_equal(quo_name(res$rep1.rep2$ggplot$mapping$x), 'rep1')
   expect_equal(quo_name(res$rep1.rep2$ggplot$mapping$y), 'rep2')  
-  expect_equal(res$rep1.rep2$ggplot$correlation, 0.6908477)
+  expect_equal(res$rep1.rep2$ggplot$correlation, 0.7254594)
   
 })
 

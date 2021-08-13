@@ -3,7 +3,7 @@ context('get_geneset_overlay')
 # get data
 data("example_data")
 df = example_data %>% 
-  calc_mod_ttest() %>% 
+  calc_mod_ttest(two_sample=F) %>% 
   id_significant_proteins()
 
 # get all genesets
@@ -26,21 +26,19 @@ test_that('pathways are correctly subsetted by recurrent genests',{
   
   # k = 1
   x = suppressWarnings(get_geneset_overlay(df, 'hgnc', k = 1))
-  expect_equal(nrow(x$geneset), 9)
+  expect_lte(lun(x$geneset$pathway),1) # less than or equal to
+  expect_equal(nrow(x$geneset), 7)
   
   # k = 2
   x = get_geneset_overlay(df, 'hgnc', k = 2)
-  expect_equal(nrow(x$geneset), 13)
-  expect_equal(lun(x$geneset$pathway), 2)
+  expect_lte(lun(x$geneset$pathway), 2)
+  expect_equal(nrow(x$geneset), 10)
   
-  # k = 3
-  x = get_geneset_overlay(df, 'hgnc', k = 3)
-  expect_equal(lun(x$geneset$pathway), 3)
-  
-  # k = 4
-  x = get_geneset_overlay(df, 'hgnc', k = 4)
-  expect_equal(lun(x$geneset$pathway), 3)
-  
+  # k = 10
+  x = get_geneset_overlay(df, 'hgnc', k = 10)
+  expect_lte(lun(x$geneset$pathway), 10)
+  expect_equal(nrow(x$geneset), 18) 
+ 
 })
 
 test_that('k is NULL will result in NO subset',{
@@ -67,14 +65,6 @@ test_that('common fuction call', {
       make_interactive()
   
   expect_true(TRUE) # exepect function to get here without error
-  
-  
+    
 })
-
-
-
-
-
-
-
 

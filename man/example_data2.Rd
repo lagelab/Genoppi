@@ -5,12 +5,18 @@
 \alias{example_data2}
 \title{Example proteomic data (2)}
 \format{
-A data frame with 556 rows and 4 variables:
+A data frame with 510 rows and 10 variables:
 \describe{
   \item{gene}{HGNC gene symbol}
-  \item{rep1}{replicate 1 log2 fold change}
-  \item{rep2}{replicate 2 log2 fold change}
-  \item{rep3}{replicate 3 log2 fold change}
+  \item{sample1}{log2 protein intensity in 1st replicate of bait IP}
+  \item{control1}{log2 protein intensity in 1st replicate of control IP}
+  \item{sample2}{log2 protein intensity in 2nd replicate of bait IP}
+  \item{control2}{log2 protein intensity in 2nd replicate of control IP}
+  \item{sample3}{log2 protein intensity in 3rd replicate of bait IP}
+  \item{control3}{log2 protein intensity in 3rd replicate of control IP}
+  \item{rep1}{log2 fold change (bait over control) of replicate 1}
+  \item{rep2}{log2 fold change (bait over control) of replicate 2}
+  \item{rep3}{log2 fold change (bait over control) of replicate 3}
 }
 }
 \source{
@@ -20,8 +26,8 @@ Genoppi IP-MS experiment
 example_data2
 }
 \description{
-A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates,
-derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375).
+A dataset containing gene symbol and processed protein abundance values derived from 
+BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375).
 }
 \references{
 Pintacuda G, Lassen FH, Hsu YH, Kim A, Martín JM, Malolepsza E et al. Genoppi is an open-source software
@@ -29,32 +35,6 @@ for robust and standardized integration of proteomic and genetic data. Nat Commu
 doi:10.1038/s41467-021-22648-5
 }
 \seealso{
-Other datasets: 
-\code{\link{accession_gene_table}},
-\code{\link{bioplex_table}},
-\code{\link{example_data3}},
-\code{\link{example_data}},
-\code{\link{genes_snps}},
-\code{\link{gnomad_table}},
-\code{\link{goa_bp_table}},
-\code{\link{goa_cc_table}},
-\code{\link{goa_mf_table}},
-\code{\link{gtex_protein}},
-\code{\link{gtex_rna}},
-\code{\link{gwas_table}},
-\code{\link{hgnc_group_table}},
-\code{\link{hpa_rna}},
-\code{\link{inweb_table}},
-\code{\link{irefindex_table}},
-\code{\link{msigdb_c1_table}},
-\code{\link{msigdb_c2_table}},
-\code{\link{msigdb_c3_table}},
-\code{\link{msigdb_c4_table}},
-\code{\link{msigdb_c5_table}},
-\code{\link{msigdb_c6_table}},
-\code{\link{msigdb_c7_table}},
-\code{\link{msigdb_h_table}}
-
 Other datasets: 
 \code{\link{accession_gene_table}},
 \code{\link{bioplex_table}},

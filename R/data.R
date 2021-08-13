@@ -470,14 +470,20 @@
 
 
 #' @title Example proteomic data (1)
-#' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates,
-#' derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a neuron cell line (GPiN).
-#' @format A data frame with 556 rows and 4 variables:
+#' @description A dataset containing gene symbol and processed protein abundance values derived from 
+#' BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a neuron cell line (GPiN).
+#' @format A data frame with 446 rows and 10 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
-#'   \item{rep1}{replicate 1 log2 fold change}
-#'   \item{rep2}{replicate 2 log2 fold change}
-#'   \item{rep3}{replicate 3 log2 fold change}
+#'   \item{sample1}{log2 protein intensity in 1st replicate of bait IP}
+#'   \item{control1}{log2 protein intensity in 1st replicate of control IP}
+#'   \item{sample2}{log2 protein intensity in 2nd replicate of bait IP}
+#'   \item{control2}{log2 protein intensity in 2nd replicate of control IP}
+#'   \item{sample3}{log2 protein intensity in 3rd replicate of bait IP}
+#'   \item{control3}{log2 protein intensity in 3rd replicate of control IP}
+#'   \item{rep1}{log2 fold change (bait over control) of replicate 1}
+#'   \item{rep2}{log2 fold change (bait over control) of replicate 2}
+#'   \item{rep3}{log2 fold change (bait over control) of replicate 3}
 #' }
 #' @family datasets
 #' @docType data
@@ -491,16 +497,20 @@
 
 
 #' @title Example proteomic data (2)
-#' @family datasets
-#' @docType data
-#' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates,
-#' derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375).
-#' @format A data frame with 556 rows and 4 variables:
+#' @description A dataset containing gene symbol and processed protein abundance values derived from 
+#' BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (A375).
+#' @format A data frame with 510 rows and 10 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
-#'   \item{rep1}{replicate 1 log2 fold change}
-#'   \item{rep2}{replicate 2 log2 fold change}
-#'   \item{rep3}{replicate 3 log2 fold change}
+#'   \item{sample1}{log2 protein intensity in 1st replicate of bait IP}
+#'   \item{control1}{log2 protein intensity in 1st replicate of control IP}
+#'   \item{sample2}{log2 protein intensity in 2nd replicate of bait IP}
+#'   \item{control2}{log2 protein intensity in 2nd replicate of control IP}
+#'   \item{sample3}{log2 protein intensity in 3rd replicate of bait IP}
+#'   \item{control3}{log2 protein intensity in 3rd replicate of control IP}
+#'   \item{rep1}{log2 fold change (bait over control) of replicate 1}
+#'   \item{rep2}{log2 fold change (bait over control) of replicate 2}
+#'   \item{rep3}{log2 fold change (bait over control) of replicate 3}
 #' }
 #' @family datasets
 #' @docType data
@@ -514,14 +524,20 @@
 
 
 #' @title Example proteomic data (3)
-#' @description A dataset containing gene symbol and corresponding log2 fold change values for 3 replicates,
-#' derived from BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (G401).
-#' @format A data frame with 556 rows and 4 variables:
+#' @description A dataset containing gene symbol and processed protein abundance values derived from 
+#' BCL2 (bait) vs. IgG (control) immunoprecipitation-mass spectrometry experiment in a cancer cell line (G401).
+#' @format A data frame with 508 rows and 10 variables:
 #' \describe{
 #'   \item{gene}{HGNC gene symbol}
-#'   \item{rep1}{replicate 1 log2 fold change}
-#'   \item{rep2}{replicate 2 log2 fold change}
-#'   \item{rep3}{replicate 3 log2 fold change}
+#'   \item{sample1}{log2 protein intensity in 1st replicate of bait IP}
+#'   \item{control1}{log2 protein intensity in 1st replicate of control IP}
+#'   \item{sample2}{log2 protein intensity in 2nd replicate of bait IP}
+#'   \item{control2}{log2 protein intensity in 2nd replicate of control IP}
+#'   \item{sample3}{log2 protein intensity in 3rd replicate of bait IP}
+#'   \item{control3}{log2 protein intensity in 3rd replicate of control IP}
+#'   \item{rep1}{log2 fold change (bait over control) of replicate 1}
+#'   \item{rep2}{log2 fold change (bait over control) of replicate 2}
+#'   \item{rep3}{log2 fold change (bait over control) of replicate 3}
 #' }
 #' @family datasets
 #' @docType data

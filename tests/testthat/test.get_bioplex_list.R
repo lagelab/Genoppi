@@ -5,7 +5,7 @@ test_that('get_bioplex_list can return correct Bioplex data',{
   # all interactions
   result <- get_bioplex_list("TARDBP", p = 0.5)
   reference <- bioplex_table[(bioplex_table$Gene1 == 'TARDBP' | bioplex_table$Gene2 == 'TARDBP') & bioplex_table$pInt >= 0.5,]
-  expect_equal(reference$Gene2, result$gene[result$significant])
+  expect_equal(reference$Gene2,as.character(result$gene[result$significant]))
   
   # check that p works for subsetting
   result1 <- get_bioplex_list("RRS1", p = 0.5)
