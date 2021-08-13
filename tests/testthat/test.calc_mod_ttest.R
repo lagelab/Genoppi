@@ -5,14 +5,57 @@ df <- read_input("data/test.data.txt", sep="\t")$data
 df_all_col <- read_input("data/test.data4.txt", sep="\t")$data
 df_sample_control_col <-
   df_all_col[-which(grepl('rep[0-9]', names(df_all_col)))]
-# example_data[-which(names(example_data) == "gene")]
+
+test_that(
+  'calc_mod_ttest two-sample results is the same as that obtained by the workflow below',
+  {
+    # process test data using two-sample mod t-test in limma directly as sanity
+    # check that statistical test is running correctly
+    design <- model.matrix(
+      ~ factor(c(rep('sample', 3), rep('control', 3)), 
+               levels = c('control', 'sample')))
+    fit <- limma::lmFit(df_sample_control_col[-1],
+                        design,
+                        method = "robust",
+                        maxit = 2000)
+    fit2 <- limma::eBayes(fit)
+    mod.ttest <- limma::topTable(fit2,
+                                 number = nrow(fit2),
+                                 sort.by = 'none')
+    df_test <- cbind(df_sample_control_col,
+                       mod.ttest[, c("logFC", "P.Value", "adj.P.Val")])
+    df_test <- df_test[with(df_test, order(-logFC, adj.P.Val)), ]
+    
+    df_result <-
+      calc_mod_ttest(
+        df_sample_control_col,
+        iter = 2000,
+        order = T,
+        two_sample = T
+      )
+    
+    expect_equal(
+      object = df_result$logFC,
+      expected = df_test$logFC,
+      tolerance = 0.00001
+    )
+    expect_equal(
+      object = df_result$pvalue,
+      expected = df_test$P.Value,
+      tolerance = 0.00001
+    )
+    expect_equal(
+      object = df_result$FDR,
+      expected = df_test$adj.P.Val,
+      tolerance = 0.00001
+    )
+})
 
 test_that('calc_mod_ttest can return results in data.frame',{
 
   result <- calc_mod_ttest(df) 
   expected_cols <- c("gene","rep1","rep2","rep3","logFC","pvalue","FDR")
   expect_identical(colnames(result),expected_cols)
- 
 })
 
 

@@ -14,7 +14,15 @@ test_that('read_input can return input data.frame and format',{
   expect_equal(result$data, df1)
  
   # check returned data format list
-  expected_check <- list(gene_rep=T, accession_rep=F, gene_signif=F, accession_signif=F)
+  expected_check <-
+    list(
+      gene_rep = T,
+      gene_sample_control = F,
+      accession_rep = F,
+      accession_sample_control = F,
+      gene_signif = F,
+      accession_signif = F
+    )
   expect_identical(result$format$check, expected_check)
  
 })
@@ -32,7 +40,15 @@ test_that('an input with all columns can be read',{
   expect_equal(result$data, df)
   
   # check returned data format list
-  expected_check <- list(gene_rep=T, accession_rep=T, gene_signif=T, accession_signif=T)
+  expected_check <-
+    list(
+      gene_rep = T,
+      gene_sample_control = F,
+      accession_rep = T,
+      accession_sample_control = F,
+      gene_signif = T,
+      accession_signif = T
+    )
   expect_identical(result$format$check, expected_check)
   
 })
@@ -54,7 +70,15 @@ test_that('only accession numbers and reps',{
   expect_equal(result$data, df)
   
   # check returned data format list
-  expected_check <- list(gene_rep=F, accession_rep=T, gene_signif=F, accession_signif=F)
+  expected_check <-
+    list(
+      gene_rep = F,
+      gene_sample_control = F,
+      accession_rep = T,
+      accession_sample_control = F,
+      gene_signif = F,
+      accession_signif = F
+    )
   expect_identical(result$format$check, expected_check)
   
 })
@@ -76,7 +100,15 @@ test_that('only accession numbers and statistics',{
   expect_equal(result$data, df)
   
   # check returned data format list
-  expected_check <- list(gene_rep=F, accession_rep=F, gene_signif=F, accession_signif=T)
+  expected_check <-
+    list(
+      gene_rep = F,
+      gene_sample_control = F,
+      accession_rep = F,
+      accession_sample_control = F,
+      gene_signif = F,
+      accession_signif = T
+    )
   expect_identical(result$format$check, expected_check)
   
 })
