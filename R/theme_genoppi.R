@@ -1,7 +1,7 @@
 #' @title Volcano plot simple theme
 #' @description Set's up the classic genoppi theme for ggplot2.
 #' @param p the ggplot to be converted
-#' @importFrom ggplot2 element_text theme element_blank
+#' @importFrom ggplot2 element_text theme element_blank theme_minimal theme
 #' @family ggplot
 #' @export
 
@@ -23,6 +23,7 @@ theme_volcano <- function(p){
 #' @param axes_width the width of the x and y-axis.
 #' @param axes_alpha numeric between 0 and 1.
 #' @family ggplot
+#' @importFrom ggplot2 ggplot_build geom_segment theme_minimal
 #' @export
 
 
@@ -58,6 +59,7 @@ theme_scatter <- function(p, axes_width = 0.22, axes_alpha = 0.5){
 #' @param rotate boolean. Rotates axis titles.
 #' @description genoppi themed bar for shiny
 #' @family ggplot
+#' @importFrom ggplot2 theme rel
 theme_genoppi_bar <- function(rotate = F){
   if (rotate == FALSE){
     p <- theme(axis.title.x=element_blank(),
@@ -77,7 +79,7 @@ theme_genoppi_bar <- function(rotate = F){
 
 
 #' @title volcano theme complex
-#' @description Sets up custom bolcano plot theme.
+#' @description Sets up custom volcano plot theme.
 #' @param p the ggplot to be converted
 #' @param tick_sz_x Tick-size. 
 #' @param tick_sz_y tick size. 
@@ -97,6 +99,8 @@ theme_genoppi_bar <- function(rotate = F){
 #' @param ylab String. alternative y label.
 #' @param lab_cex numeric. Character expansion factor for labels.
 #' @family ggplot
+#' @importFrom ggplot2 ggplot_build geom_text annotate geom_segment theme
+#' @importFrom utils tail
 
 theme_volcano_custom <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normalize_tick_sz = T,
                           axes_width = 0.50, ticks_width = 0.70, ticks_labs_cex = 4, 

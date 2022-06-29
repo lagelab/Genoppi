@@ -13,6 +13,7 @@
 #' @importFrom VennDiagram venn.diagram
 #' @importFrom futile.logger flog.threshold ERROR
 #' @import grid 
+#' @importFrom stats na.omit
 #' @export
 
 

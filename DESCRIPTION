@@ -12,19 +12,16 @@ Authors@R:
              email = "yuhanhsu@broadinstitute.org"))
 Description: An open-source software for robust and standardized integration of proteomic and genetic data.
 License: MIT + file LICENSE
-LazyData: true
+LazyData: TRUE
+LazyDataCompression: xz
 Depends:
-    R (>= 3.6),
-    hash,
-    ggplot2,
+    R (>= 4.2),
     shiny,
     shinydashboard,
-    plotly,
 Suggests:
     devtools,
     covr,
     grid,
-    png,
     testthat (>= 2.1.0)
 Imports:
     stats,
@@ -37,7 +34,12 @@ Imports:
     futile.logger,
     shinycssloaders,
     DT,
-    limma,
+    limma (>= 3.52),
+    plotly (>= 4.5.6),
+    ggplot2,
+    hash,
+    magrittr,
+    GGally
 Encoding: UTF-8
 RoxygenNote: 7.1.1
 Collate: 
@@ -85,6 +87,7 @@ Collate:
     'plot_scatter_basic.R'
     'plot_tissue_enrichment.R'
     'plot_volcano_basic.R'
+    'plot_replicate_ggpair.R'
     'read_input.R'
     'set_names_by_dataset.R'
     'stop_invalid.R'
@@ -95,3 +98,4 @@ Collate:
     'validate_reference.R'
     'venn_to_table.R'
 biocViews: limma
+

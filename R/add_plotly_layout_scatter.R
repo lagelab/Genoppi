@@ -10,6 +10,7 @@
 #' @param legend.y shift legend by y-axis.
 #' @importFrom plotly layout
 #' @importFrom shiny HTML
+#' @importFrom magrittr %>%
 #' @family plotly
 #' @export
 

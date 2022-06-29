@@ -37,8 +37,6 @@
 #' @param sig_text string. Text for significant interactors to be displayed in legend. 
 #' @param insig_text string. Text for non-significant interactors to be displayed in legend.
 #' 
-#' @importFrom ggplot2 geom_point quo_name ggsave
-#' @import ggrepel
 #' @examples 
 #' \dontrun{
 #' df <- example_data %>%
@@ -67,6 +65,9 @@
 #'   plot_overlay(list(overlay = myoverlay)) %>%
 #'   plot_overlay(as.bait('BCL2')) 
 #' }
+#' @importFrom ggplot2 geom_point quo_name ggsave scale_fill_manual scale_shape_manual scale_color_manual guides guide_legend
+#' @import ggrepel
+#' @importFrom magrittr %>%
 #' @export
 
 

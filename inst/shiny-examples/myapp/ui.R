@@ -10,16 +10,22 @@ body <- dashboardBody(
                         tabPanel("Basic plotting", id = 'basicplot', value = "p1",
                                  br(),
                                  column(width = 4,
-                                        box(
-                                          title = "Basic plot options", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
-                                          fluidRow(
-                                            column(12, uiOutput('a_select_scatterplot_ui')) 
-                                          ),
-                                          fluidRow(
-                                            column(6, uiOutput("a_color_theme_indv_sig")),
-                                            column(6, uiOutput("a_color_theme_indv_insig"))
-                                          )
-                                        ),
+                                        basicPlotInputBox("basic_plot_inputs"),
+                                        # box(
+                                        #   title = "Basic plot options", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
+                                        #   fluidRow(
+                                        #     column(12, uiOutput('a_select_scatterplot_ui')) 
+                                        #   ),
+                                        #   # TODO new button for selecting type of mod t-test
+                                        #   # fluidRow(
+                                        #   #   column(12, uiOutput('a_select_mod_ttest_ui')) 
+                                        #   # ),
+                                        #   fluidRow(
+                                        #     column(6, uiOutput("a_color_theme_indv_sig")),
+                                        #     column(6, uiOutput("a_color_theme_indv_insig"))
+                                        #   )
+                                        # ),
+                                        # summaryBox("summary"), TODO comment out below and use this
                                         box(
                                           title = "Summary", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
                                           fluidRow(
@@ -48,7 +54,8 @@ body <- dashboardBody(
                                             br(),
                                             column(12, shinyjs::hidden(myDownloadButton("a_mttest_mapping_download", 'Proteomic data', icon("download"))))
                                           )
-                                        )#,
+                                        )
+                                        #,
                                         #shinyjs::hidden(box( #
                                         #  id='box_mapping_warning_ui', title = "Error!", width = NULL, solidHeader = TRUE, status = "warning", collapsible = TRUE, collapsed = FALSE,
                                         #  fluidRow(
@@ -57,23 +64,34 @@ body <- dashboardBody(
                                         #))
                                  ),
                                  column(width = 8,
+                                        drawVolcanoPlot("volcano_plot"),
+                                        # box(
+                                        #   title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE,
+                                        #   fluidRow(
+                                        #     column(11, shinyjs::hidden(myDownloadButton("a_volcano_plot_download", 'Volcano plot')))
+                                        #   ),
+                                        #   fluidRow(style = "padding-bottom:75px",
+                                        #     #column(1, plotOutput("FDR_colorbar", width = "50px")),
+                                        #     column(12, shinycssloaders::withSpinner(plotly::plotlyOutput("VolcanoPlot"), spinner_type)) #, width = "550px", height = "550px"
+                                        #   ),
+                                        # ),
+                                        plotGGpairFrame("plot_ggpair"),
+                                        # box(
+                                        #   title = tagList(img(src='icon_scatter.png',width='22px'), "GGPairs"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = FALSE,
+                                        #   #fluidRow(
+                                        #   #  column(11, shinyjs::hidden(myDownloadButton("a_scatter_plot_download", 'Scatter plot')))
+                                        #   #),
+                                        #   fluidRow(style = "padding-bottom:75px",
+                                        #     column(11, shinycssloaders::withSpinner(plotly::plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
+                                        #   )
+                                        # ),
                                         box(
-                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-                                          fluidRow(
-                                            column(11, shinyjs::hidden(myDownloadButton("a_volcano_plot_download", 'Volcano plot')))
-                                          ),
-                                          fluidRow(style = "padding-bottom:75px",
-                                            #column(1, plotOutput("FDR_colorbar", width = "50px")),
-                                            column(12, shinycssloaders::withSpinner(plotlyOutput("VolcanoPlot"), spinner_type)) #, width = "550px", height = "550px"
-                                          ),
-                                        ),
-                                        box(
-                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = FALSE,
+                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
                                           fluidRow(
                                             column(11, shinyjs::hidden(myDownloadButton("a_scatter_plot_download", 'Scatter plot')))
                                           ),
                                           fluidRow(style = "padding-bottom:75px",
-                                            column(11, shinycssloaders::withSpinner(plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
+                                                   column(11, shinycssloaders::withSpinner(plotly::plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
                                           )
                                         )
                                  )
@@ -243,7 +261,7 @@ body <- dashboardBody(
                                             column(12, shinyjs::hidden(myDownloadButton("a_integrated_plot_download",'Volcano plot')))
                                           ),
                                           fluidRow(style = "padding-bottom:150px",
-                                           column(12, shinycssloaders::withSpinner(plotlyOutput("Multi_VolcanoPlot"), spinner_type)),
+                                           column(12, shinycssloaders::withSpinner(plotly::plotlyOutput("Multi_VolcanoPlot"), spinner_type)),
                                          )
                                     ),
                                     tabBox(
@@ -333,7 +351,7 @@ body <- dashboardBody(
                                             column(6, '')
                                           ),
                                           fluidRow(style = "padding-bottom:125px",
-                                            column(12, shinycssloaders::withSpinner(plotlyOutput('VolcanoPlotPathway'), spinner_type))
+                                            column(12, shinycssloaders::withSpinner(plotly::plotlyOutput('VolcanoPlotPathway'), spinner_type))
                                           )
                                         ),
                                         box(
@@ -373,7 +391,7 @@ body <- dashboardBody(
                                           title = tagList('Enrichment bar plot'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, height = 1000,
                                           fluidRow(
                                             column(12,
-                                                   shinycssloaders::withSpinner(plotlyOutput('a_tissue_enrichment_ui'), spinner_type)
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('a_tissue_enrichment_ui'), spinner_type)
                                                    )
                                           )
                                         )
@@ -404,12 +422,15 @@ body <- dashboardBody(
                                                    column(6, 
                                                           uiOutput("b_file_1_significance_type_ui"),
                                                           uiOutput("b_file_1_FDR_thresh"),
-                                                          uiOutput("b_file_1_PVal_thresh")
+                                                          uiOutput("b_file_1_PVal_thresh"),
+                                                          select_mod_ttest_ui("b_file_1_select_mod_ttest")
+                                                          
                                                    ),
                                                    column(6,
                                                           uiOutput('b_file_1_logfc_direction_ui'),
-                                                          uiOutput("b_file_1_logFC_thresh")
+                                                          uiOutput("b_file_1_logFC_thresh"),
                                                    )
+                                                   
                                                  ),
                                                  fluidRow(
                                                    uiOutput('b_file_1_select_scatterplot_ui')
@@ -438,7 +459,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_1_volcano_download", 'Volcano plot')))
                                                  ),
                                                  fluidRow(
-                                                   shinycssloaders::withSpinner(plotlyOutput('b_file_1_volcano'), spinner_type),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_1_volcano'), spinner_type),
                                                  )
                                           )
                                         ),
@@ -449,7 +470,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_1_scatter_download", 'Scatter plot')))
                                                  ),
                                                  fluidRow(
-                                                   shinycssloaders::withSpinner(plotlyOutput('b_file_1_scatter'), spinner_type),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_1_scatter'), spinner_type),
                                                  )
                                           )
                                         )
@@ -462,7 +483,8 @@ body <- dashboardBody(
                                                    column(6, 
                                                           uiOutput("b_file_2_significance_type_ui"),
                                                           uiOutput("b_file_2_FDR_thresh"),
-                                                          uiOutput("b_file_2_PVal_thresh")
+                                                          uiOutput("b_file_2_PVal_thresh"),
+                                                          select_mod_ttest_ui("b_file_2_select_mod_ttest")
                                                    ),
                                                    column(6,
                                                           uiOutput('b_file_2_logfc_direction_ui'),
@@ -497,7 +519,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_2_volcano_download", 'Volcano plot')))
                                                  ),
                                                  fluidRow(
-                                                   shinycssloaders::withSpinner(plotlyOutput('b_file_2_volcano'), spinner_type),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_2_volcano'), spinner_type),
                                                  )
                                           )
                                         ),
@@ -508,7 +530,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_2_scatter_download", 'Scatter plot')))
                                                  ),
                                                  fluidRow(
-                                                   shinycssloaders::withSpinner(plotlyOutput('b_file_2_scatter'), spinner_type),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_2_scatter'), spinner_type),
                                                  )
                                           )
                                         )
@@ -521,7 +543,8 @@ body <- dashboardBody(
                                                    column(6, 
                                                           uiOutput("b_file_3_significance_type_ui"),
                                                           uiOutput("b_file_3_FDR_thresh"),
-                                                          uiOutput("b_file_3_PVal_thresh")
+                                                          uiOutput("b_file_3_PVal_thresh"),
+                                                          select_mod_ttest_ui("b_file_3_select_mod_ttest")
                                                           ),
                                                    column(6,
                                                           uiOutput('b_file_3_logfc_direction_ui'),
@@ -556,7 +579,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_3_volcano_download", 'Volcano plot')))
                                                  ),
                                                  fluidRow(
-                                                   shinycssloaders::withSpinner(plotlyOutput('b_file_3_volcano'), spinner_type),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_3_volcano'), spinner_type),
                                                  )
                                           )
                                         ),
@@ -567,7 +590,7 @@ body <- dashboardBody(
                                                    column(12, shinyjs::hidden(myDownloadButton("b_file_3_scatter_download", 'Scatter plot')))
                                                  ),
                                                  fluidRow(
-                                                   shinycssloaders::withSpinner(plotlyOutput('b_file_3_scatter'), spinner_type),
+                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_3_scatter'), spinner_type),
                                                  )
                                           )
                                         )
@@ -630,9 +653,9 @@ body <- dashboardBody(
     tabItem(tabName = "guide",
             
             # works in browser format
-            tags$iframe(src = "welcome_guide_v1.0_210514.pdf",
-                                           style="width:100%;",  #frameborder="0"
-                                           height = "3100px")
+            # tags$iframe(src = "welcome_guide_v1.0_210514.pdf",
+            #                                style="width:100%;",  #frameborder="0"
+            #                                height = "3100px")
     ),
     tabItem(tabName = "start",
             fluidRow(
@@ -644,7 +667,8 @@ body <- dashboardBody(
                          h1(strong("Genoppi"), style = "font-size:100px;"),
                          br(),
                          uiOutput('a_example_file_ui'),
-                         uiOutput('a_get_example_file_ui')
+                         uiOutput('a_get_example_file_ui'),
+                         getExampleButton("single_file")
                     )
                   ),
                   fluidRow(
@@ -706,17 +730,22 @@ sidebar <- dashboardSidebar(
                                uiOutput("a_file_color"),
                                uiOutput("a_significance_type_ui"),
                                uiOutput("FDR_thresh"),
+                               # TODO add button to choose type of mod t-test
+                               select_mod_ttest_ui("a_select_mod_ttest"),
+                               # uiOutput("TTEST_type"),
                                uiOutput("PVal_thresh"),
                                uiOutput('a_logfc_direction_ui'),
                                uiOutput("logFC_thresh")
               ),
+              statsParamsOptions("stats_input"),
               conditionalPanel("input.sidebarmenu == 'widgets'",
                                uiOutput("b_file_1_ui"),
                                uiOutput("b_file_2_ui"),
                                uiOutput("b_file_3_ui"),
                                HTML('<hr style="border-color: #D6DBE0;">'),
                                uiOutput("b_GOI_search"),
-                               uiOutput("b_GOI_search_alpha")
+                               uiOutput("b_GOI_search_alpha"),
+                               #TODO add setting for all file in side panel
               ),
               br(),
               tags$footer(

@@ -4,7 +4,15 @@
 \alias{calc_mod_ttest}
 \title{Perform (one-sample or two-sample) moderated t-test}
 \usage{
-calc_mod_ttest(df, iter = 2000, order = T, two_sample = NULL)
+calc_mod_ttest(
+  df,
+  iter = 2000,
+  order = T,
+  two_sample = NULL,
+  lmFit_method = "robust",
+  eBayes_robust = FALSE,
+  eBayes_trend = FALSE
+)
 }
 \arguments{
 \item{df}{data.frame containing gene, rep[0-9] (replicate logFC) columns, control[0-9] (control replicate intensity value) and
@@ -24,6 +32,12 @@ is not provided, the type of mod t-test will be selected automatically and
 the user is notified of the choice through a message. Two-sample mod t-test
 will be prioritize if there are >= 2 sample columns and >=2 control
 columns.}
+
+\item{lmFit_method}{TODO}
+
+\item{eBayes_robust}{TODO}
+
+\item{eBayes_trend}{TODO}
 }
 \value{
 data.frame containing input df + logFC, pvalue, and FDR columns;

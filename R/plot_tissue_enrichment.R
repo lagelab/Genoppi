@@ -7,6 +7,8 @@
 #' @param ylab y label
 #' @param pvalue.line pvalue threshold to be displayed via a horisontal line.
 #' @family ggplot
+#' @importFrom ggplot2 ggplot geom_bar xlab ylab aes_string geom_hline theme_minimal coord_flip
+#' @importFrom plotly toRGB
 #' @export
 
 plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue', ylab = 'Hypergeometric P-value', pvalue.line = NULL){
@@ -35,6 +37,7 @@ plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue',
 #' @param color.other color of non-signfificant values. Default is orange.
 #' @param col.value.order string that is either 'increasing' or 'decreasing'. Orders barplot accordingly.
 #' @family plotly
+#' @importFrom plotly plot_ly layout
 #' @export
 
 plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text = NULL, pvalue.line = NULL, 
@@ -77,6 +80,7 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
           marker = list(line = list(color = 'black', width = 1)),
           hoverinfo = "text", 
           hovertemplate = ~data[[col.value.text]],
+          height = 900,
           showlegend = F)
   
   # axis ticks 
@@ -97,7 +101,7 @@ plotly_tissue_enrichment <- function(data, col.tissue, col.value, col.value.text
   )
   
   
-  p <- layout(p, title = title, yaxis = yaxis, xaxis = xaxis.ticks, height = 900, shapes = list(vline(pvalue.line)))        
+  p <- layout(p, title = title, yaxis = yaxis, xaxis = xaxis.ticks, shapes = list(vline(pvalue.line)))        
   
   return(p)
 }

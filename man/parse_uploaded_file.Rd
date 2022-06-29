@@ -4,23 +4,26 @@
 \alias{parse_uploaded_file}
 \title{parse uploaded file}
 \usage{
-parse_uploaded_file(path)
+parse_uploaded_file(path, two_sample = "")
 }
 \arguments{
 \item{path}{a string, data path}
+
+\item{two_sample}{a boolean, run two-sample mod-ttest if true, run one-sample
+mod-ttest otherwise}
 }
 \value{
 a data.frame ready for further analysis in genoppi
 }
 \description{
-the following actions are performed sequentially
-1) call read_input to get the file, 2) check whether accession_number
-column is present, and if so, map to gene id; 3) calculate moderated
-t-test on the data
+the following actions are performed sequentially 1) call
+  read_input to get the file, 2) check whether accession_number column is
+  present, and if so, map to gene id; 3) calculate moderated t-test on the
+  data
 }
 \note{
-this is for sequential parsing of files in the multiple
-file tab in shiny.
+this is for sequential parsing of files in the multiple file tab in
+  shiny.
 }
 \seealso{
 Other shiny: 

@@ -2,7 +2,6 @@
 #' @description get the length of unique items.
 #' @param x a vector or list of items.
 #' @family misc
-#' @export
 lun <- function(x) length(unique(as.vector(x)))
 
 #' @title not in
@@ -10,14 +9,12 @@ lun <- function(x) length(unique(as.vector(x)))
 #' @param x value x
 #' @param y value y
 #' @family misc
-#' @export
 '%nin%' <- function(x, y) !(x %in% y)
 
 #' @title omit nulls from list
 #' @description remove NULLs in list
 #' @param lst an R list
 #' @family misc
-#' @export
 null_omit <- function(lst) {
   lst[!vapply(lst, is.null, logical(1))]
 }
@@ -27,7 +24,6 @@ null_omit <- function(lst) {
 #' @param msg the message
 #' @param file string, e.g. a filename.
 #' @family misc
-#' @export
 catf <- function(msg, file = stderr()){
   if (!is.null(file)) cat(file = file, msg)
 }
@@ -82,7 +78,6 @@ as.goi <- function(genes, col_significant = 'cyan', col_other = 'grey', shape = 
 #' @param x a vector of strings.
 #' @param nchar integer.
 #' @param suffix  string. what should all strings end with?
-#' @export
 strsplit.nchar <- function(x, nchar, suffix = '...'){
   return(lapply(strsplit(x, ''), function(x) paste0(paste(x[1:nchar], collapse = ''), suffix)))
 }
@@ -115,7 +110,6 @@ color_distinct <- function(length.out=74){
 #' @description assign a frequency of occurences to a dataframe
 #' @param df a data.frame
 #' @param col the column which to assign frequency to.
-#' @export
 #' 
 assign_freq <- function(df, col){
   tabl = as.data.frame(table(df[[col]]))
@@ -128,7 +122,6 @@ assign_freq <- function(df, col){
 #' @param df a data.frame
 #' @param col the identifiying column for assiging color
 #' @param order_by_freq boolean. Should the data be order by frequency of col?
-#' @export
 #' 
 assign_color <- function(df, col, order_by_freq = T){
   
@@ -150,14 +143,12 @@ assign_color <- function(df, col, order_by_freq = T){
 #' @description make text html bold
 #' @param x string
 #' @family misc
-#' @export
 bold <- function(x){paste('<b>',x,'</b>', sep='')}
 
 #' @title italics
 #' @description make text html italics 
 #' @param x string
 #' @family misc
-#' @export
 #' 
 italics <- function(x){paste('<i>',x,'</i>', sep='')}
 
@@ -166,7 +157,6 @@ italics <- function(x){paste('<i>',x,'</i>', sep='')}
 #' between plotly symbols and ggplot shapes.
 #' This is primiarly used in the shiny application
 #' to ensure consistency between ggplot and plotly.
-#' @export
 #' @family misc
 table_symbols <- function() {
   d = data.frame(
@@ -208,7 +198,6 @@ table_symbols <- function() {
 #' @param vec a character vector of ggplot shapes.
 #' @family misc
 #' @note see ?table_symbols for allowed shapes and symbols.
-#' @export
 #' 
 shape_to_symbol <- function(vec){
   tabl = table_symbols()
@@ -221,7 +210,6 @@ shape_to_symbol <- function(vec){
 #' @title translate plotly symbols to ggplot shapes
 #' @param vec a character vector of plotly symbols.
 #' @family misc
-#' @export
 #' 
 symbol_to_shape <- function(vec){
   tabl = table_symbols()
@@ -235,10 +223,10 @@ symbol_to_shape <- function(vec){
 #' @param a.gplot a ggplot
 #' @note modified from \url{https://stackoverflow.com/questions/12041042/how-to-plot-just-the-legends-in-ggplot2}
 #' @family misc
-#' @export
+#' @importFrom ggplot2 ggplot_gtable
 #' 
 get_gg_legend <- function(a.gplot){ 
-  tmp <- ggplot_gtable(ggplot_build(a.gplot)) 
+  tmp <- ggplot2::ggplot_gtable(ggplot2::ggplot_build(a.gplot)) 
   leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box") 
   legend <- tmp$grobs[[leg]] 
   legend
@@ -264,7 +252,6 @@ is_cols <- function(df, col, test){
 #' @param width line width, numeric.
 #' @param dash string. 'solid, 'dot' or 'dash'.
 #' @family misc
-#' @export
 vline <- function(x = 0, color = "red", width = 1, dash = 'dash') {
   list(
     type = "line", 
@@ -284,7 +271,6 @@ vline <- function(x = 0, color = "red", width = 1, dash = 'dash') {
 #' @param width line width, numeric.
 #' @param dash string. 'solid', 'dot' or 'dash'.
 #' @family misc
-#' @export
 hline <- function(y = 0, color = "blue", width = 1, dash = 'dash') {
   list(
     type = "line", 
@@ -303,7 +289,6 @@ hline <- function(y = 0, color = "blue", width = 1, dash = 'dash') {
 #' @param url what is the url?
 #' @param text what should be displayed? Default is NULL,
 #' which just displays the URL.
-#' @export
 #' @family html
 
 hyperlink <- function(url, text){
@@ -312,7 +297,6 @@ hyperlink <- function(url, text){
 
 #' @title line_unity
 #' @description plots a unity line
-#' @export
 
 line_unity <- function(){geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2)}
 
@@ -321,7 +305,6 @@ line_unity <- function(){geom_abline(intercept=0, slope=1, linetype="longdash", 
 #' @description find documentation objects for shiny app.
 #' @param dir directory
 #' @param file file / regex pattern
-#' @export
 
 find_docs <- function(file = 'inweb_table.info', dir = 'documentation'){
   return(list.files(dir, pattern = file, full.names = T))

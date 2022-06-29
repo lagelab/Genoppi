@@ -30,7 +30,7 @@ test_that('plot scatter basic all',{
   
   # make single comparison 
   res = plot_scatter_basic_all(data)
-  expect_true(length(res) == 3)
+  expect_true(length(res) == 18)
   expect_equal(quo_name(res$rep1.rep2$ggplot$mapping$x), 'rep1')
   expect_equal(quo_name(res$rep1.rep2$ggplot$mapping$y), 'rep2')  
   expect_equal(res$rep1.rep2$ggplot$correlation, 0.7254594)

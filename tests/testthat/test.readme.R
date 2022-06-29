@@ -25,7 +25,7 @@ test_that('Readme data can be run',{
   
   # customize with classic ggplot notation
   volcano_gg <- volcano +
-    ggtitle('BCL2 vs IgG control in GPiNs (Triplicate)')
+    ggplot2::ggtitle('BCL2 vs IgG control in GPiNs (Triplicate)')
   
   # use plotly to interact with plots
   plt <- make_interactive(volcano_tidy)

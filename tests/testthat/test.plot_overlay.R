@@ -15,7 +15,7 @@ test_that('simple overlay of a bait',{
   # a few different test cases
   id = 'A1'
   df = id_significant_proteins(df)
-  p = plot_volcano_basic(df, plot_segments = T) + ggtitle('BCL2 vs IgG in GPiNs') 
+  p = plot_volcano_basic(df, plot_segments = T) + ggplot2::ggtitle('BCL2 vs IgG in GPiNs') 
   p = plot_overlay(p, as.bait('BCL2')) ## testcase here..
   
   # test that result and reference are same
@@ -31,7 +31,7 @@ test_that('simple overlay of a bait',{
   id = 'A2'
   # a few different test cases
   df <- id_significant_proteins(df, fdr_cutoff=0.1)
-  p = plot_volcano_basic(df, plot_segments = T) + ggtitle('BCL2 vs IgG in GPiNs') 
+  p = plot_volcano_basic(df, plot_segments = T) + ggplot2::ggtitle('BCL2 vs IgG in GPiNs') 
   p1 = plot_overlay(p, as.bait('BCL2'))
   
   # Generate random dataset
@@ -104,7 +104,7 @@ test_that('invalid columns in overlay gives warning and errors',{
   
   # invalid columns in overlay gives warning
   df <- id_significant_proteins(df, fdr_cutoff=0.1)
-  p = plot_volcano_basic(df, plot_segments = T) + ggtitle('BCL2 vs IgG in GPiNs') 
+  p = plot_volcano_basic(df, plot_segments = T) + ggplot2::ggtitle('BCL2 vs IgG in GPiNs') 
   ref1= data.frame(gene=c('APC2', 'RAB7A'),col_significant='cyan',col_other='grey', col_invalid = T)
   ref2= data.frame(gene=c('APC2','MAP7','KHSRP'),col_significant='blue',col_other='grey', col_invalid = T)
   reference = list(ref1, ref2)

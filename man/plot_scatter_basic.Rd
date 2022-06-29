@@ -15,15 +15,19 @@ plot_scatter_basic(
   insig_text = "(not significant)",
   shape = 21,
   stroke = 0.2,
-  col_border = NULL
+  col_border = NULL,
+  unit = log[2] ~ "[Fold Change]"
 )
 }
 \arguments{
-\item{df}{data.frame with at least columns \code{gene}, \code{significant} and some \code{rep[0-9]}.}
+\item{df}{data.frame with at least columns \code{gene}, \code{significant}
+and some \code{rep[0-9]}.}
 
-\item{repA}{string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.}
+\item{repA}{string that is column in df. Expects name to be in the form of
+rep[0-9], e.g. 'rep1'.}
 
-\item{repB}{string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.}
+\item{repB}{string that is column in df. Expects name to be in the form of
+rep[0-9], e.g. 'rep1'.}
 
 \item{size_gg}{numeric. Size of point.}
 
@@ -31,15 +35,19 @@ plot_scatter_basic(
 
 \item{col_other}{string. Color for other protein interactors.}
 
-\item{sig_text}{string. Text for significant interactor to be displayed in legend.}
+\item{sig_text}{string. Text for significant interactor to be displayed in
+legend.}
 
-\item{insig_text}{string. Text for non-significant interactors to be displayed in legend.}
+\item{insig_text}{string. Text for non-significant interactors to be
+displayed in legend.}
 
 \item{shape}{integer. The shape of the point. Default is 21 (circle).}
 
 \item{stroke}{numeric. The stroke width.}
 
 \item{col_border}{string. The color of the borders/outline.}
+
+\item{unit}{unit displayed in the x and y axis}
 }
 \description{
 Plot protein-level data in a sactter plot.

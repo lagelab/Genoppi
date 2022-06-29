@@ -2,17 +2,23 @@
 #' 
 #' @description Plot protein-level data in a sactter plot.
 #' 
-#' @param df data.frame with at least columns \code{gene}, \code{significant} and some \code{rep[0-9]}.
-#' @param repA string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.
-#' @param repB string that is column in df. Expects name to be in the form of rep[0-9], e.g. 'rep1'.
+#' @param df data.frame with at least columns \code{gene}, \code{significant}
+#'   and some \code{rep[0-9]}.
+#' @param repA string that is column in df. Expects name to be in the form of
+#'   rep[0-9], e.g. 'rep1'.
+#' @param repB string that is column in df. Expects name to be in the form of
+#'   rep[0-9], e.g. 'rep1'.
 #' @param size_gg numeric. Size of point.
 #' @param col_significant string. Color for significant protein interactors.
 #' @param col_other string. Color for other protein interactors.
-#' @param sig_text string. Text for significant interactor to be displayed in legend.
-#' @param insig_text string. Text for non-significant interactors to be displayed in legend.
+#' @param sig_text string. Text for significant interactor to be displayed in
+#'   legend.
+#' @param insig_text string. Text for non-significant interactors to be
+#'   displayed in legend.
 #' @param shape integer. The shape of the point. Default is 21 (circle).
 #' @param stroke numeric. The stroke width.
 #' @param col_border string. The color of the borders/outline.
+#' @param unit unit displayed in the x and y axis
 #' 
 #' @examples 
 #' \dontrun{
@@ -25,13 +31,25 @@
 #'   
 #' p + ggtitle('Example scatter plot')
 #' }
-#' @importFrom ggplot2 ggplot geom_point geom_abline labs theme_minimal
+#' @importFrom ggplot2 ggplot geom_point geom_abline labs theme_minimal theme theme_classic scale_fill_manual scale_shape_manual scale_color_manual guides
+#' @importFrom plotly toRGB
 #' @export
 
 
-plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_gg = 3, col_significant = "#41AB5D", col_other = 'grey', 
-                               sig_text = '(significant)', insig_text = '(not significant)', shape = 21, stroke = 0.2, col_border = NULL){
-  
+plot_scatter_basic <-
+  function(df,
+           repA = 'rep1',
+           repB = 'rep2',
+           size_gg = 3,
+           col_significant = "#41AB5D",
+           col_other = 'grey',
+           sig_text = '(significant)',
+           insig_text = '(not significant)',
+           shape = 21,
+           stroke = 0.2,
+           col_border = NULL,
+           unit = log[2]~'[Fold Change]') {
+    
   # check input
   if (!is.numeric(df[,repA])) stop('repA must be a numeric column.')
   if (!is.numeric(df[,repB])) stop('repB must be a numeric column.')
@@ -57,8 +75,8 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_gg = 3, col_si
     geom_point(alpha=1, size=size_gg, stroke = stroke) +
     geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2) +
     labs(title = paste("r =",format(correlation,digits=3))) + 
-    xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~log[2]~'[Fold Change]')) +
-    ylab(bquote(.(gsub('(R|r)ep','Replicate ', repB))  ~log[2]~'[Fold Change]')) +
+    xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~ .(unit))) +
+    ylab(bquote(.(gsub('(R|r)ep','Replicate ', repB))  ~ .(unit))) +
     theme_minimal() + theme(panel.grid.major = element_blank(), 
                             panel.grid.minor = element_blank(),
                             panel.background = element_blank()) +
@@ -85,7 +103,12 @@ plot_scatter_basic <- function(df, repA='rep1', repB='rep2', size_gg = 3, col_si
 #' @return a list of gg scatter plots.
 #' @export
 
-plot_scatter_basic_all <- function(df, size_gg = 3, col_significant = "#41AB5D", col_other = 'grey'){
+plot_scatter_basic_all <-
+  function(df,
+           size_gg = 3,
+           col_significant = "#41AB5D",
+           col_other = 'grey') {
+    
   
   # check input
   expected_columns = c('logFC', 'FDR', 'pvalue', 'significant', 'gene')
@@ -93,13 +116,21 @@ plot_scatter_basic_all <- function(df, size_gg = 3, col_significant = "#41AB5D",
   
   # enumerate all combinations replicate
   reps = regmatches(colnames(df), regexpr('rep[0-9]',colnames(df)))
-  combinations = enumerate_replicate_combinations(length(reps))
-  plts = lapply(1:nrow(combinations), function(i){
-    repA = paste0('rep',combinations[i, 1])
-    repB = paste0('rep',combinations[i, 2])
-    name = paste0(repA,'.',repB)
-    p = plot_scatter_basic(df, repA = repA, repB = repB, size_gg = size_gg, col_significant = col_significant, col_other = col_other)
-    return(list(name = name, ggplot = p, correlation = p$correlation))
+  combinations = enumerate_replicate_combinations(df)
+  
+  # plts = lapply(1:nrow(combinations), function(i){
+  plts = lapply(combinations, function(pair){
+    repA = strsplit(pair, "\\.")[[1]][1]
+    repB = strsplit(pair, "\\.")[[1]][2]
+    p = plot_scatter_basic(
+      df,
+      repA = repA,
+      repB = repB,
+      size_gg = size_gg,
+      col_significant = col_significant,
+      col_other = col_other
+    )
+    return(list(name = pair, ggplot = p, correlation = p$correlation))
   })
   
   # set names

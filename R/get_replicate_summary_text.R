@@ -4,6 +4,7 @@
 #' @param data proteomic data. Must contain a significant column.
 #' @param reps a names list of replicate correlations.
 #' @param digits how many digits should the table be rounded with?
+#' @importFrom utils tail stack
 #' @family shiny
 
 

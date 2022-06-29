@@ -8,6 +8,7 @@
 #' @param width width of line
 #' @param dash dashed or solid?
 #' @param opacity opacity of line.
+#' @importFrom plotly add_trace
 #' @family plotly
 #' @export
 

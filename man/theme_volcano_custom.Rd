@@ -63,7 +63,7 @@ theme_volcano_custom(
 \item{ylab}{String. alternative y label.}
 }
 \description{
-Sets up custom bolcano plot theme.
+Sets up custom volcano plot theme.
 }
 \seealso{
 Other ggplot: 

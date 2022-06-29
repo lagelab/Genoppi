@@ -4,13 +4,14 @@
 \alias{enumerate_replicate_combinations}
 \title{enumerate replicate combinations}
 \usage{
-enumerate_replicate_combinations(len)
+enumerate_replicate_combinations(df)
 }
 \arguments{
-\item{len}{number of replicates}
+\item{df}{the data frame from which replicate combinations are extracted}
 }
 \description{
-enumerates unique replicate comparisons
+enumerates unique replicate comparisons, extract rep-rep,
+  sample-sample, control-control, and sample-control combinations
 }
 \seealso{
 Other misc: 

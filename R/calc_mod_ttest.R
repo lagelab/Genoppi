@@ -16,6 +16,9 @@
 #'   the user is notified of the choice through a message. Two-sample mod t-test
 #'   will be prioritize if there are >= 2 sample columns and >=2 control
 #'   columns.
+#' @param lmFit_method TODO
+#' @param eBayes_robust TODO
+#' @param eBayes_trend TODO
 #' @return data.frame containing input df + logFC, pvalue, and FDR columns;
 #'   sorted by decreasing logFC, then FDR.
 #' @export
@@ -29,20 +32,26 @@ calc_mod_ttest <-
   function(df,
            iter = 2000,
            order = T,
-           two_sample = NULL) {
+           two_sample = NULL,
+           lmFit_method = "robust",
+           eBayes_robust = FALSE,
+           eBayes_trend = FALSE) {
     # check input
     stopifnot(is.data.frame(df))
     stopifnot(nrow(df) > 0)
     rep_columns = grepl('rep[0-9]', colnames(df))
-    control_columns = grepl('sample[0-9]', colnames(df))
-    sample_columns = grepl('control[0-9]', colnames(df))
+    control_columns = grepl('^sample[0-9]$', colnames(df))
+    sample_columns = grepl('^control[0-9]$', colnames(df))
     if (is.null(two_sample)) {
       # check whether columns enable two-sample mod t-test, i.e. has both control
       # and sample replicate values (each with >= 2 columns)
       if (sum(sample_columns) >= 2 && sum(control_columns) >= 2) {
         # two-sample moderated t-test
         message('Type of moderated t-test not specified (defaulting to two-sample mod t-test).')
-        return(calc_mod_ttest_two_sample_helper(df, iter, order))
+        return(calc_mod_ttest_two_sample_helper(df, iter, order,
+                                                eBayes_robust = eBayes_robust,
+                                                lmFit_method = lmFit_method,
+                                                eBayes_trend = eBayes_trend))
       } else {
         # check for rep columns (check that there's >=2 rep columns)
         if (sum(rep_columns) < 2) {
@@ -50,7 +59,10 @@ calc_mod_ttest <-
         }
         # one-sample moderated t-test
         message('Type of moderated t-test not specified (defaulting to one-sample mod t-test).')
-        return(calc_mod_ttest_one_sample_helper(df, iter, order))
+        return(calc_mod_ttest_one_sample_helper(df, iter, order,
+                                                eBayes_robust = eBayes_robust,
+                                                lmFit_method = lmFit_method,
+                                                eBayes_trend = eBayes_trend))
       }
     } else if (two_sample) {
       # check that the required columns for two-sample mod t-test (i.e. at least
@@ -62,7 +74,12 @@ calc_mod_ttest <-
       }
       # explicitly using two-sample mod t-test
       message("Using two-sample mod t-test.")
-      return(calc_mod_ttest_two_sample_helper(df, iter, order))
+      return(calc_mod_ttest_two_sample_helper(df, iter, order,
+                                              eBayes_robust = eBayes_robust,
+                                              lmFit_method = lmFit_method,
+                                              eBayes_trend = eBayes_trend
+        )
+      )
     } else if (!two_sample) {
       # check that the required columns for one-sample mod t-test (i.e. rep
       # columns) exists in the given df
@@ -73,19 +90,25 @@ calc_mod_ttest <-
       }
       # explicitly using one-sample mod t-test
       message("Using one-sample mod t-test.")
-      return(calc_mod_ttest_one_sample_helper(df, iter, order))
+      return(calc_mod_ttest_one_sample_helper(df, iter, order,
+                                              eBayes_robust = eBayes_robust,
+                                              lmFit_method = lmFit_method,
+                                              eBayes_trend = eBayes_trend))
     }
   }
 
 # helper method for calc_mod_ttest to perform two-sample moderated t-test on the
 # given data
 calc_mod_ttest_two_sample_helper <-
-  function(df, iter = 2000, order = T) {
+  function(df, iter = 2000, order = T,
+           lmFit_method = "robust",
+           eBayes_robust = FALSE,
+           eBayes_trend = FALSE) {
     # check input
     stopifnot(is.data.frame(df))
     stopifnot(nrow(df) > 0)
-    sample_columns = grepl('sample[0-9]', colnames(df))
-    control_columns = grepl('control[0-9]', colnames(df))
+    sample_columns = grepl('^sample[0-9]$', colnames(df))
+    control_columns = grepl('^control[0-9]$', colnames(df))
     
     # check for col names
     if (all(!sample_columns) ||
@@ -98,16 +121,17 @@ calc_mod_ttest_two_sample_helper <-
     
     columns <- c(sample_col_names, control_col_names)
     design <-
-      cbind(Sample = as.numeric(grepl('sample[0-9]', columns)),
-            Control = as.numeric(grepl('control[0-9]', columns)))
+      cbind(Sample = as.numeric(grepl('^sample[0-9]$', columns)),
+            Control = as.numeric(grepl('^control[0-9]$', columns)))
     cont.matrix <-
       limma::makeContrasts(SamplevsControl = Sample - Control, levels = design)
     
     # two-sample mod t-test
     fit <-
-      limma::lmFit(df[, columns], design, method = "robust", maxit = iter)
+      limma::lmFit(df[, columns], design, method = lmFit_method, maxit = iter)
     cont.fit <- limma::contrasts.fit(fit, cont.matrix)
-    bayes <- limma::eBayes(cont.fit)
+    bayes <-
+      limma::eBayes(cont.fit, robust = eBayes_robust, trend = eBayes_trend)
     mod.ttest <- limma::topTable(bayes,
                                  number = nrow(bayes),
                                  sort.by = 'none')
@@ -127,7 +151,10 @@ calc_mod_ttest_two_sample_helper <-
 
 # helper function used in calc_mod_ttest.R to carry out one-sample mod t-test
 calc_mod_ttest_one_sample_helper <-
-  function(df, iter = 2000, order = T) {
+  function(df, iter = 2000, order = T,
+           lmFit_method = "robust",
+           eBayes_robust = FALSE,
+           eBayes_trend = FALSE) {
     # check input
     stopifnot(is.data.frame(df))
     stopifnot(nrow(df) > 0)
@@ -138,8 +165,9 @@ calc_mod_ttest_one_sample_helper <-
       stop('data does not contain rep columns! LmFit failed!')
     
     # moderated t-test
-    myfit <- limma::lmFit(df[, columns], method = "robust", maxit = iter)
-    myfit <- limma::eBayes(myfit)
+    myfit <- limma::lmFit(df[, columns], method = lmFit_method, maxit = iter)
+    myfit <-
+      limma::eBayes(myfit, robust = eBayes_robust, trend = eBayes_trend)
     modtest <-
       limma::topTable(myfit, number = nrow(myfit), sort.by = 'none')
     colnames(modtest)[4:5] <- c("pvalue", "FDR")

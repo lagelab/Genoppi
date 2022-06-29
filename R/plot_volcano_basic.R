@@ -23,7 +23,7 @@
 #' 
 #' }
 #' @export
-#' @importFrom ggplot2 ggplot geom_point geom_hline geom_vline xlab ylab theme aes_ aes aes_string geom_text
+#' @importFrom ggplot2 ggplot geom_point geom_hline geom_vline xlab ylab theme aes_ aes aes_string geom_text scale_fill_manual scale_shape_manual scale_color_manual
 
 
 plot_volcano_basic <- function(df, col_significant = "#41AB5D", col_other = 'grey', sig_text = '(significant)', 

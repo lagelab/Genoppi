@@ -1,7 +1,6 @@
 
 # shiny server
 shinyServer(function(input, output, session){
-  
   #supress warnings
   storeWarn<- getOption("warn")
   options(warn = -1) 
@@ -17,7 +16,7 @@ shinyServer(function(input, output, session){
   ## documentation tab
   
   output$documentation_ui <- renderText({
-    return(HTML(documentation))
+    # return(HTML(documentation))
   })
   
   # hide developer tabs when starting app
@@ -45,6 +44,7 @@ shinyServer(function(input, output, session){
   observeEvent(input$a_get_example_file,{
     updateTabItems(session, "sidebarmenu", 'dashboard')
     file1_path(example_file)
+    dataPath(example_file)
   })
   
   observeEvent(input$a_file_pulldown_extra,{
@@ -53,7 +53,8 @@ shinyServer(function(input, output, session){
   })
   
   observeEvent(input$tab_welcome, {
-    updateTabItems(session, "sidebarmenu", 'guide')
+    # Uncomment to get guide
+    # updateTabItems(session, "sidebarmenu", 'guide')
   })
   
   observeEvent(input$a_file_pulldown_r,{
@@ -101,6 +102,9 @@ shinyServer(function(input, output, session){
     sliderInput("a_fdr_thresh", "FDR threshold",
                 min = 0, max = 1, value = 0.1, step = 0.01)
   })
+  
+  # TODO render select type of mod t-test
+  select_mod_ttest_server("a_select_mod_ttest")
   
   output$PVal_thresh <- renderUI({
     sliderInput("a_pval_thresh", HTML("<i>P</i>-value threshold"),
@@ -514,15 +518,12 @@ shinyServer(function(input, output, session){
   })
   
   # Search for replicates in data
+  # DONE change to using enumerate_replicate_combinations for generating
+  # available correlation plots
   available_replicates <- reactive({
     req(a_pulldown())
     d <- a_pulldown()
-    reps = sum(grepl('^rep[0-9]+$',colnames(d)))
-    if (reps > 2){
-      enum = enumerate_replicate_combinations(reps)
-      enum = apply(enum, 2, function(x) paste0('rep', x))
-      return(paste0(enum[,1],'.',enum[,2]))
-    } else {return('rep1.rep2')}
+    return(enumerate_replicate_combinations(d))
   })
   
   # make summary of replicates
@@ -563,6 +564,17 @@ shinyServer(function(input, output, session){
                 'Replicates to compare in scatter plot', 
                 choices = reps)
   })
+  
+  # TODO render select type of mod t-test
+  # output$a_select_mod_ttest_ui <- renderUI({
+  #   
+  #   selectInput(
+  #     'a_select_mod_ttest',
+  #     'Select type of moderated t-test',
+  #     choices = c("one sample mod t-test",
+  #                 "two sample mod t-test")
+  #   )
+  # })
   
   #
   output$a_select_venn_genes_upload_ui <- renderUI({
@@ -762,6 +774,9 @@ shinyServer(function(input, output, session){
     req(a_orig_pulldown(), a_in_pulldown())
     pulldown <- a_orig_pulldown()
     format <- a_in_pulldown()$format
+    # TODO add option to choose one vs two sample mod t-test
+    two_sample <- input$a_select_mod_ttest == "Two sample"
+    
     
     # moderated t.test still needed
     if (format$check$gene_rep | format$check$accession_rep){
@@ -774,7 +789,8 @@ shinyServer(function(input, output, session){
       
       # ensure moderated t.test is only calculated on allowed columns
       pulldown = pulldown[,colnames(pulldown)[allowed_vec]]
-      result = calc_mod_ttest(pulldown) 
+      # TODO added two_sample parameter to the calc_mod_ttest call
+      result = calc_mod_ttest(pulldown, two_sample = two_sample) 
       return(result)
     }
     
@@ -945,7 +961,7 @@ shinyServer(function(input, output, session){
     return(mapping)
   })
   
-  # take selected bait and find preys in selcted PPI database
+  # take selected bait and find preys in selected PPI database
   a_ppi_mapping <- reactive({
     req(input$a_bait_rep, a_pulldown(), input$a_ppi_select)
     mapping = NULL
@@ -1187,7 +1203,7 @@ shinyServer(function(input, output, session){
   })
   
   # plot bar chart of tissue enrichment
-  output$a_tissue_enrichment_ui <- renderPlotly({
+  output$a_tissue_enrichment_ui <- plotly::renderPlotly({
     req(a_tissue_enrichment(), a_tissue_enrichment_layout())
     
     # get enrichment data and format visuals
@@ -2274,12 +2290,12 @@ shinyServer(function(input, output, session){
   
 
   # the actual volcano plot outputted to the user
-  output$VolcanoPlot <- renderPlotly({
+  output$VolcanoPlot <- plotly::renderPlotly({
     validate(need(a_file_pulldown_r()  != '', "Upload file"))
       a_vp_layerx()
   })
   
-  output$VolcanoPlotPathway <- renderPlotly({
+  output$VolcanoPlotPathway <- plotly::renderPlotly({
     req(a_pathway_plot())
     a_pathway_plot()
   })
@@ -2307,10 +2323,36 @@ shinyServer(function(input, output, session){
   })
   
   
-  output$ScatterPlot <- renderPlotly({
+  output$ScatterPlot <- plotly::renderPlotly({
     validate(need(a_file_pulldown_r()  != '', "Upload file"))
     a_sp()
   })
+  
+  # initialize reactive values 
+  sigColorS <- sigColorServer("sig_color")
+  insigColorS <- insigColorServer("insig_color")
+    
+  # TODO comment out above
+  dataPathS <- dataPathServer("data")
+  dataFrameS <- dataFrameServer("data", dataPathS)
+  extractColsS <- extractColumnsServer("metadata", dataFrameS)
+  mapAccessionToGeneS <- mapAccessionToGeneServer("data", dataFrameS)
+  statsParamsS <- statsParamsServer("stats_input")
+  enrichmentStatsS <- enrichmentStatsServer(
+    "data", mapAccessionToGeneS, statsParamsS)
+  drawVolcanoS <- drawVolcanoServer(
+    "volcano_plot", enrichmentStatsS, sigColorS, insigColorS)
+  exampleBtn <- getExampleServer("single_file", dataPathS)
+  ggpairS <- plotGGpairServer("plot_ggpair", dataFrameS, extractColsS)
+  # use observe event to update tab items:
+  # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
+  observeEvent(exampleBtn(), {
+    updateTabItems(session, "sidebarmenu", 'dashboard')
+  })
+  
+  # basic plot Box
+  basicPlotParamServer("basic_plot_inputs", sigColorS, insigColorS)
+  
   
   output$multi_FDR_colorbar <- renderPlot({
     validate(
@@ -2319,7 +2361,7 @@ shinyServer(function(input, output, session){
     a_multi_vp_colorbar()
   })
   
-  output$Multi_VolcanoPlot <- renderPlotly({
+  output$Multi_VolcanoPlot <- plotly::renderPlotly({
     #validate(need(a_file_pulldown_r()  != '', "Upload file"))
     req(a_pulldown_significant)
     a_integrated_plot()
@@ -2370,21 +2412,22 @@ shinyServer(function(input, output, session){
   
  ## handle file parsing, i.e. ensure that the files are correctly mapped
  ## and contain columns requried for further analysis.
+  # TODO add option to toggle two_sample_mod_ttest
  b_file_1_parsed <- reactive({
    if (!is.null(b_file_1_datapath())){
-     return(parse_uploaded_file(b_file_1_datapath()))
+     return(parse_uploaded_file(b_file_1_datapath(), input$b_file_1_select_mod_ttest))
    } else return(NULL)
  })
   
  b_file_2_parsed <- reactive({
    if (!is.null(b_file_2_datapath())){
-   return(parse_uploaded_file(b_file_2_datapath()))
+   return(parse_uploaded_file(b_file_2_datapath(), input$b_file_2_select_mod_ttest))
    } else return(NULL)
  })
   
  b_file_3_parsed <- reactive({
    if (!is.null(b_file_3_datapath())){
-   return(parse_uploaded_file(b_file_3_datapath()))
+   return(parse_uploaded_file(b_file_3_datapath(), input$b_file_3_select_mod_ttest))
    } else return(NULL)
  })
  
@@ -2427,15 +2470,12 @@ shinyServer(function(input, output, session){
  ## get the available replicate in each file
  
  # Search for replicates in data
+ # DONE changed this to allow for selection of sample-sample scatter plot as
+ # well
  b_file_1_available_replicates <- reactive({
    validate(need(b_file_1_rep_bool(), ""))
    d <- b_file_1_parsed()
-   reps = sum(grepl('^rep[0-9]+$',colnames(d)))
-   if (reps > 2){
-     enum = enumerate_replicate_combinations(reps)
-     enum = apply(enum, 2, function(x) paste0('rep', x))
-     return(paste0(enum[,1],'.',enum[,2]))
-   } else {return('rep1.rep2')}
+   return(enumerate_replicate_combinations(d))
  })
  
  # render select scatter plot
@@ -2456,12 +2496,7 @@ shinyServer(function(input, output, session){
  b_file_2_available_replicates <- reactive({
    validate(need(b_file_2_rep_bool(), ""))
    d <- b_file_2_parsed()
-   reps = sum(grepl('^rep[0-9]+$',colnames(d)))
-   if (reps > 2){
-     enum = enumerate_replicate_combinations(reps)
-     enum = apply(enum, 2, function(x) paste0('rep', x))
-     return(paste0(enum[,1],'.',enum[,2]))
-   } else {return('rep1.rep2')}
+   return(enumerate_replicate_combinations(d))
  })
  
  # render select scatter plot
@@ -2481,12 +2516,7 @@ shinyServer(function(input, output, session){
  b_file_3_available_replicates <- reactive({
    validate(need(b_file_3_rep_bool(), ""))
    d <- b_file_3_parsed()
-   reps = sum(grepl('^rep[0-9]+$',colnames(d)))
-   if (reps > 2){
-     enum = enumerate_replicate_combinations(reps)
-     enum = apply(enum, 2, function(x) paste0('rep', x))
-     return(paste0(enum[,1],'.',enum[,2]))
-   } else {return('rep1.rep2')}
+   return(enumerate_replicate_combinations(d))
  })
  
  # render select scatter plot
@@ -2583,6 +2613,12 @@ shinyServer(function(input, output, session){
    sliderInput("b_file_1_pval_thresh", HTML("<i>P</i>-value threshold"),
                min = 0, max = 1, value = 0.05, step = 0.001)
  })
+ 
+ #TODO
+ select_mod_ttest_server("b_file_1_select_mod_ttest")
+ select_mod_ttest_server("b_file_2_select_mod_ttest")
+ select_mod_ttest_server("b_file_3_select_mod_ttest")
+ 
  
  output$b_file_1_logFC_thresh <- renderUI({
    req(b_file_1_parsed(), input$b_file_1_logfc_direction)
@@ -2700,7 +2736,6 @@ shinyServer(function(input, output, session){
 
  b_file_1_monitor_thresholds <- reactive({
    
-   
    html_translate_significance_thresholds(fc = input$b_file_1_logFC_thresh,
                                          fc_dir = input$b_file_1_logfc_direction, 
                                          sig_type = input$b_file_1_significance_type, 
@@ -2708,6 +2743,8 @@ shinyServer(function(input, output, session){
                                          pval_thresh = input$b_file_1_pval_thresh)
    
  })
+ 
+ 
  b_file_2_monitor_thresholds <- reactive({
    
    html_translate_significance_thresholds(fc = input$b_file_2_logFC_thresh,
@@ -2900,12 +2937,12 @@ shinyServer(function(input, output, session){
    
  })
   
- output$b_file_1_volcano = renderPlotly({
+ output$b_file_1_volcano = plotly::renderPlotly({
    req(b_file_1_vp())
    b_file_1_vp()
  })
  
- output$b_file_1_scatter = renderPlotly({
+ output$b_file_1_scatter = plotly::renderPlotly({
    req(b_file_1_sp())
    b_file_1_sp()
  })
@@ -2977,12 +3014,12 @@ shinyServer(function(input, output, session){
    
  })
  
- output$b_file_2_volcano = renderPlotly({
+ output$b_file_2_volcano = plotly::renderPlotly({
    req(b_file_2_vp())
    b_file_2_vp()
  })
  
- output$b_file_2_scatter = renderPlotly({
+ output$b_file_2_scatter = plotly::renderPlotly({
    req(b_file_2_sp())
    b_file_2_sp()
  })
@@ -3051,12 +3088,12 @@ shinyServer(function(input, output, session){
    
  })
  
- output$b_file_3_volcano = renderPlotly({
+ output$b_file_3_volcano = plotly::renderPlotly({
    req(b_file_3_vp())
    b_file_3_vp()
  })
  
- output$b_file_3_scatter = renderPlotly({
+ output$b_file_3_scatter = plotly::renderPlotly({
    req(b_file_3_sp())
    b_file_3_sp()
  })
@@ -3102,8 +3139,11 @@ shinyServer(function(input, output, session){
    overlap = b_overlap()
    
    # get thresholds and combine them 
-   all_thresholds = list(f1 = b_file_1_monitor_thresholds(), f2 = b_file_2_monitor_thresholds(), f3 = b_file_3_monitor_thresholds())
-   thresholds = lapply(all_thresholds[names(all_thresholds) %in% names(overlap)], function(x) paste(x$sig$sig, x$fc$sig, sep = ', '))
+   all_thresholds = list(f1 = b_file_1_monitor_thresholds(),
+                         f2 = b_file_2_monitor_thresholds(),
+                         f3 = b_file_3_monitor_thresholds())
+   thresholds = lapply(all_thresholds[names(all_thresholds) %in% names(overlap)], 
+                       function(x) paste(x$sig$sig, x$fc$sig, sep = ', '))
    
    # generate text for displaying
    result = lapply(names(overlap), function(f){
@@ -3369,7 +3409,8 @@ shinyServer(function(input, output, session){
   
   
   output$how_to_guide <- renderUI({
-    getPage_guide()
+    # Uncomment to get welcome guide
+    # getPage_guide()
   })
   
   
