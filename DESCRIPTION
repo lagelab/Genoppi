@@ -41,7 +41,7 @@ Imports:
     magrittr,
     GGally
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
 Collate: 
     'add_plotly_layout_scatter.R'
     'add_plotly_layout_volcano.R'

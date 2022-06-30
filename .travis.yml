@@ -51,5 +51,5 @@ install:
   - Rscript -e "if (!requireNamespace('renv', quietly = TRUE)) install.packages('renv')"
   - Rscript -e "renv::restore()"
   
-script:
-  - Rscript -e '<your-build-action>'
+#script:
+#  - Rscript -e '<your-build-action>'
