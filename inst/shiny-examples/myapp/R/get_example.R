@@ -3,11 +3,13 @@ getExampleButton <- function(id){
 }
 
 # update dataPath to example file when example button is pressed
-getExampleServer <- function(id, dataPathServer) {
+getExampleServer <- function(id, dataPathServer, toggleSingleBasicServer) {
   moduleServer(id, function(input, output, session) {
-    eventReactive(input$example, {
+    observeEvent(input$example, {
       dataPathServer(example_file)
-      TRUE
+      ifelse(is.null(toggleSingleBasicServer()), 
+             toggleSingleBasicServer(1),
+             toggleSingleBasicServer(toggleSingleBasicServer()+1))
     })
   })
 }

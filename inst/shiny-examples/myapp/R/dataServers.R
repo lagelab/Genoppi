@@ -52,21 +52,27 @@ mapAccessionToGeneServer <- function(id, dataFrameServer) {
 }
 
 enrichmentStatsServer <- function(id, mapAccessionToGeneServer, statsParamsServer) {
-  if (!is.reactive(mapAccessionToGeneServer)){stop("mapAccessionToGeneServer passed to enrichmentStatsServer is not reactive")}
-  if (!is.reactive(statsParamsServer)){stop("statsParamsServer passed to enrichmentStatsServer is not reactive")}
+  if (!is.reactive(mapAccessionToGeneServer)){
+    stop("mapAccessionToGeneServer passed to enrichmentStatsServer is not reactive")}
+  if (!is.reactive(statsParamsServer)){
+    stop("statsParamsServer passed to enrichmentStatsServer is not reactive")}
   moduleServer(id, function(input, output, session) {
     return(
-      eventReactive(mapAccessionToGeneServer()$data, {
+      eventReactive({mapAccessionToGeneServer()$data; statsParamsServer()}, {
         df <- mapAccessionToGeneServer()$data
         fmt <- mapAccessionToGeneServer()$format
         req(!is.null(fmt), cancelOutput = TRUE)
-        # enable check for input params after fixing reactive graph
-        # req(statsParamsServer()$modTTest)
-        # req(statsParamsServer()$signifType)
-        # req(statsParamsServer()$fdrThresh)
-        # req(statsParamsServer()$pvalThresh)
-        # req(statsParamsServer()$logfcDir)
-        # req(statsParamsServer()$logfcThresh)
+        req(statsParamsServer()$modTTest)
+        req(statsParamsServer()$signifType)
+        if (statsParamsServer()$signifType == "fdr") {
+          req(statsParamsServer()$fdrThresh)
+        } else if (statsParamsServer()$signifType == "pvalue") {
+          req(statsParamsServer()$pValThresh)
+        } else {stop(
+          "invalid signifType from statsParamsServer passed to enrichmentStatsServer.")
+        }
+        req(statsParamsServer()$logfcDir)
+        req(statsParamsServer()$logfcThresh)
         # moderated t.test still needed
         if (fmt$check$gene_rep | fmt$check$accession_rep){
           # set allowed column names
@@ -89,12 +95,12 @@ enrichmentStatsServer <- function(id, mapAccessionToGeneServer, statsParamsServe
         # else if (fmt$check$gene_signif | fmt$check$accession_signif){
         # }
         if (statsParamsServer()$signifType == 'fdr'){
-          df <- id_enriched_proteins(df, fdr_cutoff = statsParamsServer()$fdrThresh, 
+          df <- id_significant_proteins(df, fdr_cutoff = statsParamsServer()$fdrThresh, 
                                     logfc_dir = statsParamsServer()$logfcDir, 
                                     logfc_cutoff = statsParamsServer()$logfcThresh)
         } else {
-          df <- id_enriched_proteins(df, fdr_cutoff = NULL, 
-                                     p_cutoff = statsParamsServer()$pvalThresh, 
+          df <- id_significant_proteins(df, fdr_cutoff = NULL, 
+                                     p_cutoff = statsParamsServer()$pValThresh, 
                                      logfc_dir = statsParamsServer()$logfcDir, 
                                      logfc_cutoff = statsParamsServer()$logfcThresh)
         }

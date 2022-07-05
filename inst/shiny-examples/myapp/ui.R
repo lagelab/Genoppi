@@ -11,57 +11,14 @@ body <- dashboardBody(
                                  br(),
                                  column(width = 4,
                                         basicPlotInputBox("basic_plot_inputs"),
-                                        # box(
-                                        #   title = "Basic plot options", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
-                                        #   fluidRow(
-                                        #     column(12, uiOutput('a_select_scatterplot_ui')) 
-                                        #   ),
-                                        #   # TODO new button for selecting type of mod t-test
-                                        #   # fluidRow(
-                                        #   #   column(12, uiOutput('a_select_mod_ttest_ui')) 
-                                        #   # ),
-                                        #   fluidRow(
-                                        #     column(6, uiOutput("a_color_theme_indv_sig")),
-                                        #     column(6, uiOutput("a_color_theme_indv_insig"))
-                                        #   )
-                                        # ),
-                                        # summaryBox("summary"), TODO comment out below and use this
-                                        box(
-                                          title = "Summary", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
-                                          fluidRow(
-                                            column(12, uiOutput("VP_count_text")),
-                                            br(),
-                                          ),
-                                          fluidRow(
-                                            column(12, tableOutput("a_verbatim_count_ui")),
-                                            br()
-                                          ),
-                                          fluidRow(
-                                            br(),
-                                            column(12, uiOutput('a_replicate_summar_text_ui')),
-                                          ),
-                                          fluidRow(
-                                            column(12, tableOutput("a_replicate_summary_table_ui"))
-                                          ),
-                                          br(),
-                                          fluidRow(
-                                            column(12, uiOutput("a_monitor_pulldown_ui"))
-                                          ),
-                                          fluidRow(
-                                            column(12, uiOutput("a_monitor_pulldown_mapping_ui"))
-                                          ),
-                                          fluidRow(
-                                            br(),
-                                            column(12, shinyjs::hidden(myDownloadButton("a_mttest_mapping_download", 'Proteomic data', icon("download"))))
-                                          )
-                                        )
-                                        #,
-                                        #shinyjs::hidden(box( #
-                                        #  id='box_mapping_warning_ui', title = "Error!", width = NULL, solidHeader = TRUE, status = "warning", collapsible = TRUE, collapsed = FALSE,
-                                        #  fluidRow(
-                                        #    column(12, uiOutput('a_in_pulldown_check_ui'))
-                                        #  )
-                                        #))
+                                        statsParamsOptions("stats_input"),
+                                        # box(title = "Basic plot options", width = NULL, 
+                                        #   solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
+                                        #   fluidRow(column(12, uiOutput('a_select_scatterplot_ui'))),
+                                        #   fluidRow(column(12, uiOutput('a_select_mod_ttest_ui'))),
+                                        #   fluidRow(column(6, uiOutput("a_color_theme_indv_sig")),
+                                        #     column(6, uiOutput("a_color_theme_indv_insig")))),
+                                        summaryBox("summary"), 
                                  ),
                                  column(width = 8,
                                         drawVolcanoPlot("volcano_plot"),
@@ -666,7 +623,8 @@ body <- dashboardBody(
                   column(12, align = 'center',
                          h1(strong("Genoppi"), style = "font-size:100px;"),
                          br(),
-                         uiOutput('a_example_file_ui'),
+                         # uiOutput('a_example_file_ui'),
+                         inputFileWelcome("single_file"),
                          uiOutput('a_get_example_file_ui'),
                          getExampleButton("single_file")
                     )
@@ -718,26 +676,25 @@ sidebar <- dashboardSidebar(
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               conditionalPanel("input.sidebarmenu === 'dashboard'",
-                               uiOutput("a_file"),
+                               # uiOutput("a_file"),
+                               inputFileSideBar("single_file"),
                                uiOutput("a_in_pulldown_check_ui"),
                                #uiOutput('a_make_example_file'),
-                               HTML('<hr style="border-color: #D6DBE0;">'),
+                               # HTML('<hr style="border-color: #D6DBE0;">'),
                                uiOutput("a_bait_search"),
                                uiOutput("a_GOI_search"),
                                uiOutput("a_GOI_search_alpha"),
                                #uiOutput("a_color_scheme"),
                                uiOutput("a_color_style"),
                                uiOutput("a_file_color"),
-                               uiOutput("a_significance_type_ui"),
-                               uiOutput("FDR_thresh"),
+                               # uiOutput("a_significance_type_ui"),
+                               # uiOutput("FDR_thresh"),
                                # TODO add button to choose type of mod t-test
-                               select_mod_ttest_ui("a_select_mod_ttest"),
                                # uiOutput("TTEST_type"),
-                               uiOutput("PVal_thresh"),
-                               uiOutput('a_logfc_direction_ui'),
-                               uiOutput("logFC_thresh")
+                               # uiOutput("PVal_thresh"),
+                               # uiOutput('a_logfc_direction_ui'),
+                               # uiOutput("logFC_thresh")
               ),
-              statsParamsOptions("stats_input"),
               conditionalPanel("input.sidebarmenu == 'widgets'",
                                uiOutput("b_file_1_ui"),
                                uiOutput("b_file_2_ui"),

@@ -1,7 +1,7 @@
 
 # shiny server
 shinyServer(function(input, output, session){
-  #supress warnings
+  #suppress warnings
   storeWarn<- getOption("warn")
   options(warn = -1) 
   
@@ -12,6 +12,67 @@ shinyServer(function(input, output, session){
   
   
   ##### VISUALIZATIONS START ##### 
+  
+  ## ARCHIVE
+  # output$a_logfc_direction_ui <- renderUI({
+  #   radioButtons("a_logfc_direction", HTML("log<sub>2</sub>FC direction"),
+  #                c("Neg" = "negative", 
+  #                  "Both" = "both",
+  #                  "Pos" = "positive"),
+  #                selected = 'positive',
+  #                inline = T)
+  # })
+  # output$a_significance_type_ui <- renderUI({
+  #   radioButtons("a_significance_type", "Significance metric",
+  #                #c("FDR" = "fdr", "<i>P</i>-value" = "pvalue"),
+  #                choiceNames = list("FDR", HTML("<i>P</i>-value")),
+  #                choiceValues = list("fdr",'pvalue'),
+  #                inline = T)
+  # })
+  # output$FDR_thresh <- renderUI({
+  #   #validate(need(input$a_significance_type == 'fdr', ''))
+  #   sliderInput("a_fdr_thresh", "FDR threshold",
+  #               min = 0, max = 1, value = 0.1, step = 0.01)
+  # })
+  # select_mod_ttest_server("a_select_mod_ttest")
+  # output$PVal_thresh <- renderUI({
+  #   sliderInput("a_pval_thresh", HTML("<i>P</i>-value threshold"),
+  #               min = 0, max = 1, value = 0.05, step = 0.001)
+  # })
+  # # based on a_pulldown(), create slider for logFC
+  # output$logFC_thresh <- renderUI({
+  #   if(!is.null(a_file_pulldown_r() )){
+  #     limit <- calc_logfc_limit(a_pulldown(), input$a_logfc_direction)
+  #     sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+  #                 min = 0, max = limit, value = 0, step = 0.1)
+  #   }else
+  #     sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
+  #                 min = 0, max = 1, value = 0, step = 0.1)
+  # })  
+  
+  # track significance threshols for FDR and P-value
+  # monitor_significance_thresholds <- reactive({
+  #   sig_type = ifelse(input$a_significance_type == 'fdr', 'FDR', '<i>P</i>-value')
+  #   sig_value = ifelse(sig_type == 'FDR', input$a_fdr_thresh, input$a_pval_thresh)
+  #   fc_sign = ifelse(input$a_logfc_direction, '<', '≥')
+  #   region_le <- c(paste0(sig_type,"≤", sig_value))
+  #   region_g <- c(paste0(sig_type,">", sig_value))
+  #   return(list(sig=region_le, insig=region_g, sig_type=sig_type, sig_value=sig_value))
+  # })
+  
+  # # track significance threshols for logFC
+  # monitor_logfc_threshold <- reactive({
+  #   fc_dir = input$a_logfc_direction
+  #   fc = input$a_logFC_thresh
+  #   if (fc_dir == 'negative') {fc_sig = paste("log<sub>2</sub>FC&lt;", -fc); fc_insig =  paste("log<sub>2</sub>FC&ge;", -fc)}
+  #   if (fc_dir == 'positive') {fc_sig = paste("log<sub>2</sub>FC&ge;", fc); fc_insig =  paste("log<sub>2</sub>FC&lt;", fc)}
+  #   if (fc_dir == 'both') {fc_sig = paste("|log<sub>2</sub>FC|&ge;", fc); fc_insig = paste("|log<sub>2</sub>FC|&lt;", fc) }
+  #   return(list(sig=fc_sig, insig=fc_insig))
+  # })
+  
+  # output$a_sig_text_ui <- renderUI({
+  #   HTML(paste0(monitor_significance_thresholds()$sig, ', ', monitor_logfc_threshold()$sig))
+  # })
   
   ## documentation tab
   
@@ -78,73 +139,7 @@ shinyServer(function(input, output, session){
                  inline = T)
   })
   
-  output$a_logfc_direction_ui <- renderUI({
-    radioButtons("a_logfc_direction", HTML("log<sub>2</sub>FC direction"),
-                 c("Neg" = "negative", 
-                   "Both" = "both",
-                   "Pos" = "positive"),
-                 selected = 'positive',
-                 inline = T)
-  })
-  
-  
-  # 
-  output$a_significance_type_ui <- renderUI({
-    radioButtons("a_significance_type", "Significance metric",
-                 #c("FDR" = "fdr", "<i>P</i>-value" = "pvalue"),
-                 choiceNames = list("FDR", HTML("<i>P</i>-value")),
-                 choiceValues = list("fdr",'pvalue'),
-                 inline = T)
-  })
-  
-  output$FDR_thresh <- renderUI({
-    #validate(need(input$a_significance_type == 'fdr', ''))
-    sliderInput("a_fdr_thresh", "FDR threshold",
-                min = 0, max = 1, value = 0.1, step = 0.01)
-  })
-  
-  # TODO render select type of mod t-test
-  select_mod_ttest_server("a_select_mod_ttest")
-  
-  output$PVal_thresh <- renderUI({
-    sliderInput("a_pval_thresh", HTML("<i>P</i>-value threshold"),
-                min = 0, max = 1, value = 0.05, step = 0.001)
-  })
-  
-  # based on a_pulldown(), create slider for logFC
-  output$logFC_thresh <- renderUI({
-    if(!is.null(a_file_pulldown_r() )){
-      limit <- calc_logfc_limit(a_pulldown(), input$a_logfc_direction)
-      sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                  min = 0, max = limit, value = 0, step = 0.1)
-    }else
-      sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                  min = 0, max = 1, value = 0, step = 0.1)
-  })  
 
-  # track significance threshols for FDR and P-value
-  monitor_significance_thresholds <- reactive({
-    sig_type = ifelse(input$a_significance_type == 'fdr', 'FDR', '<i>P</i>-value')
-    sig_value = ifelse(sig_type == 'FDR', input$a_fdr_thresh, input$a_pval_thresh)
-    fc_sign = ifelse(input$a_logfc_direction, '<', '≥')
-    region_le <- c(paste0(sig_type,"≤", sig_value))
-    region_g <- c(paste0(sig_type,">", sig_value))
-    return(list(sig=region_le, insig=region_g, sig_type=sig_type, sig_value=sig_value))
-  })
-  
-  # track significance threshols for logFC
-  monitor_logfc_threshold <- reactive({
-    fc_dir = input$a_logfc_direction
-    fc = input$a_logFC_thresh
-    if (fc_dir == 'negative') {fc_sig = paste("log<sub>2</sub>FC&lt;", -fc); fc_insig =  paste("log<sub>2</sub>FC&ge;", -fc)}
-    if (fc_dir == 'positive') {fc_sig = paste("log<sub>2</sub>FC&ge;", fc); fc_insig =  paste("log<sub>2</sub>FC&lt;", fc)}
-    if (fc_dir == 'both') {fc_sig = paste("|log<sub>2</sub>FC|&ge;", fc); fc_insig = paste("|log<sub>2</sub>FC|&lt;", fc) }
-    return(list(sig=fc_sig, insig=fc_insig))
-  })
-
-  output$a_sig_text_ui <- renderUI({
-    HTML(paste0(monitor_significance_thresholds()$sig, ', ', monitor_logfc_threshold()$sig))
-  })
   
   output$a_insig_text_ui <- renderUI({
     HTML(paste0(monitor_significance_thresholds()$insig, ', ', monitor_logfc_threshold()$insig))
@@ -2331,27 +2326,47 @@ shinyServer(function(input, output, session){
   # initialize reactive values 
   sigColorS <- sigColorServer("sig_color")
   insigColorS <- insigColorServer("insig_color")
-    
-  # TODO comment out above
+  
+  # Servers for toggling different panels  
+  toggleSingleBasicS <- toggleSingleBasicServer("panel_control")
+  
+  # Servers for storing genes
+  baitS <- baitServer("gene_overlay")
+  goiS <- goiServer("gene_overlay")
+  
+  # Servers for storing plots
+  volcanoPlotS <- volcanoPlotServer("volcano_plot")
+  # overlaidVolcanoPlotS <- overlaidVolcanoPlotServer("volcano_plot")
+  
+  # TODO
   dataPathS <- dataPathServer("data")
+  inputFileS <- inputFileServer("single_file", dataPathS, toggleSingleBasicS)
   dataFrameS <- dataFrameServer("data", dataPathS)
   extractColsS <- extractColumnsServer("metadata", dataFrameS)
   mapAccessionToGeneS <- mapAccessionToGeneServer("data", dataFrameS)
   statsParamsS <- statsParamsServer("stats_input")
   enrichmentStatsS <- enrichmentStatsServer(
     "data", mapAccessionToGeneS, statsParamsS)
+  summaryStatsS <- summaryStatsServer(
+    "summary", enrichmentStatsS)
+  thresholdTextS <- thresholdTextServer(
+    "summary", statsParamsS)
+  summaryDisplayS <- summaryDisplayServer(
+    "summary", summaryStatsS, thresholdTextS)
   drawVolcanoS <- drawVolcanoServer(
-    "volcano_plot", enrichmentStatsS, sigColorS, insigColorS)
-  exampleBtn <- getExampleServer("single_file", dataPathS)
+    "volcano_plot", volcanoPlotS, enrichmentStatsS, baitS, goiS, sigColorS, insigColorS)
+  overlayVolcanoS <- overlayVolcanoServer(
+    "volcano_plot", volcanoPlotS, baitS, goiS)
+  exampleBtn <- getExampleServer("single_file", dataPathS, toggleSingleBasicS)
   ggpairS <- plotGGpairServer("plot_ggpair", dataFrameS, extractColsS)
   # use observe event to update tab items:
   # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
-  observeEvent(exampleBtn(), {
-    updateTabItems(session, "sidebarmenu", 'dashboard')
-  })
+  observeEvent(toggleSingleBasicS(),
+               {updateTabItems(session, "sidebarmenu", 'dashboard')})
   
   # basic plot Box
-  basicPlotParamServer("basic_plot_inputs", sigColorS, insigColorS)
+  basicPlotParamS <- basicPlotParamServer(
+    "basic_plot_inputs", baitS, goiS, sigColorS, insigColorS)
   
   
   output$multi_FDR_colorbar <- renderPlot({

@@ -1,12 +1,25 @@
 
 statsParamsOptions <- function(id) {
-  conditionalPanel("input.sidebarmenu === 'dashboard'",
-    uiOutput(NS(id, "modTTest")),
-    uiOutput(NS(id, "signifType")),
-    uiOutput(NS(id, "fdrThresh")),
-    uiOutput(NS(id, "pValThresh")),
-    uiOutput(NS(id, "logfcThresh")),
-    uiOutput(NS(id, "logfcDir")),
+  ns <- NS(id)
+  box(
+    title = "Statistics Parameters", width = NULL, solidHeader = TRUE, 
+    status = "primary", collapsible = TRUE, collapsed = FALSE,
+    fluidRow(column(12, uiOutput(NS(id, "modTTest")))),
+    fluidRow(column(12, uiOutput(NS(id, "logfcThresh")))),
+    fluidRow(column(6, uiOutput(NS(id, "logfcDir"))),
+             column(6, uiOutput(NS(id, "signifType")))),
+    fluidRow(conditionalPanel(condition = "input.signifTypeIn == 'fdr'",
+                              ns = ns,
+                              column(12, uiOutput(NS(id, "fdrThresh"))))),
+    fluidRow(conditionalPanel(condition = "input.signifTypeIn == 'pvalue'", 
+                              ns = ns,
+                              column(12, uiOutput(NS(id, "pValThresh"))))),
+    # uiOutput(NS(id, "modTTest"),
+    # uiOutput(NS(id, "signifType")),
+    # uiOutput(NS(id, "fdrThresh")),
+    # uiOutput(NS(id, "pValThresh")),
+    # uiOutput(NS(id, "logfcThresh")),
+    # uiOutput(NS(id, "logfcDir")),
   )
 }
 
@@ -29,7 +42,8 @@ statsParamsServer <- function(id) {
       radioButtons(
         ns("signifTypeIn"), "Significance metric", 
         choiceNames = list("FDR", HTML("<i>P</i>-value")),
-        choiceValues = list("fdr",'pvalue'), inline = T
+        choiceValues = list("fdr",'pvalue'), inline = T,
+        selected = "fdr"
       )
     })
     output$fdrThresh <- renderUI({
@@ -66,7 +80,7 @@ statsParamsServer <- function(id) {
         list(modTTest=input$modTTestIn,
              signifType=input$signifTypeIn,
              fdrThresh=input$fdrThreshIn,
-             pvalThresh=input$pValThreshIn,
+             pValThresh=input$pValThreshIn,
              logfcThresh=input$logfcThreshIn,
              logfcDir=input$logfcDirIn
              )

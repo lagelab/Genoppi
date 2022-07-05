@@ -1,3 +1,14 @@
+baitServer <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    return(reactiveVal(value = NULL))
+  })
+}
+goiServer <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    return(reactiveVal(value = NULL))
+  })
+}
+
 basicPlotInputBox <- function(id) {
   box(
     title = "Basic plot options", width = NULL, solidHeader = TRUE, 
@@ -10,6 +21,10 @@ basicPlotInputBox <- function(id) {
     #   column(12, uiOutput('a_select_mod_ttest_ui')) 
     # ),
     fluidRow(
+      column(6, uiOutput(NS(id, "bait_label"))),
+      column(6, uiOutput(NS(id, "goi_search"))),
+    ),
+    fluidRow(
       column(6, uiOutput(NS(id, "color_theme_indv_sig"))),
       column(6, uiOutput(NS(id,"color_theme_indv_insig")))
     )
@@ -17,12 +32,29 @@ basicPlotInputBox <- function(id) {
 }
 
 
-basicPlotParamServer <- function(id, sigColorServer, insigColorServer) {
-  if (!is.reactive(sigColorServer)){stop("sigColorServer passed to basicPlotParamServer is not reactive")}
-  if (!is.reactive(insigColorServer)){stop("insigColorServer passed to basicPlotParamServer is not reactive")}
+basicPlotParamServer <- function(id, 
+                                 baitServer,
+                                 goiServer,
+                                 sigColorServer, 
+                                 insigColorServer) {
+  if (!is.reactive(baitServer)){
+    stop("baitServer passed to basicPlotParamServer is not reactive")}
+  if (!is.reactive(goiServer)){
+    stop("goiServer passed to basicPlotParamServer is not reactive")}
+  if (!is.reactive(sigColorServer)){
+    stop("sigColorServer passed to basicPlotParamServer is not reactive")}
+  if (!is.reactive(insigColorServer)){
+    stop("insigColorServer passed to basicPlotParamServer is not reactive")}
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+    
+    output$bait_label <- renderUI({
+      textInput(ns("bait_label"), "Input bait (HGNC symbol, e.g. BCL2)")
+    })
+    output$goi_search <- renderUI({
+      textInput(ns("goi_search"), "Search HGNC symbol")
+    })
     output$color_theme_indv_sig <- renderUI({
-      ns <- session$ns
       # validate(need(a_file_pulldown_r()  != '', ""))
       # label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
       label = (HTML('Colors for significant interactors'))
@@ -31,12 +63,7 @@ basicPlotParamServer <- function(id, sigColorServer, insigColorServer) {
                                 palette = c( "limited"),
                                 allowedCols = allowed_colors)
     })
-    observeEvent(input$color_indv_sig_in, {
-      sigColorServer(input$color_indv_sig_in)
-    })
-    
     output$color_theme_indv_insig <- renderUI({
-      ns <- session$ns
       # validate(need(a_file_pulldown_r()  != '', ""))
       # label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
       label = (HTML('Colors for insignificant interactors'))
@@ -44,6 +71,24 @@ basicPlotParamServer <- function(id, sigColorServer, insigColorServer) {
                                 value = insigColorServer(), showColour = 'both', 
                                 palette = c( "limited"), 
                                 allowedCols = allowed_colors)
+    })
+    
+    observeEvent(input$bait_label, {
+      if (input$bait_label == "") {
+        baitServer(NULL)
+      } else {
+        baitServer(input$bait_label)
+      }
+    })
+    observeEvent(input$goi_search, {
+      if (input$goi_search == "") {
+        goiServer(NULL)
+      } else {
+        goiServer(input$goi_search)
+      }
+    })
+    observeEvent(input$color_indv_sig_in, {
+      sigColorServer(input$color_indv_sig_in)
     })
     observeEvent(input$color_indv_insig_in, {
       insigColorServer(input$color_indv_insig_in)
