@@ -2333,6 +2333,7 @@ shinyServer(function(input, output, session){
   # Servers for storing genes
   baitS <- baitServer("gene_overlay")
   goiS <- goiServer("gene_overlay")
+  goiAlphaS <- goiAlphaServer("gene_overlay")
   
   # Servers for storing plots
   volcanoPlotS <- volcanoPlotServer("volcano_plot")
@@ -2354,9 +2355,9 @@ shinyServer(function(input, output, session){
   summaryDisplayS <- summaryDisplayServer(
     "summary", summaryStatsS, thresholdTextS)
   drawVolcanoS <- drawVolcanoServer(
-    "volcano_plot", volcanoPlotS, enrichmentStatsS, baitS, goiS, sigColorS, insigColorS)
+    "volcano_plot", volcanoPlotS, enrichmentStatsS, sigColorS, insigColorS)
   overlayVolcanoS <- overlayVolcanoServer(
-    "volcano_plot", volcanoPlotS, baitS, goiS)
+    "volcano_plot", volcanoPlotS, baitS, goiS, goiAlphaS, statsParamsS)
   exampleBtn <- getExampleServer("single_file", dataPathS, toggleSingleBasicS)
   ggpairS <- plotGGpairServer("plot_ggpair", dataFrameS, extractColsS)
   # use observe event to update tab items:
@@ -2366,7 +2367,7 @@ shinyServer(function(input, output, session){
   
   # basic plot Box
   basicPlotParamS <- basicPlotParamServer(
-    "basic_plot_inputs", baitS, goiS, sigColorS, insigColorS)
+    "basic_plot_inputs", baitS, goiS, goiAlphaS, sigColorS, insigColorS)
   
   
   output$multi_FDR_colorbar <- renderPlot({

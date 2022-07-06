@@ -8,6 +8,11 @@ goiServer <- function(id) {
     return(reactiveVal(value = NULL))
   })
 }
+goiAlphaServer <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    return(reactiveVal(value = NULL))
+  })
+}
 
 basicPlotInputBox <- function(id) {
   box(
@@ -23,6 +28,11 @@ basicPlotInputBox <- function(id) {
     fluidRow(
       column(6, uiOutput(NS(id, "bait_label"))),
       column(6, uiOutput(NS(id, "goi_search"))),
+      
+    ),
+    fluidRow(conditionalPanel(
+      condition = "input.goi_search != ''", ns=NS(id),
+      column(12, uiOutput(NS(id, "goi_alpha")))),
     ),
     fluidRow(
       column(6, uiOutput(NS(id, "color_theme_indv_sig"))),
@@ -35,10 +45,13 @@ basicPlotInputBox <- function(id) {
 basicPlotParamServer <- function(id, 
                                  baitServer,
                                  goiServer,
+                                 goiAlphaServer,
                                  sigColorServer, 
                                  insigColorServer) {
   if (!is.reactive(baitServer)){
     stop("baitServer passed to basicPlotParamServer is not reactive")}
+  if (!is.reactive(goiAlphaServer)){
+    stop("goiAlphaServer passed to basicPlotParamServer is not reactive")}
   if (!is.reactive(goiServer)){
     stop("goiServer passed to basicPlotParamServer is not reactive")}
   if (!is.reactive(sigColorServer)){
@@ -47,12 +60,15 @@ basicPlotParamServer <- function(id,
     stop("insigColorServer passed to basicPlotParamServer is not reactive")}
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
     output$bait_label <- renderUI({
       textInput(ns("bait_label"), "Input bait (HGNC symbol, e.g. BCL2)")
     })
     output$goi_search <- renderUI({
       textInput(ns("goi_search"), "Search HGNC symbol")
+    })
+    output$goi_alpha <- renderUI({
+      sliderInput(ns("goi_alpha"), 'Adjust overlay alpha',
+                  min = 0, max = 1, value = 0.8, step = 0.05)
     })
     output$color_theme_indv_sig <- renderUI({
       # validate(need(a_file_pulldown_r()  != '', ""))
@@ -86,6 +102,10 @@ basicPlotParamServer <- function(id,
       } else {
         goiServer(input$goi_search)
       }
+      shinyjs::toggle(id=ns("goi_alpha"), condition = input$goi_search == "")
+    })
+    observeEvent(input$goi_alpha, {
+      goiAlphaServer(input$goi_alpha)
     })
     observeEvent(input$color_indv_sig_in, {
       sigColorServer(input$color_indv_sig_in)
