@@ -12,26 +12,10 @@ body <- dashboardBody(
                                  column(width = 4,
                                         basicPlotInputBox("basic_plot_inputs"),
                                         statsParamsOptions("stats_input"),
-                                        # box(title = "Basic plot options", width = NULL, 
-                                        #   solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE,
-                                        #   fluidRow(column(12, uiOutput('a_select_scatterplot_ui'))),
-                                        #   fluidRow(column(12, uiOutput('a_select_mod_ttest_ui'))),
-                                        #   fluidRow(column(6, uiOutput("a_color_theme_indv_sig")),
-                                        #     column(6, uiOutput("a_color_theme_indv_insig")))),
                                         summaryBox("summary"), 
                                  ),
                                  column(width = 8,
                                         drawVolcanoPlot("volcano_plot"),
-                                        # box(
-                                        #   title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-                                        #   fluidRow(
-                                        #     column(11, shinyjs::hidden(myDownloadButton("a_volcano_plot_download", 'Volcano plot')))
-                                        #   ),
-                                        #   fluidRow(style = "padding-bottom:75px",
-                                        #     #column(1, plotOutput("FDR_colorbar", width = "50px")),
-                                        #     column(12, shinycssloaders::withSpinner(plotly::plotlyOutput("VolcanoPlot"), spinner_type)) #, width = "550px", height = "550px"
-                                        #   ),
-                                        # ),
                                         plotGGpairFrame("plot_ggpair"),
                                         # box(
                                         #   title = tagList(img(src='icon_scatter.png',width='22px'), "GGPairs"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = FALSE,
@@ -41,46 +25,13 @@ body <- dashboardBody(
                                         #   fluidRow(style = "padding-bottom:75px",
                                         #     column(11, shinycssloaders::withSpinner(plotly::plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
                                         #   )
-                                        # ),
-                                        box(
-                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                          fluidRow(
-                                            column(11, shinyjs::hidden(myDownloadButton("a_scatter_plot_download", 'Scatter plot')))
-                                          ),
-                                          fluidRow(style = "padding-bottom:75px",
-                                                   column(11, shinycssloaders::withSpinner(plotly::plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
-                                          )
-                                        )
+                                        # )
                                  )
                         ),
                         tabPanel("Integrated plotting", id = 'integratedplot', value = "p2", 
                                 br(),
                                  column(width = 4, 
-                                    box(
-                                     title = "InWeb / iRefIndex / BioPlex", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = FALSE, # tagList(img(src='icon_inweb.png',width='20px'), 
-                                     fluidRow(
-                                       column(12, 
-                                              uiOutput("a_ppi_select_ui"))
-                                     ),
-                                     # InWeb
-                                     fluidRow(
-                                       column(8, uiOutput("a_bait_layer")),
-                                       column(4, 
-                                              uiOutput("a_inweb_type"),
-                                              uiOutput("a_irefindex_type_ui"),
-                                              uiOutput("a_bioplex_type_ui")
-                                              )
-                                     ),
-                                     # footer
-                                     fluidRow(
-                                       column(4, uiOutput("a_overlay_inweb_ui"), uiOutput("a_ppi_message")),
-                                       column(4, uiOutput("a_label_inweb_ui")),
-                                       column(4, shinyjs::hidden(myDownloadButton("a_ppi_mapping_df_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
-                                     ),
-                                     fluidRow(
-                                       column(12, uiOutput("info_inweb_ui"))
-                                     )
-                                    ),
+                                    externalPPIBox("ppi_overlay"),
                                     box(
                                       title = "GWAS catalog", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
@@ -102,7 +53,7 @@ body <- dashboardBody(
                                     box(
                                       title = tagList('gnomAD'), width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
-                                        #column(4,uiOutput('a_select_gnomad_pli_type_ui')),
+                                        # column(4,uiOutput('a_select_gnomad_pli_type_ui')),
                                         column(12, 
                                                uiOutput('a_slide_gnomad_pli_threshold_ui'),
                                                uiOutput('a_gnomad_colorscale_text_ui'),
@@ -578,7 +529,6 @@ body <- dashboardBody(
                                             )
                                      )
                                    )
-                                   
                                  ),
                                  column(6,
                                         box(
@@ -600,15 +550,12 @@ body <- dashboardBody(
                                             )
                                           )
                                         )
-                                        
                                  )
-                                 
                         )
-            
             )
     ),
     tabItem(tabName = "guide",
-            
+            # UNCOMMENT TO GET WELCOME GUIDE
             # works in browser format
             # tags$iframe(src = "welcome_guide_v1.0_210514.pdf",
             #                                style="width:100%;",  #frameborder="0"
@@ -623,7 +570,6 @@ body <- dashboardBody(
                   column(12, align = 'center',
                          h1(strong("Genoppi"), style = "font-size:100px;"),
                          br(),
-                         # uiOutput('a_example_file_ui'),
                          inputFileWelcome("single_file"),
                          uiOutput('a_get_example_file_ui'),
                          getExampleButton("single_file")
@@ -679,21 +625,8 @@ sidebar <- dashboardSidebar(
                                # uiOutput("a_file"),
                                inputFileSideBar("single_file"),
                                uiOutput("a_in_pulldown_check_ui"),
-                               #uiOutput('a_make_example_file'),
-                               # HTML('<hr style="border-color: #D6DBE0;">'),
-                               # uiOutput("a_bait_search"),
-                               # uiOutput("a_GOI_search"),
-                               # uiOutput("a_GOI_search_alpha"),
-                               #uiOutput("a_color_scheme"),
                                uiOutput("a_color_style"),
                                uiOutput("a_file_color"),
-                               # uiOutput("a_significance_type_ui"),
-                               # uiOutput("FDR_thresh"),
-                               # TODO add button to choose type of mod t-test
-                               # uiOutput("TTEST_type"),
-                               # uiOutput("PVal_thresh"),
-                               # uiOutput('a_logfc_direction_ui'),
-                               # uiOutput("logFC_thresh")
               ),
               conditionalPanel("input.sidebarmenu == 'widgets'",
                                uiOutput("b_file_1_ui"),

@@ -23,48 +23,69 @@ drawVolcanoPlot <- function(id) {
   box(
     title = tagList(shiny::icon('chart-area'), "Volcano plot"),
     width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-    # fluidRow(
-    #   column(11, shinyjs::hidden(myDownloadButton("a_volcano_plot_download", 'Volcano plot')))
-    # ),
+    fluidRow(
+      column(11, shinyjs::hidden(myDownloadButton(
+        NS(id, "a_volcano_plot_download"), 'Volcano plot')))
+    ),
     fluidRow(style = "padding-bottom:75px",
-             #column(1, plotOutput("FDR_colorbar", width = "50px")),
+             # column(1, plotOutput(NS(id, "FDRColorBar"), width = "50px")),
              column(12, shinycssloaders::withSpinner(
                plotly::plotlyOutput(NS(id, "VolcanoPlot")), spinner_type)) #, width = "550px", height = "550px"
     ),
   )
 }
 
-#### REVERT UP TO HERE
 drawVolcanoServer <- function(id, 
                               volcanoPlotServer,
-                              enrichmentStatsServer,
+                              sigificanceServer,
                               sigColorServer, 
-                              insigColorServer) {
-  if (!is.reactive(enrichmentStatsServer)){
-    stop("enrichmentStatsServer passed to drawVolcanoServer is not reactive")}
+                              insigColorServer,
+                              a_vp_colorbar) {
+  if (!is.reactive(sigificanceServer)){
+    stop("sigificanceServer passed to drawVolcanoServer is not reactive")}
   if (!is.reactive(sigColorServer)){
     stop("sigColorServer passed to drawVolcanoServer is not reactive")}
   if (!is.reactive(insigColorServer)){
     stop("insigColorServer passed to drawVolcanoServer is not reactive")}
   moduleServer(id, function(input, output, session){
+    # output$FDRColorBar <- renderPlot({
+    #   validate(need(
+    #     !is.null(sigificanceServer()), 
+    #     "sigificanceServer passed to drawVolcanoServer is null"))
+    #   a_vp_colorbar()
+    # })
+    
+    observeEvent(is.null(volcanoPlotServer()),{
+      shinyjs::hide("a_volcano_plot_download")})
+    observeEvent(ignoreInit = T,
+                 !is.null(volcanoPlotServer()),
+                 {shinyjs::show("a_volcano_plot_download")})
+    output$a_volcano_plot_download = downloadHandler(
+      filename = 'genoppi-volcano-plot.png',
+      content = function(file) {
+        device <- function(..., width, height) {
+          grDevices::png(..., width = width, height = height,
+                         res = 300, units = "in")
+        }
+        ggsave(file, plot =  theme_volcano(volcanoPlotServer()), 
+               device = device, 
+               width = global.img.volcano.download.width,
+               height = global.img.volcano.download.height)
+      })
+    
     observeEvent({
-      enrichmentStatsServer()
+      sigificanceServer()
       sigColorServer()
       insigColorServer()}, 
       {
-        req(enrichmentStatsServer())
-        df <- enrichmentStatsServer()
+        req(sigificanceServer())
+        df <- sigificanceServer()
         col_significant <- "#41AB5D"
         if(!is.null(sigColorServer())){col_significant <- sigColorServer()}
         col_insignificant <- "#808080"
         if(!is.null(insigColorServer())){col_insignificant <- insigColorServer()}
         p <- plot_volcano_basic(
           df, col_significant = col_significant, col_other = col_insignificant)
-        # output$VolcanoPlot <- plotly::renderPlotly({
-        #   # validate(need(a_file_pulldown_r()  != '', "Upload file"))
-        #   p
-        #   # a_vp_layerx() #TODO
-        # })
         volcanoPlotServer(p)
       }
     )
@@ -76,22 +97,25 @@ overlayVolcanoServer <- function(id,
                                  baitServer,
                                  goiServer,
                                  goiAlphaServer,
-                                 statsParamsServer) {
+                                 statsParamsValues) {
   if (!is.reactive(baitServer)){
     stop("baitServer passed to overlayVolcanoServer is not reactive")}
   if (!is.reactive(goiServer)){
     stop("goiServer passed to overlayVolcanoServer is not reactive")}
   if (!is.reactive(goiAlphaServer)){
     stop("goiAlphaServer passed to overlayVolcanoServer is not reactive")}
-  if (!is.reactive(statsParamsServer)){
-    stop("statsParamsServer passed to overlayVolcanoServer is not reactive")}
+  if (!is.reactivevalues(statsParamsValues)){
+    stop("statsParamsValues passed to overlayVolcanoServer is not reactive")}
   moduleServer(id, function(input, output, session){
     observeEvent(
       c(volcanoPlotServer(),
         baitServer(),
         goiServer(),
         goiAlphaServer(),
-        statsParamsServer()), 
+        statsParamsValues$signifType,
+        statsParamsValues$pValThresh,
+        statsParamsValues$logfcThresh,
+        statsParamsValues$logfcDir), 
       {
         req(volcanoPlotServer())
         p <- volcanoPlotServer()
@@ -103,20 +127,18 @@ overlayVolcanoServer <- function(id,
           p <- add_plotly_markers_search(
             p, goiServer(), alpha = goiAlphaServer()) 
         }
-        req(statsParamsServer()$logfcThresh,
-            statsParamsServer()$logfcDir,
-            statsParamsServer()$signifType)
-        print(statsParamsServer()$logfcThresh)
-        print(statsParamsServer()$logfcDir)
-        if (statsParamsServer()$signifType == "pvalue") {
-          req(statsParamsServer()$pValThresh)
+        req(statsParamsValues$logfcThresh,
+            statsParamsValues$logfcDir,
+            statsParamsValues$signifType)
+        if (statsParamsValues$signifType == "pvalue") {
+          req(statsParamsValues$pValThresh)
         }
         p <- genoppi::add_plotly_threshold_lines (
           p,
-          line_pvalue = statsParamsServer()$pValThresh, 
-          line_logfc = statsParamsServer()$logfcThresh, 
-          logfc_direction = statsParamsServer()$logfcDir, 
-          sig_type = statsParamsServer()$signifType
+          line_pvalue = statsParamsValues$pValThresh, 
+          line_logfc = statsParamsValues$logfcThresh, 
+          logfc_direction = statsParamsValues$logfcDir, 
+          sig_type = statsParamsValues$signifType
         )
         p <- add_plotly_layout_volcano(
           p, 
@@ -126,7 +148,6 @@ overlayVolcanoServer <- function(id,
         output$VolcanoPlot <- plotly::renderPlotly({
           # validate(need(a_file_pulldown_r()  != '', "Upload file"))
           p
-          # a_vp_layerx() #TODO
         })
       }
     )

@@ -17,13 +17,10 @@ read_input <- function(filename, sep = ""){
  
   # check input file exists
   stopifnot(file.exists(filename)) 
- 
   # read in file as data.frame
   df <- read.table(filename, header = T, sep = sep)
-
   # check input format and where columns are
   check <- check_input(df)
-  
   return(list(data=df, format=check))
 
 }

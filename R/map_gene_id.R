@@ -10,7 +10,6 @@ map_gene_id <- function(df){
   
   # strip any isoform suffixes (separated by . or -) before mapping
   accession_noIsoform <- sapply(strsplit(as.character(df$accession_number),'(\\-)|(\\.)'),'[',1)
- 
   # map accession_number in df to gene (unmapped entries shown as NA)
   matchInds <- match(accession_noIsoform,accession_gene_table$accession_number)
   df$gene <- as.factor(accession_gene_table$gene[matchInds])

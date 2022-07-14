@@ -36,9 +36,9 @@ inputFileServer <- function(id, dataPathServer, toggleSingleBasicServer) {
     })
     
     observeEvent(input$input_file_welcome, {
-      validate(need(!is.null(input$input_file_welcome), 
+      validate(need(!is.null(input$input_file_welcome$datapath), 
                     'input_file_welcome in inputFileServer is NULL'))
-      dataPathServer(input$input_file_sidebar$datapath)
+      dataPathServer(input$input_file_welcome$datapath)
       ifelse(is.null(toggleSingleBasicServer()), 
              toggleSingleBasicServer(1),
              toggleSingleBasicServer(toggleSingleBasicServer()+1))

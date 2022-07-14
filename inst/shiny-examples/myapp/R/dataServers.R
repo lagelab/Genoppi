@@ -1,17 +1,17 @@
-dataPathServer <- function(id){
+dataServer <- function(id) {
   moduleServer(id, function(input, output, session){
     return(reactiveVal(value=NULL))})
 }
 
-# dataServer <- function(id, dataPathServer) {
-#   # dataPath <- dataPathServer(id)
-#   moduleServer(id, function(input, output, session) {
-#     return(reactive({
-#       validate(need(!is.null(dataPathServer()), ''))
-#       data.frame(datapath = dataPathServer(), stringsAsFactors = F)
-#     }))
-#   })
-# }
+sigificanceServer <- function(id) {
+  moduleServer(id, function(input, output, session){
+    return(reactiveVal(value=NULL))})
+}
+
+dataPathServer <- function(id){
+  moduleServer(id, function(input, output, session){
+    return(reactiveVal(value=NULL))})
+}
 
 dataFrameServer <- function(id, dataPathServer) {
   moduleServer(id, function(input, output, session) {
@@ -23,6 +23,127 @@ dataFrameServer <- function(id, dataPathServer) {
     )
   })
 }
+
+###### ERROR checking for input ######
+errorValues <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    return(reactiveValues())
+  })
+}
+
+inputErrorServer <- function(id, dataFrameServer, errorValues){
+  if (!is.reactive(dataFrameServer)) {
+    stop("dataFrameServer passed to inputErrorServer is not reactive")}
+  moduleServer(id, function(input, output, session) {
+    observeEvent(dataFrameServer()$data,{
+      req(dataFrameServer()$data)
+      d <- dataFrameServer()$data
+      pulldown <- dataFrameServer() # change name after testing code
+      errorValues$columns_check <- get_shiny_errors(d)
+      allowed = unlist(pulldown$format$allowed[unlist(pulldown$format$check)])
+      if (length(allowed)==0) {
+        allowed_vec = !as.logical(1:ncol(pulldown$data))
+      } else {
+        allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown$data)))
+        allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
+      }
+      accepted = colnames(pulldown$data)[allowed_vec]
+      discarded = colnames(pulldown$data)[!allowed_vec]
+      
+      # check for NAs in rows
+      na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
+      na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
+      
+      # check if p-values are already -log10 transformed
+      check_log_pvalues <- any(pulldown$data$pvalue > 1)
+      
+      # pre-rendered messages
+      msg1 = paste0(
+        bold('Error:'),' None of the inputted column names are allowed')
+      msg2 = paste0(
+        bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),
+        ' input column names were accepted.')
+      msg3 = paste0(
+        'The following column names were invalid and discarded: ', 
+        italics(paste0(discarded, collapse = ', ')),'.')
+      msg4 = paste0(
+        'See supplementary protocol for a description of allowed data inputs.')
+      msg5 = paste0(
+        bold('Warning: '), 'NA(s) were found in ', na_rows, 
+        ' row(s). Check column(s): ', 
+        paste(names(na_cols)[na_cols], collapse = ', '))
+      msg6 = paste0(
+        bold('Warning: '), 
+        'It looks like you have already -log10 transformed your p-values. Please, use raw p-values to accurately display volcano plots.')
+      
+      # no valid cols
+      msg = ''
+      if (length(accepted) == 0){
+        msg = paste(msg, msg1, msg4)
+        #return(HTML(paste(msg1, msg4)))
+        # enough valid but some invalid
+      } else if (length(accepted) != length(allowed_vec)){
+        msg = paste(msg, msg2, msg3, msg4)
+        #return(HTML(paste(msg2, msg3, msg4)))
+      } 
+      if (na_rows > 0){msg = paste(msg, msg5)}
+      if (check_log_pvalues){msg = paste(msg, msg6)}
+      if (msg != '') {
+        errorValues$rendered_message <- HTML(msg)
+      } else {
+        errorValues$rendered_message <- NULL
+      }
+      errorValues$message <- msg
+    })
+  })
+}
+
+accessionMapErrorServer <- function(id, mapAccessionToGeneServer, errorValues) {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(mapAccessionToGeneServer()$data, {
+      data <- mapAccessionToGeneServer()$data
+      req(data)
+      # if gene column is provided, parse it to check for synonyms
+      fmt <-mapAccessionToGeneServer()$format$check
+      if (fmt$gene_rep |fmt$gene_sample_control |fmt$gene_signif) {
+        synonyms = strsplit(data$gene, split = '(\\;)|(\\|)')
+        synonyms_bool = unlist(lapply(synonyms, length)) > 1
+        synonym_example = data$gene[synonyms_bool][1]
+        # messages
+        if (sum(synonyms_bool) > 0) {
+          errorValues$gene_symbol_error <- paste0(
+            bold('Note:  '), sum(synonyms_bool),
+            ' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
+            '". This column should only contain a single gene-name.')
+        }
+      }
+      # if no gene column is provided, check correctness of mapping accession_number(if provided) to gene
+      else {
+        # pulldown_mapping <- mapAccessionToGeneServer()$data
+        failed = data$accession_number[is.na(data$gene)]
+        absolute = paste0(length(failed),'/',nrow(data))
+        fraction = paste0(format(100*length(failed)/nrow(data), digits = 3),'%')
+        
+        # messages
+        msg0 = bold(paste('ERROR: ', absolute, ' (',fraction,') accesion_numbers were not mapped to a genes. The App may crash during Integrated Plotting!'))
+        msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
+        msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
+        msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
+        msg4 = paste0('Are you using human accession numbers?')
+        
+        if (length(failed) > 0){
+          # if more than 99% are unmapped give a warning:
+          if (length(failed)/nrow(data) > 0.99){
+            errorValues$mapping_error <- HTML(paste(msg0, msg4, msg2))
+          } else { # otherwise, print out failed accession mapping
+            errorValues$mapping_error <- HTML(paste(msg1, msg2, msg3))
+          }
+        }
+      }
+    })
+  })
+}
+######################################
 
 extractColumnsServer <- function(id, dataFrameServer) {
   moduleServer(id, function(input, output, session) {
@@ -37,75 +158,105 @@ extractColumnsServer <- function(id, dataFrameServer) {
   })
 }
 
-mapAccessionToGeneServer <- function(id, dataFrameServer) {
+mapAccessionToGeneServer <- function(id, dataFrameServer, errorValues) {
   moduleServer(id, function(input, output, session) {
     return(
       eventReactive(dataFrameServer()$data, {
         req(!is.null(dataFrameServer()$format))
-        if (dataFrameServer()$format$check$accession_rep | dataFrameServer()$format$check$accession_signif) {
-          dataFrameServer()$data <- map_gene_id(dataFrameServer()$data)
+        fmt <- dataFrameServer()$format
+        data <- dataFrameServer()$data
+        # if gene columns is not provided, map accession_number (if provided) to gene name
+        if ((!fmt$check$gene_rep & !fmt$check$gene_sample_control &!fmt$check$gene_signif) & 
+            (fmt$check$accession_rep|fmt$check$accession_sample_control|fmt$check$accession_signif)){
+          data <- map_gene_id(dataFrameServer()$data)
         }
-        dataFrameServer()
+        mappedDataFrame <- list(data=data, format=fmt)
+        mappedDataFrame
       })
     )
   })
 }
 
-enrichmentStatsServer <- function(id, mapAccessionToGeneServer, statsParamsServer) {
+# REVERT TILL HERE AND A BIT MORE
+# REVERT TILL HERE AND A BIT MORE
+# REVERT TILL HERE AND A BIT MORE
+
+enrichmentStatsServer <- function(id, 
+                                  mapAccessionToGeneServer, 
+                                  statsParamsValues,
+                                  dataServer,
+                                  errorValues) {
   if (!is.reactive(mapAccessionToGeneServer)){
     stop("mapAccessionToGeneServer passed to enrichmentStatsServer is not reactive")}
-  if (!is.reactive(statsParamsServer)){
-    stop("statsParamsServer passed to enrichmentStatsServer is not reactive")}
+  if (!is.reactivevalues(statsParamsValues)){
+    stop("statsParamsValues passed to enrichmentStatsServer is not reactiveValues")}
   moduleServer(id, function(input, output, session) {
-    return(
-      eventReactive({mapAccessionToGeneServer()$data; statsParamsServer()}, {
-        df <- mapAccessionToGeneServer()$data
-        fmt <- mapAccessionToGeneServer()$format
-        req(!is.null(fmt), cancelOutput = TRUE)
-        req(statsParamsServer()$modTTest)
-        req(statsParamsServer()$signifType)
-        if (statsParamsServer()$signifType == "fdr") {
-          req(statsParamsServer()$fdrThresh)
-        } else if (statsParamsServer()$signifType == "pvalue") {
-          req(statsParamsServer()$pValThresh)
-        } else {stop(
-          "invalid signifType from statsParamsServer passed to enrichmentStatsServer.")
-        }
-        req(statsParamsServer()$logfcDir)
-        req(statsParamsServer()$logfcThresh)
-        # moderated t.test still needed
-        if (fmt$check$gene_rep | fmt$check$accession_rep){
-          # set allowed column names
-          allowed = unlist(fmt$allowed[unlist(fmt$check)])
-          allowed_cols = lapply(allowed, function(x) grepl(x, colnames(df)))
-          allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
-          allowed_vec = allowed_vec | 'gene' %in% colnames(df)
-          
-          # ensure moderated t.test is only calculated on allowed columns
-          df = df[,colnames(df)[allowed_vec]]
-          # determine two_sample parameter to the calc_mod_ttest call
-          twoSample <- statsParamsServer()$modTTest == "Two sample"
-          # TODO fix bug if example button is clicked too quickly and input params are not loaded yet (add timer?)
-          # Warning: Error in if: argument is of length zero
-          # $modTTest
-          # NULL
-          df <- calc_mod_ttest(df, two_sample = twoSample)
-        }
+    observeEvent(c(mapAccessionToGeneServer()$data,
+                   statsParamsValues$modTTest), {
+      req(mapAccessionToGeneServer()$data)
+      df <- mapAccessionToGeneServer()$data
+      fmt <- mapAccessionToGeneServer()$format
+      req(!is.null(fmt), cancelOutput = TRUE)
+      req(statsParamsValues$modTTest)
+      req(statsParamsValues$signifType)
+      if (statsParamsValues$signifType == "fdr") {
+        req(statsParamsValues$fdrThresh)
+      } else if (statsParamsValues$signifType == "pvalue") {
+        req(statsParamsValues$pValThresh)
+      } else {stop(
+        "invalid signifType from statsParamsValues passed to enrichmentStatsServer.")
+      }
+      # moderated t.test still needed (i.e., format allowed but without significance statistics)
+      if (fmt$check$gene_rep | 
+          fmt$check$accession_rep | 
+          fmt$check$gene_sample_control |
+          fmt$check$accession_sample_control){
+        # set allowed column names
+        allowed = unlist(fmt$allowed[unlist(fmt$check)])
+        allowed_cols = lapply(allowed, function(x) grepl(x, colnames(df)))
+        allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
+        allowed_vec = allowed_vec | 'gene' %in% colnames(df)
+        
+        # ensure moderated t.test is only calculated on allowed columns
+        df = df[,colnames(df)[allowed_vec]]
+        # determine two_sample parameter to the calc_mod_ttest call
+        modTTest <- statsParamsValues$modTTest
+        req(modTTest)
+        df <- calc_mod_ttest(df, two_sample = modTTest=="Two sample")
+      }
+      dataServer(df)
+    })
+  })
+}
+
+findSignificantServer <- function(id, statsParamsValues, dataServer, sigificanceServer) {
+  moduleServer(id, function(input, output, session) {
+    observeEvent(
+      c(dataServer(),
+        statsParamsValues$signifType,
+        statsParamsValues$fdrThresh,
+        statsParamsValues$pValThresh,
+        statsParamsValues$logfcThresh,
+        statsParamsValues$logfcDir), 
+      {
         # if pvalue, fdr is supplied from user, do nothing
         # else if (fmt$check$gene_signif | fmt$check$accession_signif){
         # }
-        if (statsParamsServer()$signifType == 'fdr'){
-          df <- id_significant_proteins(df, fdr_cutoff = statsParamsServer()$fdrThresh, 
-                                    logfc_dir = statsParamsServer()$logfcDir, 
-                                    logfc_cutoff = statsParamsServer()$logfcThresh)
+        req(statsParamsValues$logfcDir)
+        req(statsParamsValues$logfcThresh)
+        df <- dataServer()
+        req(df$logFC)
+        if (statsParamsValues$signifType == 'fdr'){
+         df <- id_significant_proteins(df, fdr_cutoff = statsParamsValues$fdrThresh, 
+                                       logfc_dir = statsParamsValues$logfcDir, 
+                                       logfc_cutoff = statsParamsValues$logfcThresh)
         } else {
-          df <- id_significant_proteins(df, fdr_cutoff = NULL, 
-                                     p_cutoff = statsParamsServer()$pValThresh, 
-                                     logfc_dir = statsParamsServer()$logfcDir, 
-                                     logfc_cutoff = statsParamsServer()$logfcThresh)
+         df <- id_significant_proteins(df, fdr_cutoff = NULL, 
+                                       p_cutoff = statsParamsValues$pValThresh, 
+                                       logfc_dir = statsParamsValues$logfcDir, 
+                                       logfc_cutoff = statsParamsValues$logfcThresh)
         }
-        df
-      })
-    )
+        sigificanceServer(df)
+    })
   })
 }

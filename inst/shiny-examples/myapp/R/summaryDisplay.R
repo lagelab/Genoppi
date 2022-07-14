@@ -1,38 +1,3 @@
-summaryBox <- function(id) {
-  box(
-    title = "Summary", width = NULL, solidHeader = TRUE, status = "primary", 
-    collapsible = TRUE, collapsed = FALSE,
-    fluidRow(
-      column(12, uiOutput(NS(id, "threshold_text"))),
-      br(),
-      column(12, tableOutput(NS(id, "verbatim_count_text"))),
-      br(),
-      column(12, uiOutput(NS(id, 'replicate_table_header'))),
-      column(12, tableOutput(NS(id, "replicate_summary_table"))),
-      br(),
-      column(12, uiOutput(NS(id, 'sample_table_header'))),
-      column(12, tableOutput(NS(id, "sample_summary_table"))),
-      br(),
-      column(12, uiOutput(NS(id, 'control_table_header'))),
-      column(12, tableOutput(NS(id, "control_summary_table"))),
-      br(),
-      column(12, uiOutput(NS(id, 'sample_control_table_header'))),
-      column(12, tableOutput(NS(id, "sample_control_summary_table"))),
-      br(),
-    ),
-    # fluidRow(
-    #   column(12, uiOutput(NS(id, "monitor_pulldown_ui")))
-    # ),
-    # fluidRow(
-    #   column(12, uiOutput(NS(id, "monitor_pulldown_mapping_ui")))
-    # ),
-    # fluidRow(
-    #   br(),
-    #   column(12, shinyjs::hidden(myDownloadButton("a_mttest_mapping_download", 'Proteomic data', icon("download"))))
-    # )
-  )
-}
-
 # works with output from enumerate_replicate_combinations, refer to this function 
 #   in the Genoppi package for details of the combination_vec
 parse_combinations <- function(df) {
@@ -46,8 +11,8 @@ parse_combinations <- function(df) {
   combination_list <- lapply(combinations, function(combo) {
     combo_vec <- 
       c(gsub("\\.", " vs ", combo), # annotation text for display
-      gsub("\\.[^\\.]+$", "", combo), # first part of combo (things after . removed)
-      gsub("^[^\\.]+\\.", "", combo)) # second part of combo (things before . removed)
+        gsub("\\.[^\\.]+$", "", combo), # first part of combo (things after . removed)
+        gsub("^[^\\.]+\\.", "", combo)) # second part of combo (things before . removed)
     if (grepl("rep", combo)) {
       combo_vec <- c(combo_vec, "rep")}
     else if (grepl("sample", combo) & !grepl("control", combo)) {
@@ -57,7 +22,7 @@ parse_combinations <- function(df) {
     else if (grepl("sample", combo) & grepl("control", combo)) {
       combo_vec <- c(combo_vec, "sample_control")}
     else {stop(
-    "unexpected column in data frame supplied to parse_combinations
+      "unexpected column in data frame supplied to parse_combinations
            (helper function for summaryStatsServer).")}
   })
   
@@ -77,17 +42,17 @@ parse_combinations <- function(df) {
   return(summary_df)
 }
 
-summaryStatsServer <- function(id, enrichmentStatsServer) {
-  if (!is.reactive(enrichmentStatsServer)){
-    stop("enrichmentStatsServer passed to summaryStatsServer is not reactive")}
+summaryStatsServer <- function(id, sigificanceServer) {
+  if (!is.reactive(sigificanceServer)){
+    stop("sigificanceServer passed to summaryStatsServer is not reactive")}
   moduleServer(id, function(input, output, session) {
-    eventReactive(enrichmentStatsServer(), {
-      df <- enrichmentStatsServer()
+    eventReactive(sigificanceServer(), {
+      df <- sigificanceServer()
       # render the summary text for the data frame:
       #   (number of significant proteins out of all proteins)
       req(!is.null(df$significant))
       signifCount <- paste(bold(sum(df$significant)), "out of",
-                         bold(nrow(df)), 'proteins significant.')
+                           bold(nrow(df)), 'proteins significant.')
       
       # render the summary table for the data frame: (correlation between --
       #   replicates, samples, controls, sample & control, and their averages)
@@ -108,91 +73,206 @@ summaryStatsServer <- function(id, enrichmentStatsServer) {
         type_avg <- sum(type_entries["cor"])/type_count
         type_avg_formatted <- format(as.numeric(type_avg), digits = 4)
         type_text <- gsub("_", " vs ", typ)
-        avg_row <- c(paste(type_text, "average"),   # - Comparison
-                     "NA", "NA", "NA",              # - first, second, type
-                     type_avg, type_avg_formatted)  # - cor, Correlation (r)
-        return(rbind(type_entries, avg_row)[, c("Comparison", "Correlation (r)")])
+        return(c(paste(type_text, "average"), type_avg_formatted))
+        # # USE following for verbose correlation table 
+        # #   (i.e., correlation for every comparison)
+        # avg_row <- c(paste(type_text, "average"),   # - Comparison
+        #              "NA", "NA", "NA",              # - first, second, type
+        #              type_avg, type_avg_formatted)  # - cor, Correlation (r)
+        # return(rbind(type_entries, avg_row)[, c("Comparison", "Correlation (r)")])
       })
       names(type_dfs_list) <- types
+      
+      avg_df <- data.frame(do.call(rbind, type_dfs_list))
+      names(avg_df) <- c("Comparison", "type")
+      
       return(list(
         signifCountText=signifCount, 
-        corrTableList=type_dfs_list))
+        # # UNCOMMENT for verbose table (i.e., correlation for every comparison)
+        # corrTableList=type_dfs_list,
+        avgCorrTable=avg_df))
     })
   })
 }
 
-thresholdTextServer <- function(id, statsParamsServer) {
-  if (!is.reactive(statsParamsServer)){
-    stop("statsParamsServer passed to thresholdTextServer is not reactive")}
+thresholdsValues <- function(id) {
+  moduleServer(id, function(input, output, session){
+    return(reactiveValues())})
+}
+
+thresholdTextServer <- function(id, statsParamsValues, thresholdsValues) {
+  if (!is.reactivevalues(statsParamsValues)){
+    stop("statsParamsValues passed to thresholdTextServer is not reactive")}
+  if (!is.reactivevalues(thresholdsValues)){
+    stop("thresholdsValues passed to thresholdTextServer is not reactive values")}
   moduleServer(id, function(input, output, session) {
-    eventReactive(statsParamsServer(), {
-      req(statsParamsServer()$signifType)
+    observeEvent(statsParamsValues, {
+      req(statsParamsValues$signifType)
       # render text for showing significance threshold (FDR/P-Value)
-      if (statsParamsServer()$signifType == 'fdr'){
-        signifText <- paste('FDR ≤', statsParamsServer()$fdrThresh)
-      } else if (statsParamsServer()$signifType == 'pvalue') {
-        signifText <- paste('<i>P</i>-value ≤', statsParamsServer()$pValThresh)
+      sigType <- statsParamsValues$signifType
+      if (sigType == 'fdr'){
+        sigVal <-statsParamsValues$fdrThresh
+        sigTxt <- paste0('FDR≤', sigVal)
+        insigTxt <- paste0('FDR>', sigVal)
+      } else if (sigType == 'pvalue') {
+        sigVal <-statsParamsValues$pValThresh
+        sigTxt <- paste0('<i>P</i>-value≤', sigVal)
+        insigTxt <- paste0('<i>P</i>-value>', sigVal)
       } else {
-        stop("Invalid signifType from statsParamsServer supplied to thresholdTextServer.")
+        stop("Invalid signifType from statsParamsValues supplied to thresholdTextServer.")
       }
       
       # render text for showing logFC threshold
-      if (statsParamsServer()$logfcDir == 'negative') {
-        fcText <- paste(
-          "log<sub>2</sub>FC&lt;", -statsParamsServer()$logfcThresh)
-      } else if (statsParamsServer()$logfcDir == 'positive') {
-        fcText <- paste(
-          "log<sub>2</sub>FC&ge;", statsParamsServer()$logfcThresh)
+      fc <- statsParamsValues$logfcThresh
+      fcDir <- statsParamsValues$logfcDir
+      if (fcDir == 'negative') {
+        fcSigTxt <- paste("log<sub>2</sub>FC&lt;", fc)
+        fcInsigTxt <- paste("log<sub>2</sub>FC&ge;", -fc)
+      } else if (fcDir == 'positive') {
+        fcSigTxt <- paste("log<sub>2</sub>FC&ge;", fc)
+        fcInsigTxt =  paste("log<sub>2</sub>FC&lt;", fc)
       } else {
-        if (statsParamsServer()$logfcDir != 'both') {
-          stop("Invalid logfcDir in thresholdTextServer")}
-        fcText <- paste(
-          "|log<sub>2</sub>FC|&ge;", statsParamsServer()$logfcThresh)
+        if(fcDir != 'both'){stop("Invalid logfcDir in thresholdTextServer")}
+        fcSigTxt <- paste("|log<sub>2</sub>FC|&ge;", fc)
+        fcInsigTxt <- paste("|log<sub>2</sub>FC|&lt;", fc)
       }
-      thresholdText <- paste(
-        "Significance threshold:", signifText, 'and', fcText)
-      return(thresholdText)
+      summary <- paste("Significance threshold:",sigTxt,'and',fcSigTxt)
+      
+      # Set passed in reactiveValues
+      thresholdsValues$summary <- summary
+      thresholdsValues$sigType <- sigType
+      thresholdsValues$sigTxt <- sigTxt
+      thresholdsValues$insigTxt <- insigTxt
+      thresholdsValues$sigVal <- sigVal
+      thresholdsValues$fcSigTxt <- fcSigTxt
+      thresholdsValues$fcInsigTxt <- fcInsigTxt
     })
   })
 }
 
+
+summaryBox <- function(id) {
+  box(
+    title = "Summary", width = NULL, solidHeader = TRUE, status = "primary", 
+    collapsible = TRUE, collapsed = FALSE,
+    fluidRow(
+      column(12, uiOutput(NS(id, "threshold_text"))),
+      br(),
+      column(12, tableOutput(NS(id, "verbatim_count_text"))),
+      br(),
+      column(12, tableOutput(NS(id, "correlation_table_header"))),
+      br(),
+      column(12, tableOutput(NS(id, "correlation_table"))),
+      br(),
+      # # UNCOMMENT for verbose table (i.e., correlation for every comparison)
+      # column(12, uiOutput(NS(id, 'replicate_table_header'))),
+      # column(12, tableOutput(NS(id, "replicate_summary_table"))),
+      # br(),
+      # column(12, uiOutput(NS(id, 'sample_table_header'))),
+      # column(12, tableOutput(NS(id, "sample_summary_table"))),
+      # br(),
+      # column(12, uiOutput(NS(id, 'control_table_header'))),
+      # column(12, tableOutput(NS(id, "control_summary_table"))),
+      # br(),
+      # column(12, uiOutput(NS(id, 'sample_control_table_header'))),
+      # column(12, tableOutput(NS(id, "sample_control_summary_table"))),
+      # br(),
+    ),
+    fluidRow(
+      column(12, uiOutput(NS(id, "input_format_err_text")))
+    ),
+    fluidRow(
+      column(12, uiOutput(NS(id, "gene_or_mapping_err_text")))
+    ),
+    fluidRow(
+      br(),
+      column(12, shinyjs::hidden(
+        myDownloadButton(
+          NS(id, "download_dataframe_with_stats"),
+          'Proteomic data', icon("download"))))
+    )
+  )
+}
 summaryDisplayServer <- function(id, 
                                  summaryStatsServer,
-                                 thresholdTextServer) {
+                                 statsParamsValues,
+                                 thresholdsValues,
+                                 significanceServer,
+                                 errorValues) {
   if (!is.reactive(summaryStatsServer)){
     stop("summaryStatsServer passed to summaryDisplayServer is not reactive")}
-  if (!is.reactive(thresholdTextServer)){
-    stop("thresholdTextServer passed to summaryDisplayServer is not reactive")}
+  if (!is.reactivevalues(statsParamsValues)){
+    stop("statsParamsValues passed to summaryDisplayServer is not reactive")}
+  if (!is.reactivevalues(thresholdsValues)){
+    stop("thresholdsValues passed to summaryDisplayServer is not reactive values")}
   moduleServer(id, function(input, output, session) {
     output$threshold_text <- renderUI({
-      HTML(thresholdTextServer())
+      req(thresholdsValues$summary)
+      HTML(thresholdsValues$summary)
       })
     output$verbatim_count_text <- renderUI({
       HTML(summaryStatsServer()$signifCountText)
     })
-    output$replicate_table_header <- renderUI({
-      h5(HTML(bold("Replicate correlation(s):")))
+    output$correlation_table_header <- renderUI({
+      h5(HTML(bold("Average correlation(s):")))
     })
-    output$replicate_summary_table <- renderTable({
-      summaryStatsServer()$corrTableList$rep
+    output$correlation_table <- renderTable({
+      summaryStatsServer()$avgCorrTable
     })
-    output$sample_table_header <- renderUI({
-      h5(HTML(bold("Sample correlation(s):")))
+    output$input_format_err_text <- renderUI({
+      req(errorValues$rendered_message)
+      HTML(errorValues$rendered_message)
     })
-    output$sample_summary_table <- renderTable({
-      summaryStatsServer()$corrTableList$sample
+    
+    output$gene_or_mapping_err_text <- renderUI({
+      if (!is.null(errorValues$gene_symbol_error)) {
+        # display user messages if using gene column directly
+        HTML(errorValues$gene_symbol_error)
+      } else if (!is.null(errorValues$mapping_error)) {
+        # display user messages if using mapAccessionToGeneServer with accession_number column
+        HTML(errorValues$mapping_error)
+      }
     })
-    output$control_table_header <- renderUI({
-      h5(HTML(bold("Control correlation(s):")))
+    
+    output$download_dataframe_with_stats <- downloadHandler(
+      # TODO Unify download handlers
+      filename = function() {
+        paste("genoppi-proteomic-results",".txt", sep="\t")
+      },
+      content = function(file) {
+        write.table(significanceServer(), file, row.names = F)
+      }
+    )
+    observeEvent(significanceServer(), {
+      shinyjs::toggle(
+        id="download_dataframe_with_stats", 
+        condition=!is.null(significanceServer()))
     })
-    output$control_summary_table <- renderTable({
-      summaryStatsServer()$corrTableList$control
-    })
-    output$sample_control_table_header <- renderUI({
-      h5(HTML(bold("Sample vs Control correlation(s):")))
-    })
-    output$sample_control_summary_table <- renderTable({
-      summaryStatsServer()$corrTableList$sample_control
-    })
+    
+    # # UNCOMMENT for verbose table (i.e., correlation for every comparison)
+    # output$replicate_table_header <- renderUI({
+    #   h5(HTML(bold("Replicate correlation(s):")))
+    # })
+    # output$replicate_summary_table <- renderTable({
+    #   summaryStatsServer()$corrTableList$rep
+    # })
+    # output$sample_table_header <- renderUI({
+    #   h5(HTML(bold("Sample correlation(s):")))
+    # })
+    # output$sample_summary_table <- renderTable({
+    #   summaryStatsServer()$corrTableList$sample
+    # })
+    # output$control_table_header <- renderUI({
+    #   h5(HTML(bold("Control correlation(s):")))
+    # })
+    # output$control_summary_table <- renderTable({
+    #   summaryStatsServer()$corrTableList$control
+    # })
+    # output$sample_control_table_header <- renderUI({
+    #   h5(HTML(bold("Sample vs Control correlation(s):")))
+    # })
+    # output$sample_control_summary_table <- renderTable({
+    #   summaryStatsServer()$corrTableList$sample_control
+    # })
   })
 }
