@@ -1,5 +1,6 @@
 #' @title Check proteomic data format
-#' @description Check if input data.frame columns match one of the six allowed formats.
+#' @description Check if input data.frame columns match one of the six allowed
+#'  formats. Throws an error if an empty dataframe is used as input.
 #' @param df data.frame containing proteomic data.
 #' @note An item in the approved format list can appear more than once.
 #' @return list of two lists: check and allowed. check: list of logical vairables indicating if input match an allowed format. allowed: a list of all allowed formats.
@@ -17,7 +18,7 @@ check_input <- function(df){
 
   # check input is data.frame
   stopifnot(is.data.frame(df))
-  if(ncol(df) == 0) {stop("Empty data frame passed to check input")}
+  if(ncol(df) == 0) {stop("Empty data frame passed to check_input")}
   
   # allowed formats: 4 variations
   allowed_formats = list(

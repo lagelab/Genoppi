@@ -1,3 +1,5 @@
+########### REVERT UP TILL HERE ###########
+########### REVERT UP TILL HERE ###########
 
 # shiny server
 shinyServer(function(input, output, session){
@@ -100,6 +102,120 @@ shinyServer(function(input, output, session){
   #   label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'or', monitor_logfc_threshold()$insig))))
   #   colourpicker::colourInput('a_color_indv_insig', label, value = val_a_color_theme_indv_insig(), showColour = 'both', 
   #                             palette = c( "limited"), allowedCols = allowed_colors)
+  # })
+  # basic volcano plot
+  # a_vp_gg <-reactive({
+  #   req(a_pulldown_significant())
+  #   d <- a_pulldown_significant()
+  #   req(input$a_color_indv_sig, input$a_color_indv_insig)
+  #   p <- plot_volcano_basic(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
+  #   if (!is.null(a_bait_parsed())) p <- plot_overlay(p, as.bait(a_bait_parsed())) # add bait
+  #   
+  #   return(p)
+  # })
+  # basic volcano plot
+  # a_vp_layerx <- reactive({
+  #   req(a_vp_gg(), input$a_pval_thresh, input$a_logFC_thresh, input$a_logfc_direction, input$a_significance_type)
+  #   p <- a_vp_gg()
+  #   p <- make_interactive(p, legend = T)
+  #   if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
+  #   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
+  #   p <- add_plotly_layout_volcano(p, width = global.basic.volcano.width, height = global.basic.volcano.height)
+  #   
+  #   return(p)
+  # })
+  # # basic plot gene count summary
+  # a_verbatim_count <- reactive({
+  #   d <- a_pulldown_significant()
+  #   HTML(paste(bold(sum(d$significant)), 'out of', bold(nrow(d)), 'proteins significant.'))
+  # })
+  # 
+  # # basic plot significance text
+  # a_vp_count_text <- reactive({
+  #   if(!is.null(a_verbatim_count())){
+  #     enriched <- paste(c('Significance threshold:',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))
+  #     HTML(enriched)
+  #   }
+  # })
+  # a_sp_gg_all <- reactive({
+  #   # handle all scatter plots
+  #   req(a_pulldown_significant())
+  #   validate(need(a_file_rep_bool() == TRUE , ""))
+  #   d = a_pulldown_significant()
+  #   p = plot_scatter_basic_all(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
+  #   return(p)
+  # })
+  # a_sp_gg <- reactive({
+  # 
+  #   # what replicates are inputted
+  #   # REPLACE
+  #   # req(input$a_select_scatterplot, sigS())
+  #   req(input$a_select_scatterplot, a_pulldown_significant())
+  #   rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
+  #   p = a_sp_gg_all()
+  # 
+  #   # handle individual plot
+  #   p1 = p[[input$a_select_scatterplot]]$ggplot
+  #   if (!is.null(a_bait_parsed())) p1 = plot_overlay(p1, as.bait(a_bait_parsed()))
+  #   p1$r = format(p[[input$a_select_scatterplot]]$correlation, digits = 3)
+  #   p1
+  # 
+  # })
+  # a_sp <- reactive({
+  #   
+  #   # get basic stats
+  #   p1 = a_sp_gg()
+  #   #rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
+  #   r = p1$r
+  #   
+  #   # convert into interactive graphics
+  #   p1 = make_interactive(p1)
+  #   if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
+  #   p1 = add_plotly_layout_scatter(p1, paste0('r=',r), 
+  #                                  width = global.basic.scatter.width, 
+  #                                  height = global.basic.scatter.height,
+  #                                  orientation = 'v')
+  #   p1 = add_plotly_line_unity(p1)
+  #   p1 %>%  layout(legend=list(yanchor="right", x = 1, y = 1))
+  #   #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
+  #   
+  # })
+  # # make summary of replicates
+  # replicate_summary_table <- reactive({
+  #   req(a_sp_gg())
+  #   p = a_sp_gg_all()
+  #   rs = lapply(p, function(x) format(x$correlation, digits = 4))
+  #   rs = t(data.frame(rs))
+  #   rs = cbind(gsub('\\.',' vs ',rownames(rs)), rs)
+  #   rs = rbind(rs, c('Average', format(mean(as.numeric(rs[,2])), digits = 4)))
+  #   colnames(rs) <- c('Comparison','Correlation (r)')
+  #   return(rs)
+  # })
+  # output$a_verbatim_count_ui <- renderUI({
+  #   validate(need(a_file_pulldown_r()  != '', " "))
+  #   a_verbatim_count()
+  # })
+  # 
+  # output$VP_count_text <- renderUI({
+  #   validate(need(a_file_pulldown_r()  != '', " "))
+  #   output <- a_vp_count_text()
+  #   HTML(output)
+  # })
+  # output$a_monitor_pulldown_ui <- renderUI({
+  #   req(a_monitor_pulldown())
+  #   return(a_monitor_pulldown())
+  # })
+  # output$a_monitor_pulldown_mapping_ui <- renderUI({
+  #   req(a_monitor_pulldown_mapping())
+  #   return(a_monitor_pulldown_mapping())
+  # })
+  # output$a_replicate_summar_text_ui <- renderUI({
+  #   req(replicate_summary_table())
+  #   h5(HTML(bold('Replicate correlation(s):')))
+  # })
+  # render replicate summary
+  # output$a_replicate_summary_table_ui <- renderTable({
+  #   replicate_summary_table()
   # })
   # output$a_bait_search <- renderUI({
   #   textInput("a_bait_search_rep", "Input bait (HGNC symbol, e.g. BCL2)")
@@ -342,7 +458,9 @@ shinyServer(function(input, output, session){
   # venn diagram inweb mapping for inweb
   a_inweb_calc_hyper <- reactive({
     req(ppiParams()$bait_search)
-    req(dataS())
+    # TEST REPLACE
+    req(sigS())
+    # req(dataS())
     req(a_ppi_mapping())
     req(a_ppi_mapping_name())
     # req(
@@ -362,7 +480,9 @@ shinyServer(function(input, output, session){
       ppi_list = data.frame(listName=dbname, mapping_output)
       ppi_intersect = data.frame(listName=dbname, intersectN=T)
       # data = a_pulldown_significant()
-      data = dataS()
+      # TEST REPLACE
+      data = sigS()
+      # data = dataS()
       
       # compile venn diagram information
       hyper = calc_hyper(data, ppi_list, ppi_intersect, bait = baitS())
@@ -783,28 +903,6 @@ shinyServer(function(input, output, session){
     checkboxInput('a_tissue_enrichment_scientific_notation', 'Scientific notations', value = TRUE)
   })
   
-  # make summary of replicates
-  replicate_summary_table <- reactive({
-    req(a_sp_gg())
-    p = a_sp_gg_all()
-    rs = lapply(p, function(x) format(x$correlation, digits = 4))
-    rs = t(data.frame(rs))
-    rs = cbind(gsub('\\.',' vs ',rownames(rs)), rs)
-    rs = rbind(rs, c('Average', format(mean(as.numeric(rs[,2])), digits = 4)))
-    colnames(rs) <- c('Comparison','Correlation (r)')
-    return(rs)
-  })
-  
-  output$a_replicate_summar_text_ui <- renderUI({
-    req(replicate_summary_table())
-    h5(HTML(bold('Replicate correlation(s):')))
-  })
-  
-  # render replicate summary
-  output$a_replicate_summary_table_ui <- renderTable({
-    replicate_summary_table()
-  })
-  
   #
   output$a_select_venn_genes_upload_ui <- renderUI({
     selectInput('a_select_venn_list_genes_upload',
@@ -900,6 +998,8 @@ shinyServer(function(input, output, session){
   })
   
   output$a_pathway_mapping_freq_slider_ui <- renderUI({
+    # REPLACE
+    # req(sigS())
     req(a_pulldown_significant())
     freq = a_pathway_mapping_values()$Freq
     fmax = ifelse(is.null(freq), 1, max(freq))
@@ -909,6 +1009,8 @@ shinyServer(function(input, output, session){
   })
   
   output$a_pathway_mapping_type_sort_ui <- renderUI({
+    # REPLACE
+    # req(sigS())
     req(a_pulldown_significant())
     radioButtons('a_pathway_mapping_type_sort', 'Sort legend',
                  c('alphabetically' = 'alpha',
@@ -919,6 +1021,8 @@ shinyServer(function(input, output, session){
   
   
   output$a_pathway_mapping_search_ui <- renderUI({
+    # REPLACE
+    # req(sigS())
     req(a_pulldown_significant())
     mapping = a_pathway_mapping_values()
     mapping = mapping[rev(order(mapping$Freq)), ]
@@ -1036,6 +1140,8 @@ shinyServer(function(input, output, session){
   # TODO implement monitoring of inputed files
   # monitor pulldown input, mapping and input
   a_monitor_pulldown <- reactive({
+    # REPLACE
+    # req(sigS())
     req(a_pulldown_significant())
     
     # monitor of some columns were discarded
@@ -1298,6 +1404,8 @@ shinyServer(function(input, output, session){
   a_gnomad_sig_list <- reactive({
     # req(a_pulldown(), input$a_slide_gnomad_pli_threshold)
     req(dataS(), input$a_slide_gnomad_pli_threshold)
+    # REPLACE
+    # pulldown = sigS()
     pulldown = a_pulldown_significant()
     threshold = gnomad_table$gene %in% pulldown$gene & gnomad_table$pLI >= input$a_slide_gnomad_pli_threshold
     threshold[is.na(threshold)] = FALSE
@@ -1325,7 +1433,9 @@ shinyServer(function(input, output, session){
   a_get_tissue_list <- reactive({
     selected = input$a_tissue_select
     # req(a_pulldown_significant(), selected)
-    req(dataS(), selected)
+    # TEST REPLACE
+    req(sigS(), selected)
+    # req(dataS(), selected)
     if (selected %in% 'HPA - RNA' & length(input$a_hpa_rna_tissue) > 0){
       return(get_tissue_lists(tissue = as.character(input$a_hpa_rna_tissue), table = hpa_rna))
     
@@ -1343,7 +1453,11 @@ shinyServer(function(input, output, session){
   # setup main mapping
   a_tissue_mapping <- reactive({
     # req(a_pulldown_significant(), a_get_tissue_list())
-    req(dataS(), a_get_tissue_list())
+    # TEST REPLACE
+    req(sigS(), a_get_tissue_list())
+    # req(dataS(), a_get_tissue_list())
+    # REPLACE
+    # pulldown = sigS()
     pulldown = a_pulldown_significant()
     validate(need(!all(is.na(pulldown$gene)), ""))
     tissue = a_get_tissue_list() 
@@ -1368,7 +1482,9 @@ shinyServer(function(input, output, session){
   # get the tissue enrichment table that have been selected by user
   a_tissue_enrichment_table <- reactive({
     # req(a_pulldown_significant(), input$a_tissue_enrichment_type_select)
-    req(dataS(), input$a_tissue_enrichment_type_select)
+    # TEST REPLACE
+    req(sigS(), input$a_tissue_enrichment_type_select)
+    # req(dataS(), input$a_tissue_enrichment_type_select)
     tissue = input$a_tissue_enrichment_type_select
     source = input$a_tissue_select_source
     if (source == 'genoppi'){
@@ -1392,6 +1508,8 @@ shinyServer(function(input, output, session){
   
   # get tissue with elevated expression and calculate FDR.
   a_tissue_enrichment <- eventReactive(input$a_button_plot_tissue_enrichment,{
+    # REPLACE
+    # req(sigS(), a_tissue_enrichment_table())
     req(a_pulldown_significant(), a_tissue_enrichment_table())
     pulldown = a_pulldown_significant()
     table = a_tissue_enrichment_table()
@@ -1715,8 +1833,7 @@ shinyServer(function(input, output, session){
     req(
       # input$a_bait_rep,
       ppiParams()$bait_search,
-      # a_pulldown_significant(), 
-      dataS(),
+      sigS(),
       a_inweb_calc_hyper())
     hyper = a_inweb_calc_hyper()
     v = draw_genoppi_venn(hyper$venn, 
@@ -1730,7 +1847,9 @@ shinyServer(function(input, output, session){
   a_ppi_venn_verbatim <- reactive({
     req(
       # a_pulldown_significant(),
-      dataS(),
+      # TEST REPLACE
+      sigS(),
+      # dataS(),
       a_inweb_calc_hyper(), 
       # input$a_bait_rep, 
       ppiParams()$bait_search,
@@ -1767,7 +1886,9 @@ shinyServer(function(input, output, session){
   output$a_inweb_venn_table_ui <- reactive({
     req(
       # a_pulldown_significant(), 
-      dataS(),
+      # TEST REPLACE
+      sigS(),
+      # dataS(),
       a_inweb_calc_hyper())
     hyper = a_inweb_calc_hyper() #$genes$InWeb$successInSample_genes
     x = as.character(hyper$venn$Pulldown)
@@ -1930,7 +2051,6 @@ shinyServer(function(input, output, session){
     # generate venn
     return(list(venn=mapping))
   })
-  
   
   # make venn diagram instructions
   a_snp_venn <- reactive({
@@ -2107,87 +2227,7 @@ shinyServer(function(input, output, session){
     }
   })
   
-  # basic volcano plot
-  a_vp_gg <- reactive({
-    req(a_pulldown_significant())
-    d <- a_pulldown_significant()
-    req(input$a_color_indv_sig, input$a_color_indv_insig)
-    p <- plot_volcano_basic(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
-    if (!is.null(a_bait_parsed())) p <- plot_overlay(p, as.bait(a_bait_parsed())) # add bait
-    
-    return(p)
-  })
-  
-  # basic volcano plot
-  a_vp_layerx <- reactive({
-    req(a_vp_gg(), input$a_pval_thresh, input$a_logFC_thresh, input$a_logfc_direction, input$a_significance_type)
-    p <- a_vp_gg()
-    p <- make_interactive(p, legend = T)
-    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
-    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-    p <- add_plotly_layout_volcano(p, width = global.basic.volcano.width, height = global.basic.volcano.height)
-    
-    return(p)
-  })
-  
-  
-  # basic plot gene count summary
-  a_verbatim_count <- reactive({
-    d <- a_pulldown_significant()
-    HTML(paste(bold(sum(d$significant)), 'out of', bold(nrow(d)), 'proteins significant.'))
-  })
-  
-  # basic plot significance text
-  a_vp_count_text <- reactive({
-    if(!is.null(a_verbatim_count())){
-      enriched <- paste(c('Significance threshold:',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))
-      HTML(enriched)
-    }
-  })
- 
-  a_sp_gg_all <- reactive({
-    # handle all scatter plots
-    req(a_pulldown_significant())
-    validate(need(a_file_rep_bool() == TRUE , ""))
-    d = a_pulldown_significant()
-    p = plot_scatter_basic_all(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
-    return(p)
-  })
-  
-  a_sp_gg <- reactive({
-  
-    # what replicates are inputted
-    req(input$a_select_scatterplot, a_pulldown_significant())
-    rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
-    p = a_sp_gg_all()
 
-    # handle individual plot
-    p1 = p[[input$a_select_scatterplot]]$ggplot
-    if (!is.null(a_bait_parsed())) p1 = plot_overlay(p1, as.bait(a_bait_parsed()))
-    p1$r = format(p[[input$a_select_scatterplot]]$correlation, digits = 3)
-    p1
-  
-  })
-  
-  a_sp <- reactive({
-    
-    # get basic stats
-    p1 = a_sp_gg()
-    #rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
-    r = p1$r
-    
-    # convert into interactive graphics
-    p1 = make_interactive(p1)
-    if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
-    p1 = add_plotly_layout_scatter(p1, paste0('r=',r), 
-                                   width = global.basic.scatter.width, 
-                                   height = global.basic.scatter.height,
-                                   orientation = 'v')
-    p1 = add_plotly_line_unity(p1)
-    p1 %>%  layout(legend=list(yanchor="right", x = 1, y = 1))
-    #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
-    
-  })
   
 
   #---------------------------------------------------------------------
@@ -2288,24 +2328,28 @@ shinyServer(function(input, output, session){
   
   
   # download basic scatter plot
-  input_sp_gg <- function(){a_sp_gg()}
-  output$a_scatter_plot_download = downloadHandler(
-    filename = 'genoppi-scatter-plot.png',
-    content = function(file) {
-      device <- function(..., width, height) {
-        grDevices::png(..., width = width, height = height,
-                       res = 300, units = "in")
-      }
-      ggsave(file, plot = theme_scatter(input_sp_gg()) , device = device, 
-             width = global.img.scatter.download.width,
-             height = global.img.scatter.download.height)
-    })
+  # input_sp_gg <- function(){a_sp_gg()}
+  # output$a_scatter_plot_download = downloadHandler(
+  #   filename = 'genoppi-scatter-plot.png',
+  #   content = function(file) {
+  #     device <- function(..., width, height) {
+  #       grDevices::png(..., width = width, height = height,
+  #                      res = 300, units = "in")
+  #     }
+  #     ggsave(file, plot = theme_scatter(input_sp_gg()) , device = device, 
+  #            width = global.img.scatter.download.width,
+  #            height = global.img.scatter.download.height)
+  #   })
   #---------------------------------------------------------------------
   # integrated plotting
   
   # assign frequency 
   a_pathway_mapping_assign_freq <- reactive({
+    # REPLACE
+    # req(sigS(), input$a_pf_loc_option)
     req(a_pulldown_significant(), input$a_pf_loc_option)
+    # REPLACE
+    # pulldown <- sigS()
     pulldown <- a_pulldown_significant()
     validate(need(!all(is.na(pulldown$gene)), ""))
     db = input$a_pf_loc_option
@@ -2320,6 +2364,8 @@ shinyServer(function(input, output, session){
   # load in data and preset colors in a seperate
   # reactive to reduce overhead time
   a_pathway_mapping_initial <- reactive({
+    # REPLACE
+    # req(sigS(), a_pathway_mapping_assign_freq())
     req(a_pulldown_significant(), a_pathway_mapping_assign_freq())
     
     #  # get raw data and assign frequency count
@@ -2392,6 +2438,8 @@ shinyServer(function(input, output, session){
   
   # reactive for subsetting my frequency
   a_pathway_mapping_subset <- reactive({
+    # REPLACE
+    # req(a_pathway_mapping(), sigS())
     req(a_pathway_mapping(), a_pulldown_significant())
     
     # subset data by frequencies
@@ -2406,6 +2454,8 @@ shinyServer(function(input, output, session){
   
   # make the ggplot with legend
   a_pathway_plot_tmp_gg <- reactive({
+    # REPLACE
+    # data = sigS()
     data = a_pulldown_significant()
     req(data, a_pathway_mapping_subset())
     p <- a_vp_gg()
@@ -2436,6 +2486,8 @@ shinyServer(function(input, output, session){
   
   # make the ggplot with legend
   a_pathway_plot_tmp_gg <- reactive({
+    # REPLACE
+    # data = sigS()
     data = a_pulldown_significant()
     req(data, a_pathway_mapping_subset())
     p <- a_vp_gg()
@@ -2460,6 +2512,8 @@ shinyServer(function(input, output, session){
 
   # convert to plotly
   a_pathway_plot <- reactive({
+    #REPLACE
+    # req(sigS(), a_pathway_plot_gg(), input$a_pathway_mapping_type_sort)
     req(a_pulldown_significant(), a_pathway_plot_gg(), input$a_pathway_mapping_type_sort)
   
     p <- a_pathway_plot_gg()
@@ -2502,29 +2556,6 @@ shinyServer(function(input, output, session){
     a_pathway_plot()
   })
   
-  
-  # output$a_verbatim_count_ui <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', " "))
-  #   a_verbatim_count()
-  # })
-  # 
-  # output$VP_count_text <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', " "))
-  #   output <- a_vp_count_text()
-  #   HTML(output)
-  # })
-  
-  # output$a_monitor_pulldown_ui <- renderUI({
-  #   req(a_monitor_pulldown())
-  #   return(a_monitor_pulldown())
-  # })
-  
-  # output$a_monitor_pulldown_mapping_ui <- renderUI({
-  #   req(a_monitor_pulldown_mapping())
-  #   return(a_monitor_pulldown_mapping())
-  # })
-  
-  
   output$ScatterPlot <- plotly::renderPlotly({
     validate(need(a_file_pulldown_r()  != '', "Upload file"))
     a_sp()
@@ -2534,7 +2565,9 @@ shinyServer(function(input, output, session){
     #validate(need(a_file_pulldown_r()  != '', "Upload file"))
     validate(need(dataPathS()  != '', "Upload file"))
     # req(a_pulldown_significant)
-    req(dataS())
+    # TEST REPLACE
+    req(sigS())
+    # req(dataS())
     a_integrated_plot()
   })
   
@@ -3567,6 +3600,5 @@ shinyServer(function(input, output, session){
   })
   
 })
-
 
 

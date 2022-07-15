@@ -74,7 +74,8 @@ inputErrorServer <- function(id, dataFrameServer, errorValues){
         paste(names(na_cols)[na_cols], collapse = ', '))
       msg6 = paste0(
         bold('Warning: '), 
-        'It looks like you have already -log10 transformed your p-values. Please, use raw p-values to accurately display volcano plots.')
+        'It looks like you have already -log10 transformed your p-values. 
+        Please, use raw p-values to accurately display volcano plots.')
       
       # no valid cols
       msg = ''
@@ -125,10 +126,19 @@ accessionMapErrorServer <- function(id, mapAccessionToGeneServer, errorValues) {
         fraction = paste0(format(100*length(failed)/nrow(data), digits = 3),'%')
         
         # messages
-        msg0 = bold(paste('ERROR: ', absolute, ' (',fraction,') accesion_numbers were not mapped to a genes. The App may crash during Integrated Plotting!'))
-        msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
-        msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
-        msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
+        msg0 = bold(paste(
+          'ERROR: ', absolute, ' (',fraction,
+          ') accesion_numbers were not mapped to a genes. 
+          The App may crash during Integrated Plotting!'))
+        msg1 = paste0(
+          bold('Warning:'), absolute, ' (',fraction,
+          ') accesion_number(s) were not mapped to a gene(s).')
+        msg2 = paste0(
+          'The following accesion_number(s) were not mapped:', 
+          italics(paste0(failed,collapse=', ')),'.')
+        msg3 = paste0(
+          'These will be ignored in downstream analysis. 
+          To include, manually specify the entry in a seperate "gene" (HGNC) column.')
         msg4 = paste0('Are you using human accession numbers?')
         
         if (length(failed) > 0){
@@ -206,11 +216,11 @@ enrichmentStatsServer <- function(id,
       } else {stop(
         "invalid signifType from statsParamsValues passed to enrichmentStatsServer.")
       }
-      # moderated t.test still needed (i.e., format allowed but without significance statistics)
-      if (fmt$check$gene_rep | 
-          fmt$check$accession_rep | 
-          fmt$check$gene_sample_control |
-          fmt$check$accession_sample_control){
+      # moderated t.test still needed (i.e., provided data without significance statistics)
+      if ((fmt$check$gene_rep | fmt$check$accession_rep | 
+          fmt$check$gene_sample_control | fmt$check$accession_sample_control) &
+        (!(fmt$check$gene_signif|fmt$check$accession_signif)))
+      {
         # set allowed column names
         allowed = unlist(fmt$allowed[unlist(fmt$check)])
         allowed_cols = lapply(allowed, function(x) grepl(x, colnames(df)))
@@ -223,6 +233,12 @@ enrichmentStatsServer <- function(id,
         modTTest <- statsParamsValues$modTTest
         req(modTTest)
         df <- calc_mod_ttest(df, two_sample = modTTest=="Two sample")
+      }
+      else if (fmt$check$gene_signif|fmt$check$accession_signif) {
+        print("Using User provided significance statistics.")
+      } else {stop(
+        "dataServer passed to enrichmentStatsServer does not fit any allowed 
+        format in format check, i.e., $format$check all FALSE")
       }
       dataServer(df)
     })
@@ -239,9 +255,6 @@ findSignificantServer <- function(id, statsParamsValues, dataServer, sigificance
         statsParamsValues$logfcThresh,
         statsParamsValues$logfcDir), 
       {
-        # if pvalue, fdr is supplied from user, do nothing
-        # else if (fmt$check$gene_signif | fmt$check$accession_signif){
-        # }
         req(statsParamsValues$logfcDir)
         req(statsParamsValues$logfcThresh)
         df <- dataServer()

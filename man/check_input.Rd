@@ -13,7 +13,8 @@ check_input(df)
 list of two lists: check and allowed. check: list of logical vairables indicating if input match an allowed format. allowed: a list of all allowed formats.
 }
 \description{
-Check if input data.frame columns match one of the six allowed formats.
+Check if input data.frame columns match one of the six allowed
+ formats. Throws an error if an empty dataframe is used as input.
 }
 \note{
 An item in the approved format list can appear more than once.

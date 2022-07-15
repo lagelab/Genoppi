@@ -18,9 +18,9 @@ test_that('read_input can return input data.frame and format',{
     list(
       gene_rep = T,
       gene_sample_control = F,
+      gene_signif = F,
       accession_rep = F,
       accession_sample_control = F,
-      gene_signif = F,
       accession_signif = F
     )
   expect_identical(result$format$check, expected_check)
@@ -44,9 +44,9 @@ test_that('an input with all columns can be read',{
     list(
       gene_rep = T,
       gene_sample_control = F,
+      gene_signif = T,
       accession_rep = T,
       accession_sample_control = F,
-      gene_signif = T,
       accession_signif = T
     )
   expect_identical(result$format$check, expected_check)
@@ -74,9 +74,9 @@ test_that('only accession numbers and reps',{
     list(
       gene_rep = F,
       gene_sample_control = F,
+      gene_signif = F,
       accession_rep = T,
       accession_sample_control = F,
-      gene_signif = F,
       accession_signif = F
     )
   expect_identical(result$format$check, expected_check)
@@ -104,9 +104,9 @@ test_that('only accession numbers and statistics',{
     list(
       gene_rep = F,
       gene_sample_control = F,
+      gene_signif = F,
       accession_rep = F,
       accession_sample_control = F,
-      gene_signif = F,
       accession_signif = T
     )
   expect_identical(result$format$check, expected_check)
