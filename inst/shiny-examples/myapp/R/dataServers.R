@@ -89,12 +89,12 @@ inputErrorServer <- function(id, dataFrameServer, errorValues){
       } 
       if (na_rows > 0){msg = paste(msg, msg5)}
       if (check_log_pvalues){msg = paste(msg, msg6)}
-      if (msg != '') {
-        errorValues$rendered_message <- HTML(msg)
-      } else {
-        errorValues$rendered_message <- NULL
-      }
-      errorValues$message <- msg
+      # if (msg != '') {
+      #   errorValues$rendered_message <- HTML(msg)
+      # } else {
+      #   errorValues$rendered_message <- NULL
+      # }
+      errorValues$input_errors <- msg
     })
   })
 }
@@ -187,10 +187,6 @@ mapAccessionToGeneServer <- function(id, dataFrameServer, errorValues) {
   })
 }
 
-# REVERT TILL HERE AND A BIT MORE
-# REVERT TILL HERE AND A BIT MORE
-# REVERT TILL HERE AND A BIT MORE
-
 enrichmentStatsServer <- function(id, 
                                   mapAccessionToGeneServer, 
                                   statsParamsValues,
@@ -219,8 +215,14 @@ enrichmentStatsServer <- function(id,
       # moderated t.test still needed (i.e., provided data without significance statistics)
       if ((fmt$check$gene_rep | fmt$check$accession_rep | 
           fmt$check$gene_sample_control | fmt$check$accession_sample_control) &
-        (!(fmt$check$gene_signif|fmt$check$accession_signif)))
-      {
+          (fmt$check$gene_signif|fmt$check$accession_signif)) {
+        errorValues$stats_errors <- paste0(
+          bold('Note:  '), 
+          "Not using user provided significance statistics 
+          (calculating statistics using provided columns).")
+      }
+      if (fmt$check$gene_rep | fmt$check$accession_rep | 
+          fmt$check$gene_sample_control | fmt$check$accession_sample_control) {
         # set allowed column names
         allowed = unlist(fmt$allowed[unlist(fmt$check)])
         allowed_cols = lapply(allowed, function(x) grepl(x, colnames(df)))
@@ -235,8 +237,16 @@ enrichmentStatsServer <- function(id,
         df <- calc_mod_ttest(df, two_sample = modTTest=="Two sample")
       }
       else if (fmt$check$gene_signif|fmt$check$accession_signif) {
-        print("Using User provided significance statistics.")
-      } else {stop(
+        errorValues$stats_errors <- paste0(
+          bold('Note:  '), 
+          "Using user provided significance statistics, 
+          not enough columns given to perform moderated t-test.")
+        print("Using user provided significance statistics.")
+      } else {
+        errorValues$stats_errors <- bold(paste0(
+          "ERROR: dataServer passed to enrichmentStatsServer does not fit any allowed format in format check, 
+          i.e., $format$check all FALSE"))
+        print(
         "dataServer passed to enrichmentStatsServer does not fit any allowed 
         format in format check, i.e., $format$check all FALSE")
       }

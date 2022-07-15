@@ -185,6 +185,9 @@ summaryBox <- function(id) {
       column(12, uiOutput(NS(id, "gene_or_mapping_err_text")))
     ),
     fluidRow(
+      column(12, uiOutput(NS(id, "stats_err_text")))
+    ),
+    fluidRow(
       br(),
       column(12, shinyjs::hidden(
         myDownloadButton(
@@ -220,8 +223,8 @@ summaryDisplayServer <- function(id,
       summaryStatsServer()$avgCorrTable
     })
     output$input_format_err_text <- renderUI({
-      req(errorValues$rendered_message)
-      HTML(errorValues$rendered_message)
+      req(errorValues$input_errors)
+      HTML(errorValues$input_errors)
     })
     
     output$gene_or_mapping_err_text <- renderUI({
@@ -233,14 +236,18 @@ summaryDisplayServer <- function(id,
         HTML(errorValues$mapping_error)
       }
     })
+    output$stats_err_text <- renderUI({
+      req(errorValues$stats_errors)
+      HTML(errorValues$stats_errors)
+    })
     
     output$download_dataframe_with_stats <- downloadHandler(
       # TODO Unify download handlers
       filename = function() {
-        paste("genoppi-proteomic-results",".txt", sep="\t")
+        paste0("genoppi-proteomic-results",".txt")
       },
       content = function(file) {
-        write.table(significanceServer(), file, row.names = F)
+        write.table(significanceServer(), file, row.names = F, sep="\t")
       }
     )
     observeEvent(significanceServer(), {
