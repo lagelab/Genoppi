@@ -1,5 +1,7 @@
 ########### REVERT UP TILL HERE ###########
 ########### REVERT UP TILL HERE ###########
+########### REVERT UP TILL HERE ###########
+########### REVERT UP TILL HERE ###########
 
 # shiny server
 shinyServer(function(input, output, session){
@@ -35,6 +37,20 @@ shinyServer(function(input, output, session){
   #   sliderInput("a_fdr_thresh", "FDR threshold",
   #               min = 0, max = 1, value = 0.1, step = 0.01)
   # })
+  # based on a_pulldown(), create slider for logFC
+  # output$a_FDR_slider <- renderUI({
+  #   validate(need(a_file_pulldown_r()  != '', ""))
+  #   sliderInput("a_FDR_range", "FDR",
+  #               min = 0, max = 1, value = c(0, 0.1), step = 0.01)
+  # })
+  # based on a_pulldown(), create slider for logFC
+  # output$a_pvalue_slider <- renderUI({
+  #   validate(
+  #     need(a_file_pulldown_r()  != '', "")
+  #   )
+  #   sliderInput("a_pvalue_range", "pvalue",
+  #               min = 0, max = 1, value = c(0, 1), step = 0.01)
+  # })
   # select_mod_ttest_server("a_select_mod_ttest")
   # output$PVal_thresh <- renderUI({
   #   sliderInput("a_pval_thresh", HTML("<i>P</i>-value threshold"),
@@ -50,6 +66,19 @@ shinyServer(function(input, output, session){
   #     sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
   #                 min = 0, max = 1, value = 0, step = 0.1)
   # })  
+  # id the enriched proteins
+  # a_pulldown_significant <- reactive({
+  #   req(a_pulldown())
+  #   d = a_pulldown()
+  #   if (input$a_significance_type == 'fdr'){
+  #     d1 = id_enriched_proteins(d, fdr_cutoff = input$a_fdr_thresh, logfc_dir = input$a_logfc_direction,
+  #                               logfc_cutoff = input$a_logFC_thresh)
+  #   } else {
+  #     d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$a_pval_thresh, logfc_dir = input$a_logfc_direction,
+  #                               logfc_cutoff = input$a_logFC_thresh)
+  #   }
+  # return(d1)
+  # })
   # track significance threshols for FDR and P-value
   # monitor_significance_thresholds <- reactive({
   #   sig_type = ifelse(input$a_significance_type == 'fdr', 'FDR', '<i>P</i>-value')
@@ -144,6 +173,40 @@ shinyServer(function(input, output, session){
   #   d = a_pulldown_significant()
   #   p = plot_scatter_basic_all(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
   #   return(p)
+  # })
+  # # final pulldown formatted data.frame
+  # a_pulldown <- reactive({
+  #   req(a_orig_pulldown(), a_in_pulldown())
+  #   pulldown <- a_orig_pulldown()
+  #   format <- a_in_pulldown()$format
+  #   two_sample <- input$a_select_mod_ttest == "Two sample"
+  #   
+  #   
+  #   # moderated t.test still needed
+  #   if (format$check$gene_rep | format$check$accession_rep){
+  #     
+  #     # set allowed column names
+  #     allowed = unlist(format$allowed[unlist(format$check)])
+  #     allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown)))
+  #     allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
+  #     allowed_vec = allowed_vec | 'gene' %in% colnames(pulldown)
+  #     
+  #     # ensure moderated t.test is only calculated on allowed columns
+  #     pulldown = pulldown[,colnames(pulldown)[allowed_vec]]
+  #     result = calc_mod_ttest(pulldown, two_sample = two_sample) 
+  #     return(result)
+  #   }
+  #   
+  #   # pvalue, fdr is supplied from user
+  #   else if (format$check$gene_signif | format$check$accession_signif){
+  #     result = pulldown
+  #     return(result)
+  #   
+  #   # no valid columns found. 
+  #   } else {
+  #     return(NULL)
+  #   }
+  # 
   # })
   # a_sp_gg <- reactive({
   # 
@@ -489,7 +552,6 @@ shinyServer(function(input, output, session){
     req(
       # input$a_bait_rep,
       ppiParams()$bait_search,
-      # a_pulldown(), 
       dataS(),
       a_ppi_mapping())
     mapping = a_ppi_mapping()
@@ -957,23 +1019,6 @@ shinyServer(function(input, output, session){
     )
   })
   
-  # ARCHIVE
-  # based on a_pulldown(), create slider for logFC
-  # output$a_FDR_slider <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   sliderInput("a_FDR_range", "FDR",
-  #               min = 0, max = 1, value = c(0, 0.1), step = 0.01)
-  # })
-  
-  # based on a_pulldown(), create slider for logFC
-  # output$a_pvalue_slider <- renderUI({
-  #   validate(
-  #     need(a_file_pulldown_r()  != '', "")
-  #   )
-  #   sliderInput("a_pvalue_range", "pvalue",
-  #               min = 0, max = 1, value = c(0, 1), step = 0.01)
-  # })
-  
   output$a_pf_loc_selection <- renderUI({
     #req(a_file_pulldown_r() ())
     selectInput('a_pf_loc_option', 'Gene sets', c("HGNC gene groups"="hgnc", 
@@ -991,9 +1036,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_pathway_mapping_freq_slider_ui <- renderUI({
-    # REPLACED
     req(sigS())
-    # req(a_pulldown_significant())
     freq = a_pathway_mapping_values()$Freq
     fmax = ifelse(is.null(freq), 1, max(freq))
     fmin = ifelse(is.null(freq), 1, a_pathway_mapping_freq_lowest_allowed()) #ifelse(is.null(freq), 1, min(freq)) 
@@ -1002,9 +1045,7 @@ shinyServer(function(input, output, session){
   })
   
   output$a_pathway_mapping_type_sort_ui <- renderUI({
-    # REPLACED
     req(sigS())
-    # req(a_pulldown_significant())
     radioButtons('a_pathway_mapping_type_sort', 'Sort legend',
                  c('alphabetically' = 'alpha',
                    'frequency' = 'freq'), 
@@ -1014,9 +1055,7 @@ shinyServer(function(input, output, session){
   
   
   output$a_pathway_mapping_search_ui <- renderUI({
-    # REPLACED
     req(sigS())
-    # req(a_pulldown_significant())
     mapping = a_pathway_mapping_values()
     mapping = mapping[rev(order(mapping$Freq)), ]
     selectInput('a_pathway_mapping_search', 'Search gene set', unique(mapping$pathway), multiple=T, selectize=TRUE, selected = "grey")
@@ -1080,62 +1119,10 @@ shinyServer(function(input, output, session){
     return(pulldown$data)
   })  
   
-  # final pulldown formatted data.frame
-  a_pulldown <- reactive({
-    req(a_orig_pulldown(), a_in_pulldown())
-    pulldown <- a_orig_pulldown()
-    format <- a_in_pulldown()$format
-    two_sample <- input$a_select_mod_ttest == "Two sample"
-    
-    
-    # moderated t.test still needed
-    if (format$check$gene_rep | format$check$accession_rep){
-      
-      # set allowed column names
-      allowed = unlist(format$allowed[unlist(format$check)])
-      allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown)))
-      allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
-      allowed_vec = allowed_vec | 'gene' %in% colnames(pulldown)
-      
-      # ensure moderated t.test is only calculated on allowed columns
-      pulldown = pulldown[,colnames(pulldown)[allowed_vec]]
-      result = calc_mod_ttest(pulldown, two_sample = two_sample) 
-      return(result)
-    }
-    
-    # pvalue, fdr is supplied from user
-    else if (format$check$gene_signif | format$check$accession_signif){
-      result = pulldown
-      return(result)
-    
-    # no valid columns found. 
-    } else {
-      return(NULL)
-    }
-
-  })
-  
-  # id the enriched proteins
-  # TODO ARCHIVE
-  # a_pulldown_significant <- reactive({
-  #   req(a_pulldown())
-  #   d = a_pulldown()
-  #   if (input$a_significance_type == 'fdr'){
-  #     d1 = id_enriched_proteins(d, fdr_cutoff = input$a_fdr_thresh, logfc_dir = input$a_logfc_direction,
-  #                               logfc_cutoff = input$a_logFC_thresh)
-  #   } else {
-  #     d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$a_pval_thresh, logfc_dir = input$a_logfc_direction,
-  #                               logfc_cutoff = input$a_logFC_thresh)
-  #   }
-  # return(d1)
-  # })
-  
   # TODO implement monitoring of inputed files
   # monitor pulldown input, mapping and input
   a_monitor_pulldown <- reactive({
-    # REPLACED
     req(sigS())
-    # req(a_pulldown_significant())
     
     # monitor of some columns were discarded
     pulldown <- a_in_pulldown()
@@ -1261,7 +1248,7 @@ shinyServer(function(input, output, session){
   
   # read in the snps from a file
   a_snp_mapping <- reactive({
-    mapping = get_snp_lists(infile = a_snp(), a_pulldown()$gene)
+    mapping = get_snp_lists(infile = a_snp(), dataS()$gene)
     mapping$col_significant = input$a_color_snp_sig
     mapping$col_other = input$a_color_snp_insig
     mapping$shape = symbol_to_shape(input$a_symbol_snp)
@@ -1277,7 +1264,6 @@ shinyServer(function(input, output, session){
   a_ppi_mapping <- reactive({
     req(ppiParams()$bait_search, 
         dataS(),
-        # a_pulldown(), 
         ppiParams()$selected_ppi)
     mapping = NULL
     db = ppiParams()$selected_ppi
@@ -1335,8 +1321,8 @@ shinyServer(function(input, output, session){
   
   # map gwas catalouge
   a_gwas_catalogue_mapping <- reactive({
-    req(input$a_gwas_catalogue, a_pulldown())
-    genes = a_pulldown()$gene
+    req(input$a_gwas_catalogue, dataS())
+    genes = dataS()$gene
     validate(need(!all(is.na(genes)), ""))
     mapping = get_gwas_lists(input$a_gwas_catalogue, genes)
     if (!is.null(mapping)){
@@ -1354,7 +1340,7 @@ shinyServer(function(input, output, session){
   
   # traits in data
   a_gwas_catalogue_traits_in_data <- eventReactive(input$a_toggle_gwas_subset,{
-    genes = as.character(a_pulldown()$gene)
+    genes = as.character(dataS()$gene)
     
     # map genes to snps and find gwas table entry
     tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps[[x]])
@@ -1367,7 +1353,6 @@ shinyServer(function(input, output, session){
   
   # setup main gnomad mapping
   a_gnomad_mapping <- reactive({
-    # req(a_pulldown(), input$a_slide_gnomad_pli_threshold)
     req(dataS(), input$a_slide_gnomad_pli_threshold)
     pulldown = dataS()
     validate(need(!all(is.na(pulldown$gene)), ""))
@@ -1395,11 +1380,8 @@ shinyServer(function(input, output, session){
   # for calculating hypergeometric p-value
   # ideally, this should be a function in the future
   a_gnomad_sig_list <- reactive({
-    # req(a_pulldown(), input$a_slide_gnomad_pli_threshold)
     req(dataS(), input$a_slide_gnomad_pli_threshold)
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     threshold = gnomad_table$gene %in% pulldown$gene & gnomad_table$pLI >= input$a_slide_gnomad_pli_threshold
     threshold[is.na(threshold)] = FALSE
     return(data.frame(gene=gnomad_table$gene, significant=threshold))
@@ -1443,9 +1425,7 @@ shinyServer(function(input, output, session){
   # setup main mapping
   a_tissue_mapping <- reactive({
     req(sigS(), a_get_tissue_list())
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     validate(need(!all(is.na(pulldown$gene)), ""))
     tissue = a_get_tissue_list() 
     tissue = tissue[tissue$significant, ]
@@ -1468,7 +1448,6 @@ shinyServer(function(input, output, session){
 
   # get the tissue enrichment table that have been selected by user
   a_tissue_enrichment_table <- reactive({
-    # req(a_pulldown_significant(), input$a_tissue_enrichment_type_select)
     req(sigS(), input$a_tissue_enrichment_type_select)
     tissue = input$a_tissue_enrichment_type_select
     source = input$a_tissue_select_source
@@ -1493,12 +1472,8 @@ shinyServer(function(input, output, session){
   
   # get tissue with elevated expression and calculate FDR.
   a_tissue_enrichment <- eventReactive(input$a_button_plot_tissue_enrichment,{
-    # REPLACED
     req(sigS(), a_tissue_enrichment_table())
-    # req(a_pulldown_significant(), a_tissue_enrichment_table())
-    # REPLACED
     pulldown =sigS()
-    # pulldown = a_pulldown_significant()
     table = a_tissue_enrichment_table()
     enrichment = lapply_calc_hyper(pulldown, table)
     enrichment$log10pvalue <- -log10(enrichment$pvalue)
@@ -1509,9 +1484,7 @@ shinyServer(function(input, output, session){
   
   # controls what should be returned to enrichment plot
   a_tissue_enrichment_layout <- eventReactive(input$a_button_plot_tissue_enrichment,{
-    # REPLACED
     req(sigS(), input$a_tissue_enrichment_xaxis, input$a_tissue_enrichment_slider)
-    # req(a_pulldown_significant(), input$a_tissue_enrichment_xaxis, input$a_tissue_enrichment_slider)
     
     # setup switches
     make_xlab <- function(type) {
@@ -1580,9 +1553,7 @@ shinyServer(function(input, output, session){
       paste("genoppi-gene-upload-mapping",".csv", sep="")
     },
     content = function(file) {
-      # REPLACED
       pulldown = sigS()
-      # pulldown = a_pulldown_significant()
       upload = a_genes_upload()$data[,c('gene','listName')]
       mymerge = merge(pulldown, upload, by = 'gene')
       write.csv(mymerge, file, row.names = F)
@@ -1595,9 +1566,7 @@ shinyServer(function(input, output, session){
       paste("genoppi-snps-mapping",".csv", sep="")
     },
     content = function(file) {
-      # REPLACED
       pulldown = sigS()
-      # pulldown = a_pulldown_significant()
       snp = a_snp_mapping()[,c('dataset','gene', 'SNP')]
       mymerge = merge(pulldown, snp, by = 'gene')
       write.csv(mymerge, file, row.names = F)
@@ -1610,9 +1579,7 @@ shinyServer(function(input, output, session){
       paste("genoppi-gwas-catalog-mapping",".csv", sep="")
     },
     content = function(file) {
-      # REPLACED
       pulldown = sigS()
-      # pulldown = a_pulldown_significant()
       gwas = a_gwas_catalogue_mapping()[c("gene", "SNP","P.VALUE", "DISEASE.TRAIT", "PUBMEDID", "STUDY.ACCESSION")]
       mymerge = merge(pulldown, gwas, by = 'gene')
       write.csv(mymerge, file, row.names = F)
@@ -1625,9 +1592,7 @@ shinyServer(function(input, output, session){
       paste("genoppi-gnomad-mapping",".csv", sep="")
     },
     content = function(file) {
-      # REPLACED
       pulldown = sigS()
-      # pulldown = a_pulldown_significant()
       gnomad = a_gnomad_mapping_threshold()[,c('gene','logFC','pvalue','FDR','significant','pLI')]
       mymerge = merge(pulldown, gnomad, by = 'gene')
       write.csv(mymerge, file, row.names = F)
@@ -1640,9 +1605,7 @@ shinyServer(function(input, output, session){
       paste("genoppi-tissue-mapping",".csv", sep="")
     },
     content = function(file) {
-      # REPLACED
       pulldown = sigS()
-      # pulldown = a_pulldown_significant()
       hpa = a_tissue_mapping()[,1:15]
       write.csv(hpa, file, row.names = F)
     }
@@ -1668,9 +1631,7 @@ shinyServer(function(input, output, session){
       paste("genoppi-geneset-mapping",".csv", sep="")
     },
     content = function(file) {
-      # REPLACED
       pulldown = sigS()
-      # pulldown = a_pulldown_significant()
       pathway = a_pathway_mapping()[,c('gene','pathway','Freq')]
       mymerge = merge(pulldown, pathway, by = 'gene')
       mymerge$database = input$a_pf_loc_option
@@ -1749,22 +1710,15 @@ shinyServer(function(input, output, session){
   # observeEvent(a_file_pulldown_r() , {shinyjs::toggle(id="a_mttest_mapping_download", condition=!is.null(a_file_pulldown_r() ))})
   # observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_ppi_mapping_df_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
   observe({shinyjs::toggle(id="a_snp_mapping_download", condition=!is.null(sigS()) & !is.null(input$a_file_SNP_rep$datapath))})
-  # REPLACED observe({shinyjs::toggle(id="a_snp_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_SNP_rep$datapath))})
   observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(sigS()) & !is.null(input$a_file_genes_rep))})
-  # REPLACED observe({shinyjs::toggle(id="a_gene_upload_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_file_genes_rep))})
   observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(sigS()) & !is.null(input$a_gwas_catalogue))})
-  # REPLACED observe({shinyjs::toggle(id="a_gwas_catalogue_mapping_download", condition=!is.null(a_pulldown_significant()) & !is.null(input$a_gwas_catalogue))})
   observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(sigS()) )})
-  # REPLACED observe({shinyjs::toggle(id="a_gnomad_mapping_download", condition=!is.null(a_pulldown_significant()) )})
   #observe({shinyjs::toggle(id="a_tissue_mapping_download", condition=!is.null(a_pulldown_significant() & !is.null(a_tissue_mapping())))}) # this seems to cause GCP to crash?
   observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(sigS()))})
-  # REPLACED observe({shinyjs::toggle(id="a_pathway_mapping_download", condition=!is.null(a_pulldown_significant()))})
   observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(sigS()))})  
-  # REPLACED observe({shinyjs::toggle(id="a_tissue_enrichment_download", condition=!is.null(a_tissue_enrichment()))})  
 
   # venn diagrams
   # REC
-  # REPLACED a_pulldown_significant with sigS
   # observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_inweb_venn_mapping_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
   observe({shinyjs::toggle(id="a_snp_venn_mapping_download", condition=!is.null(sigS()) & !is.null(input$a_file_SNP_rep$datapath))})
   observe({shinyjs::toggle(id="a_genes_upload_venn_mapping_download", condition=!is.null(sigS()) & !is.null(input$a_file_genes_rep))})
@@ -1773,7 +1727,6 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="a_tissue_venn_mapping_download", condition=!is.null(sigS()) & !is.null(input$a_tissue_select) & !is.null(input$a_gtex_rna_tissue) )})
   
   # show hide select buttons (HPA/GTEx)
-  # REPLACED a_pulldown_significant with sigS
   observe({shinyjs::toggle(id="a_hpa_rna_tissue", condition = input$a_tissue_select == 'HPA - RNA')})
   observe({shinyjs::toggle(id="a_gtex_rna_tissue", condition = input$a_tissue_select == 'GTEx - RNA')})
   observe({shinyjs::toggle(id="a_gtex_protein_tissue", condition = input$a_tissue_select == 'GTEx - Protein')})
@@ -1790,8 +1743,6 @@ shinyServer(function(input, output, session){
   observe({shinyjs::toggle(id="b_goi_search_rep_alpha", condition = input$b_goi_search_rep != '')})
   
   # show/hide plot download buttons
-  # REPLACED
-  # observeEvent(!is.null(a_pulldown_significant()),{
   observeEvent(!is.null(sigS()),{
     #shinyjs::show("a_tissue_select_source")
     #shinyjs::show("a_tissue_enrichment_type_select")
@@ -1873,10 +1824,7 @@ shinyServer(function(input, output, session){
   
   # message if Inweb can not be found
   output$a_ppi_message <- renderUI({
-    # req(input$a_bait_rep, a_pulldown(), input$a_ppi_select)
-    req(ppiParams()$bait_search, 
-        dataS(),
-        ppiParams()$selected_ppi)
+    req(ppiParams()$bait_search, dataS(), ppiParams()$selected_ppi)
     
     # get info about current selection
     query = ppiParams()$bait_search
@@ -1913,14 +1861,10 @@ shinyServer(function(input, output, session){
   ## GENES UPLOAD
   # hypergeometric overlap gene upload
   a_genes_upload_calc_hyper <- reactive({
-    # REPLACED
     req(a_genes_upload(), sigS(), input$a_select_venn_list_genes_upload)
-    # req(a_genes_upload(), a_pulldown_significant(), input$a_select_venn_list_genes_upload)
     
     # get data for overlap calculation
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     genes_uploaded = a_genes_upload()
     genes = genes_uploaded$data
     intersect = genes_uploaded$intersect
@@ -1968,13 +1912,9 @@ shinyServer(function(input, output, session){
   
   # Collect all the information next to venn diagram
   a_genes_upload_venn_verbatim <- reactive({
-    # REPLACED
     req(sigS(), a_genes_upload_venn(), input$a_select_venn_list_genes_upload)
-    # req(a_pulldown_significant(), a_genes_upload_venn(), input$a_select_venn_list_genes_upload)
     selected = input$a_select_venn_list_genes_upload
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     diagram = a_genes_upload_venn()
     A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
@@ -1992,18 +1932,14 @@ shinyServer(function(input, output, session){
   ## Human Protein Atlas and GTEX
   # calculate hypergeometric overlap
   a_tissue_calc_hyper <- reactive({
-    # REPLACED
     req(input$a_tissue_select, sigS())
-    # req(input$a_tissue_select, a_pulldown_significant())
     output = a_get_tissue_list() 
     if (!is.null(output)){
       # setup data for calculating hypergeom. P-value.
       listname = toupper(input$a_tissue_select)
       output_list = data.frame(listName = listname, output)
       output_intersect = data.frame(listName = listname, intersectN = T)
-      # REPLACED
       data = sigS()
-      # data = a_pulldown_significant()
       # compile venn diagram information
       hyper = calc_hyper(data, output_list, output_intersect, bait = NULL) #a_bait_parsed())
       hyper[['venn']][['A']] <- hyper$genes[[listname]]$success_genes # pulldown
@@ -2014,9 +1950,7 @@ shinyServer(function(input, output, session){
   
   # draw venn diagram
   output$a_tissue_venn_ui <- renderPlot({
-    # REPLACED
     req(input$a_tissue_select, sigS(), a_tissue_calc_hyper())
-    # req(input$a_tissue_select, a_pulldown_significant(), a_tissue_calc_hyper())
     hyper = a_tissue_calc_hyper()
     v = draw_genoppi_venn(hyper$venn, color = c('blue','red'),
                           main = paste0('P-value = ', format(hyper$statistics$pvalue, digits = 3)))
@@ -2027,9 +1961,7 @@ shinyServer(function(input, output, session){
   
   # text to be displayed alongside venn diagram
   a_tissue_venn_verbatim <- reactive({
-    # REPLACED
     req(sigS(), a_tissue_calc_hyper(), input$a_tissue_select)
-    # req(a_pulldown_significant(), a_tissue_calc_hyper(), input$a_tissue_select)
     
     # get text to be displayed
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
@@ -2061,9 +1993,7 @@ shinyServer(function(input, output, session){
   
   # hypergeometric overlap gene upload
   a_snp_draw_venn <- reactive({
-    # REPLACED
     req(sigS(), input$a_select_venn_list_snp, a_snp_mapping())
-    # req(a_pulldown_significant(), input$a_select_venn_list_snp, a_snp_mapping())
     snplist = input$a_select_venn_list_snp
     
     # get data for venn
@@ -2077,16 +2007,12 @@ shinyServer(function(input, output, session){
   
   # make venn diagram instructions
   a_snp_venn <- reactive({
-    # REPLACED
     req(a_snp_draw_venn(), sigS(), input$a_select_venn_list_snp_loci)
-    # req(a_snp_draw_venn(), a_pulldown_significant(), input$a_select_venn_list_snp_loci)
     
     # variables and data for drawing venn
     loci = paste0(input$a_select_venn_list_snp_loci,'GeneDf')
     snplist = input$a_select_venn_list_snp
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     mapping = a_snp_draw_venn()
     
     # draw venn digram if mapping is valid
@@ -2110,12 +2036,8 @@ shinyServer(function(input, output, session){
 
   # get venn diagram text
   a_snp_venn_verbatim <- reactive({
-    # REPLACED
     req(sigS(), a_snp_venn())
-    # req(a_pulldown_significant(), a_snp_venn())
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     selected = input$a_select_venn_list_snp
     diagram = a_snp_venn()
@@ -2138,14 +2060,10 @@ shinyServer(function(input, output, session){
   ## GWAS catalog
   # subset all snps for gwas catalog
   a_gwas_catalogue_mapping_venn <- reactive({
-    # REPLACED
-    # req(a_gwas_catalogue_mapping(), a_pulldown_significant())
     req(a_gwas_catalogue_mapping(), sigS())
     
     # get datasets
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     mapping = a_gwas_catalogue_mapping()
     mapping = subset_snp_loci(mapping)
     
@@ -2167,12 +2085,8 @@ shinyServer(function(input, output, session){
   
   # get venn diagram text
   a_gwas_catalogue_venn_verbatim <- reactive({
-    # REPLACED
     req(sigS(), a_gwas_catalogue_mapping_venn())
-    # req(a_pulldown_significant(), a_gwas_catalogue_mapping_venn())
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     diagram = a_gwas_catalogue_mapping_venn()
     A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
@@ -2189,14 +2103,10 @@ shinyServer(function(input, output, session){
   
   # hypergeometric overlap gnomAD
   a_gnomad_calc_hyper <- reactive({
-    # REPLACED
     req(a_gnomad_sig_list(), sigS())
-    # req(a_gnomad_sig_list(), a_pulldown_significant())
     
     # get data for overlap calculation
-    # REPLACED
     pulldown = sigS()
-    # pulldown = a_pulldown_significant()
     gnomad = data.frame(listName='gnomAD',a_gnomad_sig_list())
     intersect=data.frame(listName='gnomAD', intersectN=TRUE)
     
@@ -2209,9 +2119,7 @@ shinyServer(function(input, output, session){
   
   # draw venn diagram for gnomAD
   output$a_gnomad_venn_ui <- renderPlot({
-    # REPLACED
     req(sigS(), a_gnomad_calc_hyper())
-    # req(a_pulldown_significant(), a_gnomad_calc_hyper())
     hyper = a_gnomad_calc_hyper()
     v = draw_genoppi_venn(hyper$venn, color = c('blue','red'), main = paste0('P-value = ',format(hyper$statistics$pvalue, digits = 3)))
     grid::grid.newpage()
@@ -2220,9 +2128,7 @@ shinyServer(function(input, output, session){
   
   # plot below venn diagram inweb
   a_gnomad_venn_verbatim <- reactive({
-    # REPLACED
     req(sigS(), a_gnomad_calc_hyper())
-    # req(a_pulldown_significant(), a_gnomad_calc_hyper())
     tresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
     hyper = a_gnomad_calc_hyper()
     A <- paste0("A = proteomic data subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
@@ -2392,12 +2298,8 @@ shinyServer(function(input, output, session){
   
   # assign frequency 
   a_pathway_mapping_assign_freq <- reactive({
-    # REPLACED
     req(sigS(), input$a_pf_loc_option)
-    # req(a_pulldown_significant(), input$a_pf_loc_option)
-    # REPLACED
     pulldown <- sigS()
-    # pulldown <- a_pulldown_significant()
     validate(need(!all(is.na(pulldown$gene)), ""))
     db = input$a_pf_loc_option
     if (sum(pulldown$significant) > 0){
@@ -2411,9 +2313,7 @@ shinyServer(function(input, output, session){
   # load in data and preset colors in a seperate
   # reactive to reduce overhead time
   a_pathway_mapping_initial <- reactive({
-    # REPLACED
     req(sigS(), a_pathway_mapping_assign_freq())
-    # req(a_pulldown_significant(), a_pathway_mapping_assign_freq())
     
     #  # get raw data and assign frequency count
     overlap <- a_pathway_mapping_assign_freq()
@@ -2485,9 +2385,7 @@ shinyServer(function(input, output, session){
   
   # reactive for subsetting my frequency
   a_pathway_mapping_subset <- reactive({
-    # REPLACED
     req(a_pathway_mapping(), sigS())
-    # req(a_pathway_mapping(), a_pulldown_significant())
     
     # subset data by frequencies
     lowest_allowed_freq = a_pathway_mapping_freq_lowest_allowed()
@@ -2501,9 +2399,7 @@ shinyServer(function(input, output, session){
   
   # make the ggplot with legend
   a_pathway_plot_tmp_gg <- reactive({
-    # REPLACED
     data = sigS()
-    # data = a_pulldown_significant()
     req(data, a_pathway_mapping_subset())
     p <- a_vp_gg()
     if (sum(data$significant) > 0){
@@ -2533,9 +2429,7 @@ shinyServer(function(input, output, session){
   
   # make the ggplot with legend
   a_pathway_plot_tmp_gg <- reactive({
-    # REPLACED
     data = sigS()
-    # data = a_pulldown_significant()
     req(data, a_pathway_mapping_subset())
     p <- a_vp_gg()
     if (sum(data$significant) > 0){
@@ -2559,9 +2453,7 @@ shinyServer(function(input, output, session){
 
   # convert to plotly
   a_pathway_plot <- reactive({
-    #REPLACED
     req(sigS(), a_pathway_plot_gg(), input$a_pathway_mapping_type_sort)
-    # req(a_pulldown_significant(), a_pathway_plot_gg(), input$a_pathway_mapping_type_sort)
   
     p <- a_pathway_plot_gg()
     
@@ -2586,7 +2478,7 @@ shinyServer(function(input, output, session){
     )
     p <- a_multi_vp_layer()
     goi <- a_search_gene()
-    orig_data <- a_pulldown()
+    orig_data <- dataS()
     searchgene <- orig_data[grepl(goi,orig_data$gene),]
     p1 <- search_volcano(p, searchgene)
     p1
