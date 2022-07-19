@@ -1,8 +1,3 @@
-########### REVERT UP TILL HERE ###########
-########### REVERT UP TILL HERE ###########
-########### REVERT UP TILL HERE ###########
-########### REVERT UP TILL HERE ###########
-
 # shiny server
 shinyServer(function(input, output, session){
   #suppress warnings
@@ -66,6 +61,51 @@ shinyServer(function(input, output, session){
   #     sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
   #                 min = 0, max = 1, value = 0, step = 0.1)
   # })  
+  # # needed for searching gene
+  # a_search_gene <- reactive({
+  #   gene_in <- input$a_goi_search_rep
+  #   req(gene_in)
+  #   if (gene_in != ''){
+  #     toupper(gene_in)
+  #   } else {
+  #     return(NULL)
+  #   }
+  # })
+  # show/hide the fdr/pvalue bar
+  # observeEvent(input$a_significance_type,{
+  #   if (input$a_significance_type == 'fdr'){
+  #       shinyjs::hide("a_pval_thresh")
+  #       shinyjs::show("a_fdr_thresh")
+  #     } else {
+  #       shinyjs::show("a_pval_thresh")
+  #       shinyjs::hide("a_fdr_thresh")
+  #     }
+  # })
+  # # check pulldown input format for inconsistencies
+  # a_input_errors <- reactive({
+  #   req(a_file_pulldown_r() )
+  #   d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
+  #   errs = get_shiny_errors(d$data)
+  #   return(errs)
+  # })
+  # check input
+  # output$a_in_pulldown_check_ui <- renderUI({
+  #   output <- a_input_errors()
+  #   if (output != '') stop(HTML(paste(output, sep = "<br/>")))
+  # })
+  # returns boolean indicating whether rep1-2 is in the data
+  # a_file_rep_bool <- reactive({
+  #   req(a_in_pulldown())
+  #   check = a_in_pulldown()$format$check
+  #   return(check$gene_rep | check$accession_rep)
+  # })
+  # # loading the data and getting the pulldown
+  # a_in_pulldown <- eventReactive(a_file_pulldown_r() ,{
+  #   req(dataFra() )
+  #   validate(need(a_input_errors() == '', ""))
+  #   d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
+  #   d
+  # })
   # id the enriched proteins
   # a_pulldown_significant <- reactive({
   #   req(a_pulldown())
@@ -174,6 +214,12 @@ shinyServer(function(input, output, session){
   #   p = plot_scatter_basic_all(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
   #   return(p)
   # })
+  # # returns boolean indicating whether mapping was done
+  # a_gene_mapping_bool <- reactive({
+  #   req(a_in_pulldown())
+  #   pulldown <- a_in_pulldown()
+  #   return(pulldown$format$check$accession_rep | pulldown$format$check$accession_signif)
+  # })
   # # final pulldown formatted data.frame
   # a_pulldown <- reactive({
   #   req(a_orig_pulldown(), a_in_pulldown())
@@ -208,10 +254,99 @@ shinyServer(function(input, output, session){
   #   }
   # 
   # })
+  # # map accession_numbers to gene ids if needed
+  # a_orig_pulldown <- reactive({
+  #   pulldown <- a_in_pulldown()
+  #   if (a_gene_mapping_bool()){
+  #     pulldown$data <- map_gene_id(pulldown$data)
+  #     }
+  #   return(pulldown$data)
+  # })  
+  # # monitor pulldown input, mapping and input
+  # a_monitor_pulldown <- reactive({
+  #   req(sigS())
+  #   
+  #   # monitor of some columns were discarded
+  #   pulldown <- a_in_pulldown()
+  #   allowed = unlist(pulldown$format$allowed[unlist(pulldown$format$check)])
+  #   allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown$data)))
+  #   allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
+  #   accepted = colnames(pulldown$data)[allowed_vec]
+  #   discarded = colnames(pulldown$data)[!allowed_vec]
+  #   
+  #   # check if gene columns have synonyms in data
+  #   synonyms = strsplit(pulldown$data$gene, split = '(\\;)|(\\|)')
+  #   synonyms_bool = unlist(lapply(synonyms, length)) > 1
+  #   synonym_example = pulldown$data$gene[synonyms_bool][1]
+  #   
+  #   # check for NAs in rows
+  #   na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
+  #   na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
+  #   
+  #   # check if p-values are already -log10 transformed
+  #   check_log_pvalues <- any(pulldown$data$pvalue > 1)
+  #   
+  #   # pre-rendered messages
+  #   msg1 = paste0(bold('Error:'),' None of the inputted column names are allowed')
+  #   msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
+  #   msg3 = paste0('The following column names were invalid and discarded: ', italics(paste0(discarded, collapse = ', ')),'.')
+  #   msg4 = paste0('See supplementary protocol for a description of allowed data inputs.')
+  #   msg5 = paste0(bold('Warning: '), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
+  #   msg6 = paste0(bold('Note:  '), sum(synonyms_bool),' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
+  #                 '". This column should only contain a single gene-name.')
+  #   msg7 = paste0(bold('Warning: '), 'It looks like you have already -log10 transformed your p-values. Please, use raw p-values to accurately display volcano plots.')
+  #   
+  #   # no valid cols
+  #   msg = ''
+  #   if (length(accepted) == 0){
+  #     msg = paste(msg, msg1, msg4)
+  #     #return(HTML(paste(msg1, msg4)))
+  #   # enough valid but some invalid
+  #   } else if (length(accepted) != length(allowed_vec)){
+  #     msg = paste(msg, msg2, msg3, msg4)
+  #     #return(HTML(paste(msg2, msg3, msg4)))
+  #   } 
+  #   if (na_rows > 0){
+  #     msg = paste(msg, msg5)
+  #   }
+  #   if (sum(synonyms_bool) > 0){
+  #     msg = paste(msg, msg6)
+  #   }
+  #   if (check_log_pvalues){
+  #     msg = paste(msg, msg7)
+  #   }
+  #   if (msg != '') return(HTML(msg))
+  #   else return(NULL)
+  # })
+  # a_monitor_pulldown_mapping <- reactive({
+  #   req(a_orig_pulldown())
+  #   
+  #   # mapping failed
+  #   pulldown_mapping = a_orig_pulldown()
+  #   failed = pulldown_mapping$accession_number[is.na(pulldown_mapping$gene)]
+  #   absolute = paste0(length(failed),'/',nrow(pulldown_mapping))
+  #   fraction = paste0(format(100*length(failed)/nrow(pulldown_mapping), digits = 3),'%')
+  # 
+  #   # messages
+  #   msg0 = bold(paste('ERROR: ', absolute, ' (',fraction,') accesion_numbers were not mapped to a genes. The App may crash during Integrated Plotting!'))
+  #   msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
+  #   msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
+  #   msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
+  #   msg4 = paste0('Are you using human accession numbers?')
+  #   
+  #   if (length(failed) > 0){
+  #     # if more than 99% are unmapped give a warning:
+  #     if (length(failed)/nrow(pulldown_mapping) > 0.99){
+  #       return(HTML(paste(msg0, msg4, msg2)))
+  #       # otherwise, print out mapping
+  #     } else {
+  #       return(HTML(paste(msg1, msg2, msg3)))
+  #     }
+  #   } else return(NULL)
+  # }) 
   # a_sp_gg <- reactive({
   # 
   #   # what replicates are inputted
-  #   # REPLACE
   #   # req(input$a_select_scatterplot, sigS())
   #   req(input$a_select_scatterplot, a_pulldown_significant())
   #   rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
@@ -243,6 +378,19 @@ shinyServer(function(input, output, session){
   #   #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
   #   
   # })
+  # download basic scatter plot
+  # input_sp_gg <- function(){a_sp_gg()}
+  # output$a_scatter_plot_download = downloadHandler(
+  #   filename = 'genoppi-scatter-plot.png',
+  #   content = function(file) {
+  #     device <- function(..., width, height) {
+  #       grDevices::png(..., width = width, height = height,
+  #                      res = 300, units = "in")
+  #     }
+  #     ggsave(file, plot = theme_scatter(input_sp_gg()) , device = device, 
+  #            width = global.img.scatter.download.width,
+  #            height = global.img.scatter.download.height)
+  #   })
   # # make summary of replicates
   # replicate_summary_table <- reactive({
   #   req(a_sp_gg())
@@ -318,7 +466,11 @@ shinyServer(function(input, output, session){
   # output$a_irefindex_type_ui <- renderUI({
   #   sliderInput('a_irefindex_type', 'Select min. publications', min = 1, max = max(irefindex_table$Score.np.max), value = 2, step = 1)
   # })
-  # 
+  # the actual volcano plot outputted to the user
+  # output$VolcanoPlot <- plotly::renderPlotly({
+  #   validate(need(a_file_pulldown_r()  != '', "Upload file"))
+  #     a_vp_layerx()
+  # })
   # integrated plot, inweb
   # output$a_overlay_inweb_ui <- renderUI({
   #   validate(need(a_file_pulldown_r()  != '', ""))
@@ -466,8 +618,8 @@ shinyServer(function(input, output, session){
   })
   
   output$a_get_example_file_ui <- renderUI({
-    HTML(paste('Try a single',actionLink('a_get_example_file', 'example file'), 'or',
-               actionLink('a_get_example_multiple_files', 'multiple example files'),'!'))
+    # HTML(paste('Try a single',actionLink('a_get_example_file', 'example file'), 'or',
+    HTML(paste(actionLink('a_get_example_multiple_files', 'multiple example files')))
   })
   
   observeEvent(input$a_get_example_file,{
@@ -524,11 +676,6 @@ shinyServer(function(input, output, session){
     req(sigS())
     req(a_ppi_mapping())
     req(a_ppi_mapping_name())
-    # req(
-    #   # input$a_bait_rep, 
-    #   ppiParams()$bait_search,
-    #   a_ppi_mapping(), 
-    #   a_ppi_mapping_name())
     
     #inweb_output = get_inweb_list(input$a_bait_rep)
     mapping_output = a_ppi_mapping()
@@ -587,26 +734,29 @@ shinyServer(function(input, output, session){
   goiAlphaS <- goiAlphaServer("gene_overlay")
   
   # Servers for storing plots
-  volcanoPlotS <- volcanoPlotServer("volcano_plot")
+  # volcanoPlotS <- volcanoPlotServer("volcano_plot")
+  plotVals <- plotValues("volcano_plot")
   # overlaidVolcanoPlotS <- overlaidVolcanoPlotServer("volcano_plot")
   
   # Servers for storing data frame and its associated attributes
   dataS <- dataServer("data")
   sigS <- sigificanceServer("data")
   dataPathS <- dataPathServer("data")
+  colVals <- columnsValues("data")
   dataFrameS <- dataFrameServer("data", dataPathS)
   inputErrS <- inputErrorServer("data_check", dataFrameS, errVals)
   accMapErrS <- accessionMapErrorServer(
     "mapping_check", mapAccessionToGeneS, errVals)
-  extractColsS <- extractColumnsServer("metadata", dataFrameS)
+  # extractColsS <- extractColumnsServer("metadata", dataFrameS)
   mapAccessionToGeneS <- mapAccessionToGeneServer("data", dataFrameS, errVals)
   statsParamsS <- statsParamsServer(
-    "stats_input", mapAccessionToGeneS, dataS, statsParamVals)
+    "stats_input", mapAccessionToGeneS, dataS, colVals, statsParamVals)
   thldVals <- thresholdsValues("single_file_thresholds")
   enrichmentStatsS <- enrichmentStatsServer(
     "data", mapAccessionToGeneS, statsParamVals, dataS, errVals)
   findSigS <- findSignificantServer("data", statsParamVals, dataS, sigS)
-  inputFileS <- inputFileServer("single_file", dataPathS, toggleSingleBasicS)
+  inputFileS <- inputFileServer(
+    "single_file", dataPathS, toggleSingleBasicS, errVals)
   exampleBtn <- getExampleServer("single_file", dataPathS, toggleSingleBasicS)
   
   # Servers for rendering UI and controlling I/O
@@ -615,12 +765,13 @@ shinyServer(function(input, output, session){
   summaryStatsS <- summaryStatsServer(
     "summary", sigS)
   summaryDisplayS <- summaryDisplayServer(
-    "summary", summaryStatsS, statsParamVals, thldVals, dataS, errVals)
+    "summary", summaryStatsS, statsParamVals, thldVals, dataS, colVals, errVals)
   drawVolcanoS <- drawVolcanoServer(
-    "volcano_plot", volcanoPlotS, sigS, sigColorS, insigColorS, a_vp_colorbar)
+    "volcano_plot", plotVals, sigS, sigColorS, insigColorS, a_vp_colorbar)
   overlayVolcanoS <- overlayVolcanoServer(
-    "volcano_plot", volcanoPlotS, baitS, goiS, goiAlphaS, statsParamVals)
-  ggpairS <- plotGGpairServer("plot_ggpair", dataFrameS, extractColsS)
+    "volcano_plot", plotVals, baitS, goiS, goiAlphaS, statsParamVals)
+  ggpairS <- plotGGpairServer(
+    "plot_ggpair", sigS, colVals, plotVals, sigColorS, insigColorS)
   
   # use observe event to update tab items:
   # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
@@ -639,7 +790,6 @@ shinyServer(function(input, output, session){
   
   # intgrated plot, snp
   output$a_color_snp_sig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_snp_sig', NULL, value = 'blue', showColour = 'both', 
@@ -647,7 +797,6 @@ shinyServer(function(input, output, session){
   })
   # intgrated plot, snp
   output$a_color_snp_insig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_snp_insig', NULL, value = '#808080', showColour = 'both', 
@@ -656,21 +805,18 @@ shinyServer(function(input, output, session){
   
   # integrated plot, snp
   output$a_symbol_snp_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_snp', NULL, choices = allowed_plotly_symbols, selected = 'square')
   })
   
   # integrated plot, snp
   output$a_label_snp_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_label_snp", label = "Toggle labels", value = TRUE)
   })
   
   # integrated plot, snp
   output$a_overlay_snp_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_overlay_snp", label = "Toggle overlay", value = TRUE)
   })
@@ -680,10 +826,8 @@ shinyServer(function(input, output, session){
     actionButton('a_reset_snp','clear')
   })
   
-  
   # intgrated plot, genes upload
   output$a_color_genes_upload_sig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_genes_upload_sig', NULL, value = '#A52A2A', showColour = 'both', 
@@ -691,7 +835,6 @@ shinyServer(function(input, output, session){
   })
   # intgrated plot, genes upload
   output$a_color_genes_upload_insig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_genes_upload_insig', NULL, value = '#808080', showColour = 'both', 
@@ -700,28 +843,24 @@ shinyServer(function(input, output, session){
   
   # integrated plot, genes uplaod
   output$a_symbol_genes_upload_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_genes_upload', NULL, choices = allowed_plotly_symbols, selected = 'square')
   })
   
   # integrated plot, genes upload
   output$a_label_genes_upload_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_label_genes_upload", label = "Toggle labels", value = TRUE)
   })
   
   # integrated plot, genes upload
   output$a_overlay_genes_upload_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_overlay_genes_upload", label = "Toggle overlay", value = TRUE)
   })
   
   # integrated plot, reset
   output$a_reset_genes_upload_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     actionButton('a_reset_genes_upload', 'Reset')
   })
@@ -732,7 +871,6 @@ shinyServer(function(input, output, session){
   
   # intgrated plot, inweb
   output$a_color_inweb_sig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_inweb_sig', NULL, value = 'yellow', showColour = 'both', 
@@ -740,7 +878,6 @@ shinyServer(function(input, output, session){
   })
   # intgrated plot, inweb
   output$a_color_inweb_insig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_inweb_insig', NULL, value = '#808080', showColour = 'both', 
@@ -748,14 +885,12 @@ shinyServer(function(input, output, session){
   })
   # integrated plot, inweb
   output$a_symbol_inweb_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_inweb', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_sig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_sig', NULL, value = 'cyan', showColour = 'both', 
@@ -763,7 +898,6 @@ shinyServer(function(input, output, session){
   })
   # intgrated plot, gwas catalogue
   output$a_color_gwas_cat_insig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_insig', NULL, value = '#808080', showColour = 'both', 
@@ -772,27 +906,23 @@ shinyServer(function(input, output, session){
   
   # integrated plot, gwas catalogue
   output$a_overlay_gwas_cat_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_overlay_gwas_cat", label = "Toggle overlay", value = TRUE)
   })
   
   # integrated plot, gwas catalogue
   output$a_symbol_gwas_cat_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_gwas_cat', NULL, choices = allowed_plotly_symbols, selected = 'diamond')
   })
   # integrated plot, genes upload
   output$a_label_gwas_cat_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_label_gwas_cat", label = "Toggle labels", value = TRUE)
   })
   
   # intgrated plot, gnomad
   output$a_color_gnomad_sig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gnomad_sig', NULL, value = '#FF00FF', showColour = 'both', 
@@ -800,7 +930,6 @@ shinyServer(function(input, output, session){
   })
   # intgrated plot, gnomad
   output$a_color_gnomad_insig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
     colourpicker::colourInput('a_color_gnomad_insig', NULL, value = '#808080', showColour = 'both', 
@@ -808,28 +937,24 @@ shinyServer(function(input, output, session){
   })
   # intgrated plot, gnomad
   output$a_symbol_gnomad_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_gnomad', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # intgrated plot, gnomad
   output$a_label_gnomad_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_label_gnomad", label = "Toggle labels", value = FALSE)
   })
   
   # integrated plot, gnomad
   output$a_overlay_gnomad_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_overlay_gnomad", label = "Toggle overlay", value = FALSE)
   })
 
   # integrated plot, gnomad 
   output$a_select_gnomad_pli_type_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     radioButtons("a_select_gnomad_pli_type", label = 'Select pLI type', 
                  choiceNames = list('Threshold'),
@@ -838,7 +963,6 @@ shinyServer(function(input, output, session){
   
   # integrated plot, gnomad slider
   output$a_slide_gnomad_pli_threshold_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     #validate(need(input$a_select_gnomad_pli_type == 'threshold', ""))
     sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
@@ -847,35 +971,30 @@ shinyServer(function(input, output, session){
   
   # intgrated plot, tissue
   output$a_color_tissue_sig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     colourpicker::colourInput('a_color_tissue_sig', NULL, value = '#3AFF00', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, tissue
   output$a_color_tissue_insig_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     colourpicker::colourInput('a_color_tissue_insig', NULL, value = '#808080', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   # intgrated plot, tissue
   output$a_symbol_tissue_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_tissue', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
   
   # intgrated plot, tissue
   output$a_label_tissue_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_label_tissue", label = "Toggle labels", value = FALSE)
   })
   
   # integrated plot, tissue
   output$a_overlay_tissue_ui <- renderUI({
-    # validate(need(a_file_pulldown_r()  != '', ""))
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_overlay_tissue", label = "Toggle overlay", value = TRUE)
   })
@@ -1060,157 +1179,7 @@ shinyServer(function(input, output, session){
     mapping = mapping[rev(order(mapping$Freq)), ]
     selectInput('a_pathway_mapping_search', 'Search gene set', unique(mapping$pathway), multiple=T, selectize=TRUE, selected = "grey")
   })
-  
-  # show/hide the fdr/pvalue bar
-  observeEvent(input$a_significance_type,{
-    if (input$a_significance_type == 'fdr'){
-        shinyjs::hide("a_pval_thresh")
-        shinyjs::show("a_fdr_thresh")
-      } else {
-        shinyjs::show("a_pval_thresh")
-        shinyjs::hide("a_fdr_thresh")
-      }
-  })
-  
-  # check pulldown input format for inconsistencies
-  a_input_errors <- reactive({
-    req(a_file_pulldown_r() )
-    d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
-    errs = get_shiny_errors(d$data)
-    return(errs)
-  })
-  
-  # check input
-  output$a_in_pulldown_check_ui <- renderUI({
-    output <- a_input_errors()
-    if (output != '') stop(HTML(paste(output, sep = "<br/>")))
-  })
-  
-  # returns boolean indicating whether mapping was done
-  # ARCHIVE
-  a_gene_mapping_bool <- reactive({
-    req(a_in_pulldown())
-    pulldown <- a_in_pulldown()
-    return(pulldown$format$check$accession_rep | pulldown$format$check$accession_signif)
-  })
-  
-  # returns boolean indicating whether rep1-2 is in the data
-  a_file_rep_bool <- reactive({
-    req(a_in_pulldown())
-    check = a_in_pulldown()$format$check
-    return(check$gene_rep | check$accession_rep)
-  })
-  
-  # loading the data and getting the pulldown
-  a_in_pulldown <- eventReactive(a_file_pulldown_r() ,{
-    req(a_file_pulldown_r() )
-    validate(need(a_input_errors() == '', ""))
-    d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
-    d
-  })
-  
-  # map accession_numbers to gene ids if needed
-  # DONE (changed to mapAccessionToGeneServer)
-  a_orig_pulldown <- reactive({
-    pulldown <- a_in_pulldown()
-    if (a_gene_mapping_bool()){
-      pulldown$data <- map_gene_id(pulldown$data)
-      }
-    return(pulldown$data)
-  })  
-  
-  # TODO implement monitoring of inputed files
-  # monitor pulldown input, mapping and input
-  a_monitor_pulldown <- reactive({
-    req(sigS())
-    
-    # monitor of some columns were discarded
-    pulldown <- a_in_pulldown()
-    allowed = unlist(pulldown$format$allowed[unlist(pulldown$format$check)])
-    allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown$data)))
-    allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
-    accepted = colnames(pulldown$data)[allowed_vec]
-    discarded = colnames(pulldown$data)[!allowed_vec]
-    
-    # check if gene columns have synonyms in data
-    synonyms = strsplit(pulldown$data$gene, split = '(\\;)|(\\|)')
-    synonyms_bool = unlist(lapply(synonyms, length)) > 1
-    synonym_example = pulldown$data$gene[synonyms_bool][1]
-    
-    # check for NAs in rows
-    na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
-    na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
-    
-    # check if p-values are already -log10 transformed
-    check_log_pvalues <- any(pulldown$data$pvalue > 1)
-    
-    # pre-rendered messages
-    msg1 = paste0(bold('Error:'),' None of the inputted column names are allowed')
-    msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
-    msg3 = paste0('The following column names were invalid and discarded: ', italics(paste0(discarded, collapse = ', ')),'.')
-    msg4 = paste0('See supplementary protocol for a description of allowed data inputs.')
-    msg5 = paste0(bold('Warning: '), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
-    msg6 = paste0(bold('Note:  '), sum(synonyms_bool),' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
-                  '". This column should only contain a single gene-name.')
-    msg7 = paste0(bold('Warning: '), 'It looks like you have already -log10 transformed your p-values. Please, use raw p-values to accurately display volcano plots.')
-    
-    # no valid cols
-    msg = ''
-    if (length(accepted) == 0){
-      msg = paste(msg, msg1, msg4)
-      #return(HTML(paste(msg1, msg4)))
-    # enough valid but some invalid
-    } else if (length(accepted) != length(allowed_vec)){
-      msg = paste(msg, msg2, msg3, msg4)
-      #return(HTML(paste(msg2, msg3, msg4)))
-    } 
-    if (na_rows > 0){
-      msg = paste(msg, msg5)
-    }
-    if (sum(synonyms_bool) > 0){
-      msg = paste(msg, msg6)
-    }
-    if (check_log_pvalues){
-      msg = paste(msg, msg7)
-    }
-    
-    
-    if (msg != '') return(HTML(msg))
-    else return(NULL)
-    
-  })
- 
-  a_monitor_pulldown_mapping <- reactive({
-    req(a_orig_pulldown())
-    
-    # mapping failed
-    pulldown_mapping = a_orig_pulldown()
-    failed = pulldown_mapping$accession_number[is.na(pulldown_mapping$gene)]
-    absolute = paste0(length(failed),'/',nrow(pulldown_mapping))
-    fraction = paste0(format(100*length(failed)/nrow(pulldown_mapping), digits = 3),'%')
-  
-    # messages
-    msg0 = bold(paste('ERROR: ', absolute, ' (',fraction,') accesion_numbers were not mapped to a genes. The App may crash during Integrated Plotting!'))
-    msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
-    msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
-    msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
-    msg4 = paste0('Are you using human accession numbers?')
-    
-    if (length(failed) > 0){
-      
-      # if more than 99% are unmapped give a warning:
-      if (length(failed)/nrow(pulldown_mapping) > 0.99){
-        return(HTML(paste(msg0, msg4, msg2)))
-      
-        # otherwise, print out mapping
-      } else {
-        return(HTML(paste(msg1, msg2, msg3)))
-      }
 
-    } else return(NULL)
-    
-  }) 
- 
   # function for handling uploaded genes
   a_genes_upload <- reactive({
     filepath = input$a_file_genes_rep$datapath
@@ -1225,17 +1194,6 @@ shinyServer(function(input, output, session){
       #if (!is.null(genes$data$listName)) genes$data$alt_label <- genes$data$listName
       if (lun(genes$data$listName) > 1) genes$data$alt_label <- genes$data$listName
       return(genes)
-    }
-  })
-  
-  # needed for searching gene
-  a_search_gene <- reactive({
-    gene_in <- input$a_goi_search_rep
-    req(gene_in)
-    if (gene_in != ''){
-      toupper(gene_in)
-    } else {
-      return(NULL)
     }
   })
   
@@ -1380,7 +1338,7 @@ shinyServer(function(input, output, session){
   # for calculating hypergeometric p-value
   # ideally, this should be a function in the future
   a_gnomad_sig_list <- reactive({
-    req(dataS(), input$a_slide_gnomad_pli_threshold)
+    req(sigS(), input$a_slide_gnomad_pli_threshold)
     pulldown = sigS()
     threshold = gnomad_table$gene %in% pulldown$gene & gnomad_table$pLI >= input$a_slide_gnomad_pli_threshold
     threshold[is.na(threshold)] = FALSE
@@ -1704,8 +1662,6 @@ shinyServer(function(input, output, session){
     }
   )
   
-  
-  
   # show/hide data download buttons
   # observeEvent(a_file_pulldown_r() , {shinyjs::toggle(id="a_mttest_mapping_download", condition=!is.null(a_file_pulldown_r() ))})
   # observeEvent(input$a_bait_rep, {shinyjs::toggle(id="a_ppi_mapping_df_download", condition=!is.null(a_pulldown_significant()) & any(input$a_bait_rep %in% c(inweb_table$Gene1,inweb_table$Gene2)))})
@@ -1964,7 +1920,7 @@ shinyServer(function(input, output, session){
     req(sigS(), a_tissue_calc_hyper(), input$a_tissue_select)
     
     # get text to be displayed
-    thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+    thresholds = paste(thldVals$sigTxt, thldVals()$fcSigTxt, sep =', ')
     dataset = input$a_tissue_select
     if (input$a_tissue_select == 'HPA - RNA') tissue <- input$a_hpa_rna_tissue
     if (input$a_tissue_select == 'GTEx - Protein') tissue <- input$a_gtex_protein_tissue
@@ -2038,7 +1994,7 @@ shinyServer(function(input, output, session){
   a_snp_venn_verbatim <- reactive({
     req(sigS(), a_snp_venn())
     pulldown = sigS()
-    thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+    thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     selected = input$a_select_venn_list_snp
     diagram = a_snp_venn()
     loci = input$a_select_venn_list_snp_loci
@@ -2087,7 +2043,7 @@ shinyServer(function(input, output, session){
   a_gwas_catalogue_venn_verbatim <- reactive({
     req(sigS(), a_gwas_catalogue_mapping_venn())
     pulldown = sigS()
-    thresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+    thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     diagram = a_gwas_catalogue_mapping_venn()
     A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
     B <- paste0("B = Genes mapped from GWAS catalog &#40;", bold(length(unique(diagram[[2]]))), "&#41;")
@@ -2129,7 +2085,7 @@ shinyServer(function(input, output, session){
   # plot below venn diagram inweb
   a_gnomad_venn_verbatim <- reactive({
     req(sigS(), a_gnomad_calc_hyper())
-    tresholds = paste(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig, sep =', ')
+    tresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     hyper = a_gnomad_calc_hyper()
     A <- paste0("A = proteomic data subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
     B <- paste0("B = gnomAD genes with pLI ≥", bold(input$a_slide_gnomad_pli_threshold)," &#40;", bold(hyper$statistics$sample_count), "&#41;")
@@ -2188,11 +2144,12 @@ shinyServer(function(input, output, session){
   
   # generate plot in ggformat
   a_integrated_plot_gg <- reactive({
-    req(volcanoPlotS())
-    p = volcanoPlotS()
+    req(plotVals$volcano_basic)
+    p = plotVals$volcano_basic
     
     if (!is.null(input$a_gwas_catalogue)) {
-      if (input$a_gwas_catalogue != '' & input$a_overlay_gwas_cat) {
+      # TODO add labelling for each chosen gwas catalogue
+      if (any(input$a_gwas_catalogue != '') & input$a_overlay_gwas_cat) {
         p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
       }
     } 
@@ -2278,21 +2235,6 @@ shinyServer(function(input, output, session){
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })
-  
-  
-  # download basic scatter plot
-  # input_sp_gg <- function(){a_sp_gg()}
-  # output$a_scatter_plot_download = downloadHandler(
-  #   filename = 'genoppi-scatter-plot.png',
-  #   content = function(file) {
-  #     device <- function(..., width, height) {
-  #       grDevices::png(..., width = width, height = height,
-  #                      res = 300, units = "in")
-  #     }
-  #     ggsave(file, plot = theme_scatter(input_sp_gg()) , device = device, 
-  #            width = global.img.scatter.download.width,
-  #            height = global.img.scatter.download.height)
-  #   })
   #---------------------------------------------------------------------
   # integrated plotting
   
@@ -2401,7 +2343,8 @@ shinyServer(function(input, output, session){
   a_pathway_plot_tmp_gg <- reactive({
     data = sigS()
     req(data, a_pathway_mapping_subset())
-    p <- a_vp_gg()
+    req(plotVals$volcano_bait_overlay)
+    p <- plotVals$volcano_bait_overlay
     if (sum(data$significant) > 0){
       if (nrow(a_pathway_mapping_subset()) > 0) {
         p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
@@ -2415,7 +2358,8 @@ shinyServer(function(input, output, session){
     req(a_pathway_mapping_subset())
     
     # generate ggplot with \n 
-    p <- a_vp_gg()
+    req(plotVals$volcano_bait_overlay)
+    p <- plotVals$volcano_bait_overlay
     p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend, nchar_max_collapse = '\n')
     p <- p + theme(legend.key.height=unit(0.75, "cm"))
     
@@ -2431,7 +2375,8 @@ shinyServer(function(input, output, session){
   a_pathway_plot_tmp_gg <- reactive({
     data = sigS()
     req(data, a_pathway_mapping_subset())
-    p <- a_vp_gg()
+    req(plotVals$volcano_bait_overlay)
+    p <- plotVals$volcano_bait_overlay
     if (sum(data$significant) > 0){
       if (nrow(a_pathway_mapping_subset()) > 0) {
         p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
@@ -2460,13 +2405,28 @@ shinyServer(function(input, output, session){
     # for now, we order overlay AFTER plot_overlay() has been called since 
     # the legend_order column would otherwise be disrupted through a merge operation.
     # see github issues for more details. In the future, this should be a reactive.
-    if (!is.null(p$overlay$dataset)) p$overlay$legend_order = unlist(ifelse(input$a_pathway_mapping_type_sort == 'freq',
-                                    list(rev(order(p$overlay$size))), list(order(p$overlay$dataset))))
+    if (!is.null(p$overlay$dataset)) {
+      p$overlay$legend_order = unlist(
+        ifelse(input$a_pathway_mapping_type_sort == 'freq',
+               list(rev(order(p$overlay$size))), 
+               list(order(p$overlay$dataset))))
+    } 
     
     p <- make_interactive(p, legend = T)
-    if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
-    if (!is.null(input$a_pathway_mapping_search)) p <- add_plotly_markers_search_pathway(p, input$a_pathway_mapping_search, mapping = a_pathway_mapping_initial())
-    p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
+    if (!is.null(goiS())) {
+      p <- add_plotly_markers_search(
+        p, goiS(), alpha = input$a_goi_search_rep_alpha) 
+    }
+    if (!is.null(input$a_pathway_mapping_search)) {
+      p <- add_plotly_markers_search_pathway(
+        p, input$a_pathway_mapping_search, mapping = a_pathway_mapping_initial())
+    } 
+    p <- genoppi::add_plotly_threshold_lines(
+      p, 
+      line_pvalue = statsParamVals$pValThresh, 
+      line_logfc = statsParamVals$logfcThresh, 
+      logfc_direction = statsParamVals$logfcDir,
+      sig_type = statsParamVals$signifType)
     p <- add_plotly_layout_volcano(p, width = global.genesets.volcano.width, height = global.genesets.volcano.height)
     return(p)
   })
@@ -2483,13 +2443,6 @@ shinyServer(function(input, output, session){
     p1 <- search_volcano(p, searchgene)
     p1
   })
-
-  # the actual volcano plot outputted to the user
-  # output$VolcanoPlot <- plotly::renderPlotly({
-  #   validate(need(a_file_pulldown_r()  != '', "Upload file"))
-  #     a_vp_layerx()
-  # })
-  
   output$VolcanoPlotPathway <- plotly::renderPlotly({
     req(a_pathway_plot())
     a_pathway_plot()
@@ -2501,15 +2454,14 @@ shinyServer(function(input, output, session){
   })
 
   output$Multi_VolcanoPlot <- plotly::renderPlotly({
-    #validate(need(a_file_pulldown_r()  != '', "Upload file"))
     validate(need(dataPathS()  != '', "Upload file"))
     req(sigS())
     a_integrated_plot()
   })
   
   output$a_file_display_table_ui <- DT::renderDataTable({
-    req(a_in_pulldown())
-    DT::datatable(a_in_pulldown()$data)
+    req(dataFrameS())
+    DT::datatable(dataFrameS()$data)
   })
   
   
@@ -3299,7 +3251,6 @@ shinyServer(function(input, output, session){
    HTML(paste(output, collapse = "<br/>"))
  })
  
- 
  # select 
  output$b_file_comparison_data_table_select_ui <- renderUI({
    overlap = b_mapping()
@@ -3309,7 +3260,6 @@ shinyServer(function(input, output, session){
                           unique(as.character(names(overlap)))))
  })
 
- 
  # make data.table for showing overlap
  b_file_comparison_data_table <- reactive({
    req(b_overlap())
@@ -3330,8 +3280,6 @@ shinyServer(function(input, output, session){
    df = b_file_comparison_data_table()
    DT::datatable(df)
  })
-  
- 
  #------------------------------------------------------
  # download multiple files volcano and scatter plots
  
@@ -3362,7 +3310,6 @@ shinyServer(function(input, output, session){
             height = global.img.scatter.download.height)
    })
  
- 
  # download proteomic data
  output$b_file_1_mapping_download <- downloadHandler(
    filename = function() {
@@ -3373,15 +3320,12 @@ shinyServer(function(input, output, session){
    }
  )
  
- 
  # show/hide buttons
  observeEvent(b_file_1_significant(),{
    shinyjs::show("b_file_1_volcano_download")
    shinyjs::show("b_file_1_scatter_download")
    shinyjs::show("b_file_1_mapping_download")
  })
- 
- ##
  
  # download basic volcano and scatter plot
  input_b_file_2_vp_gg <- function(){b_file_2_vp_gg()}
@@ -3530,11 +3474,8 @@ shinyServer(function(input, output, session){
     getPage_guide()
   })
   
-  
   output$documentation <- renderUI({
     return(includeHTML("documentation/doc_0316.html"))
   })
   
 })
-
-

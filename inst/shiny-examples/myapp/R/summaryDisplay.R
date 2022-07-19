@@ -84,7 +84,8 @@ summaryStatsServer <- function(id, sigificanceServer) {
       names(type_dfs_list) <- types
       
       avg_df <- data.frame(do.call(rbind, type_dfs_list))
-      names(avg_df) <- c("Comparison", "type")
+      names(avg_df) <- c("Comparison", "Correlation (r)")
+      rownames(avg_df) <- avg_df$Comparison
       
       return(list(
         signifCountText=signifCount, 
@@ -162,7 +163,7 @@ summaryBox <- function(id) {
       br(),
       column(12, tableOutput(NS(id, "correlation_table_header"))),
       br(),
-      column(12, tableOutput(NS(id, "correlation_table"))),
+      column(12, uiOutput(NS(id, "correlation_table"))),
       br(),
       # # UNCOMMENT for verbose table (i.e., correlation for every comparison)
       # column(12, uiOutput(NS(id, 'replicate_table_header'))),
@@ -179,12 +180,15 @@ summaryBox <- function(id) {
       # br(),
     ),
     fluidRow(
+      br(),
       column(12, uiOutput(NS(id, "input_format_err_text")))
     ),
     fluidRow(
+      br(),
       column(12, uiOutput(NS(id, "gene_or_mapping_err_text")))
     ),
     fluidRow(
+      br(),
       column(12, uiOutput(NS(id, "stats_err_text")))
     ),
     fluidRow(
@@ -201,6 +205,7 @@ summaryDisplayServer <- function(id,
                                  statsParamsValues,
                                  thresholdsValues,
                                  significanceServer,
+                                 columnsValues,
                                  errorValues) {
   if (!is.reactive(summaryStatsServer)){
     stop("summaryStatsServer passed to summaryDisplayServer is not reactive")}
@@ -219,9 +224,41 @@ summaryDisplayServer <- function(id,
     output$correlation_table_header <- renderUI({
       h5(HTML(bold("Average correlation(s):")))
     })
-    output$correlation_table <- renderTable({
-      summaryStatsServer()$avgCorrTable
+    
+    observeEvent(
+      # c(summaryStatsServer()$avgCorrTable, columnsValues$mod_ttest_columns), 
+      # columnsValues$mod_ttest_columns, 
+      significanceServer(),
+      {
+        req(columnsValues$mod_ttest_columns)
+        if (length(columnsValues$mod_ttest_columns)==0) {
+          output$correlation_table <- renderUI({
+            HTML("No columns used for calculating enrichment statistics.")
+          })
+        }
+        else {
+          avgTable <- summaryStatsServer()$avgCorrTable
+          if (any(grepl("^sample[0-9]$", columnsValues$mod_ttest_columns)) & 
+              any(grepl("^control[0-9]$", columnsValues$mod_ttest_columns))) {
+            output$correlation_table <- renderTable({
+              avgTable[
+                c("sample average", "control average", "sample vs control average"),]
+            })
+          } 
+          else if (any(grepl("^rep[0-9]$", columnsValues$mod_ttest_columns))) {
+            output$correlation_table <- renderTable({
+              avgTable[c("rep average"),]
+            })
+          }
+          else {
+            print("columnsValues$mod_ttest_columns value:")
+            print(columnsValues$mod_ttest_columns)
+            stop(
+            "Invalid columnsValues$mod_ttest_columns value found in summaryDisplayServer")
+          }
+        }
     })
+    
     output$input_format_err_text <- renderUI({
       req(errorValues$input_errors)
       HTML(errorValues$input_errors)

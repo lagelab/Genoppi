@@ -3,10 +3,15 @@ inputFileWelcome <- function(id) {
 }
 
 inputFileSideBar <- function(id) {
-  uiOutput(NS(id, 'input_file_sidebar'))
+  conditionalPanel("input.sidebarmenu === 'dashboard'",
+                   uiOutput(NS(id, 'input_file_sidebar')),
+                   uiOutput(NS(id, 'input_file_error')))
 }
 
-inputFileServer <- function(id, dataPathServer, toggleSingleBasicServer) {
+inputFileServer <- function(id, 
+                            dataPathServer, 
+                            toggleSingleBasicServer, 
+                            errorValues) {
   if (!is.reactive(dataPathServer)){
     stop("dataPathServer passed to inputFileServer is not reactive")}
   moduleServer(id, function(input, output, session) {
@@ -24,6 +29,12 @@ inputFileServer <- function(id, dataPathServer, toggleSingleBasicServer) {
                 'Upload user input file',
                 accept = files_accepted,
                 placeholder = "No file selected")
+    })
+    
+    output$input_file_error <- renderUI({
+      req(errorValues$columns_check)
+      columns_err <- errorValues$columns_check
+      if (columns_err != '') {stop(HTML(paste(columns_err, sep = "<br/>")))}
     })
     
     observeEvent(input$input_file_sidebar, {

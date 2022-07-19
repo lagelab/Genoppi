@@ -1,13 +1,24 @@
+# provides a data frame containing statistics column (logFC, pvalue, FDR)
 dataServer <- function(id) {
   moduleServer(id, function(input, output, session){
     return(reactiveVal(value=NULL))})
 }
 
+# provides a data frame containing significant column
 sigificanceServer <- function(id) {
   moduleServer(id, function(input, output, session){
     return(reactiveVal(value=NULL))})
 }
 
+# provides a vector of the columns used for calculating enrichment statistics
+#   mod_ttest_columns
+#     initial value: NULL
+#     special value: list() (means that no data columns e.g., sample1/rep1/control1 is provided)
+#     example values: c("sample1", "control1", "sample2", "control2")
+columnsValues <- function(id) {
+  moduleServer(id, function(input, output, session){
+    return(reactiveValues())})
+}
 dataPathServer <- function(id){
   moduleServer(id, function(input, output, session){
     return(reactiveVal(value=NULL))})
@@ -155,18 +166,18 @@ accessionMapErrorServer <- function(id, mapAccessionToGeneServer, errorValues) {
 }
 ######################################
 
-extractColumnsServer <- function(id, dataFrameServer) {
-  moduleServer(id, function(input, output, session) {
-    return(
-      eventReactive(dataFrameServer()$data, {
-        reps = colnames(dataFrameServer()$data)[grepl('^rep[0-9]+$',colnames(dataFrameServer()$data))]
-        samples = colnames(dataFrameServer()$data)[grepl('^sample[0-9]+$',colnames(dataFrameServer()$data))]
-        controls = colnames(dataFrameServer()$data)[grepl('^control[0-9]+$',colnames(dataFrameServer()$data))]
-        c(reps, samples, controls)
-      })
-    )
-  })
-}
+# extractColumnsServer <- function(id, dataFrameServer) {
+#   moduleServer(id, function(input, output, session) {
+#     return(
+#       eventReactive(dataFrameServer()$data, {
+#         reps = colnames(dataFrameServer()$data)[grepl('^rep[0-9]+$',colnames(dataFrameServer()$data))]
+#         samples = colnames(dataFrameServer()$data)[grepl('^sample[0-9]+$',colnames(dataFrameServer()$data))]
+#         controls = colnames(dataFrameServer()$data)[grepl('^control[0-9]+$',colnames(dataFrameServer()$data))]
+#         c(reps, samples, controls)
+#       })
+#     )
+#   })
+# }
 
 mapAccessionToGeneServer <- function(id, dataFrameServer, errorValues) {
   moduleServer(id, function(input, output, session) {
@@ -197,60 +208,64 @@ enrichmentStatsServer <- function(id,
   if (!is.reactivevalues(statsParamsValues)){
     stop("statsParamsValues passed to enrichmentStatsServer is not reactiveValues")}
   moduleServer(id, function(input, output, session) {
-    observeEvent(c(mapAccessionToGeneServer()$data,
-                   statsParamsValues$modTTest), {
-      req(mapAccessionToGeneServer()$data)
-      df <- mapAccessionToGeneServer()$data
-      fmt <- mapAccessionToGeneServer()$format
-      req(!is.null(fmt), cancelOutput = TRUE)
-      req(statsParamsValues$modTTest)
-      req(statsParamsValues$signifType)
-      if (statsParamsValues$signifType == "fdr") {
-        req(statsParamsValues$fdrThresh)
-      } else if (statsParamsValues$signifType == "pvalue") {
-        req(statsParamsValues$pValThresh)
-      } else {stop(
-        "invalid signifType from statsParamsValues passed to enrichmentStatsServer.")
-      }
-      # moderated t.test still needed (i.e., provided data without significance statistics)
-      if ((fmt$check$gene_rep | fmt$check$accession_rep | 
-          fmt$check$gene_sample_control | fmt$check$accession_sample_control) &
-          (fmt$check$gene_signif|fmt$check$accession_signif)) {
-        errorValues$stats_errors <- paste0(
-          bold('Note:  '), 
-          "Not using user provided significance statistics 
-          (calculating statistics using provided columns).")
-      }
-      if (fmt$check$gene_rep | fmt$check$accession_rep | 
-          fmt$check$gene_sample_control | fmt$check$accession_sample_control) {
-        # set allowed column names
-        allowed = unlist(fmt$allowed[unlist(fmt$check)])
-        allowed_cols = lapply(allowed, function(x) grepl(x, colnames(df)))
-        allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
-        allowed_vec = allowed_vec | 'gene' %in% colnames(df)
-        
-        # ensure moderated t.test is only calculated on allowed columns
-        df = df[,colnames(df)[allowed_vec]]
-        # determine two_sample parameter to the calc_mod_ttest call
-        modTTest <- statsParamsValues$modTTest
-        req(modTTest)
-        df <- calc_mod_ttest(df, two_sample = modTTest=="Two sample")
-      }
-      else if (fmt$check$gene_signif|fmt$check$accession_signif) {
-        errorValues$stats_errors <- paste0(
-          bold('Note:  '), 
-          "Using user provided significance statistics, 
-          not enough columns given to perform moderated t-test.")
-        print("Using user provided significance statistics.")
-      } else {
-        errorValues$stats_errors <- bold(paste0(
-          "ERROR: dataServer passed to enrichmentStatsServer does not fit any allowed format in format check, 
-          i.e., $format$check all FALSE"))
-        print(
-        "dataServer passed to enrichmentStatsServer does not fit any allowed 
-        format in format check, i.e., $format$check all FALSE")
-      }
-      dataServer(df)
+    observeEvent(
+      c(mapAccessionToGeneServer()$data, statsParamsValues$modTTest),
+      {
+        # TODO check for error checking comprehensiveness
+        validate(need(!(grepl("Error", errorValues$input_errors)), 
+                      "input_errors detected from enrichmentStatsServer"))
+        req(mapAccessionToGeneServer()$data)
+        df <- mapAccessionToGeneServer()$data
+        fmt <- mapAccessionToGeneServer()$format
+        req(!is.null(fmt), cancelOutput = TRUE)
+        req(statsParamsValues$modTTest)
+        req(statsParamsValues$signifType)
+        if (statsParamsValues$signifType == "fdr") {
+          req(statsParamsValues$fdrThresh)
+        } else if (statsParamsValues$signifType == "pvalue") {
+          req(statsParamsValues$pValThresh)
+        } else {stop(
+          "invalid signifType from statsParamsValues passed to enrichmentStatsServer.")
+        }
+        # moderated t.test still needed (i.e., provided data without significance statistics)
+        if ((fmt$check$gene_rep | fmt$check$accession_rep | 
+            fmt$check$gene_sample_control | fmt$check$accession_sample_control) &
+            (fmt$check$gene_signif|fmt$check$accession_signif)) {
+          errorValues$stats_errors <- paste0(
+            bold('Note:  '), 
+            "Not using user provided significance statistics 
+            (calculating statistics using provided columns).")
+        }
+        if (fmt$check$gene_rep | fmt$check$accession_rep | 
+            fmt$check$gene_sample_control | fmt$check$accession_sample_control) {
+          # set allowed column names
+          allowed = unlist(fmt$allowed[unlist(fmt$check)])
+          allowed_cols = lapply(allowed, function(x) grepl(x, colnames(df)))
+          allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
+          allowed_vec = allowed_vec | 'gene' %in% colnames(df)
+          
+          # ensure moderated t.test is only calculated on allowed columns
+          df = df[,colnames(df)[allowed_vec]]
+          # determine two_sample parameter to the calc_mod_ttest call
+          modTTest <- statsParamsValues$modTTest
+          req(modTTest)
+          df <- calc_mod_ttest(df, two_sample = modTTest=="Two sample")
+        }
+        else if (fmt$check$gene_signif|fmt$check$accession_signif) {
+          errorValues$stats_errors <- paste0(
+            bold('Note:  '), 
+            "Using user provided significance statistics, 
+            not enough columns given to perform moderated t-test.")
+          print("Using user provided significance statistics.")
+        } else {
+          errorValues$stats_errors <- bold(paste0(
+            "ERROR: dataServer passed to enrichmentStatsServer does not fit any allowed format in format check, 
+            i.e., $format$check all FALSE"))
+          print(
+          "dataServer passed to enrichmentStatsServer does not fit any allowed 
+          format in format check, i.e., $format$check all FALSE")
+        }
+        dataServer(df)
     })
   })
 }

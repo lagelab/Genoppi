@@ -571,8 +571,9 @@ body <- dashboardBody(
                          h1(strong("Genoppi"), style = "font-size:100px;"),
                          br(),
                          inputFileWelcome("single_file"),
-                         uiOutput('a_get_example_file_ui'),
-                         getExampleButton("single_file")
+                         getExampleButton("single_file"),
+                         br(),
+                         uiOutput('a_get_example_file_ui')
                     )
                   ),
                   fluidRow(
@@ -621,13 +622,10 @@ sidebar <- dashboardSidebar(
               menuItem("Data Documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
-              conditionalPanel("input.sidebarmenu === 'dashboard'",
-                               # uiOutput("a_file"),
-                               inputFileSideBar("single_file"),
-                               uiOutput("a_in_pulldown_check_ui"),
-                               uiOutput("a_color_style"),
-                               uiOutput("a_file_color"),
-              ),
+              inputFileSideBar("single_file"),
+              # conditionalPanel("input.sidebarmenu === 'dashboard'",
+              #                  uiOutput("a_color_style"),
+              #                  uiOutput("a_file_color")),
               conditionalPanel("input.sidebarmenu == 'widgets'",
                                uiOutput("b_file_1_ui"),
                                uiOutput("b_file_2_ui"),

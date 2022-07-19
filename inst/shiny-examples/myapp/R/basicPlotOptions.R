@@ -21,10 +21,6 @@ basicPlotInputBox <- function(id) {
     # fluidRow(
     #   column(12, uiOutput(NS(id,'select_scatterplot_ui')))
     # ),
-    # TODO new button for selecting type of mod t-test
-    # fluidRow(
-    #   column(12, uiOutput('a_select_mod_ttest_ui')) 
-    # ),
     fluidRow(
       column(6, uiOutput(NS(id, "bait_label"))),
       column(6, uiOutput(NS(id, "goi_search"))),

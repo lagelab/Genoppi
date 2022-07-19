@@ -1,7 +1,13 @@
-volcanoPlotServer <- function(id) {
+plotValues <- function(id) {
   moduleServer(id, function(input, output, session){
-    return(reactiveVal(value=NULL))})
+    return(reactiveValues())})
 }
+
+# depracated, replaced with plotValues
+# volcanoPlotServer <- function(id) {
+#   moduleServer(id, function(input, output, session){
+#     return(reactiveVal(value=NULL))})
+# }
 
 overlaidVolcanoPlotServer <- function(id) {
   moduleServer(id, function(input, output, session){
@@ -36,11 +42,13 @@ drawVolcanoPlot <- function(id) {
 }
 
 drawVolcanoServer <- function(id, 
-                              volcanoPlotServer,
+                              plotValues,
                               sigificanceServer,
                               sigColorServer, 
                               insigColorServer,
                               a_vp_colorbar) {
+  if (!is.reactivevalues(plotValues)){
+    stop("plotValues passed to drawVolcanoServer is not reactiveValues")}
   if (!is.reactive(sigificanceServer)){
     stop("sigificanceServer passed to drawVolcanoServer is not reactive")}
   if (!is.reactive(sigColorServer)){
@@ -55,10 +63,10 @@ drawVolcanoServer <- function(id,
     #   a_vp_colorbar()
     # })
     
-    observeEvent(is.null(volcanoPlotServer()),{
+    observeEvent(is.null(plotValues$volcano_basic),{
       shinyjs::hide("a_volcano_plot_download")})
     observeEvent(ignoreInit = T,
-                 !is.null(volcanoPlotServer()),
+                 !is.null(plotValues$volcano_basic),
                  {shinyjs::show("a_volcano_plot_download")})
     output$a_volcano_plot_download = downloadHandler(
       filename = 'genoppi-volcano-plot.png',
@@ -67,7 +75,7 @@ drawVolcanoServer <- function(id,
           grDevices::png(..., width = width, height = height,
                          res = 300, units = "in")
         }
-        ggsave(file, plot =  theme_volcano(volcanoPlotServer()), 
+        ggsave(file, plot =  theme_volcano(plotValues$volcano_basic), 
                device = device, 
                width = global.img.volcano.download.width,
                height = global.img.volcano.download.height)
@@ -86,18 +94,20 @@ drawVolcanoServer <- function(id,
         if(!is.null(insigColorServer())){col_insignificant <- insigColorServer()}
         p <- plot_volcano_basic(
           df, col_significant = col_significant, col_other = col_insignificant)
-        volcanoPlotServer(p)
+        plotValues$volcano_basic <- p
       }
     )
   })
 }
 
 overlayVolcanoServer <- function(id, 
-                                 volcanoPlotServer,
+                                 plotValues,
                                  baitServer,
                                  goiServer,
                                  goiAlphaServer,
                                  statsParamsValues) {
+  if (!is.reactivevalues(plotValues)){
+    stop("plotValues passed to overlayVolcanoServer is not reactiveValues")}
   if (!is.reactive(baitServer)){
     stop("baitServer passed to overlayVolcanoServer is not reactive")}
   if (!is.reactive(goiServer)){
@@ -108,8 +118,18 @@ overlayVolcanoServer <- function(id,
     stop("statsParamsValues passed to overlayVolcanoServer is not reactive")}
   moduleServer(id, function(input, output, session){
     observeEvent(
-      c(volcanoPlotServer(),
-        baitServer(),
+      c(plotValues$volcano_basic,
+        baitServer()), 
+      {
+        p <- plotValues$volcano_basic
+        if (!is.null(baitServer())) {
+          p <- plot_overlay(p, as.bait(baitServer()))} # add bait
+        plotValues$volcano_bait_overlay <- p
+      }
+    )
+    observeEvent(
+      c(plotValues$volcano_bait_overlay,
+        # baitServer(),
         goiServer(),
         goiAlphaServer(),
         statsParamsValues$signifType,
@@ -117,11 +137,11 @@ overlayVolcanoServer <- function(id,
         statsParamsValues$logfcThresh,
         statsParamsValues$logfcDir), 
       {
-        req(volcanoPlotServer())
-        p <- volcanoPlotServer()
-        if (!is.null(baitServer())) {
-          p <- plot_overlay(p, as.bait(baitServer())) # add bait
-        }
+        req(plotValues$volcano_bait_overlay)
+        p <- plotValues$volcano_bait_overlay
+        # if (!is.null(baitServer())) {
+        #   p <- plot_overlay(p, as.bait(baitServer())) # add bait
+        # }
         p <- make_interactive(p, legend = T)
         if (!is.null(goiServer())) {
           p <- add_plotly_markers_search(

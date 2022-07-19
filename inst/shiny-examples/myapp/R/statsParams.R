@@ -39,12 +39,14 @@ statsParamsOptions <- function(id) {
 statsParamsServer <- function(id, 
                               mapAccessionToGeneServer, 
                               dataServer, 
+                              columnsValues,
                               statsParamsValues) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     observeEvent(mapAccessionToGeneServer()$format, {
+      d <- mapAccessionToGeneServer()$data
       fmtCk <- mapAccessionToGeneServer()$format$check
-      req(fmtCk)
+      req(d, fmtCk)
       choices <- NULL
       if (fmtCk$gene_rep|fmtCk$accession_rep) {
         choices <- c(choices, "One sample")
@@ -56,14 +58,18 @@ statsParamsServer <- function(id,
         output$modTTest <- renderUI({
            HTML(paste0(
             bold('Note:  '),
-            "No moderated t-test can be performed, not enough rep/sample/control columns found"))
-        })
+            "No moderated t-test can be performed,
+            not enough rep/sample/control columns found"))})
+        columnsValues$mod_ttest_columns <- list()
       } 
       else {
         if ("Two sample" %in% choices) {
           selected="Two sample"
+          used_columns <- colnames(d)[
+            (grepl('^sample[0-9]$', colnames(d))|grepl('^control[0-9]$', colnames(d)))]
         } else if ("One sample" %in% choices) {
           selected="One sample"
+          used_columns <- colnames(d)[grepl('^rep[0-9]$', colnames(d))]
         } else {
           stop("No valid modTTest type can be selected in statsParamsServer")}
         output$modTTest <- renderUI({
@@ -72,6 +78,7 @@ statsParamsServer <- function(id,
             choices,
             selected = selected, inline = T)})
         statsParamsValues$modTTest <- selected
+        columnsValues$mod_ttest_columns <- as.list(used_columns)
 
         unavailable_choice <- c("One sample", "Two sample")
         unavailable_choice <- unavailable_choice[!(unavailable_choice %in%  choices)]
@@ -126,7 +133,20 @@ statsParamsServer <- function(id,
     })
     
     observeEvent(input$modTTestIn, {
-      statsParamsValues$modTTest<-input$modTTestIn})
+      statsParamsValues$modTTest<-input$modTTestIn
+      d <- mapAccessionToGeneServer()$data
+      req(d)
+      if (statsParamsValues$modTTest=="Two sample") {
+        used_columns <- colnames(d)[
+          (grepl('^sample[0-9]$', colnames(d))|grepl('^control[0-9]$', colnames(d)))]
+      } else if (statsParamsValues$modTTest=="One sample") {
+        used_columns <- colnames(d)[grepl('^rep[0-9]$', colnames(d))]
+      }
+      else {stop(
+        "Invalid statsParamsValues modTTest value detected in statsParamsServer.")
+      }
+      columnsValues$mod_ttest_columns <- as.list(used_columns)
+    })
     observeEvent(input$signifTypeIn, {
       statsParamsValues$signifType<-input$signifTypeIn})
     observeEvent(input$fdrThreshIn, {

@@ -4,7 +4,14 @@
 \alias{plot_replicate_ggpair}
 \title{plot ggpair plot for given columns from the given data frame}
 \usage{
-plot_replicate_ggpair(data, columns, overlay_sigificance = FALSE, title = "")
+plot_replicate_ggpair(
+  data,
+  columns,
+  overlay_sigificance = FALSE,
+  significant_color = "#41AB5D",
+  insignificant_color = "#808080",
+  title = ""
+)
 }
 \arguments{
 \item{data}{data frame containing data to be plotted}
@@ -12,6 +19,10 @@ plot_replicate_ggpair(data, columns, overlay_sigificance = FALSE, title = "")
 \item{columns}{vector containing column names of the data frame provided}
 
 \item{overlay_sigificance}{Boolean indicating whether the sigificant proteins should be overlaid with green color dots (can only be used when a Boolean significant column is present).}
+
+\item{significant_color}{color for the proteins identified as significantly enriched}
+
+\item{insignificant_color}{color for the proteins not identified as significantly enriched}
 
 \item{title}{optional title for the ggpair plot}
 }
