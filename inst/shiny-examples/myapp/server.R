@@ -1920,7 +1920,7 @@ shinyServer(function(input, output, session){
     req(sigS(), a_tissue_calc_hyper(), input$a_tissue_select)
     
     # get text to be displayed
-    thresholds = paste(thldVals$sigTxt, thldVals()$fcSigTxt, sep =', ')
+    thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     dataset = input$a_tissue_select
     if (input$a_tissue_select == 'HPA - RNA') tissue <- input$a_hpa_rna_tissue
     if (input$a_tissue_select == 'GTEx - Protein') tissue <- input$a_gtex_protein_tissue
