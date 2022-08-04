@@ -1,6 +1,6 @@
 plotGGpairFrame <- function(id) {
   box(
-    title = tagList(img(src='icon_scatter.png',width='22px'), "GGPairs"),
+    title = tagList(img(src='icon_scatter.png',width='22px'), "Pairwise scatter plot"),
     width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, 
     collapsed = FALSE,
     fluidRow(

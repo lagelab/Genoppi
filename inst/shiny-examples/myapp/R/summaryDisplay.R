@@ -73,7 +73,9 @@ summaryStatsServer <- function(id, sigificanceServer) {
         type_avg <- sum(type_entries["cor"])/type_count
         type_avg_formatted <- format(as.numeric(type_avg), digits = 4)
         type_text <- gsub("_", " vs ", typ)
-        return(c(paste(type_text, "average"), type_avg_formatted))
+        if (!grepl(" vs ", type_text)) {
+          type_text <- paste(type_text, "vs", type_text)}
+        return(c(type_text, type_avg_formatted))
         # # USE following for verbose correlation table 
         # #   (i.e., correlation for every comparison)
         # avg_row <- c(paste(type_text, "average"),   # - Comparison
@@ -84,7 +86,7 @@ summaryStatsServer <- function(id, sigificanceServer) {
       names(type_dfs_list) <- types
       
       avg_df <- data.frame(do.call(rbind, type_dfs_list))
-      names(avg_df) <- c("Comparison", "Correlation (r)")
+      names(avg_df) <- c("Comparison", "Mean correlation (r)")
       rownames(avg_df) <- avg_df$Comparison
       
       return(list(
@@ -107,7 +109,11 @@ thresholdTextServer <- function(id, statsParamsValues, thresholdsValues) {
   if (!is.reactivevalues(thresholdsValues)){
     stop("thresholdsValues passed to thresholdTextServer is not reactive values")}
   moduleServer(id, function(input, output, session) {
-    observeEvent(statsParamsValues, {
+    observeEvent(c(statsParamsValues$signifType,
+                   statsParamsValues$fdrThresh,
+                   statsParamsValues$pValThresh,
+                   statsParamsValues$logfcThresh,
+                   statsParamsValues$logfcDir), {
       req(statsParamsValues$signifType)
       # render text for showing significance threshold (FDR/P-Value)
       sigType <- statsParamsValues$signifType
@@ -214,15 +220,17 @@ summaryDisplayServer <- function(id,
   if (!is.reactivevalues(thresholdsValues)){
     stop("thresholdsValues passed to summaryDisplayServer is not reactive values")}
   moduleServer(id, function(input, output, session) {
-    output$threshold_text <- renderUI({
-      req(thresholdsValues$summary)
-      HTML(thresholdsValues$summary)
-      })
+    observeEvent(thresholdsValues$summary, {
+      output$threshold_text <- renderUI({
+        req(thresholdsValues$summary)
+        HTML(thresholdsValues$summary)
+        })
+    })
     output$verbatim_count_text <- renderUI({
       HTML(summaryStatsServer()$signifCountText)
     })
     output$correlation_table_header <- renderUI({
-      h5(HTML(bold("Average correlation(s):")))
+      h5(HTML(bold("Sample correlation(s):")))
     })
     
     observeEvent(
@@ -242,12 +250,12 @@ summaryDisplayServer <- function(id,
               any(grepl("^control[0-9]$", columnsValues$mod_ttest_columns))) {
             output$correlation_table <- renderTable({
               avgTable[
-                c("sample average", "control average", "sample vs control average"),]
+                c("sample vs sample", "control vs control", "sample vs control"),]
             })
           } 
           else if (any(grepl("^rep[0-9]$", columnsValues$mod_ttest_columns))) {
             output$correlation_table <- renderTable({
-              avgTable[c("rep average"),]
+              avgTable[c("rep vs rep"),]
             })
           }
           else {

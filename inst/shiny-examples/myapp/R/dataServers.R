@@ -249,7 +249,7 @@ enrichmentStatsServer <- function(id,
           # determine two_sample parameter to the calc_mod_ttest call
           modTTest <- statsParamsValues$modTTest
           req(modTTest)
-          df <- calc_mod_ttest(df, two_sample = modTTest=="Two sample")
+          df <- calc_mod_ttest(df, two_sample = modTTest=="Two-sample")
         }
         else if (fmt$check$gene_signif|fmt$check$accession_signif) {
           errorValues$stats_errors <- paste0(

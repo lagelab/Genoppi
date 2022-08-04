@@ -2,7 +2,7 @@ statsParamsValues <- function(id) {
   moduleServer(id, function(input, output, session) {
     return(reactiveValues(
       # initial values, values changed by UI afterwards
-      modTTest="Two sample",
+      modTTest="Two-sample",
       signifType="fdr",
       fdrThresh=0.1,
       pValThresh=NULL,
@@ -13,22 +13,24 @@ statsParamsValues <- function(id) {
 }
 
 
-statsParamsOptions <- function(id) {
+statsParamsOptions <- function(id, collapsed = TRUE) {
   ns <- NS(id)
   box(
-    title = "Statistics Parameters", width = NULL, solidHeader = TRUE, 
-    status = "primary", collapsible = TRUE, collapsed = FALSE,
-    fluidRow(column(6, uiOutput(NS(id, "modTTest"))),
-             column(6, uiOutput(NS(id, "modTTestNotif")))),
-    fluidRow(column(12, uiOutput(NS(id, "logfcThresh")))),
-    fluidRow(column(6, uiOutput(NS(id, "logfcDir"))),
-             column(6, uiOutput(NS(id, "signifType")))),
-    fluidRow(conditionalPanel(condition = "input.signifTypeIn == 'fdr'",
+    title = "Statistics parameters", width = NULL, solidHeader = TRUE, 
+    status = "primary", collapsible = TRUE, collapsed = collapsed,
+    fluidRow(column(3, uiOutput(NS(id, "modTTest"))), 
+             column(3, uiOutput(NS(id, "logfcDir"))), 
+             column(3, uiOutput(NS(id, "signifType"))),
+             column(3, uiOutput(NS(id, "reset")))),
+    fluidRow(column(12, uiOutput(NS(id, "modTTestNotif")))),
+    fluidRow(column(6, uiOutput(NS(id, "logfcThresh"))),
+             conditionalPanel(condition = "input.signifTypeIn == 'fdr'",
                               ns = ns,
-                              column(12, uiOutput(NS(id, "fdrThresh"))))),
-    fluidRow(conditionalPanel(condition = "input.signifTypeIn == 'pvalue'", 
+                              column(6, uiOutput(NS(id, "fdrThresh")))),
+             conditionalPanel(condition = "input.signifTypeIn == 'pvalue'", 
                               ns = ns,
-                              column(12, uiOutput(NS(id, "pValThresh")))))
+                              column(6, uiOutput(NS(id, "pValThresh"))))
+             ),
   )
 }
 
@@ -49,10 +51,10 @@ statsParamsServer <- function(id,
       req(d, fmtCk)
       choices <- NULL
       if (fmtCk$gene_rep|fmtCk$accession_rep) {
-        choices <- c(choices, "One sample")
+        choices <- c(choices, "One-sample")
       }
       if (fmtCk$gene_sample_control|fmtCk$accession_sample_control) {
-        choices <- c(choices, "Two sample")
+        choices <- c(choices, "Two-sample")
       }
       if (length(choices) == 0) {
         output$modTTest <- renderUI({
@@ -63,12 +65,12 @@ statsParamsServer <- function(id,
         columnsValues$mod_ttest_columns <- list()
       } 
       else {
-        if ("Two sample" %in% choices) {
-          selected="Two sample"
+        if ("Two-sample" %in% choices) {
+          selected="Two-sample"
           used_columns <- colnames(d)[
             (grepl('^sample[0-9]$', colnames(d))|grepl('^control[0-9]$', colnames(d)))]
-        } else if ("One sample" %in% choices) {
-          selected="One sample"
+        } else if ("One-sample" %in% choices) {
+          selected="One-sample"
           used_columns <- colnames(d)[grepl('^rep[0-9]$', colnames(d))]
         } else {
           stop("No valid modTTest type can be selected in statsParamsServer")}
@@ -80,11 +82,11 @@ statsParamsServer <- function(id,
         statsParamsValues$modTTest <- selected
         columnsValues$mod_ttest_columns <- as.list(used_columns)
 
-        unavailable_choice <- c("One sample", "Two sample")
+        unavailable_choice <- c("One-sample", "Two-sample")
         unavailable_choice <- unavailable_choice[!(unavailable_choice %in%  choices)]
         if (length(unavailable_choice) > 0) {
-          needed_columns <- list("One sample"=">2 rep columns",
-                                 "Two sample"=">2 sample columns & >2 control columns")
+          needed_columns <- list("One-sample"=">2 rep columns",
+                                 "Two-sample"=">2 sample columns & >2 control columns")
           needed_columns <- needed_columns[unavailable_choice]
           output$modTTestNotif <- renderUI({
             HTML(c(paste(unavailable_choice, collapse=" and"),
@@ -103,6 +105,11 @@ statsParamsServer <- function(id,
         selected = "fdr"
       )
     })
+    
+    output$reset <- renderUI({
+      actionButton(ns("resetInput"), "Reset")
+    })
+    
     output$fdrThresh <- renderUI({
       sliderInput(ns("fdrThreshIn"), "FDR threshold",
                   min = 0, max = 1, value = 0.1, step = 0.01)
@@ -113,18 +120,27 @@ statsParamsServer <- function(id,
     })
     
     observeEvent(dataServer(), {
+      logfc_limit <- 1
       if(!is.null(dataServer())){
         logfc_limit <- calc_logfc_limit(
           dataServer(), statsParamsValues$logfcDir)
-      } else {
-        logfc_limit <- 1
       }
       output$logfcThresh <- renderUI({
         sliderInput(ns("logfcThreshIn"), HTML("log<sub>2</sub>FC threshold"),
-                    min = 0, max = logfc_limit, value = 0, step = 0.1)})
-      }
-    )  
+                    min = 0, max = logfc_limit, 
+                    value = statsParamsValues$logfcThresh, step = 0.1)
+      })
+    })  
     
+    # output$logfcThresh <- renderUI({
+    #   logfc_limit <- 1
+    #   if(!is.null(dataServer())){
+    #     logfc_limit <- calc_logfc_limit(
+    #       dataServer(), statsParamsValues$logfcDir)
+    #   }
+    #   sliderInput(ns("logfcThreshIn"), HTML("log<sub>2</sub>FC threshold"),
+    #               min = 0, max = logfc_limit, value = 0, step = 0.1)
+    # })
     output$logfcDir <- renderUI({
       radioButtons(ns("logfcDirIn"), HTML("log<sub>2</sub>FC direction"),
                    c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
@@ -136,10 +152,10 @@ statsParamsServer <- function(id,
       statsParamsValues$modTTest<-input$modTTestIn
       d <- mapAccessionToGeneServer()$data
       req(d)
-      if (statsParamsValues$modTTest=="Two sample") {
+      if (statsParamsValues$modTTest=="Two-sample") {
         used_columns <- colnames(d)[
           (grepl('^sample[0-9]$', colnames(d))|grepl('^control[0-9]$', colnames(d)))]
-      } else if (statsParamsValues$modTTest=="One sample") {
+      } else if (statsParamsValues$modTTest=="One-sample") {
         used_columns <- colnames(d)[grepl('^rep[0-9]$', colnames(d))]
       }
       else {stop(
@@ -149,6 +165,14 @@ statsParamsServer <- function(id,
     })
     observeEvent(input$signifTypeIn, {
       statsParamsValues$signifType<-input$signifTypeIn})
+    observeEvent(input$resetInput, {
+      updateRadioButtons(session, "modTTestIn", selected = "Two-sample")
+      updateRadioButtons(session, "signifTypeIn", selected = "fdr")
+      updateRadioButtons(session, "logfcDirIn", selected = "positive")
+      updateSliderInput(session, "logfcThreshIn", value = 0)
+      updateSliderInput(session, "fdrThreshIn", value = 0.1)
+      updateSliderInput(session, "pValThreshIn", value = NULL)
+    })
     observeEvent(input$fdrThreshIn, {
       statsParamsValues$fdrThresh<-input$fdrThreshIn})
     observeEvent(input$pValThreshIn, {

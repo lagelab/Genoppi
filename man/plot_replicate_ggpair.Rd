@@ -18,7 +18,9 @@ plot_replicate_ggpair(
 
 \item{columns}{vector containing column names of the data frame provided}
 
-\item{overlay_sigificance}{Boolean indicating whether the sigificant proteins should be overlaid with green color dots (can only be used when a Boolean significant column is present).}
+\item{overlay_sigificance}{Boolean indicating whether the sigificant proteins
+should be overlaid with green color dots (can only be used when a Boolean 
+significant column is present).}
 
 \item{significant_color}{color for the proteins identified as significantly enriched}
 
@@ -27,7 +29,8 @@ plot_replicate_ggpair(
 \item{title}{optional title for the ggpair plot}
 }
 \value{
-a ggpair plot showing correlation between samples, controls, sample and contorl, or replicate logFC.
+a ggpair plot showing correlation between samples, controls, 
+sample and contorl, or replicate logFC.
 }
 \description{
 plot ggpair plot for given columns from the given data frame

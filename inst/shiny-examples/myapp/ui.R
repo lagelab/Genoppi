@@ -7,11 +7,13 @@ body <- dashboardBody(
     tabItem(tabName = "dashboard",
             shinyjs::useShinyjs(),
             tabsetPanel(id = "basic", #width = 12,
+                        header = column(width = 12, 
+                               br(),
+                               statsParamsOptions("stats_input", collapsed=FALSE)),
                         tabPanel("Basic plotting", id = 'basicplot', value = "p1",
                                  br(),
                                  column(width = 4,
                                         basicPlotInputBox("basic_plot_inputs"),
-                                        statsParamsOptions("stats_input"),
                                         summaryBox("summary"), 
                                  ),
                                  column(width = 8,
@@ -26,7 +28,7 @@ body <- dashboardBody(
                                         #     column(11, shinycssloaders::withSpinner(plotly::plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
                                         #   )
                                         # )
-                                 )
+                                 ),
                         ),
                         tabPanel("Integrated plotting", id = 'integratedplot', value = "p2", 
                                 br(),

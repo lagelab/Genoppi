@@ -2,12 +2,15 @@
 #'
 #' @param data data frame containing data to be plotted
 #' @param columns vector containing column names of the data frame provided
-#' @param overlay_sigificance Boolean indicating whether the sigificant proteins should be overlaid with green color dots (can only be used when a Boolean significant column is present).
+#' @param overlay_sigificance Boolean indicating whether the sigificant proteins
+#'  should be overlaid with green color dots (can only be used when a Boolean 
+#'  significant column is present).
 #' @param significant_color color for the proteins identified as significantly enriched
 #' @param insignificant_color color for the proteins not identified as significantly enriched
 #' @param title optional title for the ggpair plot
 #'
-#' @return a ggpair plot showing correlation between samples, controls, sample and contorl, or replicate logFC.
+#' @return a ggpair plot showing correlation between samples, controls, 
+#' sample and contorl, or replicate logFC.
 #'
 #' @examples
 #' \dontrun{
@@ -25,6 +28,7 @@ plot_replicate_ggpair <- function(data,
                                   insignificant_color="#808080",
                                   title=""){
   stopifnot(length(columns) > 0)
+  columns <- sort(columns)
   colors = "black"
   if (overlay_sigificance) {
     stopifnot(!is.null(data$significant))
@@ -56,10 +60,21 @@ plot_replicate_ggpair <- function(data,
     pTmp
   })
   
+  axis_lab <- ""
+  if (all(grepl("sample|control", columns))) {
+    axis_lab <- "log2 intensity value"
+  } else if (all(grepl("rep", columns))) {
+    axis_lab <- "logFC"
+  } else {
+    print("Cannot guess axis label based on columns input to plot_replicate_ggpair.")
+  }
+  
   gp <- GGally::ggmatrix(pList, 
                    nrow=nrow, ncol=ncol,
                    xAxisLabels = p$xAxisLabels,
-                   yAxisLabels = p$yAxisLabels) + 
+                   yAxisLabels = p$yAxisLabels, 
+                   xlab=axis_lab,
+                   ylab=axis_lab) + 
     theme(text = element_text(size=plot_label_font_size),
           axis.text = element_text(size=ticks_font_size), 
           panel.border = element_blank())
