@@ -34,6 +34,28 @@ statsParamsOptions <- function(id, collapsed = TRUE) {
   )
 }
 
+# statsParamsOptions adapted for multi file mode display (max number of items on a row = 2)
+multi_statsParamsOptions <- function(id, collapsed = TRUE) {
+  ns <- NS(id)
+  box(
+    title = "Statistics parameters", width = NULL, solidHeader = TRUE, 
+    status = "primary", collapsible = TRUE, collapsed = collapsed,
+    fluidRow(column(6, uiOutput(NS(id, "modTTest"))), 
+             column(6, uiOutput(NS(id, "logfcDir")))), 
+    fluidRow(column(6, uiOutput(NS(id, "signifType"))), 
+             column(6, uiOutput(NS(id, "reset")))),
+    fluidRow(column(12, uiOutput(NS(id, "modTTestNotif")))),
+    fluidRow(column(6, uiOutput(NS(id, "logfcThresh"))),
+             conditionalPanel(condition = "input.signifTypeIn == 'fdr'",
+                              ns = ns,
+                              column(6, uiOutput(NS(id, "fdrThresh")))),
+             conditionalPanel(condition = "input.signifTypeIn == 'pvalue'", 
+                              ns = ns,
+                              column(6, uiOutput(NS(id, "pValThresh"))))
+    ),
+  )
+}
+
 # for renderUI, specify namespace by ns <- session$ns, then use ns("<inputName>")
 # for details, see: 
 #   Using renderUI with modules section on 

@@ -12,581 +12,6 @@ shinyServer(function(input, output, session){
   ##### VISUALIZATIONS START ##### 
   
   ## ARCHIVE
-  # output$a_logfc_direction_ui <- renderUI({
-  #   radioButtons("a_logfc_direction", HTML("log<sub>2</sub>FC direction"),
-  #                c("Neg" = "negative", 
-  #                  "Both" = "both",
-  #                  "Pos" = "positive"),
-  #                selected = 'positive',
-  #                inline = T)
-  # })
-  # output$a_significance_type_ui <- renderUI({
-  #   radioButtons("a_significance_type", "Significance metric",
-  #                #c("FDR" = "fdr", "<i>P</i>-value" = "pvalue"),
-  #                choiceNames = list("FDR", HTML("<i>P</i>-value")),
-  #                choiceValues = list("fdr",'pvalue'),
-  #                inline = T)
-  # })
-  # output$FDR_thresh <- renderUI({
-  #   #validate(need(input$a_significance_type == 'fdr', ''))
-  #   sliderInput("a_fdr_thresh", "FDR threshold",
-  #               min = 0, max = 1, value = 0.1, step = 0.01)
-  # })
-  # based on a_pulldown(), create slider for logFC
-  # output$a_FDR_slider <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   sliderInput("a_FDR_range", "FDR",
-  #               min = 0, max = 1, value = c(0, 0.1), step = 0.01)
-  # })
-  # based on a_pulldown(), create slider for logFC
-  # output$a_pvalue_slider <- renderUI({
-  #   validate(
-  #     need(a_file_pulldown_r()  != '', "")
-  #   )
-  #   sliderInput("a_pvalue_range", "pvalue",
-  #               min = 0, max = 1, value = c(0, 1), step = 0.01)
-  # })
-  # select_mod_ttest_server("a_select_mod_ttest")
-  # output$PVal_thresh <- renderUI({
-  #   sliderInput("a_pval_thresh", HTML("<i>P</i>-value threshold"),
-  #               min = 0, max = 1, value = 0.05, step = 0.001)
-  # })
-  # # based on a_pulldown(), create slider for logFC
-  # output$logFC_thresh <- renderUI({
-  #   if(!is.null(a_file_pulldown_r() )){
-  #     limit <- calc_logfc_limit(a_pulldown(), input$a_logfc_direction)
-  #     sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-  #                 min = 0, max = limit, value = 0, step = 0.1)
-  #   }else
-  #     sliderInput("a_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-  #                 min = 0, max = 1, value = 0, step = 0.1)
-  # })  
-  # # needed for searching gene
-  # a_search_gene <- reactive({
-  #   gene_in <- input$a_goi_search_rep
-  #   req(gene_in)
-  #   if (gene_in != ''){
-  #     toupper(gene_in)
-  #   } else {
-  #     return(NULL)
-  #   }
-  # })
-  # show/hide the fdr/pvalue bar
-  # observeEvent(input$a_significance_type,{
-  #   if (input$a_significance_type == 'fdr'){
-  #       shinyjs::hide("a_pval_thresh")
-  #       shinyjs::show("a_fdr_thresh")
-  #     } else {
-  #       shinyjs::show("a_pval_thresh")
-  #       shinyjs::hide("a_fdr_thresh")
-  #     }
-  # })
-  # # check pulldown input format for inconsistencies
-  # a_input_errors <- reactive({
-  #   req(a_file_pulldown_r() )
-  #   d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
-  #   errs = get_shiny_errors(d$data)
-  #   return(errs)
-  # })
-  # check input
-  # output$a_in_pulldown_check_ui <- renderUI({
-  #   output <- a_input_errors()
-  #   if (output != '') stop(HTML(paste(output, sep = "<br/>")))
-  # })
-  # returns boolean indicating whether rep1-2 is in the data
-  # a_file_rep_bool <- reactive({
-  #   req(a_in_pulldown())
-  #   check = a_in_pulldown()$format$check
-  #   return(check$gene_rep | check$accession_rep)
-  # })
-  # # loading the data and getting the pulldown
-  # a_in_pulldown <- eventReactive(a_file_pulldown_r() ,{
-  #   req(dataFra() )
-  #   validate(need(a_input_errors() == '', ""))
-  #   d <- read_input(a_file_pulldown_r() $datapath, sep = '\t')
-  #   d
-  # })
-  # id the enriched proteins
-  # a_pulldown_significant <- reactive({
-  #   req(a_pulldown())
-  #   d = a_pulldown()
-  #   if (input$a_significance_type == 'fdr'){
-  #     d1 = id_enriched_proteins(d, fdr_cutoff = input$a_fdr_thresh, logfc_dir = input$a_logfc_direction,
-  #                               logfc_cutoff = input$a_logFC_thresh)
-  #   } else {
-  #     d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$a_pval_thresh, logfc_dir = input$a_logfc_direction,
-  #                               logfc_cutoff = input$a_logFC_thresh)
-  #   }
-  # return(d1)
-  # })
-  # track significance threshols for FDR and P-value
-  # monitor_significance_thresholds <- reactive({
-  #   sig_type = ifelse(input$a_significance_type == 'fdr', 'FDR', '<i>P</i>-value')
-  #   sig_value = ifelse(sig_type == 'FDR', input$a_fdr_thresh, input$a_pval_thresh)
-  #   fc_sign = ifelse(input$a_logfc_direction, '<', '≥')
-  #   region_le <- c(paste0(sig_type,"≤", sig_value))
-  #   region_g <- c(paste0(sig_type,">", sig_value))
-  #   return(list(sig=region_le, insig=region_g, sig_type=sig_type, sig_value=sig_value))
-  # })
-  # # track significance threshols for logFC
-  # monitor_logfc_threshold <- reactive({
-  #   fc_dir = input$a_logfc_direction
-  #   fc = input$a_logFC_thresh
-  #   if (fc_dir == 'negative') {fc_sig = paste("log<sub>2</sub>FC&lt;", -fc); fc_insig =  paste("log<sub>2</sub>FC&ge;", -fc)}
-  #   if (fc_dir == 'positive') {fc_sig = paste("log<sub>2</sub>FC&ge;", fc); fc_insig =  paste("log<sub>2</sub>FC&lt;", fc)}
-  #   if (fc_dir == 'both') {fc_sig = paste("|log<sub>2</sub>FC|&ge;", fc); fc_insig = paste("|log<sub>2</sub>FC|&lt;", fc) }
-  #   return(list(sig=fc_sig, insig=fc_insig))
-  # })
-  # 
-  # render select type of mod t-test
-  # output$a_select_mod_ttest_ui <- renderUI({
-  #   
-  #   selectInput(
-  #     'a_select_mod_ttest',
-  #     'Select type of moderated t-test',
-  #     choices = c("one sample mod t-test",
-  #                 "two sample mod t-test")
-  #   )
-  # })
-  # output$a_file <- renderUI({
-  #   fileInput('a_file_pulldown_r', 'Upload user input file', accept = files_accepted)
-  # })
-  # # basic plot
-  # val_a_color_theme_indv_sig <- reactiveVal(value = '#41AB5D')
-  # observeEvent(input$a_color_indv_sig, { val_a_color_theme_indv_sig(input$a_color_indv_sig)})
-  # 
-  # output$a_color_theme_indv_sig <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
-  #   colourpicker::colourInput('a_color_indv_sig', label, value = val_a_color_theme_indv_sig(), showColour = 'both', 
-  #                 palette = c( "limited"), allowedCols = allowed_colors)
-  # })
-  #   
-  # # basic plot
-  # val_a_color_theme_indv_insig <- reactiveVal(value = '#808080')
-  # observeEvent(input$a_color_indv_insig, { val_a_color_theme_indv_insig(input$a_color_indv_insig)})
-  # 
-  # output$a_color_theme_indv_insig <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$insig, 'or', monitor_logfc_threshold()$insig))))
-  #   colourpicker::colourInput('a_color_indv_insig', label, value = val_a_color_theme_indv_insig(), showColour = 'both', 
-  #                             palette = c( "limited"), allowedCols = allowed_colors)
-  # })
-  # basic volcano plot
-  # a_vp_gg <-reactive({
-  #   req(a_pulldown_significant())
-  #   d <- a_pulldown_significant()
-  #   req(input$a_color_indv_sig, input$a_color_indv_insig)
-  #   p <- plot_volcano_basic(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
-  #   if (!is.null(a_bait_parsed())) p <- plot_overlay(p, as.bait(a_bait_parsed())) # add bait
-  #   
-  #   return(p)
-  # })
-  # basic volcano plot
-  # a_vp_layerx <- reactive({
-  #   req(a_vp_gg(), input$a_pval_thresh, input$a_logFC_thresh, input$a_logfc_direction, input$a_significance_type)
-  #   p <- a_vp_gg()
-  #   p <- make_interactive(p, legend = T)
-  #   if (input$a_goi_search_rep != '') p <- add_plotly_markers_search(p, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
-  #   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$a_pval_thresh, line_logfc = input$a_logFC_thresh, logfc_direction = input$a_logfc_direction, sig_type = input$a_significance_type)
-  #   p <- add_plotly_layout_volcano(p, width = global.basic.volcano.width, height = global.basic.volcano.height)
-  #   
-  #   return(p)
-  # })
-  # # basic plot gene count summary
-  # a_verbatim_count <- reactive({
-  #   d <- a_pulldown_significant()
-  #   HTML(paste(bold(sum(d$significant)), 'out of', bold(nrow(d)), 'proteins significant.'))
-  # })
-  # 
-  # # basic plot significance text
-  # a_vp_count_text <- reactive({
-  #   if(!is.null(a_verbatim_count())){
-  #     enriched <- paste(c('Significance threshold:',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))
-  #     HTML(enriched)
-  #   }
-  # })
-  # a_sp_gg_all <- reactive({
-  #   # handle all scatter plots
-  #   req(a_pulldown_significant())
-  #   validate(need(a_file_rep_bool() == TRUE , ""))
-  #   d = a_pulldown_significant()
-  #   p = plot_scatter_basic_all(d, col_significant = input$a_color_indv_sig, col_other = input$a_color_indv_insig)
-  #   return(p)
-  # })
-  # # returns boolean indicating whether mapping was done
-  # a_gene_mapping_bool <- reactive({
-  #   req(a_in_pulldown())
-  #   pulldown <- a_in_pulldown()
-  #   return(pulldown$format$check$accession_rep | pulldown$format$check$accession_signif)
-  # })
-  # # final pulldown formatted data.frame
-  # a_pulldown <- reactive({
-  #   req(a_orig_pulldown(), a_in_pulldown())
-  #   pulldown <- a_orig_pulldown()
-  #   format <- a_in_pulldown()$format
-  #   two_sample <- input$a_select_mod_ttest == "Two sample"
-  #   
-  #   
-  #   # moderated t.test still needed
-  #   if (format$check$gene_rep | format$check$accession_rep){
-  #     
-  #     # set allowed column names
-  #     allowed = unlist(format$allowed[unlist(format$check)])
-  #     allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown)))
-  #     allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
-  #     allowed_vec = allowed_vec | 'gene' %in% colnames(pulldown)
-  #     
-  #     # ensure moderated t.test is only calculated on allowed columns
-  #     pulldown = pulldown[,colnames(pulldown)[allowed_vec]]
-  #     result = calc_mod_ttest(pulldown, two_sample = two_sample) 
-  #     return(result)
-  #   }
-  #   
-  #   # pvalue, fdr is supplied from user
-  #   else if (format$check$gene_signif | format$check$accession_signif){
-  #     result = pulldown
-  #     return(result)
-  #   
-  #   # no valid columns found. 
-  #   } else {
-  #     return(NULL)
-  #   }
-  # 
-  # })
-  # # map accession_numbers to gene ids if needed
-  # a_orig_pulldown <- reactive({
-  #   pulldown <- a_in_pulldown()
-  #   if (a_gene_mapping_bool()){
-  #     pulldown$data <- map_gene_id(pulldown$data)
-  #     }
-  #   return(pulldown$data)
-  # })  
-  # # monitor pulldown input, mapping and input
-  # a_monitor_pulldown <- reactive({
-  #   req(sigS())
-  #   
-  #   # monitor of some columns were discarded
-  #   pulldown <- a_in_pulldown()
-  #   allowed = unlist(pulldown$format$allowed[unlist(pulldown$format$check)])
-  #   allowed_cols = lapply(allowed, function(x) grepl(x, colnames(pulldown$data)))
-  #   allowed_vec = apply(do.call(rbind, allowed_cols), 2, any)
-  #   accepted = colnames(pulldown$data)[allowed_vec]
-  #   discarded = colnames(pulldown$data)[!allowed_vec]
-  #   
-  #   # check if gene columns have synonyms in data
-  #   synonyms = strsplit(pulldown$data$gene, split = '(\\;)|(\\|)')
-  #   synonyms_bool = unlist(lapply(synonyms, length)) > 1
-  #   synonym_example = pulldown$data$gene[synonyms_bool][1]
-  #   
-  #   # check for NAs in rows
-  #   na_rows = sum(apply(pulldown$data, 1, function(x) any(is.na(x))))
-  #   na_cols = apply(pulldown$data, 2, function(x) any(is.na(x)))
-  #   
-  #   # check if p-values are already -log10 transformed
-  #   check_log_pvalues <- any(pulldown$data$pvalue > 1)
-  #   
-  #   # pre-rendered messages
-  #   msg1 = paste0(bold('Error:'),' None of the inputted column names are allowed')
-  #   msg2 = paste0(bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),' input column names were accepted.')
-  #   msg3 = paste0('The following column names were invalid and discarded: ', italics(paste0(discarded, collapse = ', ')),'.')
-  #   msg4 = paste0('See supplementary protocol for a description of allowed data inputs.')
-  #   msg5 = paste0(bold('Warning: '), 'NA(s) were found in ', na_rows, ' row(s). Check column(s): ', paste(names(na_cols)[na_cols], collapse = ', '))
-  #   msg6 = paste0(bold('Note:  '), sum(synonyms_bool),' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
-  #                 '". This column should only contain a single gene-name.')
-  #   msg7 = paste0(bold('Warning: '), 'It looks like you have already -log10 transformed your p-values. Please, use raw p-values to accurately display volcano plots.')
-  #   
-  #   # no valid cols
-  #   msg = ''
-  #   if (length(accepted) == 0){
-  #     msg = paste(msg, msg1, msg4)
-  #     #return(HTML(paste(msg1, msg4)))
-  #   # enough valid but some invalid
-  #   } else if (length(accepted) != length(allowed_vec)){
-  #     msg = paste(msg, msg2, msg3, msg4)
-  #     #return(HTML(paste(msg2, msg3, msg4)))
-  #   } 
-  #   if (na_rows > 0){
-  #     msg = paste(msg, msg5)
-  #   }
-  #   if (sum(synonyms_bool) > 0){
-  #     msg = paste(msg, msg6)
-  #   }
-  #   if (check_log_pvalues){
-  #     msg = paste(msg, msg7)
-  #   }
-  #   if (msg != '') return(HTML(msg))
-  #   else return(NULL)
-  # })
-  # a_monitor_pulldown_mapping <- reactive({
-  #   req(a_orig_pulldown())
-  #   
-  #   # mapping failed
-  #   pulldown_mapping = a_orig_pulldown()
-  #   failed = pulldown_mapping$accession_number[is.na(pulldown_mapping$gene)]
-  #   absolute = paste0(length(failed),'/',nrow(pulldown_mapping))
-  #   fraction = paste0(format(100*length(failed)/nrow(pulldown_mapping), digits = 3),'%')
-  # 
-  #   # messages
-  #   msg0 = bold(paste('ERROR: ', absolute, ' (',fraction,') accesion_numbers were not mapped to a genes. The App may crash during Integrated Plotting!'))
-  #   msg1 = paste0(bold('Warning:'), absolute, ' (',fraction,') accesion_number(s) were not mapped to a gene(s).')
-  #   msg2 = paste0('The following accesion_number(s) were not mapped:', italics(paste0(failed,collapse=', ')),'.')
-  #   msg3 = paste0('These will be ignored in downstream analysis. To include, manually specify the entry in a seperate "gene" (HGNC) column.')
-  #   msg4 = paste0('Are you using human accession numbers?')
-  #   
-  #   if (length(failed) > 0){
-  #     # if more than 99% are unmapped give a warning:
-  #     if (length(failed)/nrow(pulldown_mapping) > 0.99){
-  #       return(HTML(paste(msg0, msg4, msg2)))
-  #       # otherwise, print out mapping
-  #     } else {
-  #       return(HTML(paste(msg1, msg2, msg3)))
-  #     }
-  #   } else return(NULL)
-  # }) 
-  # a_sp_gg <- reactive({
-  # 
-  #   # what replicates are inputted
-  #   # req(input$a_select_scatterplot, sigS())
-  #   req(input$a_select_scatterplot, a_pulldown_significant())
-  #   rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
-  #   p = a_sp_gg_all()
-  # 
-  #   # handle individual plot
-  #   p1 = p[[input$a_select_scatterplot]]$ggplot
-  #   if (!is.null(a_bait_parsed())) p1 = plot_overlay(p1, as.bait(a_bait_parsed()))
-  #   p1$r = format(p[[input$a_select_scatterplot]]$correlation, digits = 3)
-  #   p1
-  # 
-  # })
-  # a_sp <- reactive({
-  #   
-  #   # get basic stats
-  #   p1 = a_sp_gg()
-  #   #rep = unlist(strsplit(input$a_select_scatterplot,'\\.'))
-  #   r = p1$r
-  #   
-  #   # convert into interactive graphics
-  #   p1 = make_interactive(p1)
-  #   if (input$a_goi_search_rep != '') p1 <- add_plotly_markers_search(p1, a_search_gene(), alpha = input$a_goi_search_rep_alpha)
-  #   p1 = add_plotly_layout_scatter(p1, paste0('r=',r), 
-  #                                  width = global.basic.scatter.width, 
-  #                                  height = global.basic.scatter.height,
-  #                                  orientation = 'v')
-  #   p1 = add_plotly_line_unity(p1)
-  #   p1 %>%  layout(legend=list(yanchor="right", x = 1, y = 1))
-  #   #p1 = add_line_lm(p1, x=rep[1], y=rep[2])
-  #   
-  # })
-  # download basic scatter plot
-  # input_sp_gg <- function(){a_sp_gg()}
-  # output$a_scatter_plot_download = downloadHandler(
-  #   filename = 'genoppi-scatter-plot.png',
-  #   content = function(file) {
-  #     device <- function(..., width, height) {
-  #       grDevices::png(..., width = width, height = height,
-  #                      res = 300, units = "in")
-  #     }
-  #     ggsave(file, plot = theme_scatter(input_sp_gg()) , device = device, 
-  #            width = global.img.scatter.download.width,
-  #            height = global.img.scatter.download.height)
-  #   })
-  # # make summary of replicates
-  # replicate_summary_table <- reactive({
-  #   req(a_sp_gg())
-  #   p = a_sp_gg_all()
-  #   rs = lapply(p, function(x) format(x$correlation, digits = 4))
-  #   rs = t(data.frame(rs))
-  #   rs = cbind(gsub('\\.',' vs ',rownames(rs)), rs)
-  #   rs = rbind(rs, c('Average', format(mean(as.numeric(rs[,2])), digits = 4)))
-  #   colnames(rs) <- c('Comparison','Correlation (r)')
-  #   return(rs)
-  # })
-  # output$a_verbatim_count_ui <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', " "))
-  #   a_verbatim_count()
-  # })
-  # 
-  # output$VP_count_text <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', " "))
-  #   output <- a_vp_count_text()
-  #   HTML(output)
-  # })
-  # output$a_monitor_pulldown_ui <- renderUI({
-  #   req(a_monitor_pulldown())
-  #   return(a_monitor_pulldown())
-  # })
-  # output$a_monitor_pulldown_mapping_ui <- renderUI({
-  #   req(a_monitor_pulldown_mapping())
-  #   return(a_monitor_pulldown_mapping())
-  # })
-  # output$a_replicate_summar_text_ui <- renderUI({
-  #   req(replicate_summary_table())
-  #   h5(HTML(bold('Replicate correlation(s):')))
-  # })
-  # render replicate summary
-  # output$a_replicate_summary_table_ui <- renderTable({
-  #   replicate_summary_table()
-  # })
-  # output$a_bait_search <- renderUI({
-  #   textInput("a_bait_search_rep", "Input bait (HGNC symbol, e.g. BCL2)")
-  # })
-  # a_bait_parsed <- reactive({
-  #   bait = input$a_bait_search_rep
-  #   if (bait == '') return(NULL)
-  #   else return(bait)
-  # })
-  # output$a_GOI_search <- renderUI({
-  #   textInput("a_goi_search_rep", "Search HGNC symbol")
-  # })
-  # output$a_GOI_search_alpha <- renderUI({
-  #   shinyjs::hidden(sliderInput('a_goi_search_rep_alpha', 'Adjust alpha', min = 0, max = 1, value = 0.8, step = 0.05))
-  # })
-  # 
-  # Search for replicates in data
-  # available_replicates <- reactive({
-  #   req(a_pulldown())
-  #   d <- a_pulldown()
-  #   return(enumerate_replicate_combinations(d))
-  # })
-  # 
-  ## PPI databases
-  # output$a_bait_layer <- renderUI({
-  #   textInput("a_bait_rep", value = "", "Input HGNC symbol to search for protein interactors (e.g. ZBTB7A)")
-  # })
-  # 
-  # output$a_inweb_type <- renderUI({
-  #   selectInput('a_inweb_type', 'Select interactor type', c("All" = 'all',"High-confidence" = 'hc',"Gold-standard" = 'gs'))
-  # })
-  # 
-  # output$a_bioplex_type_ui <- renderUI({
-  #   sliderInput('a_bioplex_type', 'Select bioplex probability', 0, 1, 0.9, 0.01)
-  # })
-  # 
-  # output$a_irefindex_type_ui <- renderUI({
-  #   sliderInput('a_irefindex_type', 'Select min. publications', min = 1, max = max(irefindex_table$Score.np.max), value = 2, step = 1)
-  # })
-  # the actual volcano plot outputted to the user
-  # output$VolcanoPlot <- plotly::renderPlotly({
-  #   validate(need(a_file_pulldown_r()  != '', "Upload file"))
-  #     a_vp_layerx()
-  # })
-  # integrated plot, inweb
-  # output$a_overlay_inweb_ui <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   checkboxInput("a_overlay_inweb", label = "Toggle overlay", value = TRUE)
-  # })
-  # 
-  # # based on a_pulldown(), create slider for logFC
-  # output$a_logFC_slider <- renderUI({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   catf('deprecated..!')
-  #   if(!is.null(a_pulldown())){
-  #     input_file <- a_pulldown()
-  #     df <- input_file
-  #     min_logFC <- min(df$logFC)
-  #     min_logFC <- round(min_logFC-0.5, 1)
-  #     max_logFC <- max(df$logFC)
-  #     max_logFC <- round(max_logFC+0.5, 1)
-  #     sliderInput("a_logFC_range", "logFC",
-  #                 min = min_logFC, max = max_logFC, value = c(0, max_logFC), step = 0.1)
-  #   }
-  # })
-  # 
-  # # render select scatter plot
-  # output$a_select_scatterplot_ui <- renderUI({
-  #   
-  #   # rename reps
-  #   rep_input = available_replicates()
-  #   #if (!is.null(rep_input)) 
-  #   
-  #   reps_verbatim = gsub('rep','replicate ', rep_input)
-  #   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
-  #   reps = lapply(rep_input, function(x){x})
-  #   names(reps) = reps_verbatim
-  #   selectInput('a_select_scatterplot',
-  #               'Replicates to compare in scatter plot', 
-  #               choices = reps)
-  # })
-  # integrated plot, inweb
-  # output$a_label_inweb_ui <- renderUI({
-  #   # validate(need(a_file_pulldown_r()  != '', ""))
-  #   validate(need(dataPathS()  != '', ""))
-  #   checkboxInput("a_label_inweb", label = "Toggle labels", value = TRUE)
-  # })
-  # 
-  ## ggplot automatically generated and reactive color bars
-  # a_vp_colorbar <- reactive({
-  #   # req(input$a_color_indv_sig, input$a_color_indv_insig)
-  #   req(sigColorS(), insigColorS())
-  #   
-  #   # generate matrix with colors
-  #   d <- data.frame(limit = rep('x', 101), value = seq(0, 1, 0.01))
-  #   d$col <- ifelse(d$value < thldVals$sigVal, sigColorS(), insigColorS())
-  # 
-  #   # plot result
-  #   bar <- ggplot(
-  #     d, 
-  #     aes(xmin = 0, xmax = 0.1, ymin = d$value-0.01, ymax = d$value)) + 
-  #     ggplot2::geom_rect(fill = d$col) +      
-  #     ggplot2::scale_y_continuous(trans = "reverse", breaks = seq(0, 1, 0.1)) +
-  #     ggplot2::labs(title = ifelse(thldVals$sigType == 'pvalue', '  P', 'FDR')) + 
-  #     theme_genoppi_bar() + 
-  #     ggplot2::coord_fixed()
-  #   bar
-  # })
-  # plot colors bars
-  # output$FDR_colorbar <- renderPlot({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   a_vp_colorbar()
-  # })
-  # output$multi_FDR_colorbar <- renderPlot({
-  #   validate(
-  #     need(a_file_pulldown_r()  != '', "")
-  #   )
-  #   a_multi_vp_colorbar()
-  # })
-  # 
-  # output$FDR_colorbar_integrated <- renderPlot({
-  #   validate(need(a_file_pulldown_r()  != '', ""))
-  #   a_vp_colorbar()
-  # })
-  # # download basic scatter plot
-  # input_vp_gg <- function(){a_vp_gg()}
-  # output$a_volcano_plot_download = downloadHandler(
-  #   filename = 'genoppi-volcano-plot.png',
-  #   content = function(file) {
-  #     device <- function(..., width, height) {
-  #       grDevices::png(..., width = width, height = height,
-  #                      res = 300, units = "in")
-  #     }
-  #     ggsave(file, plot =  theme_volcano(input_vp_gg()), device = device, 
-  #            width = global.img.volcano.download.width,
-  #            height = global.img.volcano.download.height)
-  #   })
-  # 
-  # download moderated t-test
-  # output$a_mttest_mapping_download <- downloadHandler(
-  #   filename = function() {
-  #     paste("genoppi-proteomic-results",".csv", sep="")
-  #   },
-  #   content = function(file) {
-  #     write.csv(a_pulldown_significant(), file, row.names = F)
-  #   }
-  # )
-  # # download inweb mapping
-  # output$a_ppi_mapping_df_download <- downloadHandler(
-  #   filename = function() {
-  #     paste("genoppi-inweb-mapping",".csv", sep="")
-  #   },
-  #   content = function(file) {
-  #     # pulldown = a_pulldown_significant()
-  #     pulldown = dataS()
-  #     inweb = a_ppi_mapping_df()[,c("dataset","gene")]
-  #     mymerge = merge(pulldown, inweb, by = 'gene')
-  #     write.csv(mymerge, file, row.names = F)
-  #   }
-  # )
   # 
   # documentation
   # output$info_inweb_ui <- renderUI({actionLink('info_inweb', ' ', icon = icon('question-circle'))})
@@ -668,6 +93,127 @@ shinyServer(function(input, output, session){
     HTML(paste0(thldVals$insigTxt, ', ',thldVals$fcInsigTxt))
   })
   
+  #####################
+  # Multiple file tab #
+  #####################
+  
+  multiDataS1 <- dataServer("multi1")
+  multiDataS2 <- dataServer("multi2")
+  multiDataS3 <- dataServer("multi3")
+  
+  # Servers for toggling different panels  
+  multiFilePanelUpdate <- triggerPanelUpdateServer("multi_file")
+  
+  # Servers for storing genes
+  multi_baitS1 <- baitServer("gene_overlay1")
+  multi_baitS2 <- baitServer("gene_overlay2")
+  multi_baitS3 <- baitServer("gene_overlay3")
+  multi_goiS1 <- goiServer("gene_overlay1")
+  multi_goiS2 <- goiServer("gene_overlay2")
+  multi_goiS3 <- goiServer("gene_overlay3")
+  multi_goiAlphaS1 <- goiAlphaServer("gene_overlay1")
+  multi_goiAlphaS2 <- goiAlphaServer("gene_overlay2")
+  multi_goiAlphaS3 <- goiAlphaServer("gene_overlay3")
+  
+  # Servers for storing plots
+  multi_sharedPlotVals <- plotValues("multi_shared")
+  multi_plotVals1 <- plotValues("multi_volcano_plot1")
+  multi_plotVals2 <- plotValues("multi_volcano_plot2")
+  multi_plotVals3 <- plotValues("multi_volcano_plot3")
+  
+  # initialize reactive values for plot options
+  multi_statsParamVals1 <- statsParamsValues("multi_stats_input1")
+  multi_statsParamVals2 <- statsParamsValues("multi_stats_input2")
+  multi_statsParamVals3 <- statsParamsValues("multi_stats_input3")
+  multi_sigColorS1 <- sigColorServer("multi_sig_color1")
+  multi_sigColorS2 <- sigColorServer("multi_sig_color2")
+  multi_sigColorS3 <- sigColorServer("multi_sig_color3")
+  multi_insigColorS1 <- insigColorServer("multi_insig_color1")
+  multi_insigColorS2 <- insigColorServer("multi_insig_color2")
+  multi_insigColorS3 <- insigColorServer("multi_insig_color3")
+  
+  # Server for storing reactive error messages
+  multi_errVals1 <- errorValues("error_messsages")
+  multi_errVals2 <- errorValues("error_messsages")
+  multi_errVals3 <- errorValues("error_messsages")
+  
+  # Servers for reading data in multi file mode
+  multi_sigS1 <- sigificanceServer("mutli1")
+  multi_sigS2 <- sigificanceServer("mutli2")
+  multi_sigS3 <- sigificanceServer("mutli3")
+  multi_dataPathS1 <- dataPathServer("mutli1")
+  multi_dataPathS2 <- dataPathServer("mutli2")
+  multi_dataPathS3 <- dataPathServer("mutli3")
+  multi_colVals1 <- columnsValues("mutli1")
+  multi_colVals2 <- columnsValues("mutli2")
+  multi_colVals3 <- columnsValues("mutli3")
+  multi_dataFrameS1 <- dataFrameServer("mutli1", multi_dataPathS1)
+  multi_dataFrameS2 <- dataFrameServer("mutli2", multi_dataPathS2)
+  multi_dataFrameS3 <- dataFrameServer("mutli3", multi_dataPathS3)
+  
+  # Servers for processing data in multi file mode
+  multi_inputErrS1 <- inputErrorServer("multi_data_check1", multi_dataFrameS1, multi_errVals1)
+  multi_inputErrS2 <- inputErrorServer("multi_data_check2", multi_dataFrameS2, multi_errVals2)
+  multi_inputErrS3 <- inputErrorServer("multi_data_check3", multi_dataFrameS3, multi_errVals3)
+  multi_accMapErrS1 <- accessionMapErrorServer("multi_mapping_check1", multi_mapAccessionToGeneS1, multi_errVals1)
+  multi_accMapErrS2 <- accessionMapErrorServer("multi_mapping_check2", multi_mapAccessionToGeneS2, multi_errVals2)
+  multi_accMapErrS3 <- accessionMapErrorServer("multi_mapping_check3", multi_mapAccessionToGeneS3, multi_errVals3)
+  multi_mapAccessionToGeneS1 <- mapAccessionToGeneServer("multi1", multi_dataFrameS1, multi_errVals1)
+  multi_mapAccessionToGeneS2 <- mapAccessionToGeneServer("multi2", multi_dataFrameS2, multi_errVals2)
+  multi_mapAccessionToGeneS3 <- mapAccessionToGeneServer("multi3", multi_dataFrameS3, multi_errVals3)
+  multi_statsParamsS1 <- statsParamsServer("multi_stats_input1", multi_mapAccessionToGeneS1, multiDataS1, multi_colVals1, multi_statsParamVals1)
+  multi_statsParamsS2 <- statsParamsServer("multi_stats_input2", multi_mapAccessionToGeneS2, multiDataS2, multi_colVals2, multi_statsParamVals2)
+  multi_statsParamsS3 <- statsParamsServer("multi_stats_input3", multi_mapAccessionToGeneS3, multiDataS3, multi_colVals3, multi_statsParamVals3)
+  multi_thldVals1 <- thresholdsValues("multi_file_thresholds1")
+  multi_thldVals2 <- thresholdsValues("multi_file_thresholds2")
+  multi_thldVals3 <- thresholdsValues("multi_file_thresholds3")
+  multi_enrichmentStatsS1 <- enrichmentStatsServer("multi1", multi_mapAccessionToGeneS1, multi_statsParamVals1, multiDataS1, multi_errVals1)
+  multi_enrichmentStatsS2 <- enrichmentStatsServer("multi2", multi_mapAccessionToGeneS2, multi_statsParamVals2, multiDataS2, multi_errVals2)
+  multi_enrichmentStatsS3 <- enrichmentStatsServer("multi3", multi_mapAccessionToGeneS3, multi_statsParamVals3, multiDataS3, multi_errVals3)
+  multi_findSigS1 <- findSignificantServer("multi1", multi_statsParamVals1, multiDataS1, multi_sigS1)
+  multi_findSigS2 <- findSignificantServer("multi2", multi_statsParamVals2, multiDataS2, multi_sigS2)
+  multi_findSigS3 <- findSignificantServer("multi3", multi_statsParamVals3, multiDataS3, multi_sigS3)
+  multi_inputFileS1 <- inputFileServer("multi_file1", multi_dataPathS1, multi_errVals1)
+  multi_inputFileS2 <- inputFileServer("multi_file2", multi_dataPathS2, multi_errVals2)
+  multi_inputFileS3 <- inputFileServer("multi_file3", multi_dataPathS3, multi_errVals3)
+  vennDfS <- dataServer("venn")
+  vennDiagram <- plotVennServer('venn', multi_sigS1, multi_sigS2, multi_sigS3, multi_sharedPlotVals, vennDfS)
+  
+  multi_exampleBtn <- getMultiExampleServer(
+    "multi_file", 
+    c(multi_dataPathS1, multi_dataPathS2, multi_dataPathS3), 
+    multiFilePanelUpdate)
+  
+  # use observe event to update tab items:
+  # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
+  observeEvent(multiFilePanelUpdate(),
+               {updateTabItems(session, "sidebarmenu", 'widgets')})
+  
+  # Servers for rendering UI and controlling I/O
+  multi_thresholdTextS1 <- thresholdTextServer("summary1", multi_statsParamVals1, multi_thldVals1)
+  multi_thresholdTextS2 <- thresholdTextServer("summary2", multi_statsParamVals2, multi_thldVals2)
+  multi_thresholdTextS3 <- thresholdTextServer("summary3", multi_statsParamVals3, multi_thldVals3)
+  multi_summaryStatsS1 <- summaryStatsServer("summary1", multi_sigS1)
+  multi_summaryStatsS2 <- summaryStatsServer("summary2", multi_sigS2)
+  multi_summaryStatsS3 <- summaryStatsServer("summary3", multi_sigS3)
+  multi_summaryDisplayS1 <- summaryDisplayServer("summary1", multi_summaryStatsS1, multi_statsParamVals1, multi_thldVals1, multiDataS1, multi_colVals1, multi_errVals1)
+  multi_summaryDisplayS2 <- summaryDisplayServer("summary2", multi_summaryStatsS2, multi_statsParamVals2, multi_thldVals2, multiDataS2, multi_colVals2, multi_errVals2)
+  multi_summaryDisplayS3 <- summaryDisplayServer("summary3", multi_summaryStatsS3, multi_statsParamVals3, multi_thldVals3, multiDataS3, multi_colVals3, multi_errVals3)
+  multi_drawVolcanoS1 <- drawVolcanoServer("volcano_plot1", multi_plotVals1, multi_sigS1, multi_sigColorS1, multi_insigColorS1)
+  multi_drawVolcanoS2 <- drawVolcanoServer("volcano_plot2", multi_plotVals2, multi_sigS2, multi_sigColorS2, multi_insigColorS2)
+  multi_drawVolcanoS3 <- drawVolcanoServer("volcano_plot3", multi_plotVals3, multi_sigS3, multi_sigColorS3, multi_insigColorS3)
+  multi_overlayVolcanoS1 <- overlayVolcanoServer("volcano_plot1", multi_plotVals1, multi_baitS1, multi_goiS1, multi_goiAlphaS1, multi_statsParamVals1)
+  multi_overlayVolcanoS2 <- overlayVolcanoServer("volcano_plot2", multi_plotVals2, multi_baitS2, multi_goiS2, multi_goiAlphaS2, multi_statsParamVals2)
+  multi_overlayVolcanoS3 <- overlayVolcanoServer("volcano_plot3", multi_plotVals3, multi_baitS3, multi_goiS3, multi_goiAlphaS3, multi_statsParamVals3)
+  multi_ggpairS1 <- plotGGpairServer("plot_ggpair1", multi_sigS1, multi_colVals1, multi_plotVals1, multi_sigColorS1, multi_insigColorS1)
+  multi_ggpairS2 <- plotGGpairServer("plot_ggpair2", multi_sigS2, multi_colVals2, multi_plotVals2, multi_sigColorS2, multi_insigColorS2)
+  multi_ggpairS3 <- plotGGpairServer("plot_ggpair3", multi_sigS3, multi_colVals3, multi_plotVals3, multi_sigColorS3, multi_insigColorS3)
+  # basic plot param Box
+  multi_basicPlotParamS1 <- basicPlotParamServer("basic_plot_inputs1", multi_baitS1, multi_goiS1, multi_goiAlphaS1, multi_sigColorS1, multi_insigColorS1)
+  multi_basicPlotParamS2 <- basicPlotParamServer("basic_plot_inputs2", multi_baitS2, multi_goiS2, multi_goiAlphaS2, multi_sigColorS2, multi_insigColorS2)
+  multi_basicPlotParamS3 <- basicPlotParamServer("basic_plot_inputs3", multi_baitS3, multi_goiS3, multi_goiAlphaS3, multi_sigColorS3, multi_insigColorS3)
+  
+  
   #---------------- TEMPORARY PLACEHOLDER ----------------
   
   # venn diagram inweb mapping for inweb
@@ -715,9 +261,7 @@ shinyServer(function(input, output, session){
     } 
   })
   #----------------------------------------------------------
-  
-  # TODO
-  # Serve for storing reactive error messages
+  # Server for storing reactive error messages
   errVals <- errorValues("error_messsages")
   
   # initialize reactive values for plot options
@@ -725,8 +269,6 @@ shinyServer(function(input, output, session){
   sigColorS <- sigColorServer("sig_color")
   insigColorS <- insigColorServer("insig_color")
   
-  # Servers for toggling different panels  
-  toggleSingleBasicS <- toggleSingleBasicServer("panel_control")
   
   # Servers for storing genes
   baitS <- baitServer("gene_overlay")
@@ -738,6 +280,9 @@ shinyServer(function(input, output, session){
   plotVals <- plotValues("volcano_plot")
   # overlaidVolcanoPlotS <- overlaidVolcanoPlotServer("volcano_plot")
   
+  # Servers for toggling different panels  
+  singleFilePanelUpdate <- triggerPanelUpdateServer("single_file")
+  
   # Servers for storing data frame and its associated attributes
   dataS <- dataServer("data")
   sigS <- sigificanceServer("data")
@@ -747,7 +292,6 @@ shinyServer(function(input, output, session){
   inputErrS <- inputErrorServer("data_check", dataFrameS, errVals)
   accMapErrS <- accessionMapErrorServer(
     "mapping_check", mapAccessionToGeneS, errVals)
-  # extractColsS <- extractColumnsServer("metadata", dataFrameS)
   mapAccessionToGeneS <- mapAccessionToGeneServer("data", dataFrameS, errVals)
   statsParamsS <- statsParamsServer(
     "stats_input", mapAccessionToGeneS, dataS, colVals, statsParamVals)
@@ -756,8 +300,8 @@ shinyServer(function(input, output, session){
     "data", mapAccessionToGeneS, statsParamVals, dataS, errVals)
   findSigS <- findSignificantServer("data", statsParamVals, dataS, sigS)
   inputFileS <- inputFileServer(
-    "single_file", dataPathS, toggleSingleBasicS, errVals)
-  exampleBtn <- getExampleServer("single_file", dataPathS, toggleSingleBasicS)
+    "single_file", dataPathS, errVals)
+  exampleBtn <- getExampleServer("single_file", dataPathS, singleFilePanelUpdate)
   
   # Servers for rendering UI and controlling I/O
   thresholdTextS <- thresholdTextServer(
@@ -767,7 +311,7 @@ shinyServer(function(input, output, session){
   summaryDisplayS <- summaryDisplayServer(
     "summary", summaryStatsS, statsParamVals, thldVals, dataS, colVals, errVals)
   drawVolcanoS <- drawVolcanoServer(
-    "volcano_plot", plotVals, sigS, sigColorS, insigColorS, a_vp_colorbar)
+    "volcano_plot", plotVals, sigS, sigColorS, insigColorS)
   overlayVolcanoS <- overlayVolcanoServer(
     "volcano_plot", plotVals, baitS, goiS, goiAlphaS, statsParamVals)
   ggpairS <- plotGGpairServer(
@@ -775,7 +319,7 @@ shinyServer(function(input, output, session){
   
   # use observe event to update tab items:
   # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
-  observeEvent(toggleSingleBasicS(),
+  observeEvent(singleFilePanelUpdate(),
                {updateTabItems(session, "sidebarmenu", 'dashboard')})
   
   # basic plot Box
@@ -2464,968 +2008,7 @@ shinyServer(function(input, output, session){
     DT::datatable(dataFrameS()$data)
   })
   
-  
-  
-  #####################
-  # Multiple file tab #
-  #####################
-
-  ## handle file upload
-  
-  b_file_1_datapath <- reactiveVal(value = NULL)
-  b_file_2_datapath <- reactiveVal(value = NULL)
-  b_file_3_datapath <- reactiveVal(value = NULL)
-  
-  output$b_file_1_ui <- renderUI({
-    fileInput('b_file_1', 'Upload file 1', accept = files_accepted)
-  })
-  
-  output$b_file_2_ui <- renderUI({
-    fileInput('b_file_2', 'Upload file 2', accept = files_accepted)
-  })
-  
-  output$b_file_3_ui <- renderUI({
-    fileInput('b_file_3', 'Upload file 3', accept = files_accepted)
-  })
-  
-  # store paths to the data
-  b_file_1_setpath <- observeEvent(input$b_file_1,{b_file_1_datapath(input$b_file_1$datapath)})
-  b_file_2_setpath <- observeEvent(input$b_file_2,{b_file_2_datapath(input$b_file_2$datapath)})
-  b_file_3_setpath <- observeEvent(input$b_file_3,{b_file_3_datapath(input$b_file_3$datapath)})
-  
-  # example files
-  observeEvent(input$a_get_example_multiple_files,{
-    updateTabItems(session, "sidebarmenu", 'widgets')
-    b_file_1_datapath(example_file)
-    b_file_2_datapath(example_file2)
-    b_file_3_datapath(example_file3)
-  })
-  
-  
- ## handle file parsing, i.e. ensure that the files are correctly mapped
- ## and contain columns requried for further analysis.
-  # TODO add option to toggle two_sample_mod_ttest
- b_file_1_parsed <- reactive({
-   if (!is.null(b_file_1_datapath())){
-     return(parse_uploaded_file(b_file_1_datapath(), input$b_file_1_select_mod_ttest))
-   } else return(NULL)
- })
-  
- b_file_2_parsed <- reactive({
-   if (!is.null(b_file_2_datapath())){
-   return(parse_uploaded_file(b_file_2_datapath(), input$b_file_2_select_mod_ttest))
-   } else return(NULL)
- })
-  
- b_file_3_parsed <- reactive({
-   if (!is.null(b_file_3_datapath())){
-   return(parse_uploaded_file(b_file_3_datapath(), input$b_file_3_select_mod_ttest))
-   } else return(NULL)
- })
  
- ## track whether input contains replicate data
- 
- b_file_1_rep_bool <- reactive({
-   req(b_file_1_parsed())
-   check = read_input(b_file_1_datapath())$format$check
-   return(check$gene_rep | check$accession_rep)
- })
- 
- b_file_2_rep_bool <- reactive({
-   req(b_file_2_parsed())
-   check = read_input(b_file_2_datapath())$format$check
-   return(check$gene_rep | check$accession_rep)
- })
- 
- b_file_3_rep_bool <- reactive({
-   req(b_file_3_parsed())
-   check = read_input(b_file_3_datapath())$format$check
-   return(check$gene_rep | check$accession_rep)
- })
- 
- #
- output$b_GOI_search <- renderUI({
-   textInput("b_goi_search_rep", "Search HGNC symbol")
- })
- 
- output$b_GOI_search_alpha <- renderUI({
-   shinyjs::hidden(sliderInput('b_goi_search_rep_alpha', 'Adjust alpha', min = 0, max = 1, value = 0.8, step = 0.05))
- })
- 
- # needed for searching gene
- b_search_gene <- reactive({
-   gene_in <- input$b_goi_search_rep
-   if (gene_in == '') return(NULL)
-   else return(toupper(gene_in))
- })
- 
- ## get the available replicate in each file
- 
- # Search for replicates in data
- # DONE changed this to allow for selection of sample-sample scatter plot as
- # well
- b_file_1_available_replicates <- reactive({
-   validate(need(b_file_1_rep_bool(), ""))
-   d <- b_file_1_parsed()
-   return(enumerate_replicate_combinations(d))
- })
- 
- # render select scatter plot
- output$b_file_1_select_scatterplot_ui <- renderUI({
-   req(b_file_1_available_replicates())
-   
-   rep_input = b_file_1_available_replicates()
-   reps_verbatim = gsub('rep','replicate ', rep_input)
-   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
-   reps = lapply(rep_input, function(x){x})
-   names(reps) = reps_verbatim
-   selectInput('b_file_1_select_scatterplot',
-               'Replicates to compare in scatter plot', 
-               choices = reps)
- })
- 
- # Search for replicates in data
- b_file_2_available_replicates <- reactive({
-   validate(need(b_file_2_rep_bool(), ""))
-   d <- b_file_2_parsed()
-   return(enumerate_replicate_combinations(d))
- })
- 
- # render select scatter plot
- output$b_file_2_select_scatterplot_ui <- renderUI({
-   req(b_file_2_available_replicates())
-   rep_input = b_file_2_available_replicates()
-   reps_verbatim = gsub('rep','replicate ', rep_input)
-   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
-   reps = lapply(rep_input, function(x){x})
-   names(reps) = reps_verbatim
-   selectInput('b_file_2_select_scatterplot',
-               'Replicates to compare in scatter plot', 
-               choices = reps)
- })
- 
- # Search for replicates in data
- b_file_3_available_replicates <- reactive({
-   validate(need(b_file_3_rep_bool(), ""))
-   d <- b_file_3_parsed()
-   return(enumerate_replicate_combinations(d))
- })
- 
- # render select scatter plot
- output$b_file_3_select_scatterplot_ui <- renderUI({
-   req(b_file_3_available_replicates())
-   
-   rep_input = b_file_3_available_replicates()
-   reps_verbatim = gsub('rep','replicate ', rep_input)
-   reps_verbatim = gsub('\\.', ' and ', reps_verbatim)
-   reps = lapply(rep_input, function(x){x})
-   names(reps) = reps_verbatim
-   selectInput('b_file_3_select_scatterplot',
-               'Replicates to compare in scatter plot', 
-               choices = reps)
- })
- 
- # lists of data for basic summary
- b_file_1_summary <- reactive({
-   
-   req(b_file_1_sp_gg_all(), b_file_1_monitor_thresholds(), b_file_1_significant())
-   reps = lapply(b_file_1_sp_gg_all(), function(x) x$correlation)
-   return(genoppi:::get_replicate_summary_text(b_file_1_monitor_thresholds(), b_file_1_significant(), reps))
-   
- })
- 
- b_file_2_summary <- reactive({
-   
-   req(b_file_2_sp_gg_all(), b_file_2_monitor_thresholds(), b_file_2_significant())
-   reps = lapply(b_file_2_sp_gg_all(), function(x) x$correlation)
-   return(genoppi:::get_replicate_summary_text(b_file_2_monitor_thresholds(), b_file_2_significant(), reps))
-   
- })
- 
- 
- b_file_3_summary <- reactive({
-   
-   req(b_file_3_sp_gg_all(), b_file_3_monitor_thresholds(), b_file_3_significant())
-   reps = lapply(b_file_3_sp_gg_all(), function(x) x$correlation)
-   return(genoppi:::get_replicate_summary_text(b_file_3_monitor_thresholds(), b_file_3_significant(), reps))
-   
- })
- 
- # summary text
- 
- output$b_file_1_summary_text_ui <- renderText({
-   b_file_1_summary()$outtext
- })
- 
- output$b_file_2_summary_text_ui <- renderText({
-   b_file_2_summary()$outtext
- })
- 
- output$b_file_3_summary_text_ui <- renderText({
-   b_file_3_summary()$outtext
- })
- 
- # summary table
- 
- output$b_file_1_summary_table_ui <- renderTable({
-   b_file_1_summary()$outtable
- })
- 
- output$b_file_2_summary_table_ui <- renderTable({
-   b_file_2_summary()$outtable
- })
- 
- output$b_file_3_summary_table_ui <- renderTable({
-   b_file_3_summary()$outtable
- })
- 
- 
- # get significance thresholds for each file
- # file 1
- output$b_file_1_logfc_direction_ui <- renderUI({
-   radioButtons("b_file_1_logfc_direction", HTML("log<sub>2</sub>FC direction"),
-                c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
-                selected = 'positive',
-                inline = T)
- })
- 
- output$b_file_1_significance_type_ui <- renderUI({
-   radioButtons("b_file_1_significance_type", "Significance metric",
-                choiceNames = list("FDR", HTML("<i>P</i>-value")),
-                choiceValues = list("fdr",'pvalue'),
-                inline = T)
- })
- 
- output$b_file_1_FDR_thresh <- renderUI({
-   sliderInput("b_file_1_fdr_thresh", "FDR threshold",
-               min = 0, max = 1, value = 0.1, step = 0.01)
- })
- 
- output$b_file_1_PVal_thresh <- renderUI({
-   sliderInput("b_file_1_pval_thresh", HTML("<i>P</i>-value threshold"),
-               min = 0, max = 1, value = 0.05, step = 0.001)
- })
- 
- #TODO
- select_mod_ttest_server("b_file_1_select_mod_ttest")
- select_mod_ttest_server("b_file_2_select_mod_ttest")
- select_mod_ttest_server("b_file_3_select_mod_ttest")
- 
- 
- output$b_file_1_logFC_thresh <- renderUI({
-   req(b_file_1_parsed(), input$b_file_1_logfc_direction)
-   if(!is.null(b_file_1_parsed())){
-     limit <- calc_logfc_limit(b_file_1_parsed(), input$b_file_1_logfc_direction)
-     sliderInput("b_file_1_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                 min = 0, max = limit, value = 0, step = 0.1)
-   } else
-     sliderInput("b_file_1_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                 min = 0, max = 1, value = 0, step = 0.1)
- })  
- 
- # file 2
- output$b_file_2_logfc_direction_ui <- renderUI({
-   radioButtons("b_file_2_logfc_direction", HTML("log<sub>2</sub>FC direction"),
-                c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
-                selected = 'positive',
-                inline = T)
- })
- 
- output$b_file_2_significance_type_ui <- renderUI({
-   radioButtons("b_file_2_significance_type", "Significance metric",
-                choiceNames = list("FDR", HTML("<i>P</i>-value")),
-                choiceValues = list("fdr",'pvalue'),
-                inline = T)
- })
- 
- output$b_file_2_FDR_thresh <- renderUI({
-   sliderInput("b_file_2_fdr_thresh", "FDR threshold",
-               min = 0, max = 1, value = 0.1, step = 0.01)
- })
- 
- output$b_file_2_PVal_thresh <- renderUI({
-   sliderInput("b_file_2_pval_thresh", HTML("<i>P</i>-value threshold"),
-               min = 0, max = 1, value = 0.05, step = 0.001)
- })
- 
- output$b_file_2_logFC_thresh <- renderUI({
-   req(b_file_2_parsed(), input$b_file_2_logfc_direction)
-   if(!is.null(b_file_2_parsed())){
-     limit <- calc_logfc_limit(b_file_2_parsed(), input$b_file_2_logfc_direction)
-     sliderInput("b_file_2_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                 min = 0, max = limit, value = 0, step = 0.1)
-   } else
-     sliderInput("b_file_2_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                 min = 0, max = 1, value = 0, step = 0.1)
- })  
- 
- # file 3
- output$b_file_3_logfc_direction_ui <- renderUI({
-   radioButtons("b_file_3_logfc_direction", HTML("log<sub>2</sub>FC direction"),
-                c("Neg" = "negative", "Both" = "both","Pos" = "positive"),
-                selected = 'positive',
-                inline = T)
- })
- 
- output$b_file_3_significance_type_ui <- renderUI({
-   radioButtons("b_file_3_significance_type", "Significance metric",
-                choiceNames = list("FDR", HTML("<i>P</i>-value")),
-                choiceValues = list("fdr",'pvalue'),
-                inline = T)
- })
- 
- output$b_file_3_FDR_thresh <- renderUI({
-   sliderInput("b_file_3_fdr_thresh", "FDR threshold",
-               min = 0, max = 1, value = 0.1, step = 0.01)
- })
- 
- output$b_file_3_PVal_thresh <- renderUI({
-   sliderInput("b_file_3_pval_thresh", HTML("<i>P</i>-value threshold"),
-               min = 0, max = 1, value = 0.05, step = 0.001)
- })
- 
- output$b_file_3_logFC_thresh <- renderUI({
-   req(b_file_3_parsed(), input$b_file_3_logfc_direction)
-   if(!is.null(b_file_3_parsed())){
-     limit <- calc_logfc_limit(b_file_3_parsed(), input$b_file_3_logfc_direction)
-     sliderInput("b_file_3_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                 min = 0, max = limit, value = 0, step = 0.1)
-   } else
-     sliderInput("b_file_3_logFC_thresh", HTML("log<sub>2</sub>FC threshold"),
-                 min = 0, max = 1, value = 0, step = 0.1)
- })  
- 
- ##
- observeEvent(input$b_file_1_significance_type,{
-   if (input$b_file_1_significance_type == 'fdr'){
-     shinyjs::hide("b_file_1_pval_thresh")
-     shinyjs::show("b_file_1_fdr_thresh")
-   } else {
-     shinyjs::show("b_file_1_pval_thresh")
-     shinyjs::hide("b_file_1_fdr_thresh")
-   }
- })
- observeEvent(input$b_file_2_significance_type,{
-   if (input$b_file_2_significance_type == 'fdr'){
-     shinyjs::hide("b_file_2_pval_thresh")
-     shinyjs::show("b_file_2_fdr_thresh")
-   } else {
-     shinyjs::show("b_file_2_pval_thresh")
-     shinyjs::hide("b_file_2_fdr_thresh")
-   }
- })
- observeEvent(input$b_file_3_significance_type,{
-   if (input$b_file_3_significance_type == 'fdr'){
-     shinyjs::hide("b_file_3_pval_thresh")
-     shinyjs::show("b_file_3_fdr_thresh")
-   } else {
-     shinyjs::show("b_file_3_pval_thresh")
-     shinyjs::hide("b_file_3_fdr_thresh")
-   }
- })
- 
- ## track thresholds 
-
- b_file_1_monitor_thresholds <- reactive({
-   
-   html_translate_significance_thresholds(fc = input$b_file_1_logFC_thresh,
-                                         fc_dir = input$b_file_1_logfc_direction, 
-                                         sig_type = input$b_file_1_significance_type, 
-                                         fdr_thresh = input$b_file_1_fdr_thresh, 
-                                         pval_thresh = input$b_file_1_pval_thresh)
-   
- })
- 
- 
- b_file_2_monitor_thresholds <- reactive({
-   
-   html_translate_significance_thresholds(fc = input$b_file_2_logFC_thresh,
-                                         fc_dir = input$b_file_2_logfc_direction, 
-                                         sig_type = input$b_file_2_significance_type, 
-                                         fdr_thresh = input$b_file_2_fdr_thresh, 
-                                         pval_thresh = input$b_file_2_pval_thresh)
-   
- })
- b_file_3_monitor_thresholds <- reactive({
-   
-   html_translate_significance_thresholds(fc = input$b_file_3_logFC_thresh,
-                                         fc_dir = input$b_file_3_logfc_direction, 
-                                         sig_type = input$b_file_3_significance_type, 
-                                         fdr_thresh = input$b_file_3_fdr_thresh, 
-                                         pval_thresh = input$b_file_3_pval_thresh)
-   
- })
- 
-
- ## Handle significance for each file
- b_file_1_significant <- reactive({
-   req(input$b_file_1_significance_type)
-   if (!is.null(b_file_1_parsed())){
-     d = b_file_1_parsed()
-     if (input$b_file_1_significance_type == 'fdr'){
-       d1 = id_enriched_proteins(d, fdr_cutoff = input$b_file_1_fdr_thresh, logfc_dir = input$b_file_1_logfc_direction, 
-                                 logfc_cutoff = input$b_file_1_logFC_thresh)
-     } else {
-       d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$b_file_1_pval_thresh, logfc_dir = input$b_file_1_logfc_direction, 
-                                 logfc_cutoff = input$b_file_1_logFC_thresh)
-     }
-     return(d1)
-   } else (return(NULL))
- })
- 
- b_file_2_significant <- reactive({
-   req(input$b_file_2_significance_type)
-   if (!is.null(b_file_2_parsed())){
-     d = b_file_2_parsed()
-     if (input$b_file_2_significance_type == 'fdr'){
-       d1 = id_enriched_proteins(d, fdr_cutoff = input$b_file_2_fdr_thresh, logfc_dir = input$b_file_2_logfc_direction, 
-                                 logfc_cutoff = input$b_file_2_logFC_thresh)
-     } else {
-       d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$b_file_2_pval_thresh, logfc_dir = input$b_file_2_logfc_direction, 
-                                 logfc_cutoff = input$b_file_2_logFC_thresh)
-     }
-     return(d1)
-   } else (return(NULL))
- })
- 
- b_file_3_significant <- reactive({
-   req(input$b_file_3_significance_type)
-   if (!is.null(b_file_3_parsed())){
-     d = b_file_3_parsed()
-     if (input$b_file_3_significance_type == 'fdr'){
-       d1 = id_enriched_proteins(d, fdr_cutoff = input$b_file_3_fdr_thresh, logfc_dir = input$b_file_3_logfc_direction, 
-                                 logfc_cutoff = input$b_file_3_logFC_thresh)
-     } else {
-       d1 = id_enriched_proteins(d, fdr_cutoff = NULL, p_cutoff = input$b_file_3_pval_thresh, logfc_dir = input$b_file_3_logfc_direction, 
-                                 logfc_cutoff = input$b_file_3_logFC_thresh)
-     }
-     return(d1)
-   } else (return(NULL))
- })
- 
- # get overlap of each file
- b_overlap <- reactive({
-   
-   inputs = list(f1=b_file_1_significant(), f2=b_file_2_significant(), f3=b_file_3_significant())
-   genes = lapply(inputs, function(x) if (!is.null(x)) return(as.character(x$gene[x$significant])))
-   genes_clean = null_omit(genes)
-   return(genes_clean)
-   
- })
- 
- ### determine overlap
- b_mapping <- reactive({
-   genes = b_overlap()
-   req(genes)
-   if (length(genes) == 3){
-     venn = list(
-       f1 = genes$f1[genes$f1 %nin% c(genes$f3, genes$f2)], 
-       f2 = genes$f2[genes$f2 %nin% c(genes$f1, genes$f3)], 
-       f3 = genes$f3[genes$f3 %nin% c(genes$f1, genes$f2)],
-       f12 = intersect(genes$f1, genes$f2)[intersect(genes$f1, genes$f2) %nin% Reduce(intersect, genes)], 
-       f13 = intersect(genes$f1, genes$f3)[intersect(genes$f1, genes$f3) %nin% Reduce(intersect, genes)], 
-       f23 = intersect(genes$f2, genes$f3)[intersect(genes$f2, genes$f3) %nin% Reduce(intersect, genes)],
-       f123 = Reduce(intersect, genes)
-     )
-   } else if (length(genes) < 3){
-     venn = list(
-       f1 = genes$f1[genes$f1 %nin% c(genes$f3, genes$f2)], 
-       f2 = genes$f2[genes$f2 %nin% c(genes$f1, genes$f3)], 
-       f3 = genes$f3[genes$f3 %nin% c(genes$f1, genes$f2)],
-       f12 = intersect(genes$f1, genes$f2),
-       f13 = intersect(genes$f1, genes$f3),
-       f23 = intersect(genes$f2, genes$f3)
-     )
-   }
-
-   # venn colors
-   colors = list(
-     f1 = 'red',
-     f2 = 'yellow',
-     f3 = 'blue',
-     f12 = 'orange',
-     f13 = 'purple',
-     f23 = 'green',   
-     f123 = 'white'
-   )
-   
-   # build data 
-   venn_colored = lapply(1:length(venn), function(i){
-     x = venn[[i]]
-     color = colors[[i]]
-     dataset = names(venn)[i]
-     if (length(x) > 0) return(data.frame(gene=x, col_significant=color, dataset = dataset))
-   })
-   
-   names(venn_colored) = names(venn)
-   venn_colored = null_omit(venn_colored)
-   
-   return(venn_colored)
-
- })
- 
- # venn mapping for file 1
- b_file_1_mapping <- reactive({
-   
-   d = b_file_1_significant()
-   mapping = b_mapping()
-   mapping = mapping[grepl('1',names(mapping))]
-   mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
-   mapping = do.call(rbind, mapping)
-   mapping$label = F
-   return(mapping)
-   
- })
- 
- b_file_1_vp_gg <- reactive({
-   
-   req(b_file_1_significant())
-   d <- b_file_1_significant()
-   p <- plot_volcano_basic(d)
-   p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
-   return(p)
-   
- })
- 
- b_file_1_sp_gg_all <- reactive({
-   
-   req(b_file_1_significant())
-   d <- b_file_1_significant()
-   p <- plot_scatter_basic_all(d)
-   return(p)
-   
- })
- 
- b_file_1_sp_gg <- reactive({
-   
-   req(b_file_1_sp_gg_all(), input$b_file_1_select_scatterplot)
-   p <- b_file_1_sp_gg_all()[[input$b_file_1_select_scatterplot]]$ggplot
-   p$r <- p$correlation
-   p <- plot_overlay(p, list(overlay=b_file_1_mapping()))
-   return(p)
-   
- })
- 
- b_file_1_vp <- reactive({
-   req(input$b_file_1_pval_thresh, input$b_file_1_logFC_thresh, input$b_file_1_logfc_direction, input$b_file_1_significance_type)
-   p <- b_file_1_vp_gg()
-   p$overlay = p$overlay[order(p$overlay$dataset),]
-   p$overlay$legend_order = 1:nrow(p$overlay)
-   p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
-   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_1_pval_thresh, line_logfc = input$b_file_1_logFC_thresh, logfc_direction = input$b_file_1_logfc_direction, sig_type = input$b_file_1_significance_type)
-   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
-   return(p)
-   
- })
- 
- b_file_1_sp <- reactive({
-   
-   p <- b_file_1_sp_gg()
-   p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
-   p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
-   return(p)
-   
- })
-  
- output$b_file_1_volcano = plotly::renderPlotly({
-   req(b_file_1_vp())
-   b_file_1_vp()
- })
- 
- output$b_file_1_scatter = plotly::renderPlotly({
-   req(b_file_1_sp())
-   b_file_1_sp()
- })
- 
- 
- # venn mapping for file 1
- b_file_2_mapping <- reactive({
-   
-   d = b_file_2_significant()
-   mapping = b_mapping()
-   mapping = mapping[grepl('2',names(mapping))]
-   mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
-   mapping = do.call(rbind, mapping)
-   mapping$label = F
-   return(mapping)
-   
- })
- 
- b_file_2_vp_gg <- reactive({
-   
-   req(b_file_2_significant())
-   d <- b_file_2_significant()
-   p <- plot_volcano_basic(d)
-   p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
-   return(p)
-   
- })
- 
- b_file_2_sp_gg_all <- reactive({
-   
-   req(b_file_2_significant())
-   d <- b_file_2_significant()
-   p <- plot_scatter_basic_all(d)
-   return(p)
-   
- })
- 
- b_file_2_sp_gg <- reactive({
-   
-   req(b_file_2_sp_gg_all(), input$b_file_2_select_scatterplot)
-   p <- b_file_2_sp_gg_all()[[input$b_file_2_select_scatterplot]]$ggplot
-   p$r <- p$correlation
-   p <- plot_overlay(p, list(overlay=b_file_2_mapping()))
-   return(p)
-   
- })
- 
- b_file_2_vp <- reactive({
-   req(input$b_file_2_pval_thresh, input$b_file_2_logFC_thresh, input$b_file_2_logfc_direction, input$b_file_2_significance_type)
-   p <- b_file_2_vp_gg()
-   p$overlay = p$overlay[order(p$overlay$dataset),]
-   p$overlay$legend_order = 1:nrow(p$overlay)
-   p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
-   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_2_pval_thresh, line_logfc = input$b_file_2_logFC_thresh, logfc_direction = input$b_file_2_logfc_direction, sig_type = input$b_file_2_significance_type)
-   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
-   return(p)
-   
- })
- 
- b_file_2_sp <- reactive({
-   
-   p <- b_file_2_sp_gg()
-   p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
-   p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
-   
-   return(p)
-   
- })
- 
- output$b_file_2_volcano = plotly::renderPlotly({
-   req(b_file_2_vp())
-   b_file_2_vp()
- })
- 
- output$b_file_2_scatter = plotly::renderPlotly({
-   req(b_file_2_sp())
-   b_file_2_sp()
- })
- 
- b_file_3_mapping <- reactive({
-   
-   d = b_file_3_significant()
-   mapping = b_mapping()
-   mapping = mapping[grepl('3',names(mapping))]
-   mapping = lapply(mapping, function(x) to_overlay_data(x[x$gene %in% d$gene,]))
-   mapping = do.call(rbind, mapping)
-   mapping$label = F
-   return(mapping)
-   
- }) 
- 
- b_file_3_vp_gg <- reactive({
-   
-   req(b_file_3_significant())
-   d <- b_file_3_significant()
-   p <- plot_volcano_basic(d)
-   p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
-   return(p)
-   
- })
- 
- b_file_3_sp_gg_all <- reactive({
-   
-   req(b_file_3_significant())
-   d <- b_file_3_significant()
-   p <- plot_scatter_basic_all(d)
-   return(p)
-   
- })
- 
- b_file_3_sp_gg <- reactive({
-   
-   req(b_file_3_sp_gg_all(), input$b_file_3_select_scatterplot)
-   p <- b_file_3_sp_gg_all()[[input$b_file_3_select_scatterplot]]$ggplot
-   p$r <- p$correlation
-   p <- plot_overlay(p, list(overlay=b_file_3_mapping()))
-   return(p)
-   
- })
- 
- b_file_3_vp <- reactive({
-   req(input$b_file_3_pval_thresh, input$b_file_3_logFC_thresh, input$b_file_3_logfc_direction, input$b_file_3_significance_type)
-   p <- b_file_3_vp_gg()
-   p$overlay = p$overlay[order(p$overlay$dataset),]
-   p$overlay$legend_order = 1:nrow(p$overlay)
-   p <- make_interactive(p, legend = T)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
-   p <- genoppi::add_plotly_threshold_lines (p, line_pvalue = input$b_file_3_pval_thresh, line_logfc = input$b_file_3_logFC_thresh, logfc_direction = input$b_file_3_logfc_direction, sig_type = input$b_file_3_significance_type)
-   p <- add_plotly_layout_volcano(p, NULL, NULL, orientation = 'h', legend.y = 10)
-   return(p)
-   
- })
- 
- b_file_3_sp <- reactive({
-   
-   p <- b_file_3_sp_gg()
-   p <- make_interactive(p, legend = F)
-   if (input$b_goi_search_rep != '') p <- add_plotly_markers_search(p, b_search_gene(), alpha = input$b_goi_search_rep_alpha)
-   p <- add_plotly_layout_scatter(p, NULL, NULL, orientation = 'h')
-   return(p)
-   
- })
- 
- output$b_file_3_volcano = plotly::renderPlotly({
-   req(b_file_3_vp())
-   b_file_3_vp()
- })
- 
- output$b_file_3_scatter = plotly::renderPlotly({
-   req(b_file_3_sp())
-   b_file_3_sp()
- })
- 
- # draw venn diagram for gnomAD
- output$b_file_comparison_venn_ui <- renderPlot({
-   req(b_overlap())
-   diagram = b_overlap()
-   if (length(diagram) > 1) {
-     color_dict = list(f1='red',f2='yellow',f3='blue')
-     colors = unlist(lapply(names(diagram), function(x) color_dict[[x]]))
-     names(diagram) = gsub('f', 'file ', names(diagram))
-     v = draw_genoppi_venn(diagram, color = colors, main = '')
-     grid::grid.newpage()
-     grid::pushViewport(grid::viewport(width=unit(0.9, "npc"), height = unit(0.9, "npc")))
-     grid::grid.draw(v)
-   } else return(NULL)
-
- })
- 
- output$b_file_comparison_venn_explanations_ui <- renderUI({
-   
-   req(b_mapping())
-   input = unique(names(b_mapping()))
-   
-   text = list(
-     f1 = paste(bold('f1:'), 'significant proteins unique to file1 (red)'),
-     f2 = paste(bold('f2:'), 'significant proteins unique to file2 (yellow)'),
-     f3 = paste(bold('f3:'), 'significant proteins unique to file3 (blue)'),
-     f12 = paste(bold('f12:'), 'significant proteins identified in file1 and file2 (orange)'),
-     f13 = paste(bold('f13:'), 'significant proteins identified in file1 and file3 (purple)'),
-     f23 = paste(bold('f23:'), 'significant proteins identified in file2 and file3 (green)'),
-     f123 = paste(bold('f123:'), 'significant proteins identified in file1, file2, and file3 (white)')
-   )
-   
-  return(HTML(paste(text[names(text) %in% input], collapse = "<br/>")))
-   
- })
- 
- # text for venn diagram
- b_file_comparison_venn_verbatim <- reactive({
-   req(b_overlap())
-   overlap = b_overlap()
-   
-   # get thresholds and combine them 
-   all_thresholds = list(f1 = b_file_1_monitor_thresholds(),
-                         f2 = b_file_2_monitor_thresholds(),
-                         f3 = b_file_3_monitor_thresholds())
-   thresholds = lapply(all_thresholds[names(all_thresholds) %in% names(overlap)], 
-                       function(x) paste(x$sig$sig, x$fc$sig, sep = ', '))
-   
-   # generate text for displaying
-   result = lapply(names(overlap), function(f){
-     paste0(gsub('f', 'file ', f),' = proteomic data subsetted by ', thresholds[[f]], " &#40;", bold(length(overlap[[f]])), "&#41;")
-   })
-   
-   names(result) <- names(overlap)
-   return(result)
- })
-  
- output$b_file_comparison_venn_verbatim_ui <- renderUI({
-   output <- b_file_comparison_venn_verbatim()
-   HTML(paste(output, collapse = "<br/>"))
- })
- 
- # select 
- output$b_file_comparison_data_table_select_ui <- renderUI({
-   overlap = b_mapping()
-            selectInput("b_file_comparison_data_table_select",
-                        "Subset data",
-                        c("All",
-                          unique(as.character(names(overlap)))))
- })
-
- # make data.table for showing overlap
- b_file_comparison_data_table <- reactive({
-   req(b_overlap())
-   overlap = b_mapping()
-   selected = input$b_file_comparison_data_table_select
-   if (any(selected %nin% 'All')){
-     overlap = overlap[names(overlap) %in% selected]
-   }
-   
-   lst = lapply(names(overlap), function(x){overlap[[x]][,c('gene','dataset')]})
-   df = do.call(rbind, lst)
-   return(df)
- })
- 
- # show table
- output$b_file_comparison_data_table_ui <- DT::renderDataTable({
-   req(b_file_comparison_data_table())
-   df = b_file_comparison_data_table()
-   DT::datatable(df)
- })
- #------------------------------------------------------
- # download multiple files volcano and scatter plots
- 
- # download basic volcano and scatter plot
- input_b_file_1_vp_gg <- function(){b_file_1_vp_gg()}
- output$b_file_1_volcano_download = downloadHandler(
-   filename = paste("genoppi-multi-volcano-file1",".png", sep=""),
-   content = function(file) {
-     device <- function(..., width, height) {
-       grDevices::png(..., width = width, height = height,
-                      res = 300, units = "in")
-     }
-     ggsave(file, plot = theme_volcano(input_b_file_1_vp_gg()), device = device, 
-            width = global.img.scatter.download.width,
-            height = global.img.scatter.download.height)
-   })
- 
- input_b_file_1_sp_gg <- function(){b_file_1_sp_gg()}
- output$b_file_1_scatter_download = downloadHandler(
-   filename = paste("genoppi-multi-scatter-file1",".png", sep=""),
-   content = function(file) {
-     device <- function(..., width, height) {
-       grDevices::png(..., width = width, height = height,
-                      res = 300, units = "in")
-     }
-     ggsave(file, plot = theme_scatter(input_b_file_1_sp_gg()), device = device, 
-            width = global.img.scatter.download.width,
-            height = global.img.scatter.download.height)
-   })
- 
- # download proteomic data
- output$b_file_1_mapping_download <- downloadHandler(
-   filename = function() {
-     paste("genoppi-f1-multiple-comparison",".csv", sep="")
-   },
-   content = function(file) {
-     write.csv(b_file_1_significant(), file, row.names = F)
-   }
- )
- 
- # show/hide buttons
- observeEvent(b_file_1_significant(),{
-   shinyjs::show("b_file_1_volcano_download")
-   shinyjs::show("b_file_1_scatter_download")
-   shinyjs::show("b_file_1_mapping_download")
- })
- 
- # download basic volcano and scatter plot
- input_b_file_2_vp_gg <- function(){b_file_2_vp_gg()}
- output$b_file_2_volcano_download = downloadHandler(
-   filename = paste("genoppi-multi-volcano-file2",".png", sep=""),
-   content = function(file) {
-     device <- function(..., width, height) {
-       grDevices::png(..., width = width, height = height,
-                      res = 300, units = "in")
-     }
-     ggsave(file, plot = theme_volcano(input_b_file_2_vp_gg()), device = device, 
-            width = global.img.scatter.download.width,
-            height = global.img.scatter.download.height)
-   })
- 
- input_b_file_2_sp_gg <- function(){b_file_2_sp_gg()}
- output$b_file_2_scatter_download = downloadHandler(
-   filename = paste("genoppi-multi-scatter-file2",".png", sep=""),
-   content = function(file) {
-     device <- function(..., width, height) {
-       grDevices::png(..., width = width, height = height,
-                      res = 300, units = "in")
-     }
-     ggsave(file, plot = theme_scatter(input_b_file_2_sp_gg()), device = device, 
-            width = global.img.scatter.download.width,
-            height = global.img.scatter.download.height)
-   })
- 
- # download proteomic data
- output$b_file_2_mapping_download <- downloadHandler(
-   filename = function() {
-     paste("genoppi-f2-multiple-comparison",".csv", sep="")
-   },
-   content = function(file) {
-     write.csv(b_file_2_significant(), file, row.names = F)
-   }
- )
- 
- # show/hide buttons
- observeEvent(b_file_2_significant(),{
-   shinyjs::show("b_file_2_volcano_download")
-   shinyjs::show("b_file_2_scatter_download")
-   shinyjs::show("b_file_2_mapping_download")
- })
- 
- 
- # download basic volcano and scatter plot
- input_b_file_3_vp_gg <- function(){b_file_3_vp_gg()}
- output$b_file_3_volcano_download = downloadHandler(
-   filename = paste("genoppi-multi-volcano-file3",".png", sep=""),
-   content = function(file) {
-     device <- function(..., width, height) {
-       grDevices::png(..., width = width, height = height,
-                      res = 300, units = "in")
-     }
-     ggsave(file, plot = theme_volcano(input_b_file_3_vp_gg()), device = device, 
-            width = global.img.scatter.download.width,
-            height = global.img.scatter.download.height)
-   })
- 
- input_b_file_3_sp_gg <- function(){b_file_3_sp_gg()}
- output$b_file_3_scatter_download = downloadHandler(
-   filename = paste("genoppi-multi-scatter-file3",".png", sep=""),
-   content = function(file) {
-     device <- function(..., width, height) {
-       grDevices::png(..., width = width, height = height,
-                      res = 300, units = "in")
-     }
-     ggsave(file, plot = theme_scatter(input_b_file_3_sp_gg()), device = device, 
-            width = global.img.scatter.download.width,
-            height = global.img.scatter.download.height)
-   })
- 
- # download mapping
- output$b_file_3_mapping_download <- downloadHandler(
-   filename = function() {
-     paste("genoppi-f3-multiple-comparison",".csv", sep="")
-   },
-   content = function(file) {
-     write.csv(b_file_3_significant(), file, row.names = F)
-   }
- )
- 
- # show/hide buttons
- observeEvent(b_file_3_significant(),{
-   shinyjs::show("b_file_3_volcano_download")
-   shinyjs::show("b_file_3_scatter_download")
-   shinyjs::show("b_file_3_mapping_download")
- })
- 
- # download protein family mapping? gene annotations
- output$b_file_comparison_data_table_download_ui <- downloadHandler(
-   filename = function() {
-     paste("genoppi-multi-venn-mapping",".csv", sep="")
-   },
-   content = function(file) {
-    df = b_file_comparison_data_table()
-    write.csv(df, file, row.names = F)
-   }
- )
   ##### GENERAL #####
   #documentation
   output$info_gwas_ui <- renderUI({actionLink('info_gwas', ' ', icon = icon('question-circle'))})

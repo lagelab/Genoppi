@@ -10,7 +10,6 @@ inputFileSideBar <- function(id) {
 
 inputFileServer <- function(id, 
                             dataPathServer, 
-                            toggleSingleBasicServer, 
                             errorValues) {
   if (!is.reactive(dataPathServer)){
     stop("dataPathServer passed to inputFileServer is not reactive")}
@@ -41,9 +40,6 @@ inputFileServer <- function(id,
       validate(need(!is.null(input$input_file_sidebar), 
                     'input_file_sidebar in inputFileServer is NULL'))
       dataPathServer(input$input_file_sidebar$datapath)
-      ifelse(is.null(toggleSingleBasicServer()), 
-             toggleSingleBasicServer(1),
-             toggleSingleBasicServer(toggleSingleBasicServer()+1))
     })
     
     observeEvent(input$input_file_welcome, {

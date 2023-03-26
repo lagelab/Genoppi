@@ -30,12 +30,13 @@ drawVolcanoPlot <- function(id) {
     title = tagList(shiny::icon('chart-area'), "Volcano plot"),
     width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE,
     fluidRow(
-      column(11, shinyjs::hidden(myDownloadButton(
+      column(12, shinyjs::hidden(myDownloadButton(
         NS(id, "a_volcano_plot_download"), 'Volcano plot')))
     ),
     fluidRow(style = "padding-bottom:75px",
              # column(1, plotOutput(NS(id, "FDRColorBar"), width = "50px")),
              column(12, shinycssloaders::withSpinner(
+               # plotOutput(NS(id, "vp"))))
                plotly::plotlyOutput(NS(id, "VolcanoPlot")), spinner_type)) #, width = "550px", height = "550px"
     ),
   )
@@ -45,8 +46,7 @@ drawVolcanoServer <- function(id,
                               plotValues,
                               sigificanceServer,
                               sigColorServer, 
-                              insigColorServer,
-                              a_vp_colorbar) {
+                              insigColorServer) {
   if (!is.reactivevalues(plotValues)){
     stop("plotValues passed to drawVolcanoServer is not reactiveValues")}
   if (!is.reactive(sigificanceServer)){
@@ -56,13 +56,6 @@ drawVolcanoServer <- function(id,
   if (!is.reactive(insigColorServer)){
     stop("insigColorServer passed to drawVolcanoServer is not reactive")}
   moduleServer(id, function(input, output, session){
-    # output$FDRColorBar <- renderPlot({
-    #   validate(need(
-    #     !is.null(sigificanceServer()), 
-    #     "sigificanceServer passed to drawVolcanoServer is null"))
-    #   a_vp_colorbar()
-    # })
-    
     observeEvent(is.null(plotValues$volcano_basic),{
       shinyjs::hide("a_volcano_plot_download")})
     observeEvent(ignoreInit = T,
@@ -142,6 +135,7 @@ overlayVolcanoServer <- function(id,
         # if (!is.null(baitServer())) {
         #   p <- plot_overlay(p, as.bait(baitServer())) # add bait
         # }
+        output$vp <- renderPlot(p)
         p <- make_interactive(p, legend = T)
         if (!is.null(goiServer())) {
           p <- add_plotly_markers_search(
@@ -160,11 +154,11 @@ overlayVolcanoServer <- function(id,
           logfc_direction = statsParamsValues$logfcDir, 
           sig_type = statsParamsValues$signifType
         )
-        p <- add_plotly_layout_volcano(
-          p, 
-          width = global.basic.volcano.width, 
-          height = global.basic.volcano.height
-        )
+        # p <- add_plotly_layout_volcano(
+        #   p, 
+        #   width = global.basic.volcano.width, 
+        #   height = global.basic.volcano.height
+        # )
         output$VolcanoPlot <- plotly::renderPlotly({
           # validate(need(a_file_pulldown_r()  != '', "Upload file"))
           p

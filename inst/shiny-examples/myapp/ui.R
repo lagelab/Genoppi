@@ -19,15 +19,6 @@ body <- dashboardBody(
                                  column(width = 8,
                                         drawVolcanoPlot("volcano_plot"),
                                         plotGGpairFrame("plot_ggpair"),
-                                        # box(
-                                        #   title = tagList(img(src='icon_scatter.png',width='22px'), "GGPairs"), width = NULL, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = FALSE,
-                                        #   #fluidRow(
-                                        #   #  column(11, shinyjs::hidden(myDownloadButton("a_scatter_plot_download", 'Scatter plot')))
-                                        #   #),
-                                        #   fluidRow(style = "padding-bottom:75px",
-                                        #     column(11, shinycssloaders::withSpinner(plotly::plotlyOutput("ScatterPlot"), spinner_type)) #, width = "550px", height = "550px"
-                                        #   )
-                                        # )
                                  ),
                         ),
                         tabPanel("Integrated plotting", id = 'integratedplot', value = "p2", 
@@ -325,235 +316,29 @@ body <- dashboardBody(
                         tabPanel("Basic plotting", 
                                  br(),
                                  column(4,
-                                        box(
-                                          title = 'Settings for file 1', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(6, 
-                                                          uiOutput("b_file_1_significance_type_ui"),
-                                                          uiOutput("b_file_1_FDR_thresh"),
-                                                          uiOutput("b_file_1_PVal_thresh"),
-                                                          select_mod_ttest_ui("b_file_1_select_mod_ttest")
-                                                          
-                                                   ),
-                                                   column(6,
-                                                          uiOutput('b_file_1_logfc_direction_ui'),
-                                                          uiOutput("b_file_1_logFC_thresh"),
-                                                   )
-                                                   
-                                                 ),
-                                                 fluidRow(
-                                                   uiOutput('b_file_1_select_scatterplot_ui')
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = 'Summary for file 1', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE, collapsed = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, 
-                                                          uiOutput("b_file_1_summary_text_ui")
-                                                   ),
-                                                   column(12,
-                                                          tableOutput('b_file_1_summary_table_ui')
-                                                   ),
-                                                   column(12, 
-                                                          shinyjs::hidden(myDownloadButton("b_file_1_mapping_download", 'Proteomic data', icon("download"))))
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_1_volcano_download", 'Volcano plot')))
-                                                 ),
-                                                 fluidRow(
-                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_1_volcano'), spinner_type),
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_1_scatter_download", 'Scatter plot')))
-                                                 ),
-                                                 fluidRow(
-                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_1_scatter'), spinner_type),
-                                                 )
-                                          )
-                                        )
+                                        multi_statsParamsOptions("multi_stats_input1"),
+                                        summaryBox("summary1"), 
+                                        drawVolcanoPlot("volcano_plot1"),
+                                        basicPlotInputBox("basic_plot_inputs1"),
+                                        plotGGpairFrame("plot_ggpair1"),
                                  ),
                                  column(4,
-                                        box(
-                                          title = 'Settings for file 2', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(6, 
-                                                          uiOutput("b_file_2_significance_type_ui"),
-                                                          uiOutput("b_file_2_FDR_thresh"),
-                                                          uiOutput("b_file_2_PVal_thresh"),
-                                                          select_mod_ttest_ui("b_file_2_select_mod_ttest")
-                                                   ),
-                                                   column(6,
-                                                          uiOutput('b_file_2_logfc_direction_ui'),
-                                                          uiOutput("b_file_2_logFC_thresh")
-                                                   )
-                                                 ),
-                                                 fluidRow(
-                                                   uiOutput('b_file_2_select_scatterplot_ui')
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = 'Summary for file 2', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE, collapsed = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, 
-                                                          uiOutput("b_file_2_summary_text_ui")
-                                                   ),
-                                                   column(12,
-                                                          tableOutput('b_file_2_summary_table_ui')
-                                                   ),
-                                                   column(12,
-                                                          shinyjs::hidden(myDownloadButton("b_file_2_mapping_download", 'Proteomic data', icon("download")))
-                                                          )
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_2_volcano_download", 'Volcano plot')))
-                                                 ),
-                                                 fluidRow(
-                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_2_volcano'), spinner_type),
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_2_scatter_download", 'Scatter plot')))
-                                                 ),
-                                                 fluidRow(
-                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_2_scatter'), spinner_type),
-                                                 )
-                                          )
-                                        )
+                                        multi_statsParamsOptions("multi_stats_input2"),
+                                        summaryBox("summary2"), 
+                                        drawVolcanoPlot("volcano_plot2"),
+                                        basicPlotInputBox("basic_plot_inputs2"),
+                                        plotGGpairFrame("plot_ggpair2"),
                                  ),
                                  column(4,
-                                        box(
-                                          title = 'Settings for file 3', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(6, 
-                                                          uiOutput("b_file_3_significance_type_ui"),
-                                                          uiOutput("b_file_3_FDR_thresh"),
-                                                          uiOutput("b_file_3_PVal_thresh"),
-                                                          select_mod_ttest_ui("b_file_3_select_mod_ttest")
-                                                          ),
-                                                   column(6,
-                                                          uiOutput('b_file_3_logfc_direction_ui'),
-                                                          uiOutput("b_file_3_logFC_thresh")
-                                                          )
-                                                 ),
-                                                 fluidRow(
-                                                   uiOutput('b_file_3_select_scatterplot_ui')
-                                                 )
-                                                )
-                                        ),
-                                        box(
-                                          title = 'Summary for file 3', width = 12, solidHeader = TRUE, status = 'primary', collapsible = TRUE, collapsed = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, 
-                                                          uiOutput("b_file_3_summary_text_ui")
-                                                   ),
-                                                   column(12,
-                                                          tableOutput('b_file_3_summary_table_ui')
-                                                   ),
-                                                   column(12,
-                                                          shinyjs::hidden(myDownloadButton("b_file_3_mapping_download", 'Proteomic data', icon("download")))
-                                                          )
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = tagList(shiny::icon('chart-area'), "Volcano plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_3_volcano_download", 'Volcano plot')))
-                                                 ),
-                                                 fluidRow(
-                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_3_volcano'), spinner_type),
-                                                 )
-                                          )
-                                        ),
-                                        box(
-                                          title = tagList(img(src='icon_scatter.png',width='22px'), "Scatter plot"), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                          column(12,
-                                                 fluidRow(
-                                                   column(12, shinyjs::hidden(myDownloadButton("b_file_3_scatter_download", 'Scatter plot')))
-                                                 ),
-                                                 fluidRow(
-                                                   shinycssloaders::withSpinner(plotly::plotlyOutput('b_file_3_scatter'), spinner_type),
-                                                 )
-                                          )
-                                        )
-                                )
+                                        multi_statsParamsOptions("multi_stats_input3"),
+                                        summaryBox("summary3"), 
+                                        drawVolcanoPlot("volcano_plot3"),
+                                        basicPlotInputBox("basic_plot_inputs3"),
+                                        plotGGpairFrame("plot_ggpair3"),
+                                ),
+                                column(12, plotVennDiagram('venn'))
                          
                         ),
-                        tabPanel("Venn diagrams", 
-                                 br(),
-                                 column(6,
-                                   box(
-                                     title = tagList(img(src='icon_venn_a.png',width='22px'), 'Venn diagrams'), width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                     column(1, ''),
-                                     column(8,
-                                            fluidRow(
-                                              plotOutput('b_file_comparison_venn_ui', width = "280px", height = "280px")
-                                            ),
-                                            fluidRow(
-                                              uiOutput('b_file_comparison_venn_verbatim_ui')
-                                            )
-                                     ),
-                                     column(3, '')
-                                   ),
-                                   box(
-                                     title = 'Venn diagram explanations', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE,
-                                     column(12,
-                                            fluidRow(
-                                              uiOutput('b_file_comparison_venn_explanations_ui')
-                                            )
-                                     )
-                                   )
-                                 ),
-                                 column(6,
-                                        box(
-                                          title = 'Explore overlap', width = 12, solidHeader = TRUE, status = 'success', collapsible = TRUE, collapsed = TRUE,
-                                          fluidRow(
-                                            column(4, 
-                                                   uiOutput('b_file_comparison_data_table_select_ui')   
-                                                   ),
-                                            column(4,
-                                                   myDownloadButton("b_file_comparison_data_table_download_ui", 'Genes', icon("download"))
-                                                   ),
-                                            column(4,
-                                                   ''
-                                                   )
-                                          ),
-                                          fluidRow(
-                                            column(12,
-                                                   DT::dataTableOutput('b_file_comparison_data_table_ui')
-                                            )
-                                          )
-                                        )
-                                 )
-                        )
             )
     ),
     tabItem(tabName = "guide",
@@ -573,9 +358,13 @@ body <- dashboardBody(
                          h1(strong("Genoppi"), style = "font-size:100px;"),
                          br(),
                          inputFileWelcome("single_file"),
-                         getExampleButton("single_file"),
+                         HTML(paste('Try a single',
+                                    getExampleButton("single_file", "example file"),
+                                    'or',
+                                    getExampleButton("multi_file", "multiple example files"))),
+                         # getExampleButton("single_file"),
                          br(),
-                         uiOutput('a_get_example_file_ui')
+                         # uiOutput('a_get_example_file_ui')
                     )
                   ),
                   fluidRow(
