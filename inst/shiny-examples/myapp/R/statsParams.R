@@ -40,7 +40,7 @@ multi_statsParamsOptions <- function(id, collapsed = TRUE) {
   box(
     title = "Statistics parameters", width = NULL, solidHeader = TRUE, 
     status = "primary", collapsible = TRUE, collapsed = collapsed,
-    fluidRow(column(6, uiOutput(NS(id, "modTTest"))), 
+    fluidRow(column(6, shinyjs::hidden(uiOutput(NS(id, "modTTest")))), 
              column(6, uiOutput(NS(id, "logfcDir")))), 
     fluidRow(column(6, uiOutput(NS(id, "signifType"))), 
              column(6, uiOutput(NS(id, "reset")))),

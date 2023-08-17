@@ -39,7 +39,8 @@ Imports:
     ggplot2,
     hash,
     magrittr,
-    GGally
+    GGally,
+    ggVennDiagram,
 Encoding: UTF-8
 RoxygenNote: 7.2.0
 Collate: 

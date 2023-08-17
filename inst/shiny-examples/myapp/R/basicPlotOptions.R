@@ -67,8 +67,6 @@ basicPlotParamServer <- function(id,
                   min = 0, max = 1, value = 0.8, step = 0.05)
     })
     output$color_theme_indv_sig <- renderUI({
-      # validate(need(a_file_pulldown_r()  != '', ""))
-      # label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
       label = (HTML('Colors for significant proteins'))
       colourpicker::colourInput(ns('color_indv_sig_in'), label, 
                                 value = sigColorServer(), showColour = 'both', 
@@ -76,8 +74,6 @@ basicPlotParamServer <- function(id,
                                 allowedCols = allowed_colors)
     })
     output$color_theme_indv_insig <- renderUI({
-      # validate(need(a_file_pulldown_r()  != '', ""))
-      # label = (HTML(paste(c('Colors for ',monitor_significance_thresholds()$sig, 'and', monitor_logfc_threshold()$sig))))
       label = (HTML('Colors for insignificant proteins'))
       colourpicker::colourInput(ns('color_indv_insig_in'), label, 
                                 value = insigColorServer(), showColour = 'both', 

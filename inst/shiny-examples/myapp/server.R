@@ -133,9 +133,9 @@ shinyServer(function(input, output, session){
   multi_insigColorS3 <- insigColorServer("multi_insig_color3")
   
   # Server for storing reactive error messages
-  multi_errVals1 <- errorValues("error_messsages")
-  multi_errVals2 <- errorValues("error_messsages")
-  multi_errVals3 <- errorValues("error_messsages")
+  multi_errVals1 <- errorValues("error_messsages1")
+  multi_errVals2 <- errorValues("error_messsages2")
+  multi_errVals3 <- errorValues("error_messsages3")
   
   # Servers for reading data in multi file mode
   multi_sigS1 <- sigificanceServer("mutli1")
@@ -176,8 +176,130 @@ shinyServer(function(input, output, session){
   multi_inputFileS1 <- inputFileServer("multi_file1", multi_dataPathS1, multi_errVals1)
   multi_inputFileS2 <- inputFileServer("multi_file2", multi_dataPathS2, multi_errVals2)
   multi_inputFileS3 <- inputFileServer("multi_file3", multi_dataPathS3, multi_errVals3)
-  vennDfS <- dataServer("venn")
-  vennDiagram <- plotVennServer('venn', multi_sigS1, multi_sigS2, multi_sigS3, multi_sharedPlotVals, vennDfS)
+  multi_FileName1 <- reactiveVal(value = "File1")
+  multi_FileName2 <- reactiveVal(value = "File2")
+  multi_FileName3 <- reactiveVal(value = "File3")
+  multi_FileNameS1<- multiFileNameServer("multi_file1", "File1", multi_FileName1)
+  multi_FileNameS2<- multiFileNameServer("multi_file2", "File2", multi_FileName2)
+  multi_FileNameS3<- multiFileNameServer("multi_file3", "File3", multi_FileName3)
+  
+  # track the number of valid datapath
+  col1_filled <- reactiveVal(value = 0)
+  col2_filled <- reactiveVal(value = 0)
+  col3_filled <- reactiveVal(value = 0)
+  multi_col_width <- reactiveVal(value = 12)
+  observeEvent({col1_filled(); col2_filled(); col3_filled()}, {
+    n_col_filled <- col1_filled() + col2_filled() + col3_filled()
+    if (n_col_filled > 0) {multi_col_width(12 / n_col_filled)}
+  })
+
+  # TODO handle input file error
+  # show hide multi file columns based on input
+  observeEvent(multi_dataPathS1(), {
+    if (!is.null(multi_dataPathS1()) &
+        (is.null(multi_errVals1$input_errors) |
+        !grepl('Error', multi_errVals1$input_errors, fixed = T))) {
+      shinyjs::show(id='multifile_column_1')
+      col1_filled(1)
+    } else {
+      shinyjs::hide(id='multifile_column_1')
+      col1_filled(0)
+    }
+  })
+  observeEvent(multi_dataPathS2(), {
+    if (!is.null(multi_dataPathS2()) &
+        (is.null(multi_errVals2$input_errors) |
+        !grepl('Error', multi_errVals2$input_errors, fixed = T))) {
+      shinyjs::show(id='multifile_column_2')
+      col2_filled(1)
+    } else {
+      shinyjs::hide(id='multifile_column_2')
+      col2_filled(0)
+    }
+  })
+  observeEvent(multi_dataPathS3(), {
+    if (!is.null(multi_dataPathS3()) &
+        (is.null(multi_errVals3$input_errors) |
+        !grepl('Error', multi_errVals3$input_errors, fixed = T))) {
+      shinyjs::show(id='multifile_column_3')
+      col3_filled(1)
+    } else {
+      shinyjs::hide(id='multifile_column_3')
+      col3_filled(0)
+    }
+  })
+  
+  # wrap the multifile column in one uiOutput for dynamic hide/show
+  observeEvent(multi_col_width(), {
+    output$multifile_column_1 <- renderUI({
+      column(
+        multi_col_width(),
+        multi_statsParamsOptions("multi_stats_input1"),
+        summaryBox("summary1"),
+        drawVolcanoPlot("volcano_plot1"),
+        basicPlotInputBox("basic_plot_inputs1"),
+        plotGGpairFrame("plot_ggpair1"),
+      )
+    })
+    output$multifile_column_2 <- renderUI({
+      column(
+        multi_col_width(),
+        multi_statsParamsOptions("multi_stats_input2"),
+        summaryBox("summary2"),
+        drawVolcanoPlot("volcano_plot2"),
+        basicPlotInputBox("basic_plot_inputs2"),
+        plotGGpairFrame("plot_ggpair2"),
+      )
+    })
+    output$multifile_column_3 <- renderUI({
+      column(
+        multi_col_width(),
+        multi_statsParamsOptions("multi_stats_input3"),
+        summaryBox("summary3"),
+        drawVolcanoPlot("volcano_plot3"),
+        basicPlotInputBox("basic_plot_inputs3"),
+        plotGGpairFrame("plot_ggpair3"),
+      )
+    })
+  })
+  
+  
+  multiFileLogFCCorrelationDf <- reactiveVal(value = NULL)
+  multiFileLogFCCorrelationPlot <- reactiveVal(value = NULL)
+  logfcCorrelationBothSigColor <- reactiveVal(value = 'green')
+  logfcCorrelationFirstSigColor <- reactiveVal(value = '#FF00D7')
+  logfcCorrelationSecondSigColor <- reactiveVal(value = 'orange')
+  logfcCorrelationNoSigColor <- reactiveVal(value = '#7F7F80')
+  ComparisonPlotParamServer(
+    'logfc_comparison',
+    logfcCorrelationBothSigColor,
+    logfcCorrelationFirstSigColor,
+    logfcCorrelationSecondSigColor,
+    logfcCorrelationNoSigColor)
+  mulitFilelogFCCorrelation <- logFCCorrelationServer(
+    'logfc_comparison',
+    logfcCorrelationBothSigColor,
+    logfcCorrelationFirstSigColor,
+    logfcCorrelationSecondSigColor,
+    logfcCorrelationNoSigColor,
+    multi_sigS1,
+    multi_sigS2,
+    multi_sigS3,
+    multi_FileName1,
+    multi_FileName2,
+    multi_FileName3,
+    multiFileLogFCCorrelationPlot,
+    multiFileLogFCCorrelationDf)
+  vennDfS <- dataServer("multifile_venn")
+  vennDiagram <- plotVennServer('multifile_venn', 
+                                multi_sigS1, 
+                                multi_sigS2, 
+                                multi_sigS3,
+                                multi_FileName1,
+                                multi_FileName2,
+                                multi_FileName3,
+                                multi_sharedPlotVals, 
+                                vennDfS)
   
   multi_exampleBtn <- getMultiExampleServer(
     "multi_file", 
@@ -299,8 +421,7 @@ shinyServer(function(input, output, session){
   enrichmentStatsS <- enrichmentStatsServer(
     "data", mapAccessionToGeneS, statsParamVals, dataS, errVals)
   findSigS <- findSignificantServer("data", statsParamVals, dataS, sigS)
-  inputFileS <- inputFileServer(
-    "single_file", dataPathS, errVals)
+  inputFileS <- inputFileServer("single_file", dataPathS, errVals)
   exampleBtn <- getExampleServer("single_file", dataPathS, singleFilePanelUpdate)
   
   # Servers for rendering UI and controlling I/O
