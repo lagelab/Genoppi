@@ -44,7 +44,7 @@ global.img.scatter.download.height = 8
 options(shiny.maxRequestSize=30*1024^2) # max 30MB upload
 
 # what is the allowed palette of symbols in plotly
-plotly_symbols = table_symbols()$symbol
+plotly_symbols = genoppi::table_symbols()$symbol
 #plotly_symbols = plotly::schema(F)$traces$scatter$attributes$marker$symbol$values
 allowed_plotly_symbols = plotly_symbols[!grepl('^[0-9]+$', plotly_symbols)]
 
