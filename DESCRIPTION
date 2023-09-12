@@ -13,7 +13,7 @@ Authors@R:
       person(given = "Joshua",
              family = "Ching",
              role = c("aut"),
-             email = "jching@broadinstitute.org")
+             email = "jching@broadinstitute.org"))
 Description: An open-source software for robust and standardized integration of proteomic and genetic data.
 License: MIT + file LICENSE
 LazyData: TRUE

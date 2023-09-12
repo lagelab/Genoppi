@@ -1,295 +1,391 @@
-mean(c(0.752, 0.822, 0.793))
-mean(c(0.745, 0.725, 0.528))
-mean(c(0.887, 0.862, 0.883))
-mean(c(0.673, 0.568, 0.613))
-mean(c(0.749, 0.761, 0.703))
-mean(c(0.593, 0.872, 0.528))
-mean(c(0.770, 0.801, 0.776))
-mean(c(0.765, 0.750, 0.777))
-mean(c(0.690, 0.755, 0.807))
-mean(c(0.766, 0.836, 0.696))
-mean(c(0.895, 0.868, 0.878))
-mean(c(0.830, 0.674, 0.679))
-mean(c(0.775, 0.563, 0.689))
-mean(c(0.734, 0.627, 0.709))
-mean(c(0.725, 0.613, 0.667))
-mean(c(0.638, 0.665, 0.632))
-mean(c(0.496, 0.500, 0.508))
-mean(c(0.837, 0.854, 0.859))
-mean(c(0.748, 0.634, 0.630))
-mean(c(0.825, 0.813, 0.854))
-mean(c(0.777, 0.627, 0.627))
-mean(c(0.673, 0.650, 0.662))
-mean(c(0.709, 0.532, 0.544))
-mean(c(0.775, 0.719, 0.687))
-mean(c(0.615, 0.792, 0.553))
-mean(c(0.771, 0.668, 0.637))
-mean(c(0.527, 0.664, 0.537))
-mean(c(0.671, 0.665, 0.430))
-mean(c(0.305, 0.830, 0.252))
-mean(c(0.744, 0.735, 0.845))
-mean(c(0.838, 0.822, 0.841))
-mean(c(0.873, 0.872, 0.847))
-mean(c(0.555, 0.575, 0.734))
-mean(c(0.540, 0.530, 0.665))
-mean(c(0.650, 0.581, 0.638))
-0.031419/sqrt(857)
-0.067615-0.040995
-0.067615-1.96*0.031419
-0.031419/sqrt(857)
-0.031419/sqrt(2)
-0.031419/sqrt(1)
-0.031419/sqrt(857)
-0.33766/0.02713
-12*2
-0.02713/sqrt(10+74)
-sqrt(10+74)
-0.067615-0.040995
-0.067615+0.040995
-0.031419/sqrt(857)
-0.031419/sqrt(857)*1.96
-1.96*0.031419
-1.96*(0.031419/sqrt(2))
-1.96*(0.031419/sqrt(3))
-1.96*(0.031419/sqrt(2))
-0.02713*1.96
-0.076414-1.96*0.051577
-0.076414+1.96*0.051577
-0.067615-1.96*0.040995
-0.067615-1.96*0.031419
-0.02713/sqrt(10)
-0.02713/sqrt(10)*1.96
-0.02713/sqrt(10+74)*1.96
-0.02713/sqrt(2)*1.96
-0.02713/sqrt(10000)
-0.076414-1.96*0.035916
-sqrt(2)
-0.033466*1.96
-source("https://bioconductor.org/biocLite.R")
-biocLite("limma")
-library(limma)
-install.packages(c("shinyjs", "stringr", "VennDiagram", "rmarkdown", "plyr", "httpuv", "mime", "jsonlite", "xtable", "digest", #
-                   "htmltools", "R6", "sourcetools", "ggplot2", "scales", "httr", "magrittr", "viridisLite", "base64enc", #
-                   "htmlwidgets", "tidyr", "hexbin", "RColorBrewer", "dplyr", "tibble", "lazyeval", "crosstalk", "purrr", "data.table", "gplots", "plotly", "ggrepel", "shinydashboard", "hash"))
-install.packages("https://cran.r-project.org/src/contrib/Archive/shiny/shiny_1.0.3.tar.gz", repos = NULL, type = "source")
-library(shiny)#
-runGitHub("Genoppi", "lagelab")
-install.packages("gplots")
-setwd("~/Google Drive/LageLab/IP/")
-runApp("~/Google Drive/LageLab/IP/Genoppi-master")
-library(shiny)
-runApp("~/Google Drive/LageLab/IP/Genoppi-master")
-runGitHub("Genoppi", "lagelab")
-install.packages("caTools")
-require(meta)
+df [2,4] <- NA
+df
+scale(df,center=apply(df,2,median),scale=F)
+scale(df,center=apply(df,2,median,na.rm=T),scale=F)
+normDf <- scale(df,center=apply(df,2,median,na.rm=T),scale=F)
+normDf
+apply(normDf,2,median)
+apply(normDf,2,median,na.rm=T)
+df
+normDf
+mean(df)
+apply(df,2,mean)
+apply(df,2,mean,na.rm=T)
+apply(df,2,sd,na.rm=T)
+?sd
+for(col in df) { mean(col) }
+for(col in df) { print(col) }
+df
+names(df)
+df
+colnames(df) <- c('V1','V2','V3','V4')
+df
+names(df)
+colnames(df)
+df[colnames(df)[2]]
+df[,colnames(df)[2]]
+df[,'V3']
+df
+type(df)
+class(df)
+df = data.frame(matrix(rnorm(20), 5, 4))
+df
+names(df)
+df['X2']
+df
+df[1,1] <- NA
+df[2,4] <- NA
+ls
+df
+df[4,4] <- NA
+df
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                tempDf[paste(col,'_imp')] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[col],na.rm=T) - sd(df[col],na.rm=T)*shift # sample mean - sample SD * shift#
+                sd <- sd(df[col],na.rm=T)*width # sample SD * width#
+                tempDf[col] <- sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+        return tempDf#
+}
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                tempDf[paste(col,'_imp')] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[col],na.rm=T) - sd(df[col],na.rm=T)*shift # sample mean - sample SD * shift#
+                sd <- sd(df[col],na.rm=T)*width # sample SD * width#
+                tempDf[col] <- sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+#
+        return(tempDf)#
+}
+impute_na(df,1.8,0.3)
+df
+col
+names(df)
+for (col in names(df)) { print(col) }
+for (col in names(df)) { df[col] }
+for (col in names(df)) { print(df[col]) }
+col='X1'
+col
+is.na(df[col])
+tempDf[paste(col,'_imp')] <- is.na(df[col])
+tempDf <- df
+tempDf
+tempDf[paste(col,'_imp')] <- is.na(df[col])
+tempDf
+paste(col,'_imp')
+tempDf <- df
+tempDf[paste(col,'_imp',sep='')] <- is.na(df[col])
+tempDf
+paste(col,'_imp',sep='')
+tempDf$paste(col,'_imp',sep='')
+tempDf$get(paste(col,'_imp',sep=''))
+tempDf[paste(col,'_imp',sep='')]
+names(tempDf)
+mean(df[col],na.rm=T)
+mean(df[,col],na.rm=T)
+mean(df$X1,na.rm=T)
+mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - sample SD * shift#
+                sd <- sd(df[,col],na.rm=T)*width
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                tempDf[paste(col,'_imp',sep='')] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - sample SD * shift#
+                sd <- sd(df[,col],na.rm=T)*width # sample SD * width#
+                tempDf[col] <- sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+#
+        return(tempDf)#
+}
+impute_na(df)
+impute_na(df,1.5,0.3)
+df
+names(impute_na(df,1.5,0.3))
+impute_na(df,1.5,0.3)
+rnorm(1,mean=mu,sd=sd)
+mu
+rnorm(1,0,1)
+col
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                impCol <- paste(col,'_imp',sep='')#
+                tempDf[impCol] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - SD*shift#
+                sd <- sd(df[,col],na.rm=T)*width # sample SD*width#
+#
+                impVals <- rnorm(nrow(df),mean=mu,sd=sd)#
+                tempDf[col][tempCol] < impVals[tempCol]#
+                # can't do this (would get duplicate "random" values within same apply call)#
+                sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+#
+        return(tempDf)#
+}
+df
+imput_na(df,1.5,0.3)
+impute_na(df,1.5,0.3)
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                impCol <- paste(col,'_imp',sep='')#
+                tempDf[impCol] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - SD*shift#
+                sd <- sd(df[,col],na.rm=T)*width # sample SD*width#
+#
+                impVals <- rnorm(nrow(df),mean=mu,sd=sd)#
+                tempDf[col][impCol] < impVals[impCol]  #
+                # can't do this (would get duplicate "random" values within same apply call)#
+                sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+#
+        return(tempDf)#
+}
+impute_na(df)
+df
+impute_na(df,1.5,0.3)
+col
+tempDf[col]
+impCol
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                impCol <- paste(col,'_imp',sep='')#
+                tempDf[impCol] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - SD*shift#
+                sd <- sd(df[,col],na.rm=T)*width # sample SD*width#
+#
+                impVals <- rnorm(nrow(df),mean=mu,sd=sd)#
+                tempDf[col][tempDf[impCol]] <- impVals[tempDf[impCol]]#
+                # can't do this (would get duplicate "random" values within same apply call)#
+                sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+#
+        return(tempDf)#
+}
+df
+impute_na(df,1.5,0.3)
+impVals
+tempDf
+impCol <- paste(col,'_imp',sep='')
+impCol
+tempDf[impCol] <- is.na(df[col])
+tempDf
+mu
+sd
+shift=1.5
+width=0.3
+mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - SD*shift#
+                sd <- sd(df[,col],na.rm=T)*width # sample SD*width
+mu
+sd
+impVals <- rnorm(nrow(df),mean=mu,sd=sd)
+impVals
+tempDf[impCol]
+impVals[tempDf[impCol]]
+impVals[tempDf[,impCol]]
+tempDf[col][tempDf[,impCol]] <- impVals[tempDf[,impCol]]
+tempDf
+impute_na <- function(df,shift,width) {#
+        # df contains only normalized, log2-transformed sample intensity columns#
+        # return new df containing same columns with missing values replaced,#
+        # plus corresponding '_imp' columns indicating which values were imputed#
+        tempDf <- df#
+#
+        for (col in names(df)) {#
+                # add imp flag columns#
+                impCol <- paste(col,'_imp',sep='')#
+                tempDf[impCol] <- is.na(df[col])#
+#
+                # impute missing values#
+                mu <- mean(df[,col],na.rm=T) - sd(df[,col],na.rm=T)*shift # sample mean - SD*shift#
+                sd <- sd(df[,col],na.rm=T)*width # sample SD*width#
+#
+                impVals <- rnorm(nrow(df),mean=mu,sd=sd)#
+                tempDf[col][tempDf[,impCol]] <- impVals[tempDf[,impCol]]#
+                # can't do this (would get duplicate "random" values within same apply call)#
+                sapply(df[col],function(x) {ifelse(is.na(x),rnorm(1,mean=mu,sd=sd),x)})#
+        }#
+#
+        return(tempDf)#
+}
+df
+impute_na(df,1.5,0.3)
+df
 library(genoppi)
-launch_genoppi()
+get_inweb_list('HIST1H1E')
+subset(get_inweb_list('HIST1H1E'),significant)$gene
 library(genoppi)
-launch_genoppi()
-?Startup
-0.05/102
--log10(0.05/102)
-0.05/17484
-0.05/17485
-0.05/17484
-fisher.test(matix(c(31,854,34,1367)))
-fisher.test(matrix(c(31,854,34,1367)))
-fisher.test(matrix(c(31,854,34,1367),nrow=2))
-fisher.test(matrix(c(31,854,34,1367),nrow=2),alternative="greater")
-fisher.test(matrix(c(31,854,34,1367),nrow=2),alternative="less")
-fisher.test(matrix(c(31,854,30,2046),nrow=2),alternative="less")
-fisher.test(matrix(c(31,854,30,2046),nrow=2),alternative="greater")
-fisher.test(matrix(c(34,1367,132,14016),nrow=2),alternative="greater")
-fisher.test(matrix(c(72,813,97,1304),nrow=2),alternative="greater")
-fisher.test(matrix(c(186,699,269,1132),nrow=2),alternative="greater")
-install.packages(metap)
-install.packages("metap")
-p <- c(1.91E-02,#
-2.26E-05,#
-9.41E-12,#
-5.15E-01,#
-5.52E-06,#
-8.82E-04,#
-1.00E+00,#
-1.91E-03,#
-1.00E+00,#
-1.79E-01,#
-5.36E-01,#
-3.80E-01,#
-1.00E+00)
-p
-library(metap)
-install.packages("multtest")
-mean(c(0.539,0.509,0.839))
-mean(c(0.5,.522,.827))
-mean(c(.426,.461,.805))
-mean(c(.518,.507,.814))
-mean(c(.543,.434,.727))
-mean(c(.418,.401,.753))
-mean(c(.0886,.135,.521))
-mean(c(.127,.149,.577))
-mean(c(.269,.21,.585))
-mean(c(.237,.171,.609))
-mean(c(.409,.297,.62))
-mean(c(.282,.219,.648))
-mean(c(.473,.0198,-.116))
-mean(c(.294,.122,.144))
-mean(c(.526,.192,.367))
-mean(c(.454,.271,.344))
-mean(c(.254,.29,.0836))
-mean(c(.354,0.314,.222))
-mean(c(.00695,.236,-0.367))
-mean(c(-0.0972,.101,-.236))
-mean(c(.439,-0.00244,-0.0807))
-mean(c(.0541,.0621,.0263))
-mean(c(.0609,.193,.238))
-mean(c(.171,.158,.111))
-mean(c(.451,.341,.247))
-mean(c(.555,.493,.482))
-mean(c(.589,.394,.281))
-mean(c(.551,.493,.424))
-mean(c(.503,.0205,-.0265))
-mean(c(.519,.189,.25))
-mean(c(-0.0961,0.117,-0.155))
-mean(c(0.0467,0.0955,0.0723))
-mean(c(0.0133,.3,.0207))
-mean(c(.173,.23,.17))
-mean(c(.11,0.0354,0.122))
-mean(c(.0338,.0985,.223))
-library(genoppi)
-launch_genoppi()
-rm(list=ls())
-library(genoppi)
-launch_genoppi()
-library(genoppi)
-inweb_hash[["ACE2"]]
-inweb_hash[["ACE1"]]
-phyper(10-1,14,52,12,lower.tail=F)
-?phyper
-hyperp(10-1,12,54,14,lower.tail=F)
-phyper(10-1,12,54,14,lower.tail=F)
-1-phyper(10-1,12,54,14)
-x=rand(100)
-x=random(100)
-x=rnorm(100)
-x
-y=rnorm(100)
-lm(y~x)
-summary(lm(y~x))
-coef(summary(lm(y~x)))
-coef(summary(lm(y~x)))[2,1]
-coef(summary(lm(y~x)))[2,1]/coef(summary(lm(y~x)))[2,2]
-log2(1)
+subset(get_inweb_list('TAOK1'),significant)$gene
+log(2)
 log2(2)
-c(0.691, 0.543, 0.599,#
-0.721, 0.763, 0.749,#
-0.724, 0.726, 0.585,#
-0.789, 0.837, 0.853,#
-0.665, 0.660, 0.688,#
-0.752, 0.822, 0.793,#
-0.745, 0.725, 0.528,#
-0.887, 0.862, 0.883,#
-0.673, 0.568, 0.613,#
-0.749, 0.761, 0.703,#
-0.593, 0.872, 0.528,#
-0.770, 0.801, 0.776,#
-0.765, 0.750, 0.777,#
-0.690, 0.755, 0.807,#
-0.766, 0.836, 0.696,#
-0.895, 0.868, 0.878)
-x=c(0.691, 0.543, 0.599,#
-0.721, 0.763, 0.749,#
-0.724, 0.726, 0.585,#
-0.789, 0.837, 0.853,#
-0.665, 0.660, 0.688,#
-0.752, 0.822, 0.793,#
-0.745, 0.725, 0.528,#
-0.887, 0.862, 0.883,#
-0.673, 0.568, 0.613,#
-0.749, 0.761, 0.703,#
-0.593, 0.872, 0.528,#
-0.770, 0.801, 0.776,#
-0.765, 0.750, 0.777,#
-0.690, 0.755, 0.807,#
-0.766, 0.836, 0.696,#
-0.895, 0.868, 0.878)
-length(x)
-mean(x)
-names(roxygen2:::default_tags())
-library(roxygen2)
-names(roxygen2:::default_tags())
-names(roxygen2::default_tags())
-devtools::install_github("lagelab/Genoppi")
-?example_data
-library(genoppi)
-?example_data
-?plot_overlay.R
-?calc_hyper
-?example_datac
-??accession_gene_table
-?accession_gene_table
+x<-rnorm(100)
+ecdf(x)
+plot(ecdf(x))
+y<-runif(100)
+plot(ecdf(y))
+z <- data.frame(value=c(x,y),type=c(rep('normal',100),rep('uniform',100)))
+z
+ggplot(z,aes(value,color=type)) + stat_ecdf()
 library(ggplot2)
-?diamonds
-dim(accession_gene_table)
-?diamonds
-head(accession_gene_table)
-subset(accession_gene_table,gene=='BCL2')
-?inweb_hash
-inweb_hash$BCL2
-inweb_hash[['BCL2']]
-?fisherp
-sessionInfo()
-library(roxygen2)
-sessionInfo()
-library(hash)
-help(hash)
-ls()
-setwd("~/Google Drive/LageLab/GitHub/Genoppi/")
-devtools::document)
-devtools::document())
-devtools::document()
-?accession_gene_table
+ggplot(z,aes(value,color=type)) + stat_ecdf()
+hist(y)
+ggplot(z,aes(value,color=type)) + stat_ecdf() + geom_abline()
+ggplot(z,aes(value,color=type)) + stat_ecdf() + geom_abline(slope=1,intercept=0)
+ggplot(z,aes(value,color=type)) + stat_ecdf() + geom_abline(slope=1,intercept=0,linetype='dashed')
+ggplot(z,aes(value,color=type)) + geom_abline(slope=1,intercept=0,linetype='dashed') + stat_ecdf()
+ggplot(z,aes(value,color=type)) + stat_ecdf(linewidth=2) + geom_abline(slope=1,intercept=0,linetype='dashed')
+ggplot(z,aes(value,color=type)) + stat_ecdf(linewidth=1.5) + geom_abline(slope=1,intercept=0,linetype='dashed')
+ggplot(z,aes(value,color=type)) + stat_ecdf(linewidth=1) + geom_abline(slope=1,intercept=0,linetype='dashed')
+phyper(0,1,1,5)
+phyper(0,1,1,5,lower.tail=F)
+phyper(0,2,3,10,lower.tail=F)
+phyper(0,2,3,10,lower.tail=F)$
+?phyper
+rhyper()
+128+149-31
+128-31
+149-31
+97+31+118
 library(genoppi)
-dim(gwas_table)
-head(gwas_table)
-head(gnomad_table)
-dim(gnomad_table)
-dim(hgnc_group_table)
-length(unique(hgnc_group_table$Gene.symbol))
-length(unique(hgnc_group_table$Group.name))
-dim("goa_mf_table")
-dim(goa_mf_table)
-length(unique(goa_mf_table$Gene.symbol))
-head(goa_cc_table)
-length(unique(goa_bp_talbe$Gene.symbol))
-length(unique(goa_bp_table$Gene.symbol))
-dim(gnomad_table)
-dim(gnomad_table[,c("gene","pLI")])
-head(gnomad_table[,c("gene","pLI")])
-dim(hpa_table)
-head(hpa_table)
-length(unique(hpa_table$gene))
-length(unique(hpa_table$tissue))
-logical(1)
-logical(0)
-logical(1==1)
-logical(1>0)
-logical()
-logical(TRUE)
-logical(0)
-logical(1)
-logical(2)
-length(unique(gtex_table$tissue))
-length(unique(GTEX_table$tissue))
-length(unique(GTEX_table$tissue))
-dim(GTEx_table)
-dim(GTEX_table)
-head(GTEX_table)
-length(unique(hgnc_group_table$Gene.symbol))
-length(unique(hgnc_group_table$Group.name))
-length(unique(hgnc_group_table$Group.name)q)
-length(unique(goa_mf_table$Gene.symbol))
-length(unique(goa_mf_table$GO.ID))
-dim(example_data)
-dim(example_data2)
-dim(example_data3)
+get_inweb_list('CAPRIN1')
+get_inweb_list('GSK3B')
+get_inweb_list('HNRNPU')
+get_inweb_list('MAP1A')
+get_inweb_list('SMARCB1')
+get_inweb_list('TLE3')
+library(genoppi)
+head(msigdb_c1_table)
+tail(msigdb_c1_table)
+subset(msigdb_c1_table,Set.name=='chr11q22')
+subset(msigdb_c1_table,Set.name=='chr22q11')
+nrow(subset(msigdb_c1_table,Set.name=='chr22q11'))
+nrow(subset(msigdb_c1_table,Set.name=='chr22q11.2'))
+msigdb_c2_table
+head(msigdb_h_table)
+unique(msigdb_h_table$Set.name)
+head(msigdb_c2_table)
+sapply(strsplit(msigdb_c2_table$Set.name,'_'),'[[',1)
+unique(sapply(strsplit(msigdb_c2_table$Set.name,'_'),'[[',1))
+sapply(strsplit(msigdb_c2_table$Set.name,'_'),'[[',1)[1:10]
+table(sapply(strsplit(msigdb_c2_table$Set.name,'_'),'[[',1))
+head(msigdb_h_table)
+library(genoppi)
+head(msigdb_h_table)
+str_match(msigdb_h_table$Set.name,'HALLMARK_(*)')
+library(stringr)
+str_match(msigdb_h_table$Set.name,'HALLMARK_(*)')
+str_match(msigdb_h_table$Set.name,'HALLMARK_(.*)')
+dim(str_match(msigdb_h_table$Set.name,'HALLMARK_(.*)'))
+str_match(msigdb_h_table$Set.name,'HALLMARK_(.*)'),[,2]
+str_match(msigdb_h_table$Set.name,'HALLMARK_(.*)')[,2]
+unique(str_match(msigdb_h_table$Set.name,'HALLMARK_(.*)')[,2])
+unique(str_match(msigdb_c2_table$Set.name,'KEGG_(.*)')[,2])
+str_match(msigdb_c2_table$Set.name,'KEGG_(.*)')[,2]
+msgdb_c2_table$KEGG <- str_match(msigdb_c2_table$Set.name,'KEGG_(.*)')[,2]
+msigdb_c2_table$K <- str_match(msigdb_c2_table$Set.name,'KEGG_(.*)')[,2]#
+msigdb_c2_table$R <- str_match(msigdb_c2_table$Set.name,'REACTOME_(.*)')[,2]
+msibdb_c2_table[!is.na(msigdb_c2_table$K),]
+msigdb_c2_table[!is.na(msigdb_c2_table$K),]
+msigdb_c2_table[!is.na(msigdb_c2_table$K),]$Set.name
+unique(msigdb_c2_table[!is.na(msigdb_c2_table$K),]$Set.name)
+unique(msigdb_c2_table[!is.na(msigdb_c2_table$K),]$K)
+x<-unique(msigdb_c2_table[!is.na(msigdb_c2_table$K),]$K)
+x
+gsub(x,'_',' ')
+gsub('_',' ',x)
+library(genoppi)
+get_inweb_list('PRKRA')
+subset(get_inweb_list('PRKRA'),significant)$gene
+sort(subset(get_inweb_list('PRKRA'),significant)$gene)
+sort(subset(get_inweb_list('PPP2R1A'),significant)$gene)
+installed.packages()
+dim(installed.packages())
+load('~/Downloads/installed_old.rda')
+installedpkgs
+install.packages(installedpkgs)
+install.packages('Matrix')
+library(genoppi)
+install.packages('Matrix')
+install.packages('BiocManager')
+BiocManager::install(c('BiocGenerics',‘BiocVersion’,'ComplexHeatmap','edgeR','Iranges')
+BiocManager::install(c('BiocGenerics',‘BiocVersion’,'ComplexHeatmap','edgeR','Iranges'))
+BiocManager::install('BiocGenerics')
+BiocManager::install('ComplexHeatmap')
+devtools::install_github('lagelab/Genoppi',ref='development')
+library(genoppi)
+library(limma)
+libray(RCX)
+install.packages('edgeR')
+BiocManager::install('edgeR')
+BiocManager::install('RCX')
+library(RCX)
+library(genoppi)
+launch_genoppi()
+library(genoppi)
+launch_genoppi()
+packageVersion('genoppi')
+-log10(0.05)
+-log10(1)
+-log10(0.1)
+-log10(0.05)
+library(genoppi)
+launch_genoppi()
+packageVersion('shiny')
+packageVersion('shinydashboard')
+packageVersion('shinydashboardPlus')
+packageVersion('bs4Dash')
+setwd('~/Google Drive/My Drive/LageLab/GitHub/Genoppi')
+devtools::load_all()
+launch_genoppi()
+devtools::document()
+packageVersion('roxygen')
+packageVersion('roxygen2')
+devtools::document()
+devtools::load_all()
+launch_genoppi()
