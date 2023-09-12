@@ -28,6 +28,7 @@ Other misc:
 \code{\link{lun}()},
 \code{\link{null_omit}()},
 \code{\link{shape_to_symbol}()},
+\code{\link{table_symbols}()},
 \code{\link{vline}()}
 }
 \concept{misc}

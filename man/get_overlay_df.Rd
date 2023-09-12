@@ -12,8 +12,7 @@ get_overlay_df(
   insig_text = NULL,
   legend_nchar_max = NULL,
   nchar_max_collapse = NULL,
-  dont_inherit = c("dataset", "color", "size", "size_gg", "shape", "group",
-    "col_border")
+  dont_inherit = c("dataset", "color", "size", "size_gg", "shape", "group", "col_border")
 )
 }
 \arguments{

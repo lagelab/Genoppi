@@ -72,7 +72,6 @@ as.goi <- function(genes, col_significant = 'cyan', col_other = 'grey', shape = 
   return(list(goi=df))
 }
 
-
 #' @title split string by character numbers
 #' @description split a string by a character
 #' @param x a vector of strings.
@@ -110,7 +109,6 @@ color_distinct <- function(length.out=74){
 #' @description assign a frequency of occurences to a dataframe
 #' @param df a data.frame
 #' @param col the column which to assign frequency to.
-#' 
 assign_freq <- function(df, col){
   tabl = as.data.frame(table(df[[col]]))
   colnames(tabl) <- c(col, 'Freq')
@@ -122,7 +120,6 @@ assign_freq <- function(df, col){
 #' @param df a data.frame
 #' @param col the identifiying column for assiging color
 #' @param order_by_freq boolean. Should the data be order by frequency of col?
-#' 
 assign_color <- function(df, col, order_by_freq = T){
   
   tabl = data.frame(table(df[[col]]), color = NA)
@@ -149,7 +146,6 @@ bold <- function(x){paste('<b>',x,'</b>', sep='')}
 #' @description make text html italics 
 #' @param x string
 #' @family misc
-#' 
 italics <- function(x){paste('<i>',x,'</i>', sep='')}
 
 #' @title get table of plotly/ggplot symbols
@@ -158,6 +154,7 @@ italics <- function(x){paste('<i>',x,'</i>', sep='')}
 #' This is primiarly used in the shiny application
 #' to ensure consistency between ggplot and plotly.
 #' @family misc
+#' @export
 table_symbols <- function() {
   d = data.frame(
     shape=c(0:12,21:25),
@@ -173,15 +170,18 @@ table_symbols <- function() {
                       'diamond-cross-open',
                       'circle-cross-open', # 10
                       'star-diamond-open', # 11
-                      'square-cross-open', # 12
-                      #'circle', # 13
-                      #'square-x-open', # 14
-                      #'square', # 15
-                      #'circle', # 16
-                      #'triangle', # 17
-                      #'diamond', # 18
-                      #'circle', # 19
-                      #'circle', # 20
+		      'square-cross-open', # 12
+		      
+		      # careful not to have # followed by '
+		      # would cause parsing error in roxygen2
+		      # 'circle', # 13
+                      # 'square-x-open', # 14
+                      # 'square', # 15
+                      # 'circle', # 16
+                      # 'triangle', # 17
+                      # 'diamond', # 18
+                      # 'circle', # 19
+                      # 'circle', # 20
                       'circle', # 21 
                       'square', # 22
                       'diamond', # 23
@@ -283,32 +283,25 @@ hline <- function(y = 0, color = "blue", width = 1, dash = 'dash') {
   )
 }
   
-
 #' @title hyperlink
 #' @description convert a string into a hyperlink
 #' @param url what is the url?
 #' @param text what should be displayed? Default is NULL,
 #' which just displays the URL.
 #' @family html
-
 hyperlink <- function(url, text){
   return(paste0("<a href='",mydata$url,"'>",mydata$url,"</a>"))
 }
 
 #' @title line_unity
 #' @description plots a unity line
-
 line_unity <- function(){geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2)}
-
 
 #' @title find docs
 #' @description find documentation objects for shiny app.
 #' @param dir directory
 #' @param file file / regex pattern
-
 find_docs <- function(file = 'inweb_table.info', dir = 'documentation'){
   return(list.files(dir, pattern = file, full.names = T))
 }
-
-
 

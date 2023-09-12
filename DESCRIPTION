@@ -9,7 +9,11 @@ Authors@R:
       person(given = "Yu-Han",
              family = "Hsu",
              role = c("aut"),
-             email = "yuhanhsu@broadinstitute.org"))
+             email = "yuhanhsu@broadinstitute.org"),
+      person(given = "Joshua",
+             family = "Ching",
+             role = c("aut"),
+             email = "jching@broadinstitute.org")
 Description: An open-source software for robust and standardized integration of proteomic and genetic data.
 License: MIT + file LICENSE
 LazyData: TRUE
@@ -42,7 +46,7 @@ Imports:
     GGally,
     ggVennDiagram,
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 Collate: 
     'add_plotly_layout_scatter.R'
     'add_plotly_layout_volcano.R'
@@ -99,4 +103,3 @@ Collate:
     'validate_reference.R'
     'venn_to_table.R'
 biocViews: limma
-

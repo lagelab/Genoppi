@@ -31,6 +31,7 @@ Other misc:
 \code{\link{lun}()},
 \code{\link{null_omit}()},
 \code{\link{symbol_to_shape}()},
+\code{\link{table_symbols}()},
 \code{\link{vline}()}
 }
 \concept{misc}

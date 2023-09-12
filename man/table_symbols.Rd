@@ -12,12 +12,23 @@ between plotly symbols and ggplot shapes.
 This is primiarly used in the shiny application
 to ensure consistency between ggplot and plotly.
 }
-\concept{misc
-circle', # 13
-square-x-open', # 14
-square', # 15
-circle', # 16
-triangle', # 17
-diamond', # 18
-circle', # 19
-circle', # 20}
+\seealso{
+Other misc: 
+\code{\link{\%nin\%}()},
+\code{\link{as.bait}()},
+\code{\link{as.goi}()},
+\code{\link{bold}()},
+\code{\link{catf}()},
+\code{\link{color_distinct}()},
+\code{\link{color_gradient}()},
+\code{\link{enumerate_replicate_combinations}()},
+\code{\link{get_gg_legend}()},
+\code{\link{hline}()},
+\code{\link{italics}()},
+\code{\link{lun}()},
+\code{\link{null_omit}()},
+\code{\link{shape_to_symbol}()},
+\code{\link{symbol_to_shape}()},
+\code{\link{vline}()}
+}
+\concept{misc}
