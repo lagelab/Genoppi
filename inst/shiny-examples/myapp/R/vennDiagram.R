@@ -101,10 +101,11 @@ plotVennServer <- function(id,
         print(set_genes)
         venn <- ggVennDiagram::Venn(set_genes)
         data <- ggVennDiagram::process_data(venn)
-        plotValues$venn <- ggplot2::ggplot() + 
-          ggplot2::geom_sf(ggplot2::aes(fill = data$color), data = ggVennDiagram::venn_region(data)) +
-          ggplot2::geom_sf_text(ggplot2::aes(label = data$name), data = ggVennDiagram::venn_setlabel(data)) +
-          ggplot2::geom_sf_label(ggplot2::aes(label = data$count), data = ggVennDiagram::venn_region(data)) +
+        # print(data)
+        plotValues$venn <- ggplot2::ggplot() +
+          ggplot2::geom_sf(ggplot2::aes(fill = count), data = ggVennDiagram::venn_region(data)) +
+          ggplot2::geom_sf_text(ggplot2::aes(label = name), data = ggVennDiagram::venn_setlabel(data)) +
+          ggplot2::geom_sf_label(ggplot2::aes(label = count), data = ggVennDiagram::venn_region(data)) +
           ggplot2::theme_void()
         # plotValues$venn <- ggVennDiagram(set_genes)
         output$VennDiagram <- renderPlot({
