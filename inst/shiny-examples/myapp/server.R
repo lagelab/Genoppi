@@ -1270,7 +1270,7 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_gnomad_calc_hyper()$venn
-      write.csv(venn_to_table(venn), file, row.names = F)
+      write.csv(genoppi::venn_to_table(venn), file, row.names = F)
     }
   )
   
@@ -1281,7 +1281,7 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_gwas_catalogue_mapping_venn()
-      diagram = venn_to_table(venn)
+      diagram = genoppi::venn_to_table(venn)
       mapping = a_gwas_catalogue_mapping()[,c('gene','SNP', 'P.VALUE','PUBMEDID', 'STUDY.ACCESSION', 'DISEASE.TRAIT')]
       mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
       write.csv(mymerge, file, row.names = F)
@@ -1295,7 +1295,7 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_tissue_calc_hyper()$venn
-      write.csv(venn_to_table(venn), file, row.names = F)
+      write.csv(genoppi::venn_to_table(venn), file, row.names = F)
     }
   )
   
@@ -1306,7 +1306,7 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_snp_venn()
-      diagram = venn_to_table(venn)
+      diagram = genoppi::venn_to_table(venn)
       mapping = a_snp_mapping()[,c('gene','listName','SNP')]
       mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
       write.csv(mymerge, file, row.names = F)
@@ -1320,7 +1320,7 @@ shinyServer(function(input, output, session){
     },
     content = function(file) {
       venn = a_genes_upload_venn()
-      diagram = venn_to_table(venn)
+      diagram = genoppi::venn_to_table(venn)
       mapping = a_genes_upload()$data[,c('gene','listName')]
       mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
       write.csv(mymerge, file, row.names = F)
