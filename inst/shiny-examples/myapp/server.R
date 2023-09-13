@@ -1140,8 +1140,8 @@ shinyServer(function(input, output, session){
     fdr = ifelse(scientific, list(formatC(df$bhfdr, format = "e", digits = 2)), list(df$bhfdr))
     genes = unlist(lapply(df$successInSampleGenes, function(x) paste(strwrap(x, width = 40), collapse = '<br>')))
     return(paste0('P-value: ', unlist(pvalues), '. ', 'Q-value (FDR): ', unlist(fdr), '. <br>',
-                      bold(df$successInSample_count), ' genes(s) enriched in tissue: <br>',
-                      italics(genes), '.'))
+                      genoppi::bold(df$successInSample_count), ' genes(s) enriched in tissue: <br>',
+                      genoppi::italics(genes), '.'))
   })
   
   # plot bar chart of tissue enrichment
@@ -1437,9 +1437,9 @@ shinyServer(function(input, output, session){
     thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     db = a_ppi_mapping_name()
     hyper = a_inweb_calc_hyper()
-    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
-    B <- paste0("B = ", bold(input$a_bait_rep)," ", db," interactors", " &#40;", bold(hyper$statistics$sample_count), "&#41;")
-    total <- paste0("Total population = proteomic data &cap; ", db," &#40;", bold(hyper$statistics$population_count), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", genoppi::bold(hyper$statistics$success_count), "&#41;")
+    B <- paste0("B = ", genoppi::bold(input$a_bait_rep)," ", db," interactors", " &#40;", genoppi::bold(hyper$statistics$sample_count), "&#41;")
+    total <- paste0("Total population = proteomic data &cap; ", db," &#40;", genoppi::bold(hyper$statistics$population_count), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1538,9 +1538,9 @@ shinyServer(function(input, output, session){
     pulldown = sigS()
     thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     diagram = a_genes_upload_venn()
-    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
-    B <- paste0("B = Genes in ",italics(selected)," &#40;", bold(length(unique(diagram[[2]]))), "&#41;")
-    total <- paste0("Total population = proteomic data &#40;", bold(nrow(pulldown)), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", genoppi::bold(length(diagram[[1]])), "&#41;")
+    B <- paste0("B = Genes in ",genoppi::italics(selected)," &#40;", genoppi::bold(length(unique(diagram[[2]]))), "&#41;")
+    total <- paste0("Total population = proteomic data &#40;", genoppi::bold(nrow(pulldown)), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1593,9 +1593,9 @@ shinyServer(function(input, output, session){
     
     # get hypergeometric stats
     hyper = a_tissue_calc_hyper()
-    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
-    B <- paste0("B = ", bold(paste0(tissue, collapse = '; '))," (", dataset,")", " &#40;", bold(hyper$statistics$sample_count), "&#41;")
-                total <- paste0("Total population = proteomic data &cap; ", dataset," &#40;", bold(hyper$statistics$population_count), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", genoppi::bold(hyper$statistics$success_count), "&#41;")
+    B <- paste0("B = ", genoppi::bold(paste0(tissue, collapse = '; '))," (", dataset,")", " &#40;", genoppi::bold(hyper$statistics$sample_count), "&#41;")
+                total <- paste0("Total population = proteomic data &cap; ", dataset," &#40;", genoppi::bold(hyper$statistics$population_count), "&#41;")
                 return(list(A=A, B=B, total=total))
   })
     
@@ -1666,9 +1666,9 @@ shinyServer(function(input, output, session){
     loci = gsub('all','all loci',loci)
     loci = gsub('multi','multi-gene loci',loci)
     loci = gsub('single','single-gene loci',loci)
-    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
-    B <- paste0("B = ",bold(selected)," genes mapped from ", loci,"&#40;", bold(length(unique(diagram[[2]]))), "&#41;")
-    total <- paste0("Total population =", " &#40;", bold(nrow(pulldown)), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", genoppi::bold(length(diagram[[1]])), "&#41;")
+    B <- paste0("B = ",genoppi::bold(selected)," genes mapped from ", loci,"&#40;", genoppi::bold(length(unique(diagram[[2]]))), "&#41;")
+    total <- paste0("Total population =", " &#40;", genoppi::bold(nrow(pulldown)), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1710,9 +1710,9 @@ shinyServer(function(input, output, session){
     pulldown = sigS()
     thresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     diagram = a_gwas_catalogue_mapping_venn()
-    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", bold(length(diagram[[1]])), "&#41;")
-    B <- paste0("B = Genes mapped from GWAS catalog &#40;", bold(length(unique(diagram[[2]]))), "&#41;")
-    total <- paste0("Total population = proteomic data", " &#40;", bold(nrow(pulldown)), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", thresholds, " &#40;", genoppi::bold(length(diagram[[1]])), "&#41;")
+    B <- paste0("B = Genes mapped from GWAS catalog &#40;", genoppi::bold(length(unique(diagram[[2]]))), "&#41;")
+    total <- paste0("Total population = proteomic data", " &#40;", genoppi::bold(nrow(pulldown)), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1752,9 +1752,9 @@ shinyServer(function(input, output, session){
     req(sigS(), a_gnomad_calc_hyper())
     tresholds = paste(thldVals$sigTxt, thldVals$fcSigTxt, sep =', ')
     hyper = a_gnomad_calc_hyper()
-    A <- paste0("A = proteomic data subsetted by ", tresholds, " &#40;", bold(hyper$statistics$success_count), "&#41;")
-    B <- paste0("B = gnomAD genes with pLI ≥", bold(input$a_slide_gnomad_pli_threshold)," &#40;", bold(hyper$statistics$sample_count), "&#41;")
-    total <- paste0("Total population = proteomic data &cap; gnomAD &#40;", bold(hyper$statistics$population_count), "&#41;")
+    A <- paste0("A = proteomic data subsetted by ", tresholds, " &#40;", genoppi::bold(hyper$statistics$success_count), "&#41;")
+    B <- paste0("B = gnomAD genes with pLI ≥", genoppi::bold(input$a_slide_gnomad_pli_threshold)," &#40;", genoppi::bold(hyper$statistics$sample_count), "&#41;")
+    total <- paste0("Total population = proteomic data &cap; gnomAD &#40;", genoppi::bold(hyper$statistics$population_count), "&#41;")
     return(list(A=A, B=B, total=total))
   })
   
@@ -1783,9 +1783,9 @@ shinyServer(function(input, output, session){
   #  gene = event_data("plotly_click", source = "Multi_VolcanoPlot")$key
   #  if (!is.null(gene)){
   #    if (gene %in% gnomad_table$gene){
-  #      return(HTML(paste(bold(gene),'constraint info from gnomAD 2.1.1.')))
+  #      return(HTML(paste(genoppi::bold(gene),'constraint info from gnomAD 2.1.1.')))
   #    } else {
-  #      return(HTML(paste('No constraint info for', bold(gene), 'in gnomAD 2.1.1.')))
+  #      return(HTML(paste('No constraint info for', genoppi::bold(gene), 'in gnomAD 2.1.1.')))
   #    }
   #  }
   #  return('Nothing selected. Click a plot point.')

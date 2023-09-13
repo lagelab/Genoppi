@@ -15,7 +15,7 @@ doublespacenewline <- function(x) gsub('\\ \\ +', '<br>', x)
 documentation_to_html <- function(content){
   
   content_wo_title = content[names(content) %nin% 'title']
-  title = bold(content[['title']])
+  title = genoppi::bold(content[['title']])
   
   # add newlines to references
   content_wo_title$references <- doublespacenewline(content_wo_title$references)
