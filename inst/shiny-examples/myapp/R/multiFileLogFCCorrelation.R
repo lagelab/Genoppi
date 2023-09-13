@@ -102,13 +102,13 @@ logFCCorrelationServer <- function(
                       logfc_df$color <- factor(logfc_df$color)
                       
                       p <- ggplot2::ggplot(data = logfc_df, ggplot2::aes(x = df1logfc, y = df2logfc, colour = color)) +
-                      geom_point() + 
-                      scale_color_manual(values = c(
-                        "both" = input$color_both_sig_in,
-                        "first" = input$color_first_sig_in,
-                        "second" = input$color_second_sig_in)
-                      ) +
-                      theme_minimal()
+                        ggplot2::geom_point() +
+                        ggplot2::scale_color_manual(values = c(
+                          "both" = input$color_both_sig_in,
+                          "first" = input$color_first_sig_in,
+                          "second" = input$color_second_sig_in)
+                        ) +
+                        ggplot2::theme_minimal()
                       ip <- plotly::ggplotly(p)
 
                       output$logfc_correlation <- plotly::renderPlotly({

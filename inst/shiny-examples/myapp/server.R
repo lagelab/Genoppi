@@ -1810,24 +1810,24 @@ shinyServer(function(input, output, session){
   # generate plot in ggformat
   a_integrated_plot_gg <- reactive({
     req(plotVals$volcano_basic)
-    p = plotVals$volcano_basic
+    p <- plotVals$volcano_basic
     
     if (!is.null(input$a_gwas_catalogue)) {
       # TODO add labelling for each chosen gwas catalogue
       if (any(input$a_gwas_catalogue != '') & input$a_overlay_gwas_cat) {
-        p = plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
+        p <- genoppi::plot_overlay(p, list(gwas=a_gwas_catalogue_mapping()))
       }
     } 
-    if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p = plot_overlay(p, list(upload=a_genes_upload()$data))}
-    if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p = plot_overlay(p, list(snps=a_snp_mapping()))}
+    if (!is.null(input$a_file_genes_rep)) if (input$a_overlay_genes_upload) {p <- genoppi::plot_overlay(p, list(upload=a_genes_upload()$data))}
+    if (!is.null(input$a_file_SNP_rep)) if (input$a_overlay_snp) {p <- genoppi::plot_overlay(p, list(snps=a_snp_mapping()))}
     if (!is.null(ppiParams()$bait_search)) {
       if (ppiParams()$bait_search %in% c(inweb_table$Gene1,inweb_table$Gene2) &
           ppiParams()$overlay_inweb) {
-        p = plot_overlay(p, list(inweb=a_ppi_mapping_df()))}}
+        p <- genoppi::plot_overlay(p, list(inweb=a_ppi_mapping_df()))}}
     if (!is.null(input$a_overlay_gnomad)) {
       if (input$a_overlay_gnomad) {
-        p = plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))}}
-    if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p = plot_overlay(p, list(tissuemap=a_tissue_mapping()))
+        p <- genoppi::plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))}}
+    if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p <- genoppi::plot_overlay(p, list(tissuemap=a_tissue_mapping()))
     
     if (developer()) showNotification(paste(head(p$overlay, n = 1), collapse = ' '), duration = 10)
     
@@ -2012,7 +2012,7 @@ shinyServer(function(input, output, session){
     p <- plotVals$volcano_bait_overlay
     if (sum(data$significant) > 0){
       if (nrow(a_pathway_mapping_subset()) > 0) {
-        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
+        p <- genoppi::plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
       }
     }
     return(p)
@@ -2025,8 +2025,8 @@ shinyServer(function(input, output, session){
     # generate ggplot with \n 
     req(plotVals$volcano_bait_overlay)
     p <- plotVals$volcano_bait_overlay
-    p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend, nchar_max_collapse = '\n')
-    p <- p + theme(legend.key.height=unit(0.75, "cm"))
+    p <- genoppi::plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend, nchar_max_collapse = '\n')
+    p <- p + ggplot2::theme(legend.key.height=unit(0.75, "cm"))
     
     # extract legend from plot
     req(p)
@@ -2044,7 +2044,7 @@ shinyServer(function(input, output, session){
     p <- plotVals$volcano_bait_overlay
     if (sum(data$significant) > 0){
       if (nrow(a_pathway_mapping_subset()) > 0) {
-        p <- plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
+        p <- genoppi::plot_overlay(p, list(pathway=a_pathway_mapping_subset()), legend_nchar_max = max.nchar.legend)
       }
     }
     return(p)
@@ -2056,7 +2056,7 @@ shinyServer(function(input, output, session){
     req(a_pathway_plot_tmp_gg())
     plt = a_pathway_plot_tmp_gg()
     req(plt)
-    plt = plt + theme(legend.position = 'none')
+    plt = plt + ggplot2::theme(legend.position = 'none')
     return(plt)
   })
   
