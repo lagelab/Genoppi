@@ -29,6 +29,7 @@ ComparisonPlotParamServer <- function(id,
   if (!is.reactive(insigColorServer)) {
     stop("insigColorServer passed to ComparisonPlotParamServer is not reactive")
   }
+  req(bothSigColorServer, firstSigColorServer, secondSigColorServer, insigColorServer)
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$color_theme_both_sig <- renderUI({

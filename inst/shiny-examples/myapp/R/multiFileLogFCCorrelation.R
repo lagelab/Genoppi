@@ -17,10 +17,10 @@ logFCCorrelation <- function(id) {
 
 logFCCorrelationServer <- function(
   id,
-  bothSigColor,
-  firstSigColor,
-  secondSigColor,
-  noSigColor,
+  # bothSigColor,
+  # firstSigColor,
+  # secondSigColor,
+  # noSigColor,
   multi_sigS1,
   multi_sigS2,
   multi_sigS3,

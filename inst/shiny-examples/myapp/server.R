@@ -278,10 +278,10 @@ shinyServer(function(input, output, session){
     logfcCorrelationNoSigColor)
   mulitFilelogFCCorrelation <- logFCCorrelationServer(
     'logfc_comparison',
-    logfcCorrelationBothSigColor,
-    logfcCorrelationFirstSigColor,
-    logfcCorrelationSecondSigColor,
-    logfcCorrelationNoSigColor,
+    # logfcCorrelationBothSigColor,
+    # logfcCorrelationFirstSigColor,
+    # logfcCorrelationSecondSigColor,
+    # logfcCorrelationNoSigColor,
     multi_sigS1,
     multi_sigS2,
     multi_sigS3,
