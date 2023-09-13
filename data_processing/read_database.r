@@ -1,3 +1,7 @@
+# TODO run scripts with:
+# - data path for HuRI, STRING, PCNet
+# - processing scripts + path for InWeb, BioPlex, IRefIndex
+
 #' Read data from a specified PPI database
 #'
 #' This function reads data from a specified PPI database and returns a data

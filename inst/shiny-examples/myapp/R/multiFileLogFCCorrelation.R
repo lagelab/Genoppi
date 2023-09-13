@@ -101,7 +101,7 @@ logFCCorrelationServer <- function(
                       })
                       logfc_df$color <- factor(logfc_df$color)
                       
-                      p <- ggplot(data = logfc_df, ggplot2::aes(x = df1logfc, y = df2logfc, colour = color)) +
+                      p <- ggplot2::ggplot(data = logfc_df, ggplot2::aes(x = df1logfc, y = df2logfc, colour = color)) +
                       geom_point() + 
                       scale_color_manual(values = c(
                         "both" = input$color_both_sig_in,
