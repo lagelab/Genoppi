@@ -51,8 +51,8 @@ summaryStatsServer <- function(id, sigificanceServer) {
       # render the summary text for the data frame:
       #   (number of significant proteins out of all proteins)
       req(!is.null(df$significant))
-      signifCount <- paste(genoppi::bold(sum(df$significant)), "out of",
-                           genoppi::bold(nrow(df)), 'proteins significant.')
+      signifCount <- paste(genoppi:::bold(sum(df$significant)), "out of",
+                           genoppi:::bold(nrow(df)), 'proteins significant.')
       
       # render the summary table for the data frame: (correlation between --
       #   replicates, samples, controls, sample & control, and their averages)
@@ -230,7 +230,7 @@ summaryDisplayServer <- function(id,
       HTML(summaryStatsServer()$signifCountText)
     })
     output$correlation_table_header <- renderUI({
-      h5(HTML(genoppi::bold("Sample correlation(s):")))
+      h5(HTML(genoppi:::bold("Sample correlation(s):")))
     })
     
     observeEvent(
@@ -303,25 +303,25 @@ summaryDisplayServer <- function(id,
     
     # # UNCOMMENT for verbose table (i.e., correlation for every comparison)
     # output$replicate_table_header <- renderUI({
-    #   h5(HTML(genoppi::bold("Replicate correlation(s):")))
+    #   h5(HTML(genoppi:::bold("Replicate correlation(s):")))
     # })
     # output$replicate_summary_table <- renderTable({
     #   summaryStatsServer()$corrTableList$rep
     # })
     # output$sample_table_header <- renderUI({
-    #   h5(HTML(genoppi::bold("Sample correlation(s):")))
+    #   h5(HTML(genoppi:::bold("Sample correlation(s):")))
     # })
     # output$sample_summary_table <- renderTable({
     #   summaryStatsServer()$corrTableList$sample
     # })
     # output$control_table_header <- renderUI({
-    #   h5(HTML(genoppi::bold("Control correlation(s):")))
+    #   h5(HTML(genoppi:::bold("Control correlation(s):")))
     # })
     # output$control_summary_table <- renderTable({
     #   summaryStatsServer()$corrTableList$control
     # })
     # output$sample_control_table_header <- renderUI({
-    #   h5(HTML(genoppi::bold("Sample vs Control correlation(s):")))
+    #   h5(HTML(genoppi:::bold("Sample vs Control correlation(s):")))
     # })
     # output$sample_control_summary_table <- renderTable({
     #   summaryStatsServer()$corrTableList$sample_control

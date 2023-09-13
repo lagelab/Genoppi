@@ -81,7 +81,7 @@ statsParamsServer <- function(id,
       if (length(choices) == 0) {
         output$modTTest <- renderUI({
            HTML(paste0(
-            genoppi::bold('Note:  '),
+            genoppi:::bold('Note:  '),
             "No moderated t-test can be performed,
             not enough rep/sample/control columns found"))})
         columnsValues$mod_ttest_columns <- list()
