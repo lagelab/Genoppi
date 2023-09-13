@@ -142,7 +142,7 @@ plotVennServer <- function(id,
           grDevices::png(..., width = width, height = height,
           res = 300, units = "in")
         }
-        ggsave(
+        ggplot2::ggsave(
           file,
           plot =  plotValues$venn,
           device = device,

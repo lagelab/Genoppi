@@ -68,7 +68,7 @@ drawVolcanoServer <- function(id,
           grDevices::png(..., width = width, height = height,
                          res = 300, units = "in")
         }
-        ggsave(file, plot =  genoppi::theme_volcano(plotValues$volcano_basic),
+        ggplot2::ggsave(file, plot =  genoppi::theme_volcano(plotValues$volcano_basic),
                device = device, 
                width = global.img.volcano.download.width,
                height = global.img.volcano.download.height)

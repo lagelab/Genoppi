@@ -1868,7 +1868,7 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  input_integrated_plot_gg(), device = device, 
+      ggplot2::ggsave(file, plot =  input_integrated_plot_gg(), device = device,
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })
@@ -1882,7 +1882,7 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot =  a_pathway_plot_gg(), device = device, 
+      ggplot2::ggsave(file, plot =  a_pathway_plot_gg(), device = device,
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })
@@ -1896,7 +1896,7 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggsave(file, plot = a_pathway_plot_legend_gg(), device = device, 
+      ggplot2::ggsave(file, plot = a_pathway_plot_legend_gg(), device = device,
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })

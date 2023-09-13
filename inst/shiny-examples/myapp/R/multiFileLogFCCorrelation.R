@@ -167,7 +167,7 @@ logFCCorrelationServer <- function(
     #       grDevices::png(..., width = width, height = height,
     #                      res = 300, units = "in")
     #     }
-    #     ggsave(file,
+    #     ggplot2::ggsave(file,
     #            plot =  plotValues$venn,
     #            device = device,
     #            width = global.img.volcano.download.width,
