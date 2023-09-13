@@ -70,9 +70,9 @@ inputErrorServer <- function(id, dataFrameServer, errorValues){
       
       # pre-rendered messages
       msg1 = paste0(
-        bold('Error:'),' None of the inputted column names are allowed')
+        genoppi::bold('Error:'),' None of the inputted column names are allowed')
       msg2 = paste0(
-        bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),
+        genoppi::bold('Warning:'),' only ', length(accepted),'/',length(allowed_vec),
         ' input column names were accepted.')
       msg3 = paste0(
         'The following column names were invalid and discarded: ', 
@@ -80,11 +80,11 @@ inputErrorServer <- function(id, dataFrameServer, errorValues){
       msg4 = paste0(
         'See supplementary protocol for a description of allowed data inputs.')
       msg5 = paste0(
-        bold('Warning: '), 'NA(s) were found in ', na_rows, 
+        genoppi::bold('Warning: '), 'NA(s) were found in ', na_rows,
         ' row(s). Check column(s): ', 
         paste(names(na_cols)[na_cols], collapse = ', '))
       msg6 = paste0(
-        bold('Warning: '), 
+        genoppi::bold('Warning: '),
         'It looks like you have already -log10 transformed your p-values. 
         Please, use raw p-values to accurately display volcano plots.')
       
@@ -124,7 +124,7 @@ accessionMapErrorServer <- function(id, mapAccessionToGeneServer, errorValues) {
         # messages
         if (sum(synonyms_bool) > 0) {
           errorValues$gene_symbol_error <- paste0(
-            bold('Note:  '), sum(synonyms_bool),
+            genoppi::bold('Note:  '), sum(synonyms_bool),
             ' rows contain synonyms in "gene" column, e.g. gene "',synonym_example,
             '". This column should only contain a single gene-name.')
         }
@@ -137,12 +137,12 @@ accessionMapErrorServer <- function(id, mapAccessionToGeneServer, errorValues) {
         fraction = paste0(format(100*length(failed)/nrow(data), digits = 3),'%')
         
         # messages
-        msg0 = bold(paste(
+        msg0 = genoppi::bold(paste(
           'ERROR: ', absolute, ' (',fraction,
           ') accesion_numbers were not mapped to a genes. 
           The App may crash during Integrated Plotting!'))
         msg1 = paste0(
-          bold('Warning:'), absolute, ' (',fraction,
+          genoppi::bold('Warning:'), absolute, ' (',fraction,
           ') accesion_number(s) were not mapped to a gene(s).')
         msg2 = paste0(
           'The following accesion_number(s) were not mapped:', 
@@ -232,7 +232,7 @@ enrichmentStatsServer <- function(id,
             fmt$check$gene_sample_control | fmt$check$accession_sample_control) &
             (fmt$check$gene_signif|fmt$check$accession_signif)) {
           errorValues$stats_errors <- paste0(
-            bold('Note:  '), 
+            genoppi::bold('Note:  '),
             "Not using user provided significance statistics 
             (calculating statistics using provided columns).")
         }
@@ -253,12 +253,12 @@ enrichmentStatsServer <- function(id,
         }
         else if (fmt$check$gene_signif|fmt$check$accession_signif) {
           errorValues$stats_errors <- paste0(
-            bold('Note:  '), 
+            genoppi::bold('Note:  '),
             "Using user provided significance statistics, 
             not enough columns given to perform moderated t-test.")
           print("Using user provided significance statistics.")
         } else {
-          errorValues$stats_errors <- bold(paste0(
+          errorValues$stats_errors <- genoppi::bold(paste0(
             "ERROR: dataServer passed to enrichmentStatsServer does not fit any allowed format in format check, 
             i.e., $format$check all FALSE"))
           print(
