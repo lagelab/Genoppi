@@ -91,9 +91,9 @@ overlayExternalPPIServer <- function(id, enrichmentStatsServer, a_ppi_mapping_df
       actionLink(ns('info_inweb'), ' ', icon = icon('question-circle'))})
     
     observeEvent(input$info_inweb,{
-      text = paste(readLines(find_docs('inweb_table.info')), '<br> <br>', 
-                   readLines(find_docs('irefindex_table.info')), '<br> <br>', 
-                   readLines(find_docs('bioplex_table.info')))
+      text = paste(readLines(genoppi:::find_docs('inweb_table.info')), '<br> <br>',
+                   readLines(genoppi:::find_docs('irefindex_table.info')), '<br> <br>',
+                   readLines(genoppi:::find_docs('bioplex_table.info')))
       showModal(modalDialog(HTML(text), easyClose = T,
                             footer=genoppi.ver, title = 'InWeb'))
     })

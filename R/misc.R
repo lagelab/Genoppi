@@ -9,6 +9,7 @@ lun <- function(x) length(unique(as.vector(x)))
 #' @param x value x
 #' @param y value y
 #' @family misc
+#' @export
 '%nin%' <- function(x, y) !(x %in% y)
 
 #' @title omit nulls from list

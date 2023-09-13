@@ -375,7 +375,7 @@ shinyServer(function(input, output, session){
       mapping = mapping[mapping$significant, ]
       mapping$col_significant = input$a_color_inweb_sig
       mapping$col_other = input$a_color_inweb_insig
-      mapping$shape = symbol_to_shape(input$a_symbol_inweb)
+      mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_inweb)
       mapping$symbol = input$a_symbol_inweb
       mapping$label = ppiParams()$inweb_label
       mapping$dataset = a_ppi_mapping_name()
@@ -853,11 +853,11 @@ shinyServer(function(input, output, session){
       genes$data$dataset = 'Genes upload'
       genes$data$col_significant = input$a_color_genes_upload_sig
       genes$data$col_other = input$a_color_genes_upload_insig
-      genes$data$shape = symbol_to_shape(input$a_symbol_genes_upload)
+      genes$data$shape = genoppi:::symbol_to_shape(input$a_symbol_genes_upload)
       genes$data$symbol = input$a_symbol_genes_upload
       genes$data$label = input$a_label_genes_upload
       #if (!is.null(genes$data$listName)) genes$data$alt_label <- genes$data$listName
-      if (lun(genes$data$listName) > 1) genes$data$alt_label <- genes$data$listName
+      if (genoppi:::lun(genes$data$listName) > 1) genes$data$alt_label <- genes$data$listName
       return(genes)
     }
   })
@@ -874,12 +874,12 @@ shinyServer(function(input, output, session){
     mapping = get_snp_lists(infile = a_snp(), dataS()$gene)
     mapping$col_significant = input$a_color_snp_sig
     mapping$col_other = input$a_color_snp_insig
-    mapping$shape = symbol_to_shape(input$a_symbol_snp)
+    mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_snp)
     mapping$symbol = input$a_symbol_snp
     mapping$label = input$a_label_snp
     mapping$dataset = 'SNP upload'
     mapping$alt_label = mapping$SNP
-    if (lun(mapping$listName) > 1) mapping$alt_label <- paste0(mapping$alt_label, ' (',mapping$listName,')')
+    if (genoppi:::lun(mapping$listName) > 1) mapping$alt_label <- paste0(mapping$alt_label, ' (',mapping$listName,')')
     return(mapping)
   })
   
@@ -934,7 +934,7 @@ shinyServer(function(input, output, session){
   #       mapping = mapping[mapping$significant, ]
   #       mapping$col_significant = input$a_color_inweb_sig
   #       mapping$col_other = input$a_color_inweb_insig
-  #       mapping$shape = symbol_to_shape(input$a_symbol_inweb)
+  #       mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_inweb)
   #       mapping$symbol = input$a_symbol_inweb
   #       mapping$label = ppiParams()$inweb_label
   #       mapping$dataset = a_ppi_mapping_name()
@@ -951,7 +951,7 @@ shinyServer(function(input, output, session){
     if (!is.null(mapping)){
       mapping$col_significant = input$a_color_gwas_cat_sig
       mapping$col_other = input$a_color_gwas_cat_insig
-      mapping$shape = symbol_to_shape(input$a_symbol_gwas_cat)
+      mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_gwas_cat)
       mapping$symbol = input$a_symbol_gwas_cat
       mapping$label = input$a_label_gwas_cat
       #mapping$alt_label = mapping$SNP
@@ -994,7 +994,7 @@ shinyServer(function(input, output, session){
     gnomad = gnomad[bool_threshold,]
     gnomad$col_significant = input$a_color_gnomad_sig 
     gnomad$col_other = input$a_color_gnomad_insig 
-    gnomad$shape = symbol_to_shape(input$a_symbol_gnomad)
+    gnomad$shape = genoppi:::symbol_to_shape(input$a_symbol_gnomad)
     gnomad$symbol = input$a_symbol_gnomad
     gnomad$label = input$a_label_gnomad
     return(gnomad)
@@ -1057,7 +1057,7 @@ shinyServer(function(input, output, session){
       tissue$dataset = input$a_tissue_select
       tissue$col_significant = input$a_color_tissue_sig 
       tissue$col_other = input$a_color_tissue_insig 
-      tissue$shape = symbol_to_shape(input$a_symbol_tissue)
+      tissue$shape = genoppi:::symbol_to_shape(input$a_symbol_tissue)
       tissue$symbol = input$a_symbol_tissue
       tissue$label = input$a_label_tissue
       tissue$alt_label = paste0('Tissue elevated gene in ', tissue$tissue,'.')
@@ -1141,7 +1141,7 @@ shinyServer(function(input, output, session){
     genes = unlist(lapply(df$successInSampleGenes, function(x) paste(strwrap(x, width = 40), collapse = '<br>')))
     return(paste0('P-value: ', unlist(pvalues), '. ', 'Q-value (FDR): ', unlist(fdr), '. <br>',
                       genoppi:::bold(df$successInSample_count), ' genes(s) enriched in tissue: <br>',
-                      genoppi::italics(genes), '.'))
+                      genoppi:::italics(genes), '.'))
   })
   
   # plot bar chart of tissue enrichment
@@ -1911,7 +1911,7 @@ shinyServer(function(input, output, session){
     db = input$a_pf_loc_option
     if (sum(pulldown$significant) > 0){
       overlap <- get_pathways(db, pulldown$gene[pulldown$significant])
-      overlap <- assign_freq(overlap, 'pathway')
+      overlap <- genoppi:::assign_freq(overlap, 'pathway')
       overlap = merge(overlap, pulldown)
       return(overlap)
     } else return(NULL)
@@ -1931,7 +1931,7 @@ shinyServer(function(input, output, session){
     colors$color = NA
     set.seed(global.color.pathway.seed)
     n = sum(is.na(colors$color))
-    colors$color[is.na(colors$color)] <- sample(color_distinct(n), n) 
+    colors$color[is.na(colors$color)] <- sample(color_distinct(n), n)
     
     # merge with overlap
     overlap = merge(overlap, colors[,c('pathway','color')], by = 'pathway')
@@ -2030,7 +2030,7 @@ shinyServer(function(input, output, session){
     
     # extract legend from plot
     req(p)
-    legend = get_gg_legend(p)
+    legend <- genoppi:::get_gg_legend(p)
     grid::grid.newpage()
     grid::grid.draw(legend) 
   

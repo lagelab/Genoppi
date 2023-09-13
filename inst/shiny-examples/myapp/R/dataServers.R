@@ -76,7 +76,7 @@ inputErrorServer <- function(id, dataFrameServer, errorValues){
         ' input column names were accepted.')
       msg3 = paste0(
         'The following column names were invalid and discarded: ', 
-        italics(paste0(discarded, collapse = ', ')),'.')
+        genoppi:::italics(paste0(discarded, collapse = ', ')),'.')
       msg4 = paste0(
         'See supplementary protocol for a description of allowed data inputs.')
       msg5 = paste0(
@@ -146,7 +146,7 @@ accessionMapErrorServer <- function(id, mapAccessionToGeneServer, errorValues) {
           ') accesion_number(s) were not mapped to a gene(s).')
         msg2 = paste0(
           'The following accesion_number(s) were not mapped:', 
-          italics(paste0(failed,collapse=', ')),'.')
+          genoppi:::italics(paste0(failed,collapse=', ')),'.')
         msg3 = paste0(
           'These will be ignored in downstream analysis. 
           To include, manually specify the entry in a seperate "gene" (HGNC) column.')

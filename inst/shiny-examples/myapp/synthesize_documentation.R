@@ -22,7 +22,7 @@ documentation_to_html <- function(content){
 
   # Create header content
   header_content = unlist(lapply(names(content_wo_title), function(header){
-    return(paste0('<br>', italics(header),': ', content_wo_title[[header]]))
+    return(paste0('<br>', genoppi:::italics(header),': ', content_wo_title[[header]]))
   }))
   
   title_header_content = paste(c(title, header_content), collapse = ' ')
@@ -31,7 +31,7 @@ documentation_to_html <- function(content){
 }
 
 # go through roxygen titles, to get alphabetic order
-headers <- unlist(lapply(data.documentation, function(file){content = null_omit(genoppi:::parse_rd(readLines(file), what = c("title"), combine.with = ' '))$title}))
+headers <- unlist(lapply(data.documentation, function(file){content = genoppi:::null_omit(genoppi:::parse_rd(readLines(file), what = c("title"), combine.with = ' '))$title}))
 data.documentation.ordered <- data.documentation[order(headers)]
 
 # go over each file and parse
@@ -40,7 +40,7 @@ for (file in data.documentation.ordered){
   
   count = count + 1
   # write documentation files
-  content = null_omit(genoppi:::parse_rd(readLines(file), what = c("title", "description", "source", "references"), combine.with = ' '))
+  content = genoppi:::null_omit(genoppi:::parse_rd(readLines(file), what = c("title", "description", "source", "references"), combine.with = ' '))
   content_html = documentation_to_html(content)
   content_html = gsub('\\\\url\\{','',content_html)
   newfile = paste0(count,'_',tools::file_path_sans_ext(basename(file)),'.info')
