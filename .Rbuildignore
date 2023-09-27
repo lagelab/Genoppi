@@ -8,3 +8,4 @@
 ^images$
 ^renv$
 ^renv\.lock$
+^data-raw$

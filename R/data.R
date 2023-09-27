@@ -1,17 +1,18 @@
-#' @title Uniprot protein accession number to HGNC gene symbol mapping
-#' @description A dataset containing 67,519 Uniprot accession number to HGNC gene symbol pairings. 
-#' @format A data frame with 67,519 rows and 2 variables:
+#' @title UniProt human protein accession number to gene name mapping
+#' @description A dataset containing 167,966 UniProt accession number and gene name pairings. 
+#' @format A tibble object with 167,966 rows and 3 columns:
 #' \describe{
-#'   \item{accession_number}{Uniprot accession number (e.g. P10415)}
-#'   \item{gene}{HGNC gene symbol (e.g. BCL2)}
+#'   \item{accession_number}{<chr> UniProt protein accession number (e.g. P10415)}
+#'   \item{gene}{<chr> gene name (e.g. BCL2), first gene in all_genes if multiple}
+#'   \item{all_genes}{<chr> comma-delimited gene names mapped to accession_number}
 #' }
 #' @family datasets
 #' @docType data
-#' @source ID mapping data for human protein-coding genes downloaded from Uniprot:  
+#' @source Human ID mapping file (2023-09-13 release) downloaded from UniProt:  
 #' \url{https://www.uniprot.org}
 #' @references
-#' UniProt Consortium. UniProt: a worldwide hub of protein knowledge. Nucleic Acids Res.
-#' 2019;47(D1):D506-D515. doi:10.1093/nar/gky1049
+#' UniProt Consortium. UniProt: the Universal Protein Knowledgebase in 2023.
+#' Nucleic Acids Res. 2023;51(D1):D523-D531. doi:10.1093/nar/gkac1052
 
 "accession_gene_table"
 

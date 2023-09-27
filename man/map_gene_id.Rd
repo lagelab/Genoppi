@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_gene_id.R
 \name{map_gene_id}
 \alias{map_gene_id}
-\title{Map Uniprot accession ID to gene name (HGNC symbol)}
+\title{Map UniProt human protein accession number to gene name}
 \usage{
 map_gene_id(df)
 }
@@ -13,5 +13,6 @@ map_gene_id(df)
 data.frame consisting of input df + new gene column
 }
 \description{
-Add gene column to data.frame containing accesion_number column. Isoforms (indicated by suffixes separated by . or - in acession_number) are mapped to the same gene names.
+Add gene column to data.frame containing accesion_number column.
+Isoforms (indicated by suffixes separated by . or -) are mapped to the same gene names.
 }

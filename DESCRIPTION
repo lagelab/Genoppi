@@ -1,51 +1,47 @@
 Package: genoppi
 Title: genoppi
 Version: 1.0.13
-Authors@R: 
-    c(person(given = "Frederik",
-             family = "Lassen",
-             role = c("aut", "cre"),
-             email = "flassen@broadinstitute.org"),
-      person(given = "Yu-Han",
-             family = "Hsu",
-             role = c("aut"),
-             email = "yuhanhsu@broadinstitute.org"),
-      person(given = "Joshua",
-             family = "Ching",
-             role = c("aut"),
-             email = "jching@broadinstitute.org"))
-Description: An open-source software for robust and standardized integration of proteomic and genetic data.
+Authors@R: c(
+    person("Frederik", "Lassen", , "flassen@broadinstitute.org", role = c("aut", "cre")),
+    person("Yu-Han", "Hsu", , "yuhanhsu@broadinstitute.org", role = "aut"),
+    person("Joshua", "Ching", , "jching@broadinstitute.org", role = "aut")
+  )
+Description: An open-source software for robust and standardized
+    integration of proteomic and genetic data.
 License: MIT + file LICENSE
-LazyData: TRUE
-LazyDataCompression: xz
 Depends:
     R (>= 4.2),
     shiny,
-    shinydashboard,
-Suggests:
-    devtools,
-    covr,
-    grid,
-    testthat (>= 2.1.0)
+    shinydashboard
 Imports:
-    stats,
-    ggrepel,
-    shinyjs,
-    data.table,
-    RColorBrewer,
-    VennDiagram,
     colourpicker,
-    futile.logger,
-    shinycssloaders,
+    data.table,
+    dplyr,
     DT,
-    limma (>= 3.52),
-    plotly (>= 4.5.6),
-    ggplot2,
-    hash,
-    magrittr,
+    futile.logger,
     GGally,
+    ggplot2,
+    ggrepel,
     ggVennDiagram,
+    hash,
+    limma (>= 3.52),
+    magrittr,
+    plotly (>= 4.5.6),
+    RColorBrewer,
+    shinycssloaders,
+    shinyjs,
+    stats,
+    VennDiagram
+Suggests:
+    covr,
+    devtools,
+    grid,
+    R.utils,
+    testthat (>= 2.1.0)
+biocViews: limma
 Encoding: UTF-8
+LazyData: TRUE
+LazyDataCompression: xz
 RoxygenNote: 7.2.3
 Collate: 
     'add_plotly_layout_scatter.R'
@@ -102,4 +98,3 @@ Collate:
     'to_overlay_data.R'
     'validate_reference.R'
     'venn_to_table.R'
-biocViews: limma
