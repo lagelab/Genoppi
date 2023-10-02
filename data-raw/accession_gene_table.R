@@ -1,5 +1,5 @@
 # code to generate accession_gene_table
-# last update: 2023-09-27
+# last update: 2023-10-02
 
 library(data.table) # also requires R.utils for fread() to read in gz/bz2 files
 library(dplyr)
