@@ -13,19 +13,19 @@ get_pathways <- function(database, genes){
 
   # HGNC gene group
   if (database=="hgnc") {
-    pathDf <- hgnc_group_table[hgnc_group_table$Gene.symbol %in% genes,]
+    pathDf <- subset(hgnc_group_table,Gene.symbol %in% genes)[,c('Gene.symbol','Group.name')]
  
   # GO molecular function
   } else if (database=="mf") {
-    pathDf <- goa_mf_table[goa_mf_table$Gene.symbol %in% genes,]
+    pathDf <- subset(goa_mf_table,Gene.symbol %in% genes)[,c('Gene.symbol','GO.name')]
 
   # GO cellular component
   } else if (database=="cc") {
-    pathDf <- goa_cc_table[goa_cc_table$Gene.symbol %in% genes,]
+    pathDf <- subset(goa_cc_table,Gene.symbol %in% genes)[,c('Gene.symbol','GO.name')]
  
   # GO biological process
   } else if (database=="bp") {
-    pathDf <- goa_bp_table[goa_bp_table$Gene.symbol %in% genes,]
+    pathDf <- subset(goa_bp_table,Gene.symbol %in% genes)[,c('Gene.symbol','GO.name')]
 
   # MSigDB H: hallmark gene sets
   } else if (database=="h") {
@@ -61,12 +61,10 @@ get_pathways <- function(database, genes){
   }
   
 
-  if (nrow(pathDf)==0) { pathDf <- NULL }
-
-  if (!is.null(pathDf)) {
-    if (database=="mf" | database=="cc" | database=="bp") {
-      names(pathDf) <- c("gene","GO.ID","pathway")  
-    } else { names(pathDf) <- c("gene","pathway") }
+  if (nrow(pathDf)==0) {
+    pathDf <- NULL
+  } else {
+    names(pathDf) <- c("gene","pathway")
   }
 
   return(pathDf)

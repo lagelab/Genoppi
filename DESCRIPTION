@@ -37,6 +37,7 @@ Suggests:
     devtools,
     grid,
     R.utils,
+    stringr,
     testthat (>= 2.1.0)
 biocViews: limma
 Encoding: UTF-8

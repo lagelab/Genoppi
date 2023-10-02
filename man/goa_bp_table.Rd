@@ -5,29 +5,29 @@
 \alias{goa_bp_table}
 \title{GO biological process annotations}
 \format{
-A data frame with 140,067 rows and 3 variables:
+A tibble object with 161,108 rows and 3 columns:
 \describe{
-  \item{Gene.symbol}{HGNC gene symbol}
-  \item{GO.ID}{GO term ID}
-  \item{GO.name}{GO term name}
+  \item{Gene.symbol}{<chr> HGNC gene symbol}
+  \item{GO.ID}{<chr> GO term ID}
+  \item{GO.name}{<chr> GO term name}
 }
 }
 \source{
-Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2020-03-23 release) downloaded on 2020-03-30 from:
+Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
 \url{http://current.geneontology.org/products/pages/downloads.html}
 }
 \usage{
 goa_bp_table
 }
 \description{
-A dataset containing annotations for 17,814 genes in 12,362 GO biological process terms.
+A dataset containing annotations for 17,775 genes in 12,335 GO biological process terms.
 }
 \references{
 Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
 The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 
-The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
-Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
+Gene Ontology Consortium, Aleksander SA, Balhoff J, et al. The Gene Ontology knowledgebase in 2023.
+Genetics. 2023;224(1):iyad031. doi:10.1093/genetics/iyad031
 }
 \seealso{
 Other datasets: 

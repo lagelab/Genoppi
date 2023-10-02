@@ -155,85 +155,86 @@
 
 
 #' @title HGNC gene group annotations
-#' @description A dataset containing annotations for 23,874 genes in 1,415 HGNC gene groups. 
-#' @format A data frame with 28,677 rows and 2 variables:
+#' @description A dataset containing annotations for 25,637 genes in 1,622 HGNC gene groups. 
+#' @format A tibble object with 30,791 rows and 3 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Group.name}{Gene group name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Group.ID}{<int> Gene group ID}
+#'   \item{Group.name}{<chr> Gene group name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source HGNC genes within groups dataset downloaded on 2020-03-30 from:
+#' @source HGNC genes within groups dataset downloaded on 2023-10-02 from:
 #' \url{https://www.genenames.org/download/statistics-and-files/}
 #' @references
-#' Yates B, Braschi B, Gray KA, Seal RL, Tweedie S, Bruford EA. Genenames.org: the HGNC and VGNC resources in 2017.
-#' Nucleic Acids Res. 2017;45(D1):D619-D625. doi:10.1093/nar/gkw1033 
+#' Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023.
+#' Nucleic Acids Res. 2023;51(D1):D1003-D1009. doi:10.1093/nar/gkac888
 
 "hgnc_group_table"
 
 
 #' @title GO molecular function annotations
-#' @description A dataset containing annotations for 17,654 genes in 4,271 GO molecular funtion terms.
-#' @format A data frame with 65,891 rows and 3 variables:
+#' @description A dataset containing annotations for 18,172 genes in 4,614 GO molecular funtion terms.
+#' @format A tibble object with 292,611 rows and 3 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{GO.ID}{GO term ID}
-#'   \item{GO.name}{GO term name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{GO.ID}{<chr> GO term ID}
+#'   \item{GO.name}{<chr> GO term name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2020-03-23 release) downloaded on 2020-03-30 from:
+#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
 #' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 #'
-#' The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
-#' Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
+#' Gene Ontology Consortium, Aleksander SA, Balhoff J, et al. The Gene Ontology knowledgebase in 2023.
+#' Genetics. 2023;224(1):iyad031. doi:10.1093/genetics/iyad031
 
 "goa_mf_table"
 
 
 #' @title GO cellular component annotations
-#' @description A dataset containing annotations for 18,880 genes in 1,765 GO cellular component terms.
-#' @format A data frame with 83,029 rows and 3 variables:
+#' @description A dataset containing annotations for 18,868 genes in 1,800 GO cellular component terms.
+#' @format A tibble object with 179,867 rows and 3 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{GO.ID}{GO term ID}
-#'   \item{GO.name}{GO term name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{GO.ID}{<chr> GO term ID}
+#'   \item{GO.name}{<chr> GO term name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2020-03-23 release) downloaded on 2020-03-30 from:
+#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
 #' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 #'
-#' The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
-#' Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
+#' Gene Ontology Consortium, Aleksander SA, Balhoff J, et al. The Gene Ontology knowledgebase in 2023.
+#' Genetics. 2023;224(1):iyad031. doi:10.1093/genetics/iyad031
 
 "goa_cc_table"
 
 
 #' @title GO biological process annotations
-#' @description A dataset containing annotations for 17,814 genes in 12,362 GO biological process terms.
-#' @format A data frame with 140,067 rows and 3 variables:
+#' @description A dataset containing annotations for 17,775 genes in 12,335 GO biological process terms.
+#' @format A tibble object with 161,108 rows and 3 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{GO.ID}{GO term ID}
-#'   \item{GO.name}{GO term name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{GO.ID}{<chr> GO term ID}
+#'   \item{GO.name}{<chr> GO term name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2020-03-23 release) downloaded on 2020-03-30 from:
+#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
 #' The Gene Ontology Consortium. Nat Genet. 2000;25(1):25-29. doi:10.1038/75556  
 #'
-#' The Gene Ontology Consortium. The Gene Ontology Resource: 20 years and still GOing strong.
-#' Nucleic Acids Res. 2019;47(D1):D330-D338. doi:10.1093/nar/gky1055
+#' Gene Ontology Consortium, Aleksander SA, Balhoff J, et al. The Gene Ontology knowledgebase in 2023.
+#' Genetics. 2023;224(1):iyad031. doi:10.1093/genetics/iyad031
 
 "goa_bp_table"
 

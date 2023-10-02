@@ -5,25 +5,26 @@
 \alias{hgnc_group_table}
 \title{HGNC gene group annotations}
 \format{
-A data frame with 28,677 rows and 2 variables:
+A tibble object with 30,791 rows and 3 columns:
 \describe{
-  \item{Gene.symbol}{HGNC gene symbol}
-  \item{Group.name}{Gene group name}
+  \item{Gene.symbol}{<chr> HGNC gene symbol}
+  \item{Group.ID}{<int> Gene group ID}
+  \item{Group.name}{<chr> Gene group name}
 }
 }
 \source{
-HGNC genes within groups dataset downloaded on 2020-03-30 from:
+HGNC genes within groups dataset downloaded on 2023-10-02 from:
 \url{https://www.genenames.org/download/statistics-and-files/}
 }
 \usage{
 hgnc_group_table
 }
 \description{
-A dataset containing annotations for 23,874 genes in 1,415 HGNC gene groups.
+A dataset containing annotations for 25,637 genes in 1,622 HGNC gene groups.
 }
 \references{
-Yates B, Braschi B, Gray KA, Seal RL, Tweedie S, Bruford EA. Genenames.org: the HGNC and VGNC resources in 2017.
-Nucleic Acids Res. 2017;45(D1):D619-D625. doi:10.1093/nar/gkw1033
+Seal RL, Braschi B, Gray K, et al. Genenames.org: the HGNC resources in 2023.
+Nucleic Acids Res. 2023;51(D1):D1003-D1009. doi:10.1093/nar/gkac888
 }
 \seealso{
 Other datasets: 
