@@ -91,6 +91,28 @@
 
 "irefindex_table"
 
+#' @title HuRI data (HI-union network)
+#' @description  TO ADD
+#' @format TO ADD
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein}
+#'   \item{Gene2}{HGNC gene symbol of second protein}
+#' }
+#' @details This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
+#' interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns.
+#' Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores.
+#'
+#' @family datasets
+#' @docType data
+#' @source HuRI data (HI-union network) data downloaded on 2023-10-10 from:
+#' \url{https://www.nature.com/articles/s41586-020-2188-x}
+#' TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
+#' @references
+#' Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
+#' (2020). https://doi.org/10.1038/s41586-020-2188-x
+
+"huri_table"
+
 
 #' @title 1000 Genomes SNP to HGNC gene symbol mapping
 #' @description A data set containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 

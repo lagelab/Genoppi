@@ -7,11 +7,12 @@ plotGGpairFrame <- function(id) {
      column(11, shinyjs::hidden(
        myDownloadButton(NS(id, "GGPair_download"), 'GGPairs Plot')))
     ),
-    fluidRow(style = "padding-bottom:75px",
+    fluidRow(#style = "padding-bottom:75px",
              # TODO add spinner to ggpairs
              #  (low priority as volcano plot already have spinner)
              # column(11, shinycssloaders::withSpinner(
              #   plotOutput(NS(id, "GGPairs")), spinner_type)) #, width = "550px", height = "550px"
+             column(11, actionButton(NS(id, "generatePlot"), "Generate plot")),
              column(11, plotOutput(NS(id, "GGPairs"))) 
     ),
     fluidRow(column(11, shinyjs::hidden(uiOutput(NS(id, "GGPairsNotif")))))
@@ -25,7 +26,8 @@ plotGGpairServer <- function(id,
                              sigColorServer, 
                              insigColorServer) {
   moduleServer(id, function(input, output, session){
-    observeEvent(sigificanceServer(), {
+    # observeEvent(sigificanceServer(), {
+    observeEvent(input$generatePlot, {
       req(columnsValues$mod_ttest_columns,
           sigColorServer(),
           insigColorServer())

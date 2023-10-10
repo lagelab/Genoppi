@@ -98,10 +98,8 @@ plotVennServer <- function(id,
                         rownames = FALSE, 
                         colnames = c("Gene", set_names, "Overlap count"))
         })
-        print(set_genes)
         venn <- ggVennDiagram::Venn(set_genes)
         data <- ggVennDiagram::process_data(venn)
-        # print(data)
         plotValues$venn <- ggplot2::ggplot() +
           ggplot2::geom_sf(ggplot2::aes(fill = count), data = ggVennDiagram::venn_region(data)) +
           ggplot2::geom_sf_text(ggplot2::aes(label = name), data = ggVennDiagram::venn_setlabel(data)) +
