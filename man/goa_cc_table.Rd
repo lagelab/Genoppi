@@ -3,7 +3,7 @@
 \docType{data}
 \name{goa_cc_table}
 \alias{goa_cc_table}
-\title{GO cellular component annotations}
+\title{GO cellular component terms}
 \format{
 A tibble object with 179,867 rows and 3 columns:
 \describe{
@@ -54,6 +54,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

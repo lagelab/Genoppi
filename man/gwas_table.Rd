@@ -53,6 +53,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

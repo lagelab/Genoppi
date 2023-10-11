@@ -91,27 +91,28 @@
 
 "irefindex_table"
 
-#' @title HuRI data (HI-union network)
-#' @description  TO ADD
-#' @format TO ADD
-#' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein}
-#'   \item{Gene2}{HGNC gene symbol of second protein}
-#' }
-#' @details This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
-#' interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns.
-#' Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores.
-#'
-#' @family datasets
-#' @docType data
-#' @source HuRI data (HI-union network) data downloaded on 2023-10-10 from:
-#' \url{https://www.nature.com/articles/s41586-020-2188-x}
-#' TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
-#' @references
-#' Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
-#' (2020). https://doi.org/10.1038/s41586-020-2188-x
+## COMMENTED OUT FOR NOW: don't add until corresponding .rda file is stored in data/
+##' @title HuRI data (HI-union network)
+##' @description  TO ADD
+##' @format TO ADD
+##' \describe{
+##'   \item{Gene1}{HGNC gene symbol of first protein}
+##'   \item{Gene2}{HGNC gene symbol of second protein}
+##' }
+##' @details This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
+##' interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns.
+##' Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores.
+##'
+##' @family datasets
+##' @docType data
+##' @source HuRI data (HI-union network) data downloaded on 2023-10-10 from:
+##' \url{https://www.nature.com/articles/s41586-020-2188-x}
+##' TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
+##' @references
+##' Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
+##' (2020). https://doi.org/10.1038/s41586-020-2188-x
 
-"huri_table"
+##"huri_table"
 
 
 #' @title 1000 Genomes SNP to HGNC gene symbol mapping
@@ -176,7 +177,7 @@
 "gnomad_table"
 
 
-#' @title HGNC gene group annotations
+#' @title HGNC gene groups
 #' @description A dataset containing annotations for 25,637 genes in 1,622 HGNC gene groups. 
 #' @format A tibble object with 30,791 rows and 3 columns:
 #' \describe{
@@ -195,8 +196,8 @@
 "hgnc_group_table"
 
 
-#' @title GO molecular function annotations
-#' @description A dataset containing annotations for 18,172 genes in 4,614 GO molecular funtion terms.
+#' @title GO molecular function terms
+#' @description A dataset containing annotations for 18,172 genes in 4,614 GO molecular function terms.
 #' @format A tibble object with 292,611 rows and 3 columns:
 #' \describe{
 #'   \item{Gene.symbol}{<chr> HGNC gene symbol}
@@ -217,7 +218,7 @@
 "goa_mf_table"
 
 
-#' @title GO cellular component annotations
+#' @title GO cellular component terms
 #' @description A dataset containing annotations for 18,868 genes in 1,800 GO cellular component terms.
 #' @format A tibble object with 179,867 rows and 3 columns:
 #' \describe{
@@ -239,7 +240,7 @@
 "goa_cc_table"
 
 
-#' @title GO biological process annotations
+#' @title GO biological process terms
 #' @description A dataset containing annotations for 17,775 genes in 12,335 GO biological process terms.
 #' @format A tibble object with 161,108 rows and 3 columns:
 #' \describe{
@@ -261,172 +262,193 @@
 "goa_bp_table"
 
 
-#' @title MSigDB H collection (hallmark gene sets) annotations
-#' @description A dataset containing annotations for 4,383 genes in 50 MSigDB hallmark gene sets.
-#' @format A data frame with 7,321 rows and 2 variables:
+#' @title MSigDB H collection (hallmark gene sets)
+#' @description A dataset containing annotations for 4,384 genes in 50 MSigDB hallmark gene sets.
+#' @format A tibble object with 7,322 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source H: hallmark gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_h_table"
 
 
-#' @title MSigDB C1 collection (positional gene sets) annotations
-#' @description A dataset containing annotations for 38,340 genes in 299 MSigDB positional gene sets.
-#' @format A data frame with 38,340 rows and 2 variables:
+#' @title MSigDB C1 collection (positional gene sets)
+#' @description A dataset containing annotations for 42,198 genes in 300 MSigDB positional gene sets.
+#' @format A tibble object with 42,242 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C1: positional gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c1_table"
 
 
-#' @title MSigDB C2 collection (curated gene sets) annotations
-#' @description A dataset containing annotations for 20,738 genes in 5,529 MSigDB curated gene sets.
-#' @format A data frame with 479,444 rows and 2 variables:
+#' @title MSigDB C2 collection (curated gene sets)
+#' @description A dataset containing annotations for 22,109 genes in 6,495 MSigDB curated gene sets.
+#' @format A tibble object with 538,934 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C2: curated gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c2_table"
 
 
-#' @title MSigDB C3 collection (regulatory target gene sets) annotations
-#' @description A dataset containing annotations for 26,647 genes in 3,735 MSigDB regulatory target gene sets.
-#' @format A data frame with 843,716 rows and 2 variables:
+#' @title MSigDB C3 collection (regulatory target gene sets)
+#' @description A dataset containing annotations for 28,651 genes in 3,713 MSigDB regulatory target gene sets.
+#' @format A tibble object with 818,113 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C3: regulatory target gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c3_table"
 
 
-#' @title MSigDB C4 collection (computational gene sets) annotations
-#' @description A dataset containing annotations for 10,004 genes in 858 MSigDB computational gene sets.
-#' @format A data frame with 91,037 rows and 2 variables:
+#' @title MSigDB C4 collection (computational gene sets)
+#' @description A dataset containing annotations for 10,013 genes in 858 MSigDB computational gene sets.
+#' @format A tibble object with 91,175 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C4: computational gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c4_table"
 
 
-#' @title MSigDB C5 collection (GO gene sets) annotations
-#' @description A dataset containing annotations for 18,046 genes in 10,192 MSigDB GO gene sets.
-#' @format A data frame with 868,350 rows and 2 variables:
+#' @title MSigDB C5 collection (ontology gene sets)
+#' @description A dataset containing annotations for 19,384 genes in 15,937 MSigDB ontology gene sets.
+#' @format A tibble object with 1,293,170 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C5: GO gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c5_table"
 
 
-#' @title MSigDB C6 collection (oncogenic signatures) annotations
-#' @description A dataset containing annotations for 10,897 genes in 189 MSigDB oncogenic signatures.
-#' @format A data frame with 30,469 rows and 2 variables:
+#' @title MSigDB C6 collection (oncogenic signature gene sets)
+#' @description A dataset containing annotations for 10,931 genes in 189 MSigDB oncogenic signature gene sets.
+#' @format A tibble object with 30,579 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C6: oncogenic signatures dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c6_table"
 
 
-#' @title MSigDB C7 collection (immunologic sig natures) annotations
-#' @description A dataset containing annotations for 20,235 genes in 4,872 MSigDB immunologic signatures.
-#' @format A data frame with 947,586 rows and 2 variables:
+#' @title MSigDB C7 collection (immunologic signature gene sets)
+#' @description A dataset containing annotations for 21,383 genes in 5,219 MSigDB immunologic signature gene sets.
+#' @format A tibble object with 990,381 rows and 2 columns:
 #' \describe{
-#'   \item{Gene.symbol}{HGNC gene symbol}
-#'   \item{Set.name}{Gene set name}
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
 #' }
 #' @family datasets
 #' @docType data
-#' @source C7: immunologic signatures dataset (v7.1) downloaded on 2020-04-03 from:
-#' \url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 #' @references
-#' Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-#' genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 #'
-#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-#' hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 
 "msigdb_c7_table"
+
+
+#' @title MSigDB C8 collection (cell type signature gene sets)
+#' @description A dataset containing annotations for 20,393 genes in 830 MSigDB cell type signature gene sets.
+#' @format A tibble object with 149,795 rows and 2 columns:
+#' \describe{
+#'   \item{Gene.symbol}{<chr> HGNC gene symbol}
+#'   \item{Set.name}{<chr> Gene set name}
+#' }
+#' @family datasets
+#' @docType data
+#' @source MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+#' \url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
+#' @references
+#' Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+#' The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+#' Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
+#'
+#' See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
+
+"msigdb_c8_table"
 
 
 #' @title Human Protein Atlas (HPA) RNA tissue specificity annotations

@@ -3,30 +3,30 @@
 \docType{data}
 \name{msigdb_c7_table}
 \alias{msigdb_c7_table}
-\title{MSigDB C7 collection (immunologic sig natures) annotations}
+\title{MSigDB C7 collection (immunologic signature gene sets)}
 \format{
-A data frame with 947,586 rows and 2 variables:
+A tibble object with 990,381 rows and 2 columns:
 \describe{
-  \item{Gene.symbol}{HGNC gene symbol}
-  \item{Set.name}{Gene set name}
+  \item{Gene.symbol}{<chr> HGNC gene symbol}
+  \item{Set.name}{<chr> Gene set name}
 }
 }
 \source{
-C7: immunologic signatures dataset (v7.1) downloaded on 2020-04-03 from:
-\url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+\url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 }
 \usage{
 msigdb_c7_table
 }
 \description{
-A dataset containing annotations for 20,235 genes in 4,872 MSigDB immunologic signatures.
+A dataset containing annotations for 21,383 genes in 5,219 MSigDB immunologic signature gene sets.
 }
 \references{
-Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 
-Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
+See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 }
 \seealso{
 Other datasets: 
@@ -53,6 +53,7 @@ Other datasets:
 \code{\link{msigdb_c4_table}},
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

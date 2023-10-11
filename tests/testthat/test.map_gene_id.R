@@ -25,11 +25,11 @@ test_that('map_gene_id correctly throws errors and warnings' ,{
 
   # throws error if input has no accession_number column
   expect_error(map_gene_id(dplyr::select(df,!accession_number)),
-	'"accession_number" column not found in input.')
+    '"accession_number" column not found in input.')
 
   # throws warning if input already has gene column
   expect_warning(map_gene_id(df),
-	'"gene" column found in input, would be replaced in output.')
+    '"gene" column found in input, would be replaced in output.')
   
 })
 

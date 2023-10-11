@@ -3,7 +3,7 @@
 \docType{data}
 \name{goa_mf_table}
 \alias{goa_mf_table}
-\title{GO molecular function annotations}
+\title{GO molecular function terms}
 \format{
 A tibble object with 292,611 rows and 3 columns:
 \describe{
@@ -20,7 +20,7 @@ Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 r
 goa_mf_table
 }
 \description{
-A dataset containing annotations for 18,172 genes in 4,614 GO molecular funtion terms.
+A dataset containing annotations for 18,172 genes in 4,614 GO molecular function terms.
 }
 \references{
 Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
@@ -54,6 +54,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

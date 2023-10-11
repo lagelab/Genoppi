@@ -3,7 +3,7 @@
 \docType{data}
 \name{hgnc_group_table}
 \alias{hgnc_group_table}
-\title{HGNC gene group annotations}
+\title{HGNC gene groups}
 \format{
 A tibble object with 30,791 rows and 3 columns:
 \describe{
@@ -51,6 +51,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

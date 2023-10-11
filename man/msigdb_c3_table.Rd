@@ -3,30 +3,30 @@
 \docType{data}
 \name{msigdb_c3_table}
 \alias{msigdb_c3_table}
-\title{MSigDB C3 collection (regulatory target gene sets) annotations}
+\title{MSigDB C3 collection (regulatory target gene sets)}
 \format{
-A data frame with 843,716 rows and 2 variables:
+A tibble object with 818,113 rows and 2 columns:
 \describe{
-  \item{Gene.symbol}{HGNC gene symbol}
-  \item{Set.name}{Gene set name}
+  \item{Gene.symbol}{<chr> HGNC gene symbol}
+  \item{Set.name}{<chr> Gene set name}
 }
 }
 \source{
-C3: regulatory target gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-\url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+\url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 }
 \usage{
 msigdb_c3_table
 }
 \description{
-A dataset containing annotations for 26,647 genes in 3,735 MSigDB regulatory target gene sets.
+A dataset containing annotations for 28,651 genes in 3,713 MSigDB regulatory target gene sets.
 }
 \references{
-Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 
-Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
+See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 }
 \seealso{
 Other datasets: 
@@ -53,6 +53,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

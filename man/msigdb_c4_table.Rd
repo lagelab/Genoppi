@@ -3,30 +3,30 @@
 \docType{data}
 \name{msigdb_c4_table}
 \alias{msigdb_c4_table}
-\title{MSigDB C4 collection (computational gene sets) annotations}
+\title{MSigDB C4 collection (computational gene sets)}
 \format{
-A data frame with 91,037 rows and 2 variables:
+A tibble object with 91,175 rows and 2 columns:
 \describe{
-  \item{Gene.symbol}{HGNC gene symbol}
-  \item{Set.name}{Gene set name}
+  \item{Gene.symbol}{<chr> HGNC gene symbol}
+  \item{Set.name}{<chr> Gene set name}
 }
 }
 \source{
-C4: computational gene sets dataset (v7.1) downloaded on 2020-04-03 from:
-\url{https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp}
+MSigDB Human Gene Set GMT file set (v2023.1.Hs release) downloaded from:
+\url{https://www.gsea-msigdb.org/gsea/downloads.jsp}
 }
 \usage{
 msigdb_c4_table
 }
 \description{
-A dataset containing annotations for 10,004 genes in 858 MSigDB computational gene sets.
+A dataset containing annotations for 10,013 genes in 858 MSigDB computational gene sets.
 }
 \references{
-Subramanian A, Tamayo P, Mootha VK, et al. Gene set enrichment analysis: a knowledge-based approach for interpreting
-genome-wide expression profiles. Proc Natl Acad Sci U S A. 2005;102(43):15545-15550. doi:10.1073/pnas.0506580102  
+Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P.
+The Molecular Signatures Database (MSigDB) hallmark gene set collection.
+Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004 
 
-Liberzon A, Birger C, Thorvaldsdóttir H, Ghandi M, Mesirov JP, Tamayo P. The Molecular Signatures Database (MSigDB)
-hallmark gene set collection. Cell Syst. 2015;1(6):417-425. doi:10.1016/j.cels.2015.12.004
+See additional references at: https://www.gsea-msigdb.org/gsea/msigdb/human/collection_details.jsp
 }
 \seealso{
 Other datasets: 
@@ -53,6 +53,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

@@ -3,7 +3,7 @@
 \docType{data}
 \name{goa_bp_table}
 \alias{goa_bp_table}
-\title{GO biological process annotations}
+\title{GO biological process terms}
 \format{
 A tibble object with 161,108 rows and 3 columns:
 \describe{
@@ -54,6 +54,7 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
+\code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}}
 }
 \concept{datasets}

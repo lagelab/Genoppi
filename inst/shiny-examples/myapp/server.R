@@ -814,9 +814,11 @@ shinyServer(function(input, output, session){
                                                      "MSigDB C2: curated gene sets" = 'c2',
                                                      "MSigDB C3: regulatory target gene sets" = 'c3',
                                                      "MSigDB C4: computational gene sets" = 'c4',
-                                                     "MSigDB C5: GO terms" = 'c5',
-                                                     "MSigDB C6: oncogenic signatures" = 'c6',
-                                                     "MSigDB C7: immunologic signatures" = 'c7'), selectize=FALSE)
+                                                     "MSigDB C5: ontology gene sets" = 'c5',
+                                                     "MSigDB C6: oncogenic signature gene sets" = 'c6',
+                                                     "MSigDB C7: immunologic signature gene sets" = 'c7',
+                                                     "MSigDB C8: cell type signature gene sets" = 'c8'),
+                                                     selectize=FALSE)
   })
   
   output$a_pathway_mapping_freq_slider_ui <- renderUI({
