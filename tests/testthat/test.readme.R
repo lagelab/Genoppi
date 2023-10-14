@@ -71,14 +71,14 @@ test_that('Readme data can be run',{
   ### calculating and visualizing tissue-specific enrichment
   
   # look for tissue-specific enrichment
-  gtex_enrichment = lapply_calc_hyper(df_sig, gtex_rna, bait = 'BCL2')
+  gtex_enrichment = lapply_calc_hyper(df_sig, gtex_rna_table, bait = 'BCL2')
   head(gtex_enrichment)
   
   # plot result
   plot_tissue_enrichment(gtex_enrichment, 'list_name', col.value = 'BH.FDR', ylab = 'FDR')
   
   # explore Brain_Hippocampus with relatively low FDR
-  tissue = get_tissue_list('Brain_Hippocampus',table=gtex_rna)
+  tissue = get_tissue_list('Brain - Hippocampus',table=gtex_rna_table)
   
   # view in volcano plot
   plot_volcano_basic(df_sig) %>%

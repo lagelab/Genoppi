@@ -37,8 +37,10 @@ Suggests:
     devtools,
     grid,
     R.utils,
+    readxl,
     stringr,
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    tidyr
 biocViews: limma
 Encoding: UTF-8
 LazyData: TRUE

@@ -452,67 +452,87 @@
 
 
 #' @title Human Protein Atlas (HPA) RNA tissue specificity annotations
-#' @description A dataset containing tissue specificity annotations for 19,634 genes in 33 tissues derived from 
-#' HPA RNA-sequencing data. See cited reference and \url{https://www.proteinatlas.org/humanproteome/tissue/tissue+specific}
-#' for details on definition of tissue-specific (i.e. tissue-elevated) genes. 
-#' @format A data frame with 571,504 rows and 3 variables:
+#' @description A dataset containing annotations for 19,114 tissue-elevated genes in 36 tissues derived from 
+#' HPA consensus transcriptomics data. See references for definition of tissue-elevated genes.
+#' @format A tibble object with 688,104 rows and 3 columns:
 #' \describe{
-#'   \item{tissue}{Tissue name}
-#'   \item{gene}{HGNC gene symbol}
-#'   \item{significant}{Logical variable: "TRUE" = gene has elevated expression in tissue;
-#'                      "FALSE" = gene is detected (but not elevated) in tissue} 
+#'   \item{tissue}{<chr> Tissue name}
+#'   \item{gene}{<chr> HGNC gene symbol}
+#'   \item{significant}{<lgl> whether or not gene is tissue-elevated}
 #' }
 #' @family datasets
 #' @docType data
-#' @source proteinatlas.tsv.zip datasets (v19.3) downloaded on 2020-06-12 from:
-#' \url{https://www.proteinatlas.org/about/download}  
+#' @source Human Protein Atlas data (v23.0) downloaded from: \url{https://www.proteinatlas.org/about/download}  
 #' @references
 #' Uhlén M, Fagerberg L, Hallström BM, et al. Proteomics. Tissue-based map of the human proteome.
 #' Science. 2015;347(6220):1260419. doi:10.1126/science.1260419 
+#'
+#' See additional documentation at: https://www.proteinatlas.org/humanproteome/tissue/tissue+specific
 
-"hpa_rna"
+"hpa_rna_table"
 
 
 #' @title GTEx RNA tissue specificity annotations
-#' @description A dataset containing tissue specificty annotations for 20,024 genes in 53 tissues derived from
-#' GTEx RNA-sequencing data. See cited reference for details on the definition of tissue-specific genes.
-#' In brief, genes that rank in the top 10 percent of a tissue-based t-statistic distribution are defined as
-#' the specific genes for the tissue.
-#' @format A data frame with 1,316,785 rows and 3 variables:
+#' @description A dataset containing annotations for 17,589 tissue-specific genes in 53 tissues derived from
+#' GTEx RNA-seq data. See references for definition of tissue-specific genes. In brief, genes that rank
+#' in the top decile of a t-statistic distribution are defined as the tissue-specific genes in each tissue.
+#' @format A tibble object with 932,217 rows and 4 columns:
 #' \describe{
-#'   \item{tissue}{Tissue name}
-#'   \item{gene}{HGNC gene symbol}
-#'   \item{significant}{Logical variable indicating whether or not the gene is tissue-specific} 
+#'   \item{tissue}{<chr> Tissue name}
+#'   \item{category}{<chr> Tissue category}
+#'   \item{gene}{<chr> HGNC gene symbol}
+#'   \item{significant}{<lgl> whether or not the gene is tissue-specific} 
 #' }
 #' @family datasets
 #' @docType data
-#' @source GTEx.tstat.tsv dataset (2018-06-25 release) downloaded on 2020-06-15 from:
-#' \url{https://data.broadinstitute.org/alkesgroup/LDSCORE/LDSC_SEG_ldscores/tstats/}
+#' @source GTEx.tstat.tsv downloaded on 2023-10-13 from:
+#' \url{https://console.cloud.google.com/storage/browser/broad-alkesgroup-public-requester-pays/LDSCORE/LDSC_SEG_ldscores/tstats/}
 #' @references
 #' Finucane HK, Reshef YA, Anttila V, et al. Heritability enrichment of specifically expressed genes identifies
 #' disease-relevant tissues and cell types. Nat Genet. 2018;50(4):621-629. doi:10.1038/s41588-018-0081-4
 
-"gtex_rna"
+"gtex_rna_table"
 
 
-#' @title GTEx protein tissue specificity annotations
-#' @description A dataset containing tissue specificity annotations for 12,184 genes in 32 tissues derived from
-#' proteomic data. See cited reference for details on the definition of tissue-specific genes.
-#' @format A data frame with 686,624 rows and 3 variables:
+#' @title GTEx RNA tissue specificity annotations for brain regions/tissues
+#' @description A dataset containing annotations for 17,589 tissue-specific genes in 13 brain tissues derived from
+#' GTEx RNA-seq data. See references for definition of tissue-specific genes. In brief, genes that rank
+#' in the top decile of a t-statistic distribution are defined as the tissue-specific genes in each tissue.
+#' @format A tibble object with 228,657 rows and 3 columns:
 #' \describe{
-#'   \item{tissue}{Tissue name}
-#'   \item{gene}{HGNC gene symbol}
-#'   \item{significant}{Logical variable indicating whether or not the gene is tissue-specific} 
+#'   \item{tissue}{<chr> Tissue name}
+#'   \item{gene}{<chr> HGNC gene symbol}
+#'   \item{significant}{<lgl> whether or not the gene is tissue-specific} 
 #' }
 #' @family datasets
 #' @docType data
-#' @source Table S2 (TS dataset) downloaded on 2020-10-21 from:
+#' @source GTEx_brain.tstat.tsv downloaded on 2023-10-13 from:
+#' \url{https://console.cloud.google.com/storage/browser/broad-alkesgroup-public-requester-pays/LDSCORE/LDSC_SEG_ldscores/tstats/}
+#' @references
+#' Finucane HK, Reshef YA, Anttila V, et al. Heritability enrichment of specifically expressed genes identifies
+#' disease-relevant tissues and cell types. Nat Genet. 2018;50(4):621-629. doi:10.1038/s41588-018-0081-4
+
+"gtex_brain_table"
+
+
+#' @title GTEx protein tissue specificity annotations
+#' @description A dataset containing annotations for 12,325 tissue-enriched genes in 32 tissues derived from
+#' GTEx proteomics data. See references for definition of tissue-enriched genes.
+#' @format A tibble object with 394,400 rows and 3 columns:
+#' \describe{
+#'   \item{tissue}{<chr> Tissue name}
+#'   \item{gene}{<chr> HGNC gene symbol}
+#'   \item{significant}{<lgl> whether or not the gene is tissue-enriched} 
+#' }
+#' @family datasets
+#' @docType data
+#' @source Table S4 of Jiang et al. downloaded on 2023-10-13 from:
 #' \url{https://www.sciencedirect.com/science/article/pii/S0092867420310783}
 #' @references
 #' Jiang L, Wang M, Lin S, et al. A Quantitative Proteome Map of the Human Body.
 #' Cell. 2020;183(1):269-283.e19. doi:10.1016/j.cell.2020.08.036
 
-"gtex_protein"
+"gtex_protein_table"
 
 
 #' @title Example proteomic data (1)

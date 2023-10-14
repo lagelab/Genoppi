@@ -699,15 +699,15 @@ shinyServer(function(input, output, session){
   
   # Select GTEx or HPA
   output$a_gtex_rna_tissue_ui <- renderUI({ 
-    shinyjs::hidden(selectInput('a_gtex_rna_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_rna$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+    shinyjs::hidden(selectInput('a_gtex_rna_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_rna_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
   })
   
   output$a_gtex_protein_tissue_ui <- renderUI({
-    shinyjs::hidden(selectInput('a_gtex_protein_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_protein$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
+    shinyjs::hidden(selectInput('a_gtex_protein_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(gtex_protein_table$tissue)), multiple=T, selectize=TRUE, selected = "grey"))
   })
  
   output$a_hpa_rna_tissue_ui <- renderUI({
-    selectInput('a_hpa_rna_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(hpa_rna$tissue)), multiple=T, selectize=TRUE, selected = "grey")
+    selectInput('a_hpa_rna_tissue', 'Annotate specifically expressed genes in tissue(s)', sort(unique(hpa_rna_table$tissue)), multiple=T, selectize=TRUE, selected = "grey")
   })  
  
   output$a_tissue_select_ui <- renderUI({
@@ -1034,13 +1034,13 @@ shinyServer(function(input, output, session){
     selected = input$a_tissue_select
     req(sigS(), selected)
     if (selected %in% 'HPA - RNA' & length(input$a_hpa_rna_tissue) > 0){
-      return(get_tissue_lists(tissue = as.character(input$a_hpa_rna_tissue), table = hpa_rna))
+      return(get_tissue_lists(tissue = as.character(input$a_hpa_rna_tissue), table = hpa_rna_table))
     
     } else if (selected %in% 'GTEx - RNA' & length(input$a_gtex_rna_tissue) > 0){
-      return(get_tissue_lists(tissue = as.character(input$a_gtex_rna_tissue), table = gtex_rna))
+      return(get_tissue_lists(tissue = as.character(input$a_gtex_rna_tissue), table = gtex_rna_table))
     
     } else if (selected %in% 'GTEx - Protein' & length(input$a_gtex_protein_tissue) > 0){
-      return(get_tissue_lists(tissue = as.character(input$a_gtex_protein_tissue), table = gtex_protein))
+      return(get_tissue_lists(tissue = as.character(input$a_gtex_protein_tissue), table = gtex_protein_table))
    
     } else {
       return(NULL)
@@ -1078,11 +1078,11 @@ shinyServer(function(input, output, session){
     source = input$a_tissue_select_source
     if (source == 'genoppi'){
       if (input$a_tissue_enrichment_type_select == 'HPA - RNA') {
-        return(hpa_rna)
+        return(hpa_rna_table)
       } else if (input$a_tissue_enrichment_type_select == 'GTEx - RNA') {
-        return(gtex_rna)
+        return(gtex_rna_table)
       } else {
-        return(gtex_protein)
+        return(gtex_protein_table)
       }
     } else {
       return(a_get_tissue_upload())
@@ -2148,17 +2148,17 @@ shinyServer(function(input, output, session){
   
   output$info_tissue_ui <- renderUI({actionLink('info_tissue', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue,{
-    text = paste(readLines(find_docs('hpa_rna.info')), '<br> <br>', 
-                 readLines(find_docs('gtex_rna.info')), '<br> <br>', 
-                 readLines(find_docs('gtex_protein.info')))
+    text = paste(readLines(find_docs('hpa_rna_table.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_rna_table.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_protein_table.info')))
     showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
   })
   
   output$info_tissue_enrichment_ui <- renderUI({actionLink('info_tissue_enrichment', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_tissue_enrichment,{
-    text = paste(readLines(find_docs('hpa_rna.info')), '<br> <br>', 
-                 readLines(find_docs('gtex_rna.info')), '<br> <br>', 
-                 readLines(find_docs('gtex_protein.info')))
+    text = paste(readLines(find_docs('hpa_rna_table.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_rna_table.info')), '<br> <br>', 
+                 readLines(find_docs('gtex_protein_table.info')))
     showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
   })
   

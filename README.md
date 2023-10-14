@@ -117,14 +117,14 @@ plot_volcano_basic(df_sig) %>%
 ```R
 
 # calculate tissue-specific enrichment using GTEx RNA data
-gtex_enrichment = lapply_calc_hyper(df_sig, gtex_rna, bait = 'BCL2')
+gtex_enrichment = lapply_calc_hyper(df_sig, gtex_rna_table, bait = 'BCL2')
 head(gtex_enrichment)
 
 # plot result
 plot_tissue_enrichment(gtex_enrichment, 'list_name', col.value = 'BH.FDR', ylab = 'FDR')
 
-# explore 'Brain_Hippocampus' with relatively low FDR
-tissue <- get_tissue_list('Brain_Hippocampus',table = gtex_rna)
+# explore '"Brain - Hippocampus"' with relatively low FDR
+tissue <- get_tissue_list('Brain - Hippocampus',table = gtex_rna_table)
 
 # view in volcano plot
 plot_volcano_basic(df_sig) %>%

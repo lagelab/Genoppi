@@ -146,10 +146,10 @@
 #' @md
 
 
-get_tissue_list <- function(tissue, table = gtex_rna){
+get_tissue_list <- function(tissue, table = gtex_rna_table){
   
   if (!is.character(tissue)) stop('tissue input must be character')
-  if (!tissue %in% table$tissue) stop(paste(tissue,'is not a valid tissue. Please see ?get_hpa_lists for details.'))
+  if (!tissue %in% table$tissue) stop(paste(tissue,'is not a valid tissue. Please see ?get_tissue_list for details.'))
   
   return(table[table$tissue %in% tissue, ])
 }
@@ -160,7 +160,7 @@ get_tissue_list <- function(tissue, table = gtex_rna){
 #' @param tissue deprecated. See ?get_tissue_list
 #' @param table deprecated. See ?get_tissue_list
 #' @export
-get_tissue_lists <- function(tissue, table = gtex_rna){
+get_tissue_lists <- function(tissue, table = gtex_rna_table){
   
   warning("'get_tissue_lists' has been deprecated. Please use 'get_tissue_list' instead.")
   get_tissue_list(tissue, table)
