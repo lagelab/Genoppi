@@ -91,28 +91,70 @@
 
 "irefindex_table"
 
-## COMMENTED OUT FOR NOW: don't add until corresponding .rda file is stored in data/
-##' @title HuRI data (HI-union network)
-##' @description  TO ADD
-##' @format TO ADD
-##' \describe{
-##'   \item{Gene1}{HGNC gene symbol of first protein}
-##'   \item{Gene2}{HGNC gene symbol of second protein}
-##' }
-##' @details This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
-##' interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns.
-##' Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores.
-##'
-##' @family datasets
-##' @docType data
-##' @source HuRI data (HI-union network) data downloaded on 2023-10-10 from:
-##' \url{https://www.nature.com/articles/s41586-020-2188-x}
-##' TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
-##' @references
-##' Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
-##' (2020). https://doi.org/10.1038/s41586-020-2188-x
+# TODO
+#' @title HuRI data (HI-union network)
+#' @description  TO ADD
+#' @format TO ADD
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein}
+#'   \item{Gene2}{HGNC gene symbol of second protein}
+#' }
+#' @details TO ADD
+#'
+#' @family datasets
+#' @docType data
+#' @source HuRI data (HI-union network) data downloaded on 2023-10-10 from:
+#' \url{https://www.nature.com/articles/s41586-020-2188-x}
+#' TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
+#' @references
+#' Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
+#' (2020). https://doi.org/10.1038/s41586-020-2188-x
 
-##"huri_table"
+"huri_table"
+
+# TODO
+#' @title STRING (Protein-Protein Interaction Networks Functional Enrichment Analysis)
+#' @description  TO ADD
+#' @format TO ADD
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein}
+#'   \item{Gene2}{HGNC gene symbol of second protein}
+#' }
+#' @details TO ADD
+#'
+#' @family datasets
+#' @docType data
+#' @source STRING data downloaded on 2023-10-19 from:
+#' \url{https://string-db.org/cgi/download?sessionId=bBdzAUS16sXn&species_text=Homo+sapiens} restricting to Homo
+#' sapiens, physical interactions
+#' @references
+#' Szklarczyk D, Gable AL, Nastou KC, Lyon D, Kirsch R, Pyysalo S, Doncheva NT, Legeay M, Fang T, Bork P, Jensen LJ, von
+#' Mering C. The STRING database in 2021: customizable protein-protein networks, and functional characterization of
+#' user-uploaded gene/measurement sets. Nucleic Acids Res. 2021 Jan 8;49(D1):D605-D612. doi: 10.1093/nar/gkaa1074.
+#' Erratum in: Nucleic Acids Res. 2021 Oct 11;49(18):10800. PMID: 33237311; PMCID: PMC7779004.
+
+"string_table"
+
+# TODO
+#' @title PCNet (Parsimonious Composite Network)
+#' @description  TO ADD
+#' @format TO ADD
+#' \describe{
+#'   \item{Gene1}{HGNC gene symbol of first protein}
+#'   \item{Gene2}{HGNC gene symbol of second protein}
+#' }
+#' @details TO ADD
+#'
+#' @family datasets
+#' @docType data
+#' @source PCNet (Parsimonious Composite Network) data downloaded on 2023-10-19 from:
+#' \url{https://www.ndexbio.org/v2/network/f93f402c-86d4-11e7-a10d-0ac135e8bacf?download=true}
+#' @references
+#' Huang JK, Carlin DE, Yu MK, Zhang W, Kreisberg JF, Tamayo P, Ideker T. Systematic Evaluation of Molecular Networks
+#' for Discovery of Disease Genes. Cell Syst. 2018 Apr 25;6(4):484-495.e5. doi: 10.1016/j.cels.2018.03.001. Epub 2018
+#' Mar 28. PMID: 29605183; PMCID: PMC5920724.
+
+"pcnet_table"
 
 
 #' @title 1000 Genomes SNP to HGNC gene symbol mapping

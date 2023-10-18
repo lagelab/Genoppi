@@ -5,7 +5,7 @@
 \title{Retrieve Genotype-Tissue Expression (GTEx) or
 Human Protein Atlas specific expression data}
 \usage{
-get_tissue_list(tissue, table = gtex_rna)
+get_tissue_list(tissue, table = gtex_rna_table)
 }
 \arguments{
 \item{tissue}{vector of tissue names (character). See details for acceptable names.}

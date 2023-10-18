@@ -46,6 +46,7 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna_table}},
+\code{\link{huri_table}},
 \code{\link{inweb_table}},
 \code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
@@ -55,7 +56,9 @@ Other datasets:
 \code{\link{msigdb_c5_table}},
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
-\code{\link{msigdb_h_table}}
+\code{\link{msigdb_h_table}},
+\code{\link{pcnet_table}},
+\code{\link{string_table}}
 }
 \concept{datasets}
 \keyword{datasets}
