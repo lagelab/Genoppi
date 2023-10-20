@@ -3,21 +3,11 @@
 \docType{data}
 \name{genes_snps_hash}
 \alias{genes_snps_hash}
-\title{HuRI data (HI-union network)}
+\title{SNP-to-gene mapping}
 \format{
-TO ADD
-\describe{
-  \item{Gene1}{HGNC gene symbol of first protein}
-  \item{Gene2}{HGNC gene symbol of second protein}
-}
-
 A hash object with 19,326 gene names as keys and vectors of SNP IDs as values
 }
 \source{
-HuRI data (HI-union network) data downloaded on 2023-10-10 from:
-\url{https://www.nature.com/articles/s41586-020-2188-x}
-TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
-
 GENCODE v43 data downloaded from:
 \url{https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz}
 1000 Genomes phase 3 data (with dbSNP build 156 annotation) downloaded from:
@@ -27,22 +17,12 @@ GENCODE v43 data downloaded from:
 genes_snps_hash
 }
 \description{
-TO ADD
-
 A dataset containing 19,326 protein-coding genes (GENCODE v43) mapped to SNP IDs (dbSNP build 156).
 A gene is linked to a SNP if its genomic coordinates overlap with linkage disequilibrium (LD) locus
 boundaries of the SNP. LD loci were calculated using the 1000 Genomes phase 3 EUR panel and PLINK,
 defined as regions spanning tagging SNPs (r2 > 0.6) ± 50kb; SNPs with MAF < 0.05 were excluded.
 }
-\details{
-This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
-interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns.
-Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores.
-}
 \references{
-Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
-(2020). https://doi.org/10.1038/s41586-020-2188-x
-
 #
 Frankish A, Diekhans M, Jungreis I, et al. GENCODE 2021.
 Nucleic Acids Res. 2021;49(D1):D916-D923. doi:10.1093/nar/gkaa1087
@@ -70,6 +50,7 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna_table}},
+\code{\link{huri_table}},
 \code{\link{inweb_table}},
 \code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
@@ -80,35 +61,9 @@ Other datasets:
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
 \code{\link{msigdb_c8_table}},
-\code{\link{msigdb_h_table}}
-
-Other datasets: 
-\code{\link{accession_gene_table}},
-\code{\link{bioplex_table}},
-\code{\link{example_data2}},
-\code{\link{example_data3}},
-\code{\link{example_data}},
-\code{\link{gnomad_table}},
-\code{\link{goa_bp_table}},
-\code{\link{goa_cc_table}},
-\code{\link{goa_mf_table}},
-\code{\link{gtex_brain_table}},
-\code{\link{gtex_protein_table}},
-\code{\link{gtex_rna_table}},
-\code{\link{gwas_table}},
-\code{\link{hgnc_group_table}},
-\code{\link{hpa_rna_table}},
-\code{\link{inweb_table}},
-\code{\link{irefindex_table}},
-\code{\link{msigdb_c1_table}},
-\code{\link{msigdb_c2_table}},
-\code{\link{msigdb_c3_table}},
-\code{\link{msigdb_c4_table}},
-\code{\link{msigdb_c5_table}},
-\code{\link{msigdb_c6_table}},
-\code{\link{msigdb_c7_table}},
-\code{\link{msigdb_c8_table}},
-\code{\link{msigdb_h_table}}
+\code{\link{msigdb_h_table}},
+\code{\link{pcnet_table}},
+\code{\link{string_table}}
 }
 \concept{datasets}
 \keyword{datasets}

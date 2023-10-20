@@ -1,14 +1,10 @@
 # Code tested with R version 4.2.1
 library(data.table) # also requires R.utils for fread() to read in gz/bz2 files
-library(genoppi) # tested with v1.0.13 (for InWeb, BioPlex, iRefIndex data)
-library(RCX) # tested with v1.2.2 (for reading Cytoscape CX format data)
-library(tidyverse) # tested with v1.3.2
-library(reshape2) # tested with v1.4.4
 
 # ----------------------------------------------------------------------------------------
 # read in HuRI data (HI-union network, Luck et al. Nature 2020)
 # data from supplementary tables of Luck et al.
-
+# TODO change to link
 huri_genes <- read.csv("data-raw/HuRI_Luck2020_SuppTable2.txt",
     header = T, sep = "\t", stringsAsFactors = F
 )
@@ -32,7 +28,7 @@ huri_table <- data.frame(
 )
 
 # save as gzipped tab-delimited file in data-raw/
-fwrite(huri_table,file='data-raw/accession_gene_table.tsv.gz',sep='\t')
+fwrite(huri_table,file='data-raw/huri_table.tsv.gz',sep='\t')
 
 # save as .rda file in data/
 usethis::use_data(huri_table, overwrite=T) # use bzip2 compression by default
