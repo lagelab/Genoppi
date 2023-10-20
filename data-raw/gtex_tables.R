@@ -1,4 +1,4 @@
-# code to generatement comparison'itex_rna_table, gtex_brain_table, gtex_protein_table
+# code to generate gtex_rna_table, gtex_brain_table, gtex_protein_table
 # last update: 2023-10-13
 
 library(dplyr)

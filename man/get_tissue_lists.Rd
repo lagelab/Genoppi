@@ -4,7 +4,7 @@
 \alias{get_tissue_lists}
 \title{deprecated. See ?get_tissue_list}
 \usage{
-get_tissue_lists(tissue, table = gtex_rna)
+get_tissue_lists(tissue, table = gtex_rna_table)
 }
 \arguments{
 \item{tissue}{deprecated. See ?get_tissue_list}

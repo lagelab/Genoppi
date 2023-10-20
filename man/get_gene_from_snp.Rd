@@ -18,8 +18,8 @@ a list of genes (if invert is FALSE)
 Create gene list data.frame from input SNP lists
 }
 \details{
-Applies the SNP-to-gene mapping described in the paper. Please, see
-the paper for details about reference panel and ancestry.
+Use SNP-to-gene mapping data included in genes_snps_hash object to 
+identify genes in LD with input SNPs.
 }
 \examples{
 \dontrun{

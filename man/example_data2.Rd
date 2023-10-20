@@ -40,7 +40,7 @@ Other datasets:
 \code{\link{bioplex_table}},
 \code{\link{example_data3}},
 \code{\link{example_data}},
-\code{\link{genes_snps}},
+\code{\link{genes_snps_hash}},
 \code{\link{gnomad_table}},
 \code{\link{goa_bp_table}},
 \code{\link{goa_cc_table}},

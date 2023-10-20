@@ -9,7 +9,7 @@ get_snp_lists(infile, genes)
 \arguments{
 \item{infile}{a data.frame or a file path of SNP lists (two columns with header: listName, SNP)}
 
-\item{genes}{vector of gene names (genes detected in proteomic data)}
+\item{genes}{vector of gene names (e.g., genes detected in proteomic data)}
 }
 \value{
 data.frame containing listName, gene and SNP columns (restricting to genes in input genes vector).

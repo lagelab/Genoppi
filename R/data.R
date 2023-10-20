@@ -115,23 +115,29 @@
 ##"huri_table"
 
 
-#' @title 1000 Genomes SNP to HGNC gene symbol mapping
-#' @description A data set containing 1000 Genomes phase 3 single-nucleotide polymorphsims (SNPs) mapped to 
-#' 18,116 gene symbols, using linkage disequilibrium information from the CEU population. See cited Genoppi
-#' reference for details on mapping method. 
-#' @format A hash object with each of 18,116 genes as key and a vector of SNPs as value
+#' @title SNP-to-gene mapping 
+#' @description A dataset containing 19,326 protein-coding genes (GENCODE v43) mapped to SNP IDs (dbSNP build 156).
+#' A gene is linked to a SNP if its genomic coordinates overlap with linkage disequilibrium (LD) locus
+#' boundaries of the SNP. LD loci were calculated using the 1000 Genomes phase 3 EUR panel and PLINK,
+#' defined as regions spanning tagging SNPs (r2 > 0.6) ± 50kb; SNPs with MAF < 0.05 were excluded. 
+#' @format A hash object with 19,326 gene names as keys and vectors of SNP IDs as values
 #' @family datasets
 #' @docType data
-#' @source snp_to_gene.Rdata file created by April Kim.
-#' @references
-#' 1000 Genomes Project Consortium, Auton A, Brooks LD, et al. A global reference for human genetic variation.
-#' Nature. 2015;526(7571):68-74. doi:10.1038/nature15393  
+#' @source GENCODE v43 data downloaded from:
+#' \url{https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_43/gencode.v43.basic.annotation.gtf.gz}
+#' 1000 Genomes phase 3 data (with dbSNP build 156 annotation) downloaded from:
+#' \url{https://www.cog-genomics.org/plink/2.0/resources#phase3_1kg}
+#' @references#
+#' Frankish A, Diekhans M, Jungreis I, et al. GENCODE 2021.
+#' Nucleic Acids Res. 2021;49(D1):D916-D923. doi:10.1093/nar/gkaa1087
 #'
-#' Pintacuda G, Lassen FH, Hsu YH, Kim A, Martín JM, Malolepsza E et al. Genoppi is an open-source software
-#' for robust and standardized integration of proteomic and genetic data. Nat Commun. 2021;12(1):2580.
-#' doi:10.1038/s41467-021-22648-5
+#' Byrska-Bishop M, Evani US, Zhao X, et al. High-coverage whole-genome sequencing of the expanded 1000 Genomes
+#' Project cohort including 602 trios. Cell. 2022;185(18):3426-3440.e19. doi:10.1016/j.cell.2022.08.004
+#'
+#' Chang CC, Chow CC, Tellier LC, Vattikuti S, Purcell SM, Lee JJ. Second-generation PLINK: rising to the challenge
+#' of larger and richer datasets. Gigascience. 2015;4:7. Published 2015 Feb 25. doi:10.1186/s13742-015-0047-8
 
-"genes_snps"
+"genes_snps_hash"
 
 
 #' @title NHGRI-EBI GWAS catalog genetic associations

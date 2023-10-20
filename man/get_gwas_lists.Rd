@@ -9,10 +9,11 @@ get_gwas_lists(traits, genes)
 \arguments{
 \item{traits}{vector of GWAS catalog traits. See \code{gwas_table$DISEASE.TRAIT}}
 
-\item{genes}{vector of gene names (genes detected in proteomic data)}
+\item{genes}{vector of gene names (e.g., genes detected in proteomic data)}
 }
 \value{
-data.frame containing GWAS catalog info (PUBMEDID, DISEASE.TRAIT, SNP, P.VALUE, STUDY.ACCESSION) + MAPPED_GENE columns (restricting to traits and genes in input vectors)
+data.frame containing GWAS catalog info (PUBMEDID, DISEASE.TRAIT, SNP, P.VALUE, STUDY.ACCESSION) +
+MAPPED_GENE columns (restricting to traits and genes in input vectors)
 }
 \description{
 Create gene list data.frame from input traits

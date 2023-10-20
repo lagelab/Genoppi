@@ -968,7 +968,7 @@ shinyServer(function(input, output, session){
     genes = as.character(dataS()$gene)
     
     # map genes to snps and find gwas table entry
-    tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps[[x]])
+    tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps_hash[[x]])
     tabl_bool = apply(do.call(cbind, tabl), 1, any)
     tabl_subset = gwas_table[tabl_bool, ]
     result = tabl_subset$DISEASE.TRAIT

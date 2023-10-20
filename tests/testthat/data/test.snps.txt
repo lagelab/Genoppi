@@ -3,4 +3,3 @@ List1	rs848132
 List1	rs749767
 List1	rs877826
 List2	rs10483006
-List2	21_33082157_D
