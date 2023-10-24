@@ -27,7 +27,9 @@ test_that('get_snp_lists can return correct data.frame',{
 
 
 test_that('single column snp produces an error',{
-  
+
+  snpDf <- read.table('data/test.snps.txt',header=T,sep='\t')
+
   # only one column gives an error
   expect_error(get_snp_lists(as.vector(snpDf[,2]), genes))
   

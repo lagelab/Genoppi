@@ -3,12 +3,6 @@ plotValues <- function(id) {
     return(reactiveValues())})
 }
 
-# depracated, replaced with plotValues
-# volcanoPlotServer <- function(id) {
-#   moduleServer(id, function(input, output, session){
-#     return(reactiveVal(value=NULL))})
-# }
-
 overlaidVolcanoPlotServer <- function(id) {
   moduleServer(id, function(input, output, session){
     return(reactiveVal(value=NULL))})
@@ -35,9 +29,10 @@ drawVolcanoPlot <- function(id) {
     ),
     fluidRow(style = "padding-bottom:75px",
              # column(1, plotOutput(NS(id, "FDRColorBar"), width = "50px")),
-             column(12, shinycssloaders::withSpinner(
-               # plotOutput(NS(id, "vp"))))
-               plotly::plotlyOutput(NS(id, "VolcanoPlot")), spinner_type)) #, width = "550px", height = "550px"
+             # column(12, shinycssloaders::withSpinner(
+             #   # plotOutput(NS(id, "vp"))))
+             #   plotly::plotlyOutput(NS(id, "VolcanoPlot")), spinner_type)) #, width = "550px", height = "550px"
+             column(12, plotly::plotlyOutput(NS(id, "VolcanoPlot")))
     ),
   )
 }

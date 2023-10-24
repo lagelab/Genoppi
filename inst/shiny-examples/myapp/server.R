@@ -8,22 +8,7 @@ shinyServer(function(input, output, session){
     input$filetype
     updateTabsetPanel(session, "basic", selected = "p1")
   })
-  
-  ##### VISUALIZATIONS START ##### 
-  
-  ## ARCHIVE
-  # 
-  # documentation
-  # output$info_inweb_ui <- renderUI({actionLink('info_inweb', ' ', icon = icon('question-circle'))})
-  # observeEvent(input$info_inweb,{
-  #   text = paste(readLines('documentation/inweb_table.info'))
-  #   
-  #   text = paste(readLines(find_docs('inweb_table.info')), '<br> <br>', 
-  #                readLines(find_docs('irefindex_table.info')), '<br> <br>', 
-  #                readLines(find_docs('bioplex_table.info')))
-  #   showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'InWeb'))
-  # })
-  ######
+
   # documentation tab
   output$documentation_ui <- renderText({
     return(HTML(documentation))
