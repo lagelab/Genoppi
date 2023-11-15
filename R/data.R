@@ -182,45 +182,49 @@
 "genes_snps_hash"
 
 
-#' @title NHGRI-EBI GWAS catalog genetic associations
-#' @description A dataset containing 188,925 published trait-SNP associations in the NHGRI-EBI GWAS catalog.
-#' @format A data frame with 188,925 rows and 5 variables:
+#' @title NHGRI-EBI GWAS catalog data
+#' @description Published trait-SNP associations in the NHGRI-EBI GWAS catalog.
+#' @format A tibble object with 511,955 rows and 5 columns:
 #' \describe{
-#'   \item{PUBMEDID}{PubMed identification number}
-#'   \item{DISEASE.TRAIT}{Disease or trait examined in study}
-#'   \item{SNP}{SNP rsID}
-#'   \item{P.VALUE}{Reported p-value}
-#'   \item{STUDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
+#'   \item{PUBMEDID}{<int> PubMed identification number}
+#'   \item{DISEASE.TRAIT}{<chr> Disease or trait examined in study}
+#'   \item{SNP}{<chr> current rs number for strongest SNP (dbSNP build 154)}
+#'   \item{P.VALUE}{<dbl> Reported p-value for strongest SNP}
+#'   \item{STUDY.ACCESSION}{<chr> Accession ID allocated to a GWAS Catalog study}
 #' }
 #' @family datasets
 #' @docType data
-#' @source All associations v1.0.2 dataset (2020-03-08 release) downloaded on 2020-03-17 from:
+#' @source All associations v1.0.2 dataset (2023-11-08 release) downloaded from:
 #' \url{https://www.ebi.ac.uk/gwas/docs/file-downloads}
 #' @references
-#' Buniello A, MacArthur JAL, Cerezo M, et al. The NHGRI-EBI GWAS Catalog of published genome-wide association studies,
-#' targeted arrays and summary statistics 2019. Nucleic Acids Res. 2019;47(D1):D1005-D1012. doi:10.1093/nar/gky1120 
+#' Sollis E, Mosaku A, Abid A, et al. The NHGRI-EBI GWAS Catalog: knowledgebase and deposition resource.
+#' Nucleic Acids Res. 2023;51(D1):D977-D985. doi:10.1093/nar/gkac1010
 
 "gwas_table"
 
 
-#' @title gnomAD mutational constraint (pLI) annotations
-#' @description A dataset containing gnomAD pLI scores for 19,704 genes. The pLI score estimates the probability
-#' that a gene is intolerant of loss-of-function mutations.
-#' @format A data frame with 19,704 rows and 2 variables:
+#' @title gnomAD gene contstraint data
+#' @description gnomAD gene constraint scores for 16,857 protein-coding genes.
+#' @format A tibble object with 16,857 rows and 5 columns:
 #' \describe{
-#'   \item{gene}{HGNC gene symbol}
-#'   \item{pLI}{pLI score}
-#' } 
+#'   \item{gene}{<chr> gene name}
+#'   \item{pLI}{<dbl> probability of loss-of-function intolerance computed from pLoF variants (higher values = more constrained)} 
+#'   \item{LOEUF}{<dbl> upper bound of 90-percent confidence interval for observed/expected ratio for pLoF variants (lower values = more constrained)}
+#'   \item{MisZ}{<dbl> Z-score for missense variants (higher values = more constrained)}
+#'   \item{SynZ}{<dbl> Z-score for synonymous variants (higher values = more constrained)}
+#' }
 #' @family datasets
 #' @docType data
-#' @source pLoF Metrics by Gene dataset (v2.1.1) downloaded from:
-#' \url{https://gnomad.broadinstitute.org/downloads#v2-constraint}
+#' @source gnomAD v4 gene constraint data downloaded from:
+#' \url{https://gnomad.broadinstitute.org/downloads#v4-constraint}
 #' @references
-#' Lek M, Karczewski KJ, Minikel EV, et al. Analysis of protein-coding genetic variation in 60,706 humans.
-#' Nature. 2016;536(7616):285-291. doi:10.1038/nature19057  
-#'
 #' Karczewski KJ, Francioli LC, Tiao G, et al. The mutational constraint spectrum quantified from variation in 141,456 humans.
 #' Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7 
+#' 
+#' Chen S, Francioli LC, Goodrich JK, et al. A genome-wide mutational constraint map quantified from variation in 76,156 human genomes.
+#' bioRxiv. 2022. doi:10.1101/2022.03.20.485034
+#'
+#' See contstraint scores documentation at: https://gnomad.broadinstitute.org/help/constraint
 
 "gnomad_table"
 

@@ -39,12 +39,12 @@ theme_scatter <- function(p, axes_width = 0.22, axes_alpha = 0.5){
     geom_segment(x = 0, xend = 0, 
                  y = ylims[1], yend = ylims[2], 
                  alpha = axes_alpha, colour = 'black',
-                 size = axes_width, inherit.aes = T) +
+                 linewidth = axes_width, inherit.aes = T) +
     # x axis line
     geom_segment(y = 0, yend = 0, 
                  x = xlims[1], xend = xlims[2], 
                  alpha = axes_alpha, colour = 'black',
-                 size = axes_width, inherit.aes = T)
+                 linewidth = axes_width, inherit.aes = T)
 
   # setup grid and axis
   plt = plt + theme_minimal()
@@ -151,22 +151,22 @@ theme_volcano_custom <- function(p, tick_sz_x = -0.15, tick_sz_y = NULL, normali
     # y axis line
     geom_segment(x = 0, xend = 0, 
                  y = 0, yend = ylims[2],
-                 size = axes_width, inherit.aes = F) +
+                 linewidth = axes_width, inherit.aes = F) +
     # x axis line
     geom_segment(y = 0, yend = 0, 
                  x = xlims[1], xend = xlims[2],
-                 size = axes_width, inherit.aes = F) +
+                 linewidth = axes_width, inherit.aes = F) +
     # x ticks
     geom_segment(data = tick_frame_x, 
                  aes(x = ticks, xend = ticks, 
                      y = zero, yend = zero + tick_sz_y), 
-                 size = ticks_width,
+                 linewidth = ticks_width,
                  inherit.aes = F) +
     # y ticks
     geom_segment(data = tick_frame_y, 
                  aes(x = zero, xend = zero + tick_sz_x, 
                      y = ticks, yend = ticks), 
-                 size = ticks_width,
+                 linewidth = ticks_width,
                  inherit.aes = F) + 
     
     # labels

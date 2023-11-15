@@ -3,31 +3,35 @@
 \docType{data}
 \name{gnomad_table}
 \alias{gnomad_table}
-\title{gnomAD mutational constraint (pLI) annotations}
+\title{gnomAD gene contstraint data}
 \format{
-A data frame with 19,704 rows and 2 variables:
+A tibble object with 16,857 rows and 5 columns:
 \describe{
-  \item{gene}{HGNC gene symbol}
-  \item{pLI}{pLI score}
+  \item{gene}{<chr> gene name}
+  \item{pLI}{<dbl> probability of loss-of-function intolerance computed from pLoF variants (higher values = more constrained)} 
+  \item{LOEUF}{<dbl> upper bound of 90-percent confidence interval for observed/expected ratio for pLoF variants (lower values = more constrained)}
+  \item{MisZ}{<dbl> Z-score for missense variants (higher values = more constrained)}
+  \item{SynZ}{<dbl> Z-score for synonymous variants (higher values = more constrained)}
 }
 }
 \source{
-pLoF Metrics by Gene dataset (v2.1.1) downloaded from:
-\url{https://gnomad.broadinstitute.org/downloads#v2-constraint}
+gnomAD v4 gene constraint data downloaded from:
+\url{https://gnomad.broadinstitute.org/downloads#v4-constraint}
 }
 \usage{
 gnomad_table
 }
 \description{
-A dataset containing gnomAD pLI scores for 19,704 genes. The pLI score estimates the probability
-that a gene is intolerant of loss-of-function mutations.
+gnomAD gene constraint scores for 16,857 protein-coding genes.
 }
 \references{
-Lek M, Karczewski KJ, Minikel EV, et al. Analysis of protein-coding genetic variation in 60,706 humans.
-Nature. 2016;536(7616):285-291. doi:10.1038/nature19057  
-
 Karczewski KJ, Francioli LC, Tiao G, et al. The mutational constraint spectrum quantified from variation in 141,456 humans.
-Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7
+Nature. 2020;581(7809):434-443. doi:10.1038/s41586-020-2308-7 
+
+Chen S, Francioli LC, Goodrich JK, et al. A genome-wide mutational constraint map quantified from variation in 76,156 human genomes.
+bioRxiv. 2022. doi:10.1101/2022.03.20.485034
+
+See contstraint scores documentation at: https://gnomad.broadinstitute.org/help/constraint
 }
 \seealso{
 Other datasets: 

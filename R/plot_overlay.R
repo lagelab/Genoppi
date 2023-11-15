@@ -95,11 +95,18 @@ plot_overlay <- function(p, reference, match = 'gene', size_gg = 3.5, stroke = 0
   p$scales$scales[[3]] <- scale_color_manual(values = global_borders)
   
   # add the overlay to the ggplot
-  p1 = p + ggplot2::geom_point(data = overlay, 
-                 mapping = aes_string(x=p$mapping$x, 
-                                      y=p$mapping$y, 
-                                      fill = p$mapping$fill, 
-                                      shape = p$mapping$shape),
+  p1 = p + ggplot2::geom_point(data = overlay,
+		# aes_string is deprecated, but redefining aes not needed here? 
+                #mapping = aes_string(x=p$mapping$x, 
+                #                     y=p$mapping$y, 
+                #                      fill = p$mapping$fill, 
+                #                      shape = p$mapping$shape),
+		
+		# this doesn't work for mapping quosure like '-log10(pvalue)'
+		#mapping = aes(x=!!rlang::sym(rlang::quo_text(p$mapping$x)),
+		#	      y=!!rlang::sym(rlang::quo_text(p$mapping$y)),
+		#	      fill=!!rlang::sym(rlang::quo_text(p$mapping$fill)),
+		#	      shape=!!rlang::sym(rlang::quo_text(p$mapping$shape))),
                  size = ifelse(is.null(size_gg), overlay$size_gg, size_gg), # gg.size
                  stroke = stroke,
                  alpha = overlay$opacity) 

@@ -3,30 +3,30 @@
 \docType{data}
 \name{gwas_table}
 \alias{gwas_table}
-\title{NHGRI-EBI GWAS catalog genetic associations}
+\title{NHGRI-EBI GWAS catalog data}
 \format{
-A data frame with 188,925 rows and 5 variables:
+A tibble object with 511,955 rows and 5 columns:
 \describe{
-  \item{PUBMEDID}{PubMed identification number}
-  \item{DISEASE.TRAIT}{Disease or trait examined in study}
-  \item{SNP}{SNP rsID}
-  \item{P.VALUE}{Reported p-value}
-  \item{STUDY.ACCESSION}{Accession ID allocated to a GWAS catalog study}
+  \item{PUBMEDID}{<int> PubMed identification number}
+  \item{DISEASE.TRAIT}{<chr> Disease or trait examined in study}
+  \item{SNP}{<chr> current rs number for strongest SNP (dbSNP build 154)}
+  \item{P.VALUE}{<dbl> Reported p-value for strongest SNP}
+  \item{STUDY.ACCESSION}{<chr> Accession ID allocated to a GWAS Catalog study}
 }
 }
 \source{
-All associations v1.0.2 dataset (2020-03-08 release) downloaded on 2020-03-17 from:
+All associations v1.0.2 dataset (2023-11-08 release) downloaded from:
 \url{https://www.ebi.ac.uk/gwas/docs/file-downloads}
 }
 \usage{
 gwas_table
 }
 \description{
-A dataset containing 188,925 published trait-SNP associations in the NHGRI-EBI GWAS catalog.
+Published trait-SNP associations in the NHGRI-EBI GWAS catalog.
 }
 \references{
-Buniello A, MacArthur JAL, Cerezo M, et al. The NHGRI-EBI GWAS Catalog of published genome-wide association studies,
-targeted arrays and summary statistics 2019. Nucleic Acids Res. 2019;47(D1):D1005-D1012. doi:10.1093/nar/gky1120
+Sollis E, Mosaku A, Abid A, et al. The NHGRI-EBI GWAS Catalog: knowledgebase and deposition resource.
+Nucleic Acids Res. 2023;51(D1):D977-D985. doi:10.1093/nar/gkac1010
 }
 \seealso{
 Other datasets: 

@@ -13,7 +13,7 @@
 
 plot_tissue_enrichment <- function(data, col.tissue, col.value, xlab = 'tissue', ylab = 'Hypergeometric P-value', pvalue.line = NULL){
   
-  p = ggplot(data, aes_string(x = col.tissue, y = col.value)) +
+  p = ggplot(data, aes(x = !!rlang::sym(col.tissue), y = !!rlang::sym(col.value))) +
     geom_bar(stat="identity", color = 'black', position = 'dodge', fill = 'orange') +
     geom_hline(yintercept=pvalue.line, linetype = "dashed", color = 'red') +
     xlab(xlab) + ylab(ylab) + theme_minimal() + coord_flip() 

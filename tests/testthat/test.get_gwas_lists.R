@@ -12,8 +12,8 @@ test_that('get_gwas_lists can return correct data.frame',{
   expect_identical(sort(as.character(unique(result$DISEASE.TRAIT))),traits)
   expect_identical(sort(as.character(unique(result$gene))),c("C9orf72","DACH1","LIPC","SUSD1"))
   expect_equal(sort(unique(result$PUBMEDID)),
-	c(17362836,18084291,19734901,20801717,20801718,22959728,24256812,
-		24529757,24931836,25442119,27455348,28931804,29566793,30976013))
+	c(17362836,18084291,19734901,20801718,22959728,24256812,24529757,
+	24931836,25442119,27455348,28931804,29566793,30976013,34873335))
 
   # GWAS SNPs do not overlap with genes
   result2 <- get_gwas_lists(traits, genes_null)

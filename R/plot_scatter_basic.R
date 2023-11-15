@@ -71,9 +71,10 @@ plot_scatter_basic <-
   
   # plot singlebasic scatter plot
   correlation = stats::cor(df[,repA], df[,repB])
-  p = ggplot(df, mapping=aes_(x=as.name(repA), y=as.name(repB), fill = as.name("group"), shape = as.name('group'), color = as.name('group'))) + 
+  #p = ggplot(df, mapping=aes_(x=as.name(repA), y=as.name(repB), fill = as.name("group"), shape = as.name('group'), color = as.name('group'))) + 
+  p = ggplot(df, mapping=aes(x=!!rlang::sym(repA), y=!!rlang::sym(repB), fill=group, shape=group, color=group)) + 
     geom_point(alpha=1, size=size_gg, stroke = stroke) +
-    geom_abline(intercept=0, slope=1, linetype="longdash", size=0.2) +
+    geom_abline(intercept=0, slope=1, linetype="longdash", linewidth=0.2) +
     labs(title = paste("r =",format(correlation,digits=3))) + 
     xlab(bquote(.(gsub('(R|r)ep','Replicate ', repA))  ~ .(unit))) +
     ylab(bquote(.(gsub('(R|r)ep','Replicate ', repB))  ~ .(unit))) +
