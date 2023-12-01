@@ -5,7 +5,7 @@
 \alias{accession_gene_table}
 \title{UniProt human protein accession number to gene name mapping}
 \format{
-A tibble object with 167,966 rows and 3 columns:
+A tibble object with 164,713 rows and 3 columns:
 \describe{
   \item{accession_number}{<chr> UniProt protein accession number (e.g. P10415)}
   \item{gene}{<chr> gene name (e.g. BCL2), first gene in all_genes if multiple}
@@ -13,14 +13,14 @@ A tibble object with 167,966 rows and 3 columns:
 }
 }
 \source{
-Human ID mapping file (2023-09-13 release) downloaded from UniProt:  
+Human ID mapping file (2023-11-08 release) downloaded from UniProt:  
 \url{https://www.uniprot.org}
 }
 \usage{
 accession_gene_table
 }
 \description{
-A dataset containing 167,966 UniProt accession number and gene name pairings.
+A dataset containing 164,713 UniProt accession number and gene name pairings.
 }
 \references{
 UniProt Consortium. UniProt: the Universal Protein Knowledgebase in 2023.

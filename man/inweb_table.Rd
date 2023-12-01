@@ -5,23 +5,23 @@
 \alias{inweb_table}
 \title{InWeb protein-protein interactions}
 \format{
-A data frame with 883,356 rows and 4 variables:
+A tibble object with 871,939 rows and 4 columns:
 \describe{
-  \item{Gene1}{HGNC gene symbol of first protein}
-  \item{Gene2}{HGNC gene symbol of second protein}
-  \item{Score}{Interaction confidence score}
-  \item{Source}{InWeb source version, "InWeb_IM" or "InWeb3"}
+  \item{Gene1}{<chr> Gene name of first protein}
+  \item{Gene2}{<chr> Gene name of second protein}
+  \item{Score}{<dbl> Interaction confidence score}
+  \item{Source}{<chr> InWeb source version, "InWeb_IM" or "InWeb3"}
 }
 }
 \source{
 See cited references; InWeb_IM data (2016-9-12 release) downloaded from:
-\url{https://inbio-discover.intomics.com/map.html#downloads}
+\url{https://zs-revelen.com/download}
 }
 \usage{
 inweb_table
 }
 \description{
-A dataset containing published protein-protein interactions for 18,814 human genes in
+A dataset containing published protein-protein interactions for 17,861 human genes in
 InWeb_InBioMap (InWeb_IM) or InWeb3.
 }
 \references{
