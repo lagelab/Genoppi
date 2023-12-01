@@ -1,0 +1,224 @@
+From	Entry	Reviewed	Entry Name	Protein names	Gene Names	Organism	Length
+A1A4T8	A1A4T8		CN182_HUMAN	deleted			
+A2RUG3	A2RUG3		XKRY2_HUMAN	deleted			
+A6NCD4	Q6DHV5	reviewed	C2D2B_HUMAN	Protein CC2D2B	CC2D2B C10orf130 C10orf131	Homo sapiens (Human)	1437
+A6NEW6	P0DV73	reviewed	F90AG_HUMAN	Protein FAM90A16	FAM90A16 FAM90A16P	Homo sapiens (Human)	464
+A6NEW6	P0DV74	reviewed	F90AH_HUMAN	Protein FAM90A17	FAM90A17 FAM90A17P	Homo sapiens (Human)	464
+A6NLF2	A6NLF2		ELB3D_HUMAN	deleted			
+A6NM15	A6NM15		CBWD7_HUMAN	deleted			
+A6NN06	A6NN06	reviewed	U633A_HUMAN	Putative UPF0633 protein MGC21881		Homo sapiens (Human)	94
+B9ZVM9	B9ZVM9		TCP2L_HUMAN	deleted			
+C9J442	C9J442		CV046_HUMAN	deleted			
+O15320	Q96PC5	reviewed	MIA2_HUMAN	Melanoma inhibitory activity protein 2 (MIA protein 2) (CTAGE family member 5 ER export factor) (Cutaneous T-cell lymphoma-associated antigen 5) (Meningioma-expressed antigen 6/11)	MIA2 CTAGE5 MEA11 MEA6 MGEA11 MGEA6	Homo sapiens (Human)	1412
+O15453	O15453		NBR2_HUMAN	deleted			
+O60344	P0DPD8	reviewed	EFCE2_HUMAN	EEF1AKMT4-ECE2 readthrough transcript protein (EC 3.4.24.71) [Includes: Methyltransferase-like region (EC 2.1.1.-); Endothelin-converting enzyme 2 region (EC 3.4.24.71)]	EEF1AKMT4-ECE2	Homo sapiens (Human)	883
+O60344	P0DPD7	reviewed	EFMT4_HUMAN	EEF1A lysine methyltransferase 4 (EC 2.1.1.-)	EEF1AKMT4	Homo sapiens (Human)	255
+O60344	P0DPD6	reviewed	ECE2_HUMAN	Endothelin-converting enzyme 2 (ECE-2) (EC 3.4.24.71)	ECE2 KIAA0604 UNQ403/PRO740	Homo sapiens (Human)	811
+P01595	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+P01600	P01597	reviewed	KV139_HUMAN	Immunoglobulin kappa variable 1-39 (Ig kappa chain V-I region DEE) (Ig kappa chain V-I region Hau) (Ig kappa chain V-I region Mev) (Ig kappa chain V-I region OU) (Ig kappa chain V-I region Walker)	IGKV1-39	Homo sapiens (Human)	117
+P01603	P01594	reviewed	KV133_HUMAN	Immunoglobulin kappa variable 1-33 (Ig kappa chain V-I region AU) (Ig kappa chain V-I region Ka)	IGKV1-33	Homo sapiens (Human)	117
+P01605	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+P01606	P01597	reviewed	KV139_HUMAN	Immunoglobulin kappa variable 1-39 (Ig kappa chain V-I region DEE) (Ig kappa chain V-I region Hau) (Ig kappa chain V-I region Mev) (Ig kappa chain V-I region OU) (Ig kappa chain V-I region Walker)	IGKV1-39	Homo sapiens (Human)	117
+P01607	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+P01608	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+P01609	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+P01610	P01599	reviewed	KV117_HUMAN	Immunoglobulin kappa variable 1-17 (Ig kappa chain V-I region Gal) (Ig kappa chain V-I region WEA)	IGKV1-17	Homo sapiens (Human)	117
+P01612	P01597	reviewed	KV139_HUMAN	Immunoglobulin kappa variable 1-39 (Ig kappa chain V-I region DEE) (Ig kappa chain V-I region Hau) (Ig kappa chain V-I region Mev) (Ig kappa chain V-I region OU) (Ig kappa chain V-I region Walker)	IGKV1-39	Homo sapiens (Human)	117
+P01613	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+P01616	P01615	reviewed	KVD28_HUMAN	Immunoglobulin kappa variable 2D-28 (Ig kappa chain V-II region FR) (Ig kappa chain V-II region GM607) (Ig kappa chain V-II region MIL) (Ig kappa chain V-II region TEW)	IGKV2D-28	Homo sapiens (Human)	120
+P01617	P01615	reviewed	KVD28_HUMAN	Immunoglobulin kappa variable 2D-28 (Ig kappa chain V-II region FR) (Ig kappa chain V-II region GM607) (Ig kappa chain V-II region MIL) (Ig kappa chain V-II region TEW)	IGKV2D-28	Homo sapiens (Human)	120
+P01620	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P01621	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P01622	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P01623	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P01707	P01706	reviewed	LV211_HUMAN	Immunoglobulin lambda variable 2-11 (Ig gamma lambda chain V-II region DOT) (Ig lambda chain V-II region BOH) (Ig lambda chain V-II region BUR) (Ig lambda chain V-II region NIG-58) (Ig lambda chain V-II region TRO) (Ig lambda chain V-II region WIN)	IGLV2-11	Homo sapiens (Human)	119
+P01708	P01706	reviewed	LV211_HUMAN	Immunoglobulin lambda variable 2-11 (Ig gamma lambda chain V-II region DOT) (Ig lambda chain V-II region BOH) (Ig lambda chain V-II region BUR) (Ig lambda chain V-II region NIG-58) (Ig lambda chain V-II region TRO) (Ig lambda chain V-II region WIN)	IGLV2-11	Homo sapiens (Human)	119
+P01710	P01709	reviewed	LV208_HUMAN	Immunoglobulin lambda variable 2-8 (Ig lambda chain V-II region BO) (Ig lambda chain V-II region MGC)	IGLV2-8	Homo sapiens (Human)	118
+P01711	P01704	reviewed	LV214_HUMAN	Immunoglobulin lambda variable 2-14 (Ig lambda chain V-II region NIG-84) (Ig lambda chain V-II region TOG) (Ig lambda chain V-II region VIL)	IGLV2-14	Homo sapiens (Human)	120
+P01712	P01706	reviewed	LV211_HUMAN	Immunoglobulin lambda variable 2-11 (Ig gamma lambda chain V-II region DOT) (Ig lambda chain V-II region BOH) (Ig lambda chain V-II region BUR) (Ig lambda chain V-II region NIG-58) (Ig lambda chain V-II region TRO) (Ig lambda chain V-II region WIN)	IGLV2-11	Homo sapiens (Human)	119
+P01713	P01706	reviewed	LV211_HUMAN	Immunoglobulin lambda variable 2-11 (Ig gamma lambda chain V-II region DOT) (Ig lambda chain V-II region BOH) (Ig lambda chain V-II region BUR) (Ig lambda chain V-II region NIG-58) (Ig lambda chain V-II region TRO) (Ig lambda chain V-II region WIN)	IGLV2-11	Homo sapiens (Human)	119
+P01716	P01715	reviewed	LV301_HUMAN	Immunoglobulin lambda variable 3-1 (Ig lambda chain V-IV region Bau) (Ig lambda chain V-IV region MOL) (Ig lambda chain V-IV region X)	IGLV3-1	Homo sapiens (Human)	115
+P01719	P80748	reviewed	LV321_HUMAN	Immunoglobulin lambda variable 3-21 (Ig lambda chain V-III region LOI) (Ig lambda chain V-V region DEL) (Ig lambda chain V-VII region MOT)	IGLV3-21	Homo sapiens (Human)	117
+P01720	P80748	reviewed	LV321_HUMAN	Immunoglobulin lambda variable 3-21 (Ig lambda chain V-III region LOI) (Ig lambda chain V-V region DEL) (Ig lambda chain V-VII region MOT)	IGLV3-21	Homo sapiens (Human)	117
+P01722	P01721	reviewed	LV657_HUMAN	Immunoglobulin lambda variable 6-57 (Ig lambda chain V-VI region AR) (Ig lambda chain V-VI region EB4) (Ig lambda chain V-VI region NIG-48) (Ig lambda chain V-VI region SUT) (Ig lambda chain V-VI region WLT)	IGLV6-57	Homo sapiens (Human)	117
+P01760	P01742	reviewed	HV169_HUMAN	Immunoglobulin heavy variable 1-69 (Ig heavy chain V-I region EU) (Ig heavy chain V-I region SIE) (Ig heavy chain V-I region WOL)	IGHV1-69	Homo sapiens (Human)	117
+P01761	P01742	reviewed	HV169_HUMAN	Immunoglobulin heavy variable 1-69 (Ig heavy chain V-I region EU) (Ig heavy chain V-I region SIE) (Ig heavy chain V-I region WOL)	IGHV1-69	Homo sapiens (Human)	117
+P01769	P01768	reviewed	HV330_HUMAN	Immunoglobulin heavy variable 3-30 (Ig heavy chain V-III region BUR) (Ig heavy chain V-III region CAM) (Ig heavy chain V-III region GA) (Ig heavy chain V-III region NIE)	IGHV3-30	Homo sapiens (Human)	117
+P01770	P01768	reviewed	HV330_HUMAN	Immunoglobulin heavy variable 3-30 (Ig heavy chain V-III region BUR) (Ig heavy chain V-III region CAM) (Ig heavy chain V-III region GA) (Ig heavy chain V-III region NIE)	IGHV3-30	Homo sapiens (Human)	117
+P01771	P01772	reviewed	HV333_HUMAN	Immunoglobulin heavy variable 3-33 (Ig heavy chain V-III region HIL) (Ig heavy chain V-III region KOL)	IGHV3-33	Homo sapiens (Human)	117
+P01773	P01768	reviewed	HV330_HUMAN	Immunoglobulin heavy variable 3-30 (Ig heavy chain V-III region BUR) (Ig heavy chain V-III region CAM) (Ig heavy chain V-III region GA) (Ig heavy chain V-III region NIE)	IGHV3-30	Homo sapiens (Human)	117
+P01781	P01780	reviewed	HV307_HUMAN	Immunoglobulin heavy variable 3-7 (Ig heavy chain V-III region GAL) (Ig heavy chain V-III region GAR) (Ig heavy chain V-III region JON)	IGHV3-7	Homo sapiens (Human)	117
+P01815	P01814	reviewed	HV270_HUMAN	Immunoglobulin heavy variable 2-70 (Ig heavy chain V-II region COR) (Ig heavy chain V-II region DAW) (Ig heavy chain V-II region OU) (Ig heavy chain V-II region SESS)	IGHV2-70	Homo sapiens (Human)	119
+P01816	P01814	reviewed	HV270_HUMAN	Immunoglobulin heavy variable 2-70 (Ig heavy chain V-II region COR) (Ig heavy chain V-II region DAW) (Ig heavy chain V-II region OU) (Ig heavy chain V-II region SESS)	IGHV2-70	Homo sapiens (Human)	119
+P01891	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P01892	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P01912	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+P03989	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P04206	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P04207	P01624	reviewed	KV315_HUMAN	Immunoglobulin kappa variable 3-15 (Ig kappa chain V-III region CLL) (Ig kappa chain V-III region POM)	IGKV3-15	Homo sapiens (Human)	115
+P04208	P01700	reviewed	LV147_HUMAN	Immunoglobulin lambda variable 1-47 (Ig lambda chain V-I region HA) (Ig lambda chain V-I region WAH)	IGLV1-47	Homo sapiens (Human)	117
+P04209	P01704	reviewed	LV214_HUMAN	Immunoglobulin lambda variable 2-14 (Ig lambda chain V-II region NIG-84) (Ig lambda chain V-II region TOG) (Ig lambda chain V-II region VIL)	IGLV2-14	Homo sapiens (Human)	120
+P04222	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P04229	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+P04431	P01597	reviewed	KV139_HUMAN	Immunoglobulin kappa variable 1-39 (Ig kappa chain V-I region DEE) (Ig kappa chain V-I region Hau) (Ig kappa chain V-I region Mev) (Ig kappa chain V-I region OU) (Ig kappa chain V-I region Walker)	IGKV1-39	Homo sapiens (Human)	117
+P04434	P04434		KV310_HUMAN	deleted			
+P04436	A0A0A6YYK7	reviewed	TVA19_HUMAN	T cell receptor alpha variable 19 (T-cell receptor alpha chain V region HPB-MLT)	TRAV19	Homo sapiens (Human)	116
+P04438	P01814	reviewed	HV270_HUMAN	Immunoglobulin heavy variable 2-70 (Ig heavy chain V-II region COR) (Ig heavy chain V-II region DAW) (Ig heavy chain V-II region OU) (Ig heavy chain V-II region SESS)	IGHV2-70	Homo sapiens (Human)	119
+P04745	P0DUB6	reviewed	AMY1A_HUMAN	Alpha-amylase 1A (EC 3.2.1.1) (1,4-alpha-D-glucan glucanohydrolase 1) (Salivary alpha-amylase)	AMY1A AMY1	Homo sapiens (Human)	511
+P04745	P0DTE7	reviewed	AMY1B_HUMAN	Alpha-amylase 1B (EC 3.2.1.1)	AMY1B AMY1	Homo sapiens (Human)	511
+P04745	P0DTE8	reviewed	AMY1C_HUMAN	Alpha-amylase 1C (EC 3.2.1.1)	AMY1C AMY1	Homo sapiens (Human)	511
+P05534	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P06309	P01615	reviewed	KVD28_HUMAN	Immunoglobulin kappa variable 2D-28 (Ig kappa chain V-II region FR) (Ig kappa chain V-II region GM607) (Ig kappa chain V-II region MIL) (Ig kappa chain V-II region TEW)	IGKV2D-28	Homo sapiens (Human)	120
+P06311	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P06316	P01701	reviewed	LV151_HUMAN	Immunoglobulin lambda variable 1-51 (Ig lambda chain V-I region BL2) (Ig lambda chain V-I region EPS) (Ig lambda chain V-I region NEW) (Ig lambda chain V-I region NIG-64)	IGLV1-51	Homo sapiens (Human)	117
+P06317	P01721	reviewed	LV657_HUMAN	Immunoglobulin lambda variable 6-57 (Ig lambda chain V-VI region AR) (Ig lambda chain V-VI region EB4) (Ig lambda chain V-VI region NIG-48) (Ig lambda chain V-VI region SUT) (Ig lambda chain V-VI region WLT)	IGLV6-57	Homo sapiens (Human)	117
+P06318	P01721	reviewed	LV657_HUMAN	Immunoglobulin lambda variable 6-57 (Ig lambda chain V-VI region AR) (Ig lambda chain V-VI region EB4) (Ig lambda chain V-VI region NIG-48) (Ig lambda chain V-VI region SUT) (Ig lambda chain V-VI region WLT)	IGLV6-57	Homo sapiens (Human)	117
+P06319	P01721	reviewed	LV657_HUMAN	Immunoglobulin lambda variable 6-57 (Ig lambda chain V-VI region AR) (Ig lambda chain V-VI region EB4) (Ig lambda chain V-VI region NIG-48) (Ig lambda chain V-VI region SUT) (Ig lambda chain V-VI region WLT)	IGLV6-57	Homo sapiens (Human)	117
+P06326	P01743	reviewed	HV146_HUMAN	Immunoglobulin heavy variable 1-46 (Ig heavy chain V-I region DOT) (Ig heavy chain V-I region HG3) (Ig heavy chain V-I region Mot)	IGHV1-46	Homo sapiens (Human)	117
+P06887	P01699	reviewed	LV144_HUMAN	Immunoglobulin lambda variable 1-44 (Ig lambda chain V-I region MEM) (Ig lambda chain V-I region VOR)	IGLV1-44	Homo sapiens (Human)	117
+P06889	P01715	reviewed	LV301_HUMAN	Immunoglobulin lambda variable 3-1 (Ig lambda chain V-IV region Bau) (Ig lambda chain V-IV region MOL) (Ig lambda chain V-IV region X)	IGLV3-1	Homo sapiens (Human)	115
+P09565	P09565	reviewed	IG2R_HUMAN	Putative insulin-like growth factor 2-associated protein (Cell growth-inhibiting gene 44 protein) (Insulin-like growth factor II-associated protein)	GIG44 PP9974	Homo sapiens (Human)	113
+P0CG05	P0DOY2	reviewed	IGLC2_HUMAN	Immunoglobulin lambda constant 2 (Ig lambda chain C region Kern) (Ig lambda chain C region NIG-64) (Ig lambda chain C region SH) (Ig lambda chain C region X) (Ig lambda-2 chain C region)	IGLC2	Homo sapiens (Human)	106
+P0CG05	P0DOY3	reviewed	IGLC3_HUMAN	Immunoglobulin lambda constant 3 (Ig lambda chain C region DOT) (Ig lambda chain C region NEWM) (Ig lambda-3 chain C regions)	IGLC3	Homo sapiens (Human)	106
+P0CG06	P0DOY2	reviewed	IGLC2_HUMAN	Immunoglobulin lambda constant 2 (Ig lambda chain C region Kern) (Ig lambda chain C region NIG-64) (Ig lambda chain C region SH) (Ig lambda chain C region X) (Ig lambda-2 chain C region)	IGLC2	Homo sapiens (Human)	106
+P0CG06	P0DOY3	reviewed	IGLC3_HUMAN	Immunoglobulin lambda constant 3 (Ig lambda chain C region DOT) (Ig lambda chain C region NEWM) (Ig lambda-3 chain C regions)	IGLC3	Homo sapiens (Human)	106
+P0DN76	P0DN76		U2AF5_HUMAN	deleted			
+P0DN79	P0DN79		CBSL_HUMAN	deleted			
+P10314	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P10316	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P10319	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P13746	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P13760	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+P13761	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+P16188	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P16189	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P16190	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P18135	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P18136	P01619	reviewed	KV320_HUMAN	Immunoglobulin kappa variable 3-20 (Ig kappa chain V-III region B6) (Ig kappa chain V-III region GOL) (Ig kappa chain V-III region HAH) (Ig kappa chain V-III region HIC) (Ig kappa chain V-III region IARC/BL41) (Ig kappa chain V-III region NG9) (Ig kappa chain V-III region SIE) (Ig kappa chain V-III region Ti) (Ig kappa chain V-III region WOL)	IGKV3-20	Homo sapiens (Human)	116
+P18462	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P18463	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P18464	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P18465	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P20039	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+P30042	P0DPI2	reviewed	GAL3A_HUMAN	Glutamine amidotransferase-like class 1 domain-containing protein 3, mitochondrial	GATD3 C21orf33 GATD3A	Homo sapiens (Human)	268
+P30042	A0A0B4J2D5	reviewed	GAL3B_HUMAN	Putative glutamine amidotransferase-like class 1 domain-containing protein 3B, mitochondrial (Keio novel protein-I) (KNP-I) (Protein GT335) (Protein HES1)	GATD3B HES1 KNPI	Homo sapiens (Human)	268
+P30443	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30447	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30450	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30453	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30455	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30456	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30457	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30459	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30460	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30461	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30462	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30464	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30466	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30475	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30479	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30480	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30481	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30483	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30484	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30485	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30486	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30487	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30488	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30490	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30491	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30492	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30493	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30495	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30498	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P30499	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P30501	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P30504	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P30505	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P30508	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P30510	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+P30512	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+P30685	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+P35544	P62861	reviewed	RS30_HUMAN	Ubiquitin-like FUBI-ribosomal protein eS30 fusion protein (FAU ubiquitin like and ribosomal protein S30 fusion) [Cleaved into: Ubiquitin-like protein FUBI; Small ribosomal subunit protein eS30 (40S ribosomal protein S30)]	FAU	Homo sapiens (Human)	133
+P59894	M0R2J8	reviewed	DCDC1_HUMAN	Doublecortin domain-containing protein 1 (Doublecortin domain-containing 5 protein)	DCDC1 DCDC5 KIAA1493	Homo sapiens (Human)	1783
+P62158	P0DP25	reviewed	CALM3_HUMAN	Calmodulin-3	CALM3 CALML2 CAM3 CAMC CAMIII	Homo sapiens (Human)	149
+P62158	P0DP23	reviewed	CALM1_HUMAN	Calmodulin-1	CALM1 CALM CAM CAM1	Homo sapiens (Human)	149
+P62158	P0DP24	reviewed	CALM2_HUMAN	Calmodulin-2	CALM2 CAM2 CAMB	Homo sapiens (Human)	149
+P80362	P01593	reviewed	KVD33_HUMAN	Immunoglobulin kappa variable 1D-33 (Ig kappa chain V-I region AG) (Ig kappa chain V-I region Bi) (Ig kappa chain V-I region Lay) (Ig kappa chain V-I region Ni) (Ig kappa chain V-I region Rei) (Ig kappa chain V-I region Roy) (Ig kappa chain V-I region Scw) (Ig kappa chain V-I region WAT)	IGKV1D-33	Homo sapiens (Human)	117
+Q04826	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q07000	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+Q09160	P04439	reviewed	HLAA_HUMAN	HLA class I histocompatibility antigen, A alpha chain (Human leukocyte antigen A) (HLA-A)	HLA-A HLAA	Homo sapiens (Human)	365
+Q12799	Q12799		TCP10_HUMAN	deleted			
+Q13068	P0DTW1	reviewed	GAGE1_HUMAN	G antigen 1 (GAGE-1) (Antigen MZ2-F) (Cancer/testis antigen 4.1) (CT4.1)	GAGE1	Homo sapiens (Human)	117
+Q13068	P0DSO3	reviewed	GAGE4_HUMAN	G antigen 4 (Cancer/testis antigen 4.4) (CT4.4)	GAGE4	Homo sapiens (Human)	117
+Q13465	Q03112	reviewed	MECOM_HUMAN	Histone-lysine N-methyltransferase MECOM (EC 2.1.1.367) (Ecotropic virus integration site 1 protein homolog) (EVI-1) (MDS1 and EVI1 complex locus protein) (Myelodysplasia syndrome 1 protein) (Myelodysplasia syndrome-associated protein 1)	MECOM EVI1 MDS1 PRDM3	Homo sapiens (Human)	1230
+Q13748	P0DPH7	reviewed	TBA3C_HUMAN	Tubulin alpha-3C chain (EC 3.6.5.-) (Alpha-tubulin 2) (Alpha-tubulin 3C) (Tubulin alpha-2 chain) [Cleaved into: Detyrosinated tubulin alpha-3C chain]	TUBA3C TUBA2	Homo sapiens (Human)	450
+Q13748	P0DPH8	reviewed	TBA3D_HUMAN	Tubulin alpha-3D chain (EC 3.6.5.-) (Alpha-tubulin 3D) [Cleaved into: Detyrosinated tubulin alpha-3D chain]	TUBA3D	Homo sapiens (Human)	450
+Q29718	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q29836	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q29865	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+Q29940	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q29960	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+Q29963	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+Q29974	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q30134	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q30167	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q31610	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q31612	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q3LFD5	Q3LFD5		UBP41_HUMAN	deleted			
+Q3SY89	Q3SY89		ELB3B_HUMAN	deleted			
+Q580R0	P0DPF5	reviewed	CB27A_HUMAN	Uncharacterized protein C2orf27A	C2orf27A	Homo sapiens (Human)	203
+Q580R0	P0DPF6	reviewed	CB27B_HUMAN	Putative uncharacterized protein CDRT15P3	CDRT15P3 C2orf27B	Homo sapiens (Human)	209
+Q5BKY6	Q5BKY6	reviewed	YV018_HUMAN	Putative uncharacterized protein DKFZp434K191		Homo sapiens (Human)	102
+Q5VU13	P0DPA2	reviewed	VSIG8_HUMAN	V-set and immunoglobulin domain-containing protein 8	VSIG8 C1orf204	Homo sapiens (Human)	414
+Q5VU13	P0DPA3	reviewed	SNH28_HUMAN	Putative uncharacterized protein SNHG28 (Small nucleolar RNA host gene 2) (VSIG8 overlapping transcript protein) (VSIG8-OT1)	SNHG28 C1orf204	Homo sapiens (Human)	235
+Q5W150	Q5W150	reviewed	YT011_HUMAN	Putative uncharacterized protein MGC163334		Homo sapiens (Human)	140
+Q5XG85	Q5XG85	reviewed	U633C_HUMAN	Putative UPF0633 protein LOC554249		Homo sapiens (Human)	94
+Q5Y7A7	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q6IED9	Q6IED9		DG2L7_HUMAN	deleted			
+Q6ZMK1	P0DTL5	reviewed	TM276_HUMAN	Transmembrane protein 276	TMEM276	Homo sapiens (Human)	192
+Q6ZMK1	P0DTL6	reviewed	ZTRF1_HUMAN	Zinc finger TRAF-type-containing protein 1 (Cysteine and histidine-rich protein 1)	ZFTRAF1 CYHR1 KIAA0496	Homo sapiens (Human)	404
+Q6ZSR9	Q6ZSR9	reviewed	YJ005_HUMAN	Uncharacterized protein FLJ45252		Homo sapiens (Human)	355
+Q6ZW33	O94851	reviewed	MICA2_HUMAN	[F-actin]-monooxygenase MICAL2 (EC 1.14.13.225) (MICAL C-terminal-like protein) (Mical-cL) (Molecule interacting with CasL protein 2) (MICAL-2)	MICAL2 KIAA0750 MICAL2PV1 MICAL2PV2 MICALCL	Homo sapiens (Human)	1957
+Q7Z4U5	Q7Z4U5		CF201_HUMAN	deleted			
+Q8IXS6	Q9Y2D5	reviewed	PLAK2_HUMAN	PALM2-AKAP2 fusion protein (A-kinase anchor protein 2) (AKAP-2) (AKAP-KL) (Paralemmin A kinase anchor protein) (Paralemmin-2) (Protein kinase A-anchoring protein 2) (PRKA2)	PALM2AKAP2 KIAA0920 PAKAP PALM2	Homo sapiens (Human)	1103
+Q8N1F1	Q8N1F1		C1AS1_HUMAN	deleted			
+Q8N1N5	Q8N1N5		CRPAK_HUMAN	deleted			
+Q8N655	Q96JN0	reviewed	LCOR_HUMAN	Ligand-dependent corepressor (LCoR) (Mblk1-related protein 2)	LCOR C10orf12 KIAA1795 MLR2	Homo sapiens (Human)	433
+Q8NG57	Q8NG57		ELOA3_HUMAN	deleted			
+Q8WV35	Q8WV35		LRC29_HUMAN	deleted			
+Q95365	P01889	reviewed	HLAB_HUMAN	HLA class I histocompatibility antigen, B alpha chain (Human leukocyte antigen B) (HLA-B)	HLA-B HLAB	Homo sapiens (Human)	362
+Q95604	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+Q95IE3	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q9BZG9	P0DP58	reviewed	LYNX1_HUMAN	Ly-6/neurotoxin-like protein 1 (Endogenous prototoxin LYNX1) (Testicular tissue protein Li 112)	LYNX1	Homo sapiens (Human)	116
+Q9BZG9	P0DP57	reviewed	SLUR2_HUMAN	Secreted Ly-6/uPAR domain-containing protein 2 (Secreted LY6/PLAUR domain-containing protein 2) (Secreted Ly-6/uPAR-related protein 2) (SLURP-2)	SLURP2	Homo sapiens (Human)	97
+Q9GIY3	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q9H761	Q9H761		CN139_HUMAN	deleted			
+Q9NPA5	Q9NTW7	reviewed	ZF64B_HUMAN	Zinc finger protein 64 (Zfp-64) (Zinc finger protein 338)	ZFP64 ZNF338	Homo sapiens (Human)	645
+Q9NV44	Q9NV44		CU077_HUMAN	deleted			
+Q9P0W5	B3KU38	reviewed	IQIP1_HUMAN	IQCJ-SCHIP1 readthrough transcript protein	IQCJ-SCHIP1	Homo sapiens (Human)	563
+Q9P0W5	P0DPB3	reviewed	SCHI1_HUMAN	Schwannomin-interacting protein 1 (SCHIP-1)	SCHIP1	Homo sapiens (Human)	487
+Q9TNN7	P10321	reviewed	HLAC_HUMAN	HLA class I histocompatibility antigen, C alpha chain (HLA-C) (HLA-Cw) (Human leukocyte antigen C)	HLA-C HLAC	Homo sapiens (Human)	366
+Q9TQE0	P01911	reviewed	DRB1_HUMAN	HLA class II histocompatibility antigen, DRB1 beta chain (Human leukocyte antigen DRB1) (HLA-DRB1)	HLA-DRB1	Homo sapiens (Human)	266
+Q9UBA6	Q9UBA6		G8_HUMAN	deleted			
+Q9UPP5	Q5XKL5	reviewed	BTBD8_HUMAN	BTB/POZ domain-containing protein 8 (AP2-interacting clathrin-endocytosis) (APache)	BTBD8 KIAA1107	Homo sapiens (Human)	1792
+Q9Y2S0	P0DPB6	reviewed	RPAC2_HUMAN	DNA-directed RNA polymerases I and III subunit RPAC2 (RNA polymerases I and III subunit AC2) (AC19) (DNA-directed RNA polymerase I subunit D) (RNA polymerase I 16 kDa subunit) (RPA16) (RPC16) (hRPA19)	POLR1D	Homo sapiens (Human)	133
+Q9Y2S0	P0DPB5	reviewed	RPC22_HUMAN	Protein POLR1D, isoform 2	POLR1D	Homo sapiens (Human)	122
+Q9UF83	Q9UF83	reviewed	YM012_HUMAN	Uncharacterized protein DKFZp434B061		Homo sapiens (Human)	564
+Q9NX53	Q8N9H8	reviewed	MUT7_HUMAN	Exonuclease mut-7 homolog (EC 3.1.-.-) (Exonuclease 3'-5' domain-containing protein 3)	EXD3 HBE269	Homo sapiens (Human)	876
+Q9Y4X1	P0DTE4	reviewed	UD2A1_HUMAN	UDP-glucuronosyltransferase 2A1 (UDPGT 2A1) (UGT2A1) (EC 2.4.1.17)	UGT2A1	Homo sapiens (Human)	527
+Q9Y4X1	P0DTE5	reviewed	UD2A2_HUMAN	UDP-glucuronosyltransferase 2A2 (UDPGT 2A2) (EC 2.4.1.17)	UGT2A2	Homo sapiens (Human)	536
+Q9Y2A0	Q9Y2A0		T53G1_HUMAN	deleted			
+Q8IYB0	Q8IYB0	reviewed	YK038_HUMAN	Putative uncharacterized protein MGC39545		Homo sapiens (Human)	196
+Q3BBV1	P0DPF2	reviewed	NBPFK_HUMAN	Neuroblastoma breakpoint family member 20	NBPF20	Homo sapiens (Human)	5207
+Q3BBV1	P0DPF3	reviewed	NBPF9_HUMAN	Neuroblastoma breakpoint family member 9	NBPF9	Homo sapiens (Human)	1111
+Q56UQ5	Q56UQ5	reviewed	TPT1L_HUMAN	TPT1-like protein		Homo sapiens (Human)	140
+Q6GMV1	Q6GMV1		ALG1L_HUMAN	deleted			
+Q6S5H4	A0JP26	reviewed	POTB3_HUMAN	POTE ankyrin domain family member B3	POTEB3	Homo sapiens (Human)	581
+Q6ZP98	Q15911	reviewed	ZFHX3_HUMAN	Zinc finger homeobox protein 3 (AT motif-binding factor 1) (AT-binding transcription factor 1) (Alpha-fetoprotein enhancer-binding protein) (Zinc finger homeodomain protein 3) (ZFH-3)	ZFHX3 ATBF1 C16orf47	Homo sapiens (Human)	3703
+Q9NY84	Q9NY84		VNN3_HUMAN	deleted			
+Q8TAB7	Q8TAB7		CCD26_HUMAN	deleted			
+Q5JXX5	Q5JXX5		GLRA4_HUMAN	deleted			
+Q96NJ1	Q96NJ1	reviewed	YI001_HUMAN	Uncharacterized protein FLJ30774		Homo sapiens (Human)	140
+Q5VWM5	P0DUQ1	reviewed	PRA15_HUMAN	PRAME family member 15	PRAMEF15	Homo sapiens (Human)	478
+Q5VWM5	P0DUQ2	reviewed	PRAM9_HUMAN	PRAME family member 9	PRAMEF9	Homo sapiens (Human)	478

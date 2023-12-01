@@ -1,6 +1,6 @@
 #' @title UniProt human protein accession number to gene name mapping
-#' @description A dataset containing 167,966 UniProt accession number and gene name pairings. 
-#' @format A tibble object with 167,966 rows and 3 columns:
+#' @description A dataset containing 164,713 UniProt accession number and gene name pairings. 
+#' @format A tibble object with 164,713 rows and 3 columns:
 #' \describe{
 #'   \item{accession_number}{<chr> UniProt protein accession number (e.g. P10415)}
 #'   \item{gene}{<chr> gene name (e.g. BCL2), first gene in all_genes if multiple}
@@ -8,7 +8,7 @@
 #' }
 #' @family datasets
 #' @docType data
-#' @source Human ID mapping file (2023-09-13 release) downloaded from UniProt:  
+#' @source Human ID mapping file (2023-11-08 release) downloaded from UniProt:  
 #' \url{https://www.uniprot.org}
 #' @references
 #' UniProt Consortium. UniProt: the Universal Protein Knowledgebase in 2023.
@@ -18,19 +18,19 @@
 
 
 #' @title InWeb protein-protein interactions
-#' @description A dataset containing published protein-protein interactions for 18,814 human genes in
+#' @description A dataset containing published protein-protein interactions for 17,861 human genes in
 #' InWeb_InBioMap (InWeb_IM) or InWeb3.
-#' @format A data frame with 883,356 rows and 4 variables:
+#' @format A tibble object with 871,939 rows and 4 columns:
 #' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein}
-#'   \item{Gene2}{HGNC gene symbol of second protein}
-#'   \item{Score}{Interaction confidence score}
-#'   \item{Source}{InWeb source version, "InWeb_IM" or "InWeb3"}
+#'   \item{Gene1}{<chr> Gene name of first protein}
+#'   \item{Gene2}{<chr> Gene name of second protein}
+#'   \item{Score}{<dbl> Interaction confidence score}
+#'   \item{Source}{<chr> InWeb source version, "InWeb_IM" or "InWeb3"}
 #' }
 #' @family datasets
 #' @docType data
 #' @source See cited references; InWeb_IM data (2016-9-12 release) downloaded from:
-#' \url{https://inbio-discover.intomics.com/map.html#downloads}
+#' \url{https://zs-revelen.com/download}
 #' @references
 #' Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to catalyze
 #' genomic interpretation. Nat Methods. 2017;14(1):61-64. doi:10.1038/nmeth.4083  

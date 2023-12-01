@@ -1,10 +1,10 @@
 # code to generate accession_gene_table
-# last update: 2023-10-02
+# last update: 2023-12-01
 
 library(data.table) # also requires R.utils for fread() to read in gz/bz2 files
 library(dplyr)
 
-# FTP download link for UniProt ID mapping table
+# FTP download link for UniProt ID mapping table (2023-11-08 release)
 url <- 'https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/idmapping/by_organism/HUMAN_9606_idmapping.dat.gz'
 
 # download ID mapping table, extract columns containing accession_number and gene names
@@ -18,6 +18,11 @@ accession_gene_table <- dt %>% group_by(accession_number) %>%
 	summarize(all_genes=paste(gene,collapse=',')) %>%
 	mutate(gene=sapply(strsplit(all_genes,','),'[[',1)) %>%
 	relocate(gene, .before=all_genes)
+
+dim(accession_gene_table) # 164713 rows x 3 columns
+length(unique(accession_gene_table$accession_number)) # 164713
+length(unique(accession_gene_table$gene)) # 26229
+sum(accession_gene_table$gene != accession_gene_table$all_genes) # 72 entries with multiple all_genes
 
 # save as gzipped tab-delimited file in data-raw/
 fwrite(accession_gene_table,file='data-raw/accession_gene_table.tsv.gz',sep='\t')

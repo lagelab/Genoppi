@@ -18,7 +18,7 @@ test_that('calc_hyper can return correct overlap results',{
   
   # InWeb
   result <- calc_hyper(sigDf,inwebDf,inwebInterDf,"BCL2")
-  expect_equal(format(result[[1]]$pvalue,digits=3),"0.614")
+  expect_equal(format(result[[1]]$pvalue,digits=3),"0.627")
   expect_true(all(result[[2]][["InWeb"]]$successInSample_genes %in% c("BAX","PARP1","HNRNPD")))
 
   # gene list
