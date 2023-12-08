@@ -5,32 +5,30 @@
 \alias{bioplex_table}
 \title{BioPlex protein-protein interactions}
 \format{
-A data.frame with 883,356 rows and 4 variables:
+A tibble object with 159,422 rows and 4 columns:
 \describe{
-  \item{Gene1}{HGNC gene symbol of first protein (bait)}
-  \item{Gene2}{HGNC gene symbol of second protein (prey)}
-  \item{pW}{Probability that the prey is a wrong identification}
-  \item{pNI}{Probability of the prey is a background protein}
-  \item{pInt}{Probability of the prey is a high-confidence interacting protein}
+  \item{Gene1}{<chr> Gene name of first protein}
+  \item{Gene2}{<chr> Gene name of second protein}
+  \item{Score}{<chr> Interaction confidence score (i.e. pInt in BioPlex data),
+separated by "," if interaction found in both cell lines} 
+  \item{CellLine}{<chr> Cell line(s) in which the interaction was identified}
 }
 }
 \source{
-BioPlex data (v3.0) downloaded on 2021-01-04 from:
+BioPlex 3.0 data downloaded on 2023-12-05 from:
 \url{https://bioplex.hms.harvard.edu/interactions.php}
 }
 \usage{
 bioplex_table
 }
 \description{
-A dataset containing 118,162 protein-protein interactions in BioPlex 3.0,
-identified through AP-MS of 10,128 human bait proteins in HEK293T cells.
+A dataset containing 159,422 undirected protein-protein interactions for
+14,145 human genes in BioPlex 3.0, identified by AP-MS in HEK293T and/or HCT116 cells.
 }
 \references{
-Huttlin EL, Ting L, Bruckner RJ, et al. The BioPlex Network: A Systematic Exploration of the Human Interactome.
-Cell. 2015;162(2):425-440. doi:10.1016/j.cell.2015.06.043
-
-Huttlin EL, Bruckner RJ, Navarrete-Perea J, et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling
-of the Human Interactome. bioRxiv. 2020. doi:10.1101/2020.01.19.905109
+Huttlin EL, Bruckner RJ, Navarrete-Perea J, et al. Dual proteome-scale networks
+reveal cell-specific remodeling of the human interactome. 
+Cell. 2021;184(11):3022-3040.e28. doi:10.1016/j.cell.2021.04.011
 }
 \seealso{
 Other datasets: 
@@ -49,7 +47,6 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna_table}},
-\code{\link{huri_table}},
 \code{\link{inweb_table}},
 \code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
@@ -61,7 +58,6 @@ Other datasets:
 \code{\link{msigdb_c7_table}},
 \code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}},
-\code{\link{pcnet_table}},
 \code{\link{string_table}}
 }
 \concept{datasets}

@@ -4,10 +4,12 @@
 \alias{get_string_list}
 \title{Retrieve STRING interactors for a given bait}
 \usage{
-get_string_list(bait)
+get_string_list(bait, score = 0)
 }
 \arguments{
 \item{bait}{string. name of bait protein}
+
+\item{score}{numeric. confidence score (between 0 and 1) cutoff.}
 }
 \value{
 data.frame containing gene and significant columns for all non-bait STRING genes
@@ -19,6 +21,6 @@ See \code{?string_table} for more details about the data set.
 }
 \examples{
 \dontrun{
-df1 <- get_string_list('BCL2')
+df1 <- get_string_list('BCL2',score = 0.9)
 }
 }

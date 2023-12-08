@@ -1,11 +1,15 @@
 context('get_inweb_list')
 
-test_that('get_inweb_list can return correct InWeb data',{
+test_that('get_inweb_list can return correct data',{
 
   # all interactions
-  result <- get_inweb_list("TARDBP",type="all")
-  expect_equal(nrow(result),17860)
-  expect_equal(sum(result$significant),457)
+  res <- get_inweb_list("TARDBP")
+  res_ints <- sort(subset(res,significant)$gene)
+
+  ref <- subset(inweb_table,Gene1=='TARDBP'|Gene2=='TARDBP')
+  ref_ints <- sort(setdiff(c(ref$Gene1,ref$Gene2),'TARDBP'))
+
+  expect_equal(res_ints,ref_ints)
 
   # high-confidence interactions
   result2 <- get_inweb_list("TARDBP",type="hc")

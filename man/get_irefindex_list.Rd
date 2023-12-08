@@ -4,23 +4,23 @@
 \alias{get_irefindex_list}
 \title{Retrieve irefindex for a given bait}
 \usage{
-get_irefindex_list(bait, n = 1)
+get_irefindex_list(bait, score = 1)
 }
 \arguments{
 \item{bait}{string. name of bait protein}
 
-\item{n}{numeric. Minimum number of publications that this interaction has been described in.}
+\item{score}{numeric. confidence score (number of publications) cutoff.}
 }
 \value{
-data.frame containing gene and significant columns for all non-bait IRefIndex genes 
-(significant=T for IRefIndex interactors of bait). NULL if bait not found in IRefIndex.
+data.frame containing gene and significant columns for all non-bait iRefIndex genes 
+(significant=T for iRefIndex interactors of bait). NULL if bait not found in iRefIndex.
 }
 \description{
-Use irefindex_table data to get IRefIndex interactors and non-interactors of bait. 
+Use irefindex_table data to get iRefIndex interactors and non-interactors of bait. 
 See \code{?irefindex_table} for more details about the data set.
 }
 \examples{
 \dontrun{
-df1 <- get_irefindex_list('BCL2',n = 1)
+df1 <- get_irefindex_list('BCL2',score = 2)
 }
 }

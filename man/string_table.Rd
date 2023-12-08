@@ -3,33 +3,30 @@
 \docType{data}
 \name{string_table}
 \alias{string_table}
-\title{STRING (Protein-Protein Interaction Networks Functional Enrichment Analysis)}
+\title{STRING protein-protein interactions}
 \format{
-TO ADD
+A tibble object with 738,805 rows and 3 columns 
 \describe{
-  \item{Gene1}{HGNC gene symbol of first protein}
-  \item{Gene2}{HGNC gene symbol of second protein}
+  \item{Gene1}{<chr> Gene name of first protein}
+  \item{Gene2}{<chr> Gene name of second protein}
+  \item{Score}{<dbl> Interaction confidence score}
 }
 }
 \source{
-STRING data downloaded on 2023-10-19 from:
-\url{https://string-db.org/cgi/download?sessionId=bBdzAUS16sXn&species_text=Homo+sapiens} restricting to Homo
-sapiens, physical interactions
+STRING human physical subnetwork (v12.0) downloaded from:
+\url{https://stringdb-downloads.org/download/protein.physical.links.v12.0/9606.protein.physical.links.v12.0.txt.gz}
 }
 \usage{
 string_table
 }
 \description{
-TO ADD
-}
-\details{
-TO ADD
+A dataset containing 738,805 undirected protein-protein interactions for
+18,767 human genes in STRING physical subnetwork.
 }
 \references{
-Szklarczyk D, Gable AL, Nastou KC, Lyon D, Kirsch R, Pyysalo S, Doncheva NT, Legeay M, Fang T, Bork P, Jensen LJ, von
-Mering C. The STRING database in 2021: customizable protein-protein networks, and functional characterization of
-user-uploaded gene/measurement sets. Nucleic Acids Res. 2021 Jan 8;49(D1):D605-D612. doi: 10.1093/nar/gkaa1074.
-Erratum in: Nucleic Acids Res. 2021 Oct 11;49(18):10800. PMID: 33237311; PMCID: PMC7779004.
+Szklarczyk D, Kirsch R, Koutrouli M, et al. The STRING database in 2023: protein-protein association networks
+and functional enrichment analyses for any sequenced genome of interest. Nucleic Acids Res. 2023;51(D1):D638-D646.
+doi:10.1093/nar/gkac1000
 }
 \seealso{
 Other datasets: 
@@ -49,7 +46,6 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna_table}},
-\code{\link{huri_table}},
 \code{\link{inweb_table}},
 \code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
@@ -60,8 +56,7 @@ Other datasets:
 \code{\link{msigdb_c6_table}},
 \code{\link{msigdb_c7_table}},
 \code{\link{msigdb_c8_table}},
-\code{\link{msigdb_h_table}},
-\code{\link{pcnet_table}}
+\code{\link{msigdb_h_table}}
 }
 \concept{datasets}
 \keyword{datasets}

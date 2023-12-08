@@ -5,30 +5,23 @@
 \alias{irefindex_table}
 \title{iRefIndex protein-protein interactions}
 \format{
-A data.frame with 396,984 rows and 5 variables:
+A tibble object with 776,608 rows and 3 columns:
 \describe{
-  \item{Gene1}{HGNC gene symbol of first protein}
-  \item{Gene2}{HGNC gene symbol of second protein}
-  \item{Score.hpr.max}{Highest PMID re-use}
-  \item{Score.lpr.max}{Lowest PMID re-use}
-  \item{Score.np.max}{Number of PMIDs}
+  \item{Gene1}{<chr> Gene name of first protein}
+  \item{Gene2}{<chr> Gene name of second protein}
+  \item{Score}{<int> Interaction confidence score (i.e. number of reporting PMIDs)}
 }
 }
 \source{
-iRefIndex data (v17.0) downloaded on 2021-01-06 from:
-\url{https://irefindex.vib.be/download/irefindex/data/archive/release_17.0/psi_mitab/MITAB2.6/}
+iRefIndex 20.0 human MITAB file downloaded from:
+\url{https://irefindex.vib.be/wiki/index.php/README_MITAB2.6_for_iRefIndex_20.0}
 }
 \usage{
 irefindex_table
 }
 \description{
-A dataset containing 396,984 published protein-protein interactions for 17,437 human genes
-in iRefIndex 17.0.
-}
-\details{
-This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
-interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns. 
-Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores.
+A dataset containing 776,608 undirected protein-protein interactions for
+18,166 human genes in iRefIndex 20.0.
 }
 \references{
 Razick S, Magklaras G, Donaldson IM. iRefIndex: a consolidated protein interaction database with provenance.
@@ -52,7 +45,6 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna_table}},
-\code{\link{huri_table}},
 \code{\link{inweb_table}},
 \code{\link{msigdb_c1_table}},
 \code{\link{msigdb_c2_table}},
@@ -63,7 +55,6 @@ Other datasets:
 \code{\link{msigdb_c7_table}},
 \code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}},
-\code{\link{pcnet_table}},
 \code{\link{string_table}}
 }
 \concept{datasets}

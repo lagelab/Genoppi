@@ -4,23 +4,23 @@
 \alias{get_bioplex_list}
 \title{Retrieve Bioplex 3.0 interactors for a given bait}
 \usage{
-get_bioplex_list(bait, p = 0.9)
+get_bioplex_list(bait, score = 0)
 }
 \arguments{
 \item{bait}{string. name of bait protein}
 
-\item{p}{numeric. Probability of the protein being an interactor with the bait. See \code{?bioplex_table}.}
+\item{score}{numeric. confidence score (between 0 and 1) cutoff. See \code{?bioplex_table}.}
 }
 \value{
-data.frame containing gene and significant columns for all non-bait bioplex genes 
-(significant=T for bioplex 3.0 interactors of bait). NULL if bait not found in bioplex.
+data.frame containing gene and significant columns for all non-bait BioPlex genes 
+(significant=T for BioPlex 3.0 interactors of bait). NULL if bait not found in BioPlex.
 }
 \description{
-Use bioplex_table data to get bioplex interactors and non-interactors of bait. 
+Use bioplex_table data to get BioPlex interactors and non-interactors of bait. 
 See \code{?bioplex_table} for more details about the data set.
 }
 \examples{
 \dontrun{
-df1 <- get_bioplex_list('BCL2',p = 0.5)
+df1 <- get_bioplex_list('BCL2',score = 0.9)
 }
 }

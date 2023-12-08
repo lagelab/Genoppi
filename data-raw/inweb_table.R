@@ -103,7 +103,7 @@ dim(intDt) # 417664 x 7
 iw3 <- data.frame(Gene1=apply(intDt[,c('gene.x','gene.y')],1,min),
 	Gene2=apply(intDt[,c('gene.x','gene.y')],1,max),
 	Score=intDt$score,Source='InWeb3') %>%
-	as_tibble() %>% dplyr::arrange(-Score) %>%
+	dplyr::as_tibble() %>% dplyr::arrange(-Score) %>%
 	dplyr::distinct(Gene1,Gene2,.keep_all=T)
 dim(iw3) # 385176 rows x 4 columns
 
@@ -153,7 +153,7 @@ dim(intDt) # 624861 x 5
 im <- data.frame(Gene1=apply(intDt[,c('gene.x','gene.y')],1,min),
 	Gene2=apply(intDt[,c('gene.x','gene.y')],1,max),
 	Score=as.numeric(intDt$score),Source='InWeb_IM') %>%
-	as_tibble() %>% dplyr::arrange(-Score) %>%
+	dplyr::as_tibble() %>% dplyr::arrange(-Score) %>%
 	dplyr::distinct(Gene1,Gene2,.keep_all=T)
 dim(im) # 612036 rows x 4 columns
 
@@ -180,7 +180,7 @@ inweb_table <- dplyr::bind_rows(iw3,im) %>%
 dim(inweb_table) # 871939 x 4
 table(inweb_table$Source)
 # InWeb_IM: 612036, InWeb3: 259903
-length(unique(c(inweb_table$Gene1,inweb_table$Gene2)) # 17861
+length(unique(c(inweb_table$Gene1,inweb_table$Gene2))) # 17861
 
 
 # save as gzipped tab-delimited file in data-raw/

@@ -18,8 +18,8 @@
 
 
 #' @title InWeb protein-protein interactions
-#' @description A dataset containing published protein-protein interactions for 17,861 human genes in
-#' InWeb_InBioMap (InWeb_IM) or InWeb3.
+#' @description A dataset containing 871,939 undirected protein-protein interactions for
+#' 17,861 human genes in InWeb_InBioMap (InWeb_IM) or InWeb3.
 #' @format A tibble object with 871,939 rows and 4 columns:
 #' \describe{
 #'   \item{Gene1}{<chr> Gene name of first protein}
@@ -42,119 +42,67 @@
 
 
 #' @title BioPlex protein-protein interactions
-#' @description A dataset containing 118,162 protein-protein interactions in BioPlex 3.0,
-#' identified through AP-MS of 10,128 human bait proteins in HEK293T cells.
-#' @format A data.frame with 883,356 rows and 4 variables:
+#' @description A dataset containing 159,422 undirected protein-protein interactions for
+#' 14,145 human genes in BioPlex 3.0, identified by AP-MS in HEK293T and/or HCT116 cells.
+#' @format A tibble object with 159,422 rows and 4 columns:
 #' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein (bait)}
-#'   \item{Gene2}{HGNC gene symbol of second protein (prey)}
-#'   \item{pW}{Probability that the prey is a wrong identification}
-#'   \item{pNI}{Probability of the prey is a background protein}
-#'   \item{pInt}{Probability of the prey is a high-confidence interacting protein}
+#'   \item{Gene1}{<chr> Gene name of first protein}
+#'   \item{Gene2}{<chr> Gene name of second protein}
+#'   \item{Score}{<chr> Interaction confidence score (i.e. pInt in BioPlex data),
+#'	separated by "," if interaction found in both cell lines} 
+#'   \item{CellLine}{<chr> Cell line(s) in which the interaction was identified}
 #' }
 #' @family datasets
 #' @docType data
-#' @source BioPlex data (v3.0) downloaded on 2021-01-04 from:
+#' @source BioPlex 3.0 data downloaded on 2023-12-05 from:
 #' \url{https://bioplex.hms.harvard.edu/interactions.php}
 #' @references
-#' Huttlin EL, Ting L, Bruckner RJ, et al. The BioPlex Network: A Systematic Exploration of the Human Interactome.
-#' Cell. 2015;162(2):425-440. doi:10.1016/j.cell.2015.06.043
-#'
-#' Huttlin EL, Bruckner RJ, Navarrete-Perea J, et al. Dual Proteome-scale Networks Reveal Cell-specific Remodeling
-#' of the Human Interactome. bioRxiv. 2020. doi:10.1101/2020.01.19.905109 
+#' Huttlin EL, Bruckner RJ, Navarrete-Perea J, et al. Dual proteome-scale networks
+#' reveal cell-specific remodeling of the human interactome. 
+#' Cell. 2021;184(11):3022-3040.e28. doi:10.1016/j.cell.2021.04.011
 
 "bioplex_table"
 
 
 #' @title iRefIndex protein-protein interactions
-#' @description A dataset containing 396,984 published protein-protein interactions for 17,437 human genes
-#' in iRefIndex 17.0.
-#' @format A data.frame with 396,984 rows and 5 variables:
+#' @description A dataset containing 776,608 undirected protein-protein interactions for
+#' 18,166 human genes in iRefIndex 20.0.
+#' @format A tibble object with 776,608 rows and 3 columns:
 #' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein}
-#'   \item{Gene2}{HGNC gene symbol of second protein}
-#'   \item{Score.hpr.max}{Highest PMID re-use}
-#'   \item{Score.lpr.max}{Lowest PMID re-use}
-#'   \item{Score.np.max}{Number of PMIDs}
+#'   \item{Gene1}{<chr> Gene name of first protein}
+#'   \item{Gene2}{<chr> Gene name of second protein}
+#'   \item{Score}{<int> Interaction confidence score (i.e. number of reporting PMIDs)}
 #' }
-#' @details This dataset was generated from the source BioPlex database by excluding all non-binary and non-human
-#' interactions. HGNC gene symbols were then extracted from the database along with the relevant score columns. 
-#' Rows corresponding to the same gene pairs were merged into a single row by keeping the maximum scores. 
-#' 
 #' @family datasets
 #' @docType data
-#' @source iRefIndex data (v17.0) downloaded on 2021-01-06 from:
-#' \url{https://irefindex.vib.be/download/irefindex/data/archive/release_17.0/psi_mitab/MITAB2.6/}
+#' @source iRefIndex 20.0 human MITAB file downloaded from:
+#' \url{https://irefindex.vib.be/wiki/index.php/README_MITAB2.6_for_iRefIndex_20.0} 
 #' @references
 #' Razick S, Magklaras G, Donaldson IM. iRefIndex: a consolidated protein interaction database with provenance.
 #' BMC Bioinformatics. 2008;9:405. Published 2008 Sep 30. doi:10.1186/1471-2105-9-405
 
 "irefindex_table"
 
-# TODO
-#' @title HuRI data (HI-union network)
-#' @description  TO ADD
-#' @format TO ADD
+
+#' @title STRING protein-protein interactions
+#' @description A dataset containing 738,805 undirected protein-protein interactions for
+#' 18,767 human genes in STRING physical subnetwork.
+#' @format A tibble object with 738,805 rows and 3 columns 
 #' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein}
-#'   \item{Gene2}{HGNC gene symbol of second protein}
+#'   \item{Gene1}{<chr> Gene name of first protein}
+#'   \item{Gene2}{<chr> Gene name of second protein}
+#'   \item{Score}{<dbl> Interaction confidence score}
 #' }
-#' @details TO ADD
-#'
 #' @family datasets
 #' @docType data
-#' @source HuRI data (HI-union network) data downloaded on 2023-10-10 from:
-#' \url{https://www.nature.com/articles/s41586-020-2188-x}
-#' TODO: try direct download from https://static-content.springer.com/esm/art%3A10.1038%2Fs41586-020-2188-x/MediaObjects/41586_2020_2188_MOESM3_ESM.zip
+#' @source STRING human physical subnetwork (v12.0) downloaded from:
+#' \url{https://stringdb-downloads.org/download/protein.physical.links.v12.0/9606.protein.physical.links.v12.0.txt.gz}
 #' @references
-#' Luck, K., Kim, DK., Lambourne, L. et al. A reference map of the human binary protein interactome. Nature 580, 402–408
-#' (2020). https://doi.org/10.1038/s41586-020-2188-x
-
-"huri_table"
-
-# TODO
-#' @title STRING (Protein-Protein Interaction Networks Functional Enrichment Analysis)
-#' @description  TO ADD
-#' @format TO ADD
-#' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein}
-#'   \item{Gene2}{HGNC gene symbol of second protein}
-#' }
-#' @details TO ADD
-#'
-#' @family datasets
-#' @docType data
-#' @source STRING data downloaded on 2023-10-19 from:
-#' \url{https://string-db.org/cgi/download?sessionId=bBdzAUS16sXn&species_text=Homo+sapiens} restricting to Homo
-#' sapiens, physical interactions
-#' @references
-#' Szklarczyk D, Gable AL, Nastou KC, Lyon D, Kirsch R, Pyysalo S, Doncheva NT, Legeay M, Fang T, Bork P, Jensen LJ, von
-#' Mering C. The STRING database in 2021: customizable protein-protein networks, and functional characterization of
-#' user-uploaded gene/measurement sets. Nucleic Acids Res. 2021 Jan 8;49(D1):D605-D612. doi: 10.1093/nar/gkaa1074.
-#' Erratum in: Nucleic Acids Res. 2021 Oct 11;49(18):10800. PMID: 33237311; PMCID: PMC7779004.
+#' Szklarczyk D, Kirsch R, Koutrouli M, et al. The STRING database in 2023: protein-protein association networks
+#' and functional enrichment analyses for any sequenced genome of interest. Nucleic Acids Res. 2023;51(D1):D638-D646.
+#' doi:10.1093/nar/gkac1000
 
 "string_table"
-
-# TODO
-#' @title PCNet (Parsimonious Composite Network)
-#' @description  TO ADD
-#' @format TO ADD
-#' \describe{
-#'   \item{Gene1}{HGNC gene symbol of first protein}
-#'   \item{Gene2}{HGNC gene symbol of second protein}
-#' }
-#' @details TO ADD
-#'
-#' @family datasets
-#' @docType data
-#' @source PCNet (Parsimonious Composite Network) data downloaded on 2023-10-19 from:
-#' \url{https://www.ndexbio.org/v2/network/f93f402c-86d4-11e7-a10d-0ac135e8bacf?download=true}
-#' @references
-#' Huang JK, Carlin DE, Yu MK, Zhang W, Kreisberg JF, Tamayo P, Ideker T. Systematic Evaluation of Molecular Networks
-#' for Discovery of Disease Genes. Cell Syst. 2018 Apr 25;6(4):484-495.e5. doi: 10.1016/j.cels.2018.03.001. Epub 2018
-#' Mar 28. PMID: 29605183; PMCID: PMC5920724.
-
-"pcnet_table"
 
 
 #' @title SNP-to-gene mapping 

@@ -21,8 +21,8 @@ See cited references; InWeb_IM data (2016-9-12 release) downloaded from:
 inweb_table
 }
 \description{
-A dataset containing published protein-protein interactions for 17,861 human genes in
-InWeb_InBioMap (InWeb_IM) or InWeb3.
+A dataset containing 871,939 undirected protein-protein interactions for
+17,861 human genes in InWeb_InBioMap (InWeb_IM) or InWeb3.
 }
 \references{
 Li T, Wernersson R, Hansen RB, et al. A scored human protein-protein interaction network to catalyze
@@ -49,7 +49,6 @@ Other datasets:
 \code{\link{gwas_table}},
 \code{\link{hgnc_group_table}},
 \code{\link{hpa_rna_table}},
-\code{\link{huri_table}},
 \code{\link{irefindex_table}},
 \code{\link{msigdb_c1_table}},
 \code{\link{msigdb_c2_table}},
@@ -60,7 +59,6 @@ Other datasets:
 \code{\link{msigdb_c7_table}},
 \code{\link{msigdb_c8_table}},
 \code{\link{msigdb_h_table}},
-\code{\link{pcnet_table}},
 \code{\link{string_table}}
 }
 \concept{datasets}
