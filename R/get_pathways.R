@@ -1,6 +1,6 @@
 #' @title Retreive pathway annotations for a list of genes
 #' @description Look up pathway annotations for genes using data from HGNC, GO (MF,CC,BP), or MSigDB (H,C1-C8).
-#' @param database string ('hgnc','mf','cc','bp','h','c1','c2','c3','c4','c5','c6','c7', or 'C8') 
+#' @param database string ('hgnc','mf','cc','bp','h','c1','c2','c3','c4','c5','c6','c7', or 'c8') 
 #' @param genes vector of gene names
 #' @return data.frame containing gene, pathway, (and GO.ID if appropriate) columns
 #' @export

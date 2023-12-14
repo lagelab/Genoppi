@@ -83,6 +83,7 @@ Collate:
     'get_tissue_list.R'
     'html_translate_significance_thresholds.R'
     'id_enriched_proteins.R'
+    'impute_na.R'
     'lapply_calc_hyper.R'
     'launch_genoppi.R'
     'make_interactive.R'

@@ -7,7 +7,7 @@
 get_pathways(database, genes)
 }
 \arguments{
-\item{database}{string ('hgnc','mf','cc','bp','h','c1','c2','c3','c4','c5','c6','c7', or 'C8')}
+\item{database}{string ('hgnc','mf','cc','bp','h','c1','c2','c3','c4','c5','c6','c7', or 'c8')}
 
 \item{genes}{vector of gene names}
 }
