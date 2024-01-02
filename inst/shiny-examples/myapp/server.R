@@ -885,12 +885,12 @@ shinyServer(function(input, output, session){
     if(db == 'bioplex' & !is.null(ppiParams()$bioplex_prob)) {
       mapping = get_bioplex_list(
         ppiParams()$bait_search,
-        p = ppiParams()$bioplex_prob)
+        score = ppiParams()$bioplex_prob)
     }
     if(db == 'irefindex' & !is.null(ppiParams()$irefindex_min_pub)) {
       mapping = get_irefindex_list(
         ppiParams()$bait_search, 
-        n = ppiParams()$irefindex_min_pub)
+        score = ppiParams()$irefindex_min_pub)
     }
     return(mapping)
   })
