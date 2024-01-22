@@ -197,8 +197,8 @@
 
 
 #' @title GO molecular function terms
-#' @description A dataset containing annotations for 18,172 genes in 4,614 GO molecular function terms.
-#' @format A tibble object with 292,611 rows and 3 columns:
+#' @description A dataset containing annotations for 18,192 genes in 4,617 GO molecular function terms.
+#' @format A tibble object with 71,299 rows and 3 columns:
 #' \describe{
 #'   \item{Gene.symbol}{<chr> HGNC gene symbol}
 #'   \item{GO.ID}{<chr> GO term ID}
@@ -206,7 +206,7 @@
 #' }
 #' @family datasets
 #' @docType data
-#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
+#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2024-01-17 release) downloaded from:
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
@@ -219,8 +219,8 @@
 
 
 #' @title GO cellular component terms
-#' @description A dataset containing annotations for 18,868 genes in 1,800 GO cellular component terms.
-#' @format A tibble object with 179,867 rows and 3 columns:
+#' @description A dataset containing annotations for 18,894 genes in 1,809 GO cellular component terms.
+#' @format A tibble object with 82,999 rows and 3 columns:
 #' \describe{
 #'   \item{Gene.symbol}{<chr> HGNC gene symbol}
 #'   \item{GO.ID}{<chr> GO term ID}
@@ -228,7 +228,7 @@
 #' }
 #' @family datasets
 #' @docType data
-#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
+#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2024-01-17 release) downloaded from:
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
@@ -241,8 +241,8 @@
 
 
 #' @title GO biological process terms
-#' @description A dataset containing annotations for 17,775 genes in 12,335 GO biological process terms.
-#' @format A tibble object with 161,108 rows and 3 columns:
+#' @description A dataset containing annotations for 17,796 genes in 12,214 GO biological process terms.
+#' @format A tibble object with 134,944 rows and 3 columns:
 #' \describe{
 #'   \item{Gene.symbol}{<chr> HGNC gene symbol}
 #'   \item{GO.ID}{<chr> GO term ID}
@@ -250,7 +250,7 @@
 #' }
 #' @family datasets
 #' @docType data
-#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
+#' @source Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2024-01-17 release) downloaded from:
 #' \url{http://current.geneontology.org/products/pages/downloads.html}
 #' @references
 #' Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.

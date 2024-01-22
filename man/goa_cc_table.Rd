@@ -5,7 +5,7 @@
 \alias{goa_cc_table}
 \title{GO cellular component terms}
 \format{
-A tibble object with 179,867 rows and 3 columns:
+A tibble object with 82,999 rows and 3 columns:
 \describe{
   \item{Gene.symbol}{<chr> HGNC gene symbol}
   \item{GO.ID}{<chr> GO term ID}
@@ -13,14 +13,14 @@ A tibble object with 179,867 rows and 3 columns:
 }
 }
 \source{
-Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
+Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2024-01-17 release) downloaded from:
 \url{http://current.geneontology.org/products/pages/downloads.html}
 }
 \usage{
 goa_cc_table
 }
 \description{
-A dataset containing annotations for 18,868 genes in 1,800 GO cellular component terms.
+A dataset containing annotations for 18,894 genes in 1,809 GO cellular component terms.
 }
 \references{
 Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.

@@ -5,7 +5,7 @@
 \alias{goa_bp_table}
 \title{GO biological process terms}
 \format{
-A tibble object with 161,108 rows and 3 columns:
+A tibble object with 134,944 rows and 3 columns:
 \describe{
   \item{Gene.symbol}{<chr> HGNC gene symbol}
   \item{GO.ID}{<chr> GO term ID}
@@ -13,14 +13,14 @@ A tibble object with 161,108 rows and 3 columns:
 }
 }
 \source{
-Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
+Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2024-01-17 release) downloaded from:
 \url{http://current.geneontology.org/products/pages/downloads.html}
 }
 \usage{
 goa_bp_table
 }
 \description{
-A dataset containing annotations for 17,775 genes in 12,335 GO biological process terms.
+A dataset containing annotations for 17,796 genes in 12,214 GO biological process terms.
 }
 \references{
 Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.

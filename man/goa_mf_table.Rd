@@ -5,7 +5,7 @@
 \alias{goa_mf_table}
 \title{GO molecular function terms}
 \format{
-A tibble object with 292,611 rows and 3 columns:
+A tibble object with 71,299 rows and 3 columns:
 \describe{
   \item{Gene.symbol}{<chr> HGNC gene symbol}
   \item{GO.ID}{<chr> GO term ID}
@@ -13,14 +13,14 @@ A tibble object with 292,611 rows and 3 columns:
 }
 }
 \source{
-Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2023-07-27 release) downloaded from:
+Homo sapiens EBI Gene Ontology Annotation Database protein dataset (2024-01-17 release) downloaded from:
 \url{http://current.geneontology.org/products/pages/downloads.html}
 }
 \usage{
 goa_mf_table
 }
 \description{
-A dataset containing annotations for 18,172 genes in 4,614 GO molecular function terms.
+A dataset containing annotations for 18,192 genes in 4,617 GO molecular function terms.
 }
 \references{
 Ashburner M, Ball CA, Blake JA, et al. Gene ontology: tool for the unification of biology.
