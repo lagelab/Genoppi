@@ -503,7 +503,7 @@ shinyServer(function(input, output, session){
   # integrated plot, reset
   output$a_reset_genes_upload_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
-    actionButton('a_reset_genes_upload', 'Reset')
+    actionButton('a_reset_genes_upload', 'Restore default')
   })
   observeEvent(input$a_reset_genes_upload, {
     reset("a_file_genes_rep")

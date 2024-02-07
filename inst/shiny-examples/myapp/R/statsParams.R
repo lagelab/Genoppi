@@ -129,7 +129,7 @@ statsParamsServer <- function(id,
     })
     
     output$reset <- renderUI({
-      actionButton(ns("resetInput"), "Reset")
+      actionButton(ns("resetInput"), "Restore default")
     })
     
     output$fdrThresh <- renderUI({

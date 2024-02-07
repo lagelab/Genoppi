@@ -202,7 +202,7 @@ summaryBox <- function(id) {
       column(12, shinyjs::hidden(
         myDownloadButton(
           NS(id, "download_dataframe_with_stats"),
-          'Proteomic data', icon("download"))))
+          'Analysis results', icon("download"))))
     )
   )
 }
