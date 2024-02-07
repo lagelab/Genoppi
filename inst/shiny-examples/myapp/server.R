@@ -14,15 +14,6 @@ shinyServer(function(input, output, session){
     return(HTML(documentation))
   })
   
-  # hide developer tabs when starting app
-  hideTab('basic','p5')
-  
-  developer <- reactiveVal(value = FALSE)
-  observeEvent(input$enable_dev_mode,{
-    showTab('basic','p5')
-    developer(TRUE)
-  })
-  
   output$a_example_file_ui <- renderUI({
     fileInput('a_file_pulldown_extra', 'Upload a proteomic data file to get started!', accept = files_accepted)
   })
@@ -1815,8 +1806,6 @@ shinyServer(function(input, output, session){
       if (input$a_overlay_gnomad) {
         p <- genoppi::plot_overlay(p, list(gnomad=a_gnomad_mapping_threshold()))}}
     if (!is.null(input$a_tissue_select)) if (!is.null(a_get_tissue_list())) if (input$a_overlay_tissue) p <- genoppi::plot_overlay(p, list(tissuemap=a_tissue_mapping()))
-    
-    if (developer()) showNotification(paste(head(p$overlay, n = 1), collapse = ' '), duration = 10)
     
     # collapse/combine labels from multiple overlay
     if (!is.null(p$overlay)) p$overlay <- collapse_labels(p$overlay)
