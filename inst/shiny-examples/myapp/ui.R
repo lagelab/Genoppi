@@ -379,7 +379,7 @@ sidebar <- dashboardSidebar(
               #h6(as.character(genoppi.ver)),
               menuItem("Quick Start", tabName = "start", icon = icon("stream")),
               menuItem("Guide", tabName = "guide", icon = icon("info-circle")),
-              menuItem("Data Documentation", icon = icon("question-circle"), tabName = "documentation", badgeLabel = "new", badgeColor = "green"),
+              menuItem("Data Documentation", icon = icon("question-circle"), tabName = "documentation"),
               menuItem("Single File", tabName = "dashboard", icon = icon("file")),
               menuItem("Multi Files Comparison", icon = icon("copy"), tabName = "widgets"),
               inputFileSideBar("single_file", 'dashboard'),
