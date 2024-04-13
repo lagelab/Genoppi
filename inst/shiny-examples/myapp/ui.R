@@ -25,24 +25,24 @@ body <- dashboardBody(
                                 br(),
                                  column(width = 4, 
                                     externalPPIBox("ppi_overlay"),
-                                    box(
-                                      title = "GWAS catalog", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
-                                      fluidRow(
-                                        column(12, uiOutput('a_gwas_catalogue_ui'))
-                                      ),
-                                      fluidRow(
-                                        column(4, uiOutput("a_overlay_gwas_cat_ui")),
-                                        column(4, uiOutput("a_label_gwas_cat_ui")),
-                                        column(4, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
-                                      ),
-                                      fluidRow(
-                                        column(12, uiOutput('a_gwas_subset_traits_by_data'))
-                                        #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
-                                      ),
-                                      fluidRow(
-                                        column(12, uiOutput("info_gwas_ui"))
-                                      )
-                                    ),
+                                    # box(
+                                    #   title = "GWAS catalog", width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
+                                    #   fluidRow(
+                                    #     column(12, uiOutput('a_gwas_catalogue_ui'))
+                                    #   ),
+                                    #   fluidRow(
+                                    #     column(4, uiOutput("a_overlay_gwas_cat_ui")),
+                                    #     column(4, uiOutput("a_label_gwas_cat_ui")),
+                                    #     column(4, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_mapping_download",'Mapping', img=icon('file-alt', lib = "font-awesome"))))
+                                    #   ),
+                                    #   fluidRow(
+                                    #     column(12, uiOutput('a_gwas_subset_traits_by_data'))
+                                    #     #column(6, uiOutput('a_gwas_subset_traits_by_data_freq'))
+                                    #   ),
+                                    #   fluidRow(
+                                    #     column(12, uiOutput("info_gwas_ui"))
+                                    #   )
+                                    # ),
                                     box(
                                       title = tagList('gnomAD'), width = NULL, solidHeader = TRUE, status = "primary", collapsible = TRUE, collapsed = TRUE,
                                       fluidRow(
@@ -119,12 +119,12 @@ body <- dashboardBody(
                                       column(3, uiOutput("a_symbol_inweb_ui"))
                                     ),
                                     #fluidRow(column(12, h5('GWAS catalogue'))),
-                                    fluidRow(
-                                      column(3, h5('GWAS catalog')),
-                                      column(3, uiOutput("a_color_gwas_cat_sig_ui")),
-                                      column(3, uiOutput("a_color_gwas_cat_insig_ui")),
-                                      column(3, uiOutput("a_symbol_gwas_cat_ui"))
-                                    ),
+                                    # fluidRow(
+                                    #   column(3, h5('GWAS catalog')),
+                                    #   column(3, uiOutput("a_color_gwas_cat_sig_ui")),
+                                    #   column(3, uiOutput("a_color_gwas_cat_insig_ui")),
+                                    #   column(3, uiOutput("a_symbol_gwas_cat_ui"))
+                                    # ),
                                     #fluidRow(column(12, h5('gnomAD'))),
                                     fluidRow(
                                       column(3, h5('gnomAD')),
@@ -174,13 +174,13 @@ body <- dashboardBody(
                                           column(3, shinyjs::hidden(myDownloadButton("a_inweb_venn_mapping_download", 'Genes', icon("download"))))
                                          ),
                                       ),
-                                      tabPanel('GWAS catalog',
-                                               fluidRow(
-                                                 column(4, plotOutput('a_gwas_catalogue_venn_all_ui', width = "220px", height = "220px")),
-                                                 column(5, br(), br(), br(), br(), uiOutput('a_gwas_catalogue_venn_verbatim_ui')),
-                                                 column(3, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_venn_mapping_download", 'Genes', icon("download"))))
-                                               ),
-                                      ),
+                                      # tabPanel('GWAS catalog',
+                                      #          fluidRow(
+                                      #            column(4, plotOutput('a_gwas_catalogue_venn_all_ui', width = "220px", height = "220px")),
+                                      #            column(5, br(), br(), br(), br(), uiOutput('a_gwas_catalogue_venn_verbatim_ui')),
+                                      #            column(3, shinyjs::hidden(myDownloadButton("a_gwas_catalogue_venn_mapping_download", 'Genes', icon("download"))))
+                                      #          ),
+                                      # ),
                                       tabPanel('gnomAD',
                                                fluidRow(
                                                  column(4, plotOutput('a_gnomad_venn_ui', width = "220px", height = "220px")),

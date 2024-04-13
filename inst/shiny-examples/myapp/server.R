@@ -640,31 +640,34 @@ shinyServer(function(input, output, session){
     checkboxInput("a_overlay_tissue", label = "Toggle overlay", value = TRUE)
   })
   
-  # GWAS catalog traits
-  gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
+  # # GWAS catalog traits
+  # gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
   
-  output$a_gwas_catalogue_ui <- renderUI({
-    selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):', gwas_traits(), multiple=T, selectize=TRUE, selected = "grey")
-  })
+  # output$a_gwas_catalogue_ui <- renderUI({
+  #   selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):', gwas_traits(), multiple=T, selectize=TRUE, selected = "grey")
+  # })
   
-  output$a_gwas_subset_traits_by_data <- renderUI({
-    checkboxInput("a_toggle_gwas_subset", label = "Subset entries with traits in data (WARNING: takes a while)", value = FALSE)
-  })
+  # output$a_gwas_subset_traits_by_data <- renderUI({
+  #   checkboxInput("a_toggle_gwas_subset", label = "Subset entries with traits in data (WARNING: takes a while)", value = FALSE)
+  # })
   
-  output$a_gwas_subset_traits_by_data_freq <- renderUI({
-    checkboxInput("a_toggle_gwas_subset_freq", label = "Order entries by frequency", value = FALSE)
-  })
+  # output$a_gwas_subset_traits_by_data_freq <- renderUI({
+  #   checkboxInput("a_toggle_gwas_subset_freq", label = "Order entries by frequency", value = FALSE)
+  # })
   
-  observeEvent(input$a_toggle_gwas_subset,{
-    input = input$a_toggle_gwas_subset
-    if (input){
-      showModal(modalDialog(HTML(paste("subsetting GWAS entries by uploaded data.. This may take a while.", '<div class="loader"></div>')), easyClose = T, footer=NULL))
-      gwas_traits(a_gwas_catalogue_traits_in_data())
-      removeModal()
-    } else {
-      gwas_traits(unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
-    }
-  })
+  # # Investigate why this is taking so long
+  # observeEvent(input$a_toggle_gwas_subset,{
+  #   print(input$a_toggle_gwas_subset)
+  #   input = input$a_toggle_gwas_subset
+  #   if (input){
+  #     print("input$a_toggle_gwas_subset")
+  #     showModal(modalDialog(HTML(paste("subsetting GWAS entries by uploaded data.. This may take a while.", '<div class="loader"></div>')), easyClose = T, footer=NULL))
+  #     gwas_traits(a_gwas_catalogue_traits_in_data())
+  #     removeModal()
+  #   } else {
+  #     gwas_traits(unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
+  #   }
+  # })
   
   
   # select PPI DB
@@ -920,37 +923,37 @@ shinyServer(function(input, output, session){
   #   } 
   # })
   
-  # map gwas catalouge
-  a_gwas_catalogue_mapping <- reactive({
-    req(input$a_gwas_catalogue, dataS())
-    genes = dataS()$gene
-    validate(need(!all(is.na(genes)), ""))
-    mapping = get_gwas_lists(input$a_gwas_catalogue, genes)
-    if (!is.null(mapping)){
-      mapping$col_significant = input$a_color_gwas_cat_sig
-      mapping$col_other = input$a_color_gwas_cat_insig
-      mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_gwas_cat)
-      mapping$symbol = input$a_symbol_gwas_cat
-      mapping$label = input$a_label_gwas_cat
-      #mapping$alt_label = mapping$SNP
-      mapping$alt_label = paste(mapping$DISEASE.TRAIT,'-',mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
-      mapping$dataset = 'GWAS catalog'
-      return(mapping)
-    } 
-  })
+  # # map gwas catalouge
+  # a_gwas_catalogue_mapping <- reactive({
+  #   req(input$a_gwas_catalogue, dataS())
+  #   genes = dataS()$gene
+  #   validate(need(!all(is.na(genes)), ""))
+  #   mapping = get_gwas_lists(input$a_gwas_catalogue, genes)
+  #   if (!is.null(mapping)){
+  #     mapping$col_significant = input$a_color_gwas_cat_sig
+  #     mapping$col_other = input$a_color_gwas_cat_insig
+  #     mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_gwas_cat)
+  #     mapping$symbol = input$a_symbol_gwas_cat
+  #     mapping$label = input$a_label_gwas_cat
+  #     #mapping$alt_label = mapping$SNP
+  #     mapping$alt_label = paste(mapping$DISEASE.TRAIT,'-',mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
+  #     mapping$dataset = 'GWAS catalog'
+  #     return(mapping)
+  #   } 
+  # })
   
-  # traits in data
-  a_gwas_catalogue_traits_in_data <- eventReactive(input$a_toggle_gwas_subset,{
-    genes = as.character(dataS()$gene)
+  # # traits in data
+  # a_gwas_catalogue_traits_in_data <- eventReactive(input$a_toggle_gwas_subset,{
+  #   genes = as.character(dataS()$gene)
     
-    # map genes to snps and find gwas table entry
-    tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps_hash[[x]])
-    tabl_bool = apply(do.call(cbind, tabl), 1, any)
-    tabl_subset = gwas_table[tabl_bool, ]
-    result = tabl_subset$DISEASE.TRAIT
+  #   # map genes to snps and find gwas table entry
+  #   tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps_hash[[x]])
+  #   tabl_bool = apply(do.call(cbind, tabl), 1, any)
+  #   tabl_subset = gwas_table[tabl_bool, ]
+  #   result = tabl_subset$DISEASE.TRAIT
 
-    return(unique(result))
-  })
+  #   return(unique(result))
+  # })
   
   # setup main gnomad mapping
   a_gnomad_mapping <- reactive({
@@ -1252,19 +1255,19 @@ shinyServer(function(input, output, session){
     }
   )
   
-  # venn diagram mapping for gwas catalogue
-  output$a_gwas_catalogue_venn_mapping_download <- downloadHandler(
-    filename = function() {
-      paste("genoppi-gwas-catalog-venn-mapping",".csv", sep="")
-    },
-    content = function(file) {
-      venn = a_gwas_catalogue_mapping_venn()
-      diagram = genoppi::venn_to_table(venn)
-      mapping = a_gwas_catalogue_mapping()[,c('gene','SNP', 'P.VALUE','PUBMEDID', 'STUDY.ACCESSION', 'DISEASE.TRAIT')]
-      mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
-      write.csv(mymerge, file, row.names = F)
-    }
-  )
+  # # venn diagram mapping for gwas catalogue
+  # output$a_gwas_catalogue_venn_mapping_download <- downloadHandler(
+  #   filename = function() {
+  #     paste("genoppi-gwas-catalog-venn-mapping",".csv", sep="")
+  #   },
+  #   content = function(file) {
+  #     venn = a_gwas_catalogue_mapping_venn()
+  #     diagram = genoppi::venn_to_table(venn)
+  #     mapping = a_gwas_catalogue_mapping()[,c('gene','SNP', 'P.VALUE','PUBMEDID', 'STUDY.ACCESSION', 'DISEASE.TRAIT')]
+  #     mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
+  #     write.csv(mymerge, file, row.names = F)
+  #   }
+  # )
   
   # venn diagram human protein atlas
   output$a_tissue_venn_mapping_download <- downloadHandler(

@@ -57,7 +57,11 @@ basicPlotParamServer <- function(id,
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     output$bait_label <- renderUI({
-      textInput(ns("bait_label"), "Input bait (HGNC symbol, e.g. BCL2)")
+      shiny::tagList(
+        textInput(ns("bait_label"), 
+        "Input bait (HGNC symbol, e.g. BCL2)"),
+        span(style = "color:red", "Note: The bait protein will be excluded from calculation of statistical significance of overlap enrichement in the intergrated plotting tab.")
+      )
     })
     output$goi_search <- renderUI({
       textInput(ns("goi_search"), "Search HGNC symbol")
