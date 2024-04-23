@@ -1,6 +1,6 @@
 externalPPIBox <- function(id) {
   box(
-    title = "InWeb / iRefIndex / BioPlex", width = NULL, solidHeader = TRUE, 
+    title = "PPI databases", width = NULL, solidHeader = TRUE, 
     status = "primary", collapsible = TRUE, collapsed = FALSE, 
     tagList(img(src='icon_inweb.png',width='20px')),
     fluidRow(
@@ -14,6 +14,8 @@ externalPPIBox <- function(id) {
                        column(4, uiOutput(NS(id, "inweb_type_ui")))),
       conditionalPanel(condition = "input.selected_ppi == 'irefindex'", ns=NS(id),
                        column(4, uiOutput(NS(id, "irefindex_min_pub_ui")),)),
+      conditionalPanel(condition = "input.selected_ppi == 'string'", ns=NS(id),
+                       column(4, uiOutput(NS(id, "string_prob_ui")))),
       conditionalPanel(condition = "input.selected_ppi == 'bioplex'", ns=NS(id),
                        column(4, uiOutput(NS(id, "bioplex_prob_ui")))),
     ),
@@ -49,9 +51,10 @@ overlayExternalPPIServer <- function(id, enrichmentStatsServer, a_ppi_mapping_df
     output$ppi_select_ui <- renderUI({
       selectInput(
         ns('selected_ppi'), 'select PPI database',  
-        c("InWeb_InBioMap" = "inweb", 
-          "iRefIndex 17.0" = "irefindex", 
-          "BioPlex 3.0" = "bioplex"),
+        c("InWeb" = "inweb", 
+          "iRefIndex" = "irefindex",
+          "STRING" = "string", 
+          "BioPlex" = "bioplex"),
         multiple=F, selectize=TRUE, selected = "grey")
     })
     
@@ -63,14 +66,18 @@ overlayExternalPPIServer <- function(id, enrichmentStatsServer, a_ppi_mapping_df
     
     output$irefindex_min_pub_ui <- renderUI({
       sliderInput(
-        ns('irefindex_min_pub'), 'Select min. publications',
-        min = 1, max = max(irefindex_table$Score.np.max), 
-        value = 2, step = 1)
+        ns('irefindex_min_pub'), 'Set confidence score threshold',
+        min=1, max=10, value=2, step=1)
+    })
+    
+    output$string_prob_ui <- renderUI({
+      sliderInput(
+        ns('string_prob'), 'Set confidence score threshold', 0, 1, 0.9, 0.05)
     })
     
     output$bioplex_prob_ui <- renderUI({
       sliderInput(
-        ns('bioplex_prob'), 'Select bioplex probability', 0, 1, 0.9, 0.01)
+        ns('bioplex_prob'), 'Set confidence score threshold', 0, 1, 0.9, 0.05)
     })
     
     output$overlay_inweb_ui <- renderUI({
@@ -93,9 +100,10 @@ overlayExternalPPIServer <- function(id, enrichmentStatsServer, a_ppi_mapping_df
     observeEvent(input$info_inweb,{
       text = paste(readLines(genoppi:::find_docs('inweb_table.info')), '<br> <br>',
                    readLines(genoppi:::find_docs('irefindex_table.info')), '<br> <br>',
+                   readLines(genoppi:::find_docs('string_table.info')), '<br> <br>',
                    readLines(genoppi:::find_docs('bioplex_table.info')))
       showModal(modalDialog(HTML(text), easyClose = T,
-                            footer=genoppi.ver, title = 'InWeb'))
+                            footer=genoppi.ver, title = 'PPI databases'))
     })
     
     output$a_ppi_mapping_df_download <- downloadHandler(
@@ -125,6 +133,7 @@ overlayExternalPPIServer <- function(id, enrichmentStatsServer, a_ppi_mapping_df
              selected_ppi=input$selected_ppi,
              inweb_type=input$inweb_type,
              irefindex_min_pub=input$irefindex_min_pub,
+             string_prob=input$string_prob,
              bioplex_prob=input$bioplex_prob,
              inweb_label=input$inweb_label)
       })

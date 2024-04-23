@@ -1,318 +1,385 @@
-# shiny server
+# GENOPPI SHINY APP SERVER
+
 shinyServer(function(input, output, session){
-  #suppress warnings
-  storeWarn<- getOption("warn")
-  options(warn = -1) 
-  
-  observe({
-    input$filetype
-    updateTabsetPanel(session, "basic", selected = "p1")
-  })
+	
+	# suppress warnings
+	storeWarn <- getOption('warn')
+	options(warn = -1) 
+	
+	observe({
+		input$filetype
+		updateTabsetPanel(session,'basic',selected='p1')
+	})
 
-  # documentation tab
-  output$documentation_ui <- renderText({
-    return(HTML(documentation))
-  })
+	# Data Documentation
+	#output$documentation_ui <- renderText({
+	#	return(HTML(documentation))
+	#})
   
-  output$a_example_file_ui <- renderUI({
-    fileInput('a_file_pulldown_extra', 'Upload a proteomic data file to get started!', accept = files_accepted)
-  })
+  	# redundant code in R/inputFile.R?
+	output$a_example_file_ui <- renderUI({
+		fileInput('a_file_pulldown_extra',
+		'Upload a proteomic data file to get started!',accept=files_accepted)
+	})
+ 
+	output$a_get_example_file_ui <- renderUI({
+		HTML(paste(actionLink('a_get_example_multiple_files', 'multiple example files')))
+	})
+  	
+	observeEvent(input$a_get_example_file,{
+		updateTabItems(session,'sidebarmenu','dashboard')
+		file1_path(example_file)
+		dataPath(example_file)
+	})
   
-  output$a_get_example_file_ui <- renderUI({
-    # HTML(paste('Try a single',actionLink('a_get_example_file', 'example file'), 'or',
-    HTML(paste(actionLink('a_get_example_multiple_files', 'multiple example files')))
-  })
+	observeEvent(input$a_file_pulldown_extra,{
+		updateTabItems(session,'sidebarmenu','dashboard')
+		file1_path(input$a_file_pulldown_extra$datapath)
+	})
   
-  observeEvent(input$a_get_example_file,{
-    updateTabItems(session, "sidebarmenu", 'dashboard')
-    file1_path(example_file)
-    dataPath(example_file)
-  })
+	observeEvent(input$tab_welcome, {
+		updateTabItems(session,'sidebarmenu','guide')
+	})
   
-  observeEvent(input$a_file_pulldown_extra,{
-    updateTabItems(session, "sidebarmenu", 'dashboard')
-    file1_path(input$a_file_pulldown_extra$datapath)
-  })
+	observeEvent(input$a_file_pulldown_r,{
+		file1_path(input$a_file_pulldown_r$datapath)
+	})
   
-  observeEvent(input$tab_welcome, {
-    updateTabItems(session, "sidebarmenu", 'guide')
-  })
+	file1_path <- reactiveVal(value = NULL)
   
-  observeEvent(input$a_file_pulldown_r,{
-    file1_path(input$a_file_pulldown_r$datapath)
-  })
-  
-  file1_path <- reactiveVal(value = NULL)
-  
-  a_file_pulldown_r <- reactive({
-    validate(need(!is.null(file1_path()), ''))
-    data.frame(datapath = file1_path(), stringsAsFactors = F)
-  })
-  
-  
-  output$a_color_scheme <- renderUI({
-    radioButtons("colorscheme", "Color scheme:",
-                 c("FDR" = "fdr", 
-                   "ExAC" = "exac",
-                   "Grayscale" = "cbf",
-                   "User value" = "user"),
-                 inline = T)
-  })
-  
-  output$a_sig_text_ui <- renderUI({
-    req(thldVals$sigTxt, thldVals$fcSigTxt)
-    HTML(paste0(thldVals$sigTxt, ', ', thldVals$fcSigTxt))
-  })
-  
-  output$a_insig_text_ui <- renderUI({
-    req(thldVals$insigTxt, thldVals$fcInsigTxt)
-    HTML(paste0(thldVals$insigTxt, ', ',thldVals$fcInsigTxt))
-  })
-  
-  #####################
-  # Multiple file tab #
-  #####################
-  
-  multiDataS1 <- dataServer("multi1")
-  multiDataS2 <- dataServer("multi2")
-  multiDataS3 <- dataServer("multi3")
-  
-  # Servers for toggling different panels  
-  multiFilePanelUpdate <- triggerPanelUpdateServer("multi_file")
-  
-  # Servers for storing genes
-  multi_baitS1 <- baitServer("gene_overlay1")
-  multi_baitS2 <- baitServer("gene_overlay2")
-  multi_baitS3 <- baitServer("gene_overlay3")
-  multi_goiS1 <- goiServer("gene_overlay1")
-  multi_goiS2 <- goiServer("gene_overlay2")
-  multi_goiS3 <- goiServer("gene_overlay3")
-  multi_goiAlphaS1 <- goiAlphaServer("gene_overlay1")
-  multi_goiAlphaS2 <- goiAlphaServer("gene_overlay2")
-  multi_goiAlphaS3 <- goiAlphaServer("gene_overlay3")
-  
-  # Servers for storing plots
-  multi_sharedPlotVals <- plotValues("multi_shared")
-  multi_plotVals1 <- plotValues("multi_volcano_plot1")
-  multi_plotVals2 <- plotValues("multi_volcano_plot2")
-  multi_plotVals3 <- plotValues("multi_volcano_plot3")
-  
-  # initialize reactive values for plot options
-  multi_statsParamVals1 <- statsParamsValues("multi_stats_input1")
-  multi_statsParamVals2 <- statsParamsValues("multi_stats_input2")
-  multi_statsParamVals3 <- statsParamsValues("multi_stats_input3")
-  multi_sigColorS1 <- sigColorServer("multi_sig_color1")
-  multi_sigColorS2 <- sigColorServer("multi_sig_color2")
-  multi_sigColorS3 <- sigColorServer("multi_sig_color3")
-  multi_insigColorS1 <- insigColorServer("multi_insig_color1")
-  multi_insigColorS2 <- insigColorServer("multi_insig_color2")
-  multi_insigColorS3 <- insigColorServer("multi_insig_color3")
-  
-  # Server for storing reactive error messages
-  multi_errVals1 <- errorValues("error_messsages1")
-  multi_errVals2 <- errorValues("error_messsages2")
-  multi_errVals3 <- errorValues("error_messsages3")
-  
-  # Servers for reading data in multi file mode
-  multi_sigS1 <- sigificanceServer("mutli1")
-  multi_sigS2 <- sigificanceServer("mutli2")
-  multi_sigS3 <- sigificanceServer("mutli3")
-  multi_dataPathS1 <- dataPathServer("mutli1")
-  multi_dataPathS2 <- dataPathServer("mutli2")
-  multi_dataPathS3 <- dataPathServer("mutli3")
-  multi_colVals1 <- columnsValues("mutli1")
-  multi_colVals2 <- columnsValues("mutli2")
-  multi_colVals3 <- columnsValues("mutli3")
-  multi_dataFrameS1 <- dataFrameServer("mutli1", multi_dataPathS1)
-  multi_dataFrameS2 <- dataFrameServer("mutli2", multi_dataPathS2)
-  multi_dataFrameS3 <- dataFrameServer("mutli3", multi_dataPathS3)
-  
-  # Servers for processing data in multi file mode
-  multi_inputErrS1 <- inputErrorServer("multi_data_check1", multi_dataFrameS1, multi_errVals1)
-  multi_inputErrS2 <- inputErrorServer("multi_data_check2", multi_dataFrameS2, multi_errVals2)
-  multi_inputErrS3 <- inputErrorServer("multi_data_check3", multi_dataFrameS3, multi_errVals3)
-  multi_accMapErrS1 <- accessionMapErrorServer("multi_mapping_check1", multi_mapAccessionToGeneS1, multi_errVals1)
-  multi_accMapErrS2 <- accessionMapErrorServer("multi_mapping_check2", multi_mapAccessionToGeneS2, multi_errVals2)
-  multi_accMapErrS3 <- accessionMapErrorServer("multi_mapping_check3", multi_mapAccessionToGeneS3, multi_errVals3)
-  multi_mapAccessionToGeneS1 <- mapAccessionToGeneServer("multi1", multi_dataFrameS1, multi_errVals1)
-  multi_mapAccessionToGeneS2 <- mapAccessionToGeneServer("multi2", multi_dataFrameS2, multi_errVals2)
-  multi_mapAccessionToGeneS3 <- mapAccessionToGeneServer("multi3", multi_dataFrameS3, multi_errVals3)
-  multi_statsParamsS1 <- statsParamsServer("multi_stats_input1", multi_mapAccessionToGeneS1, multiDataS1, multi_colVals1, multi_statsParamVals1)
-  multi_statsParamsS2 <- statsParamsServer("multi_stats_input2", multi_mapAccessionToGeneS2, multiDataS2, multi_colVals2, multi_statsParamVals2)
-  multi_statsParamsS3 <- statsParamsServer("multi_stats_input3", multi_mapAccessionToGeneS3, multiDataS3, multi_colVals3, multi_statsParamVals3)
-  multi_thldVals1 <- thresholdsValues("multi_file_thresholds1")
-  multi_thldVals2 <- thresholdsValues("multi_file_thresholds2")
-  multi_thldVals3 <- thresholdsValues("multi_file_thresholds3")
-  multi_enrichmentStatsS1 <- enrichmentStatsServer("multi1", multi_mapAccessionToGeneS1, multi_statsParamVals1, multiDataS1, multi_errVals1)
-  multi_enrichmentStatsS2 <- enrichmentStatsServer("multi2", multi_mapAccessionToGeneS2, multi_statsParamVals2, multiDataS2, multi_errVals2)
-  multi_enrichmentStatsS3 <- enrichmentStatsServer("multi3", multi_mapAccessionToGeneS3, multi_statsParamVals3, multiDataS3, multi_errVals3)
-  multi_findSigS1 <- findSignificantServer("multi1", multi_statsParamVals1, multiDataS1, multi_sigS1)
-  multi_findSigS2 <- findSignificantServer("multi2", multi_statsParamVals2, multiDataS2, multi_sigS2)
-  multi_findSigS3 <- findSignificantServer("multi3", multi_statsParamVals3, multiDataS3, multi_sigS3)
-  multi_inputFileS1 <- inputFileServer("multi_file1", multi_dataPathS1, multi_errVals1)
-  multi_inputFileS2 <- inputFileServer("multi_file2", multi_dataPathS2, multi_errVals2)
-  multi_inputFileS3 <- inputFileServer("multi_file3", multi_dataPathS3, multi_errVals3)
-  multi_FileName1 <- reactiveVal(value = "File1")
-  multi_FileName2 <- reactiveVal(value = "File2")
-  multi_FileName3 <- reactiveVal(value = "File3")
-  multi_FileNameS1<- multiFileNameServer("multi_file1", "File1", multi_FileName1)
-  multi_FileNameS2<- multiFileNameServer("multi_file2", "File2", multi_FileName2)
-  multi_FileNameS3<- multiFileNameServer("multi_file3", "File3", multi_FileName3)
-  
-  # track the number of valid datapath
-  col1_filled <- reactiveVal(value = 0)
-  col2_filled <- reactiveVal(value = 0)
-  col3_filled <- reactiveVal(value = 0)
-  multi_col_width <- reactiveVal(value = 12)
-  observeEvent({col1_filled(); col2_filled(); col3_filled()}, {
-    n_col_filled <- col1_filled() + col2_filled() + col3_filled()
-    if (n_col_filled > 0) {multi_col_width(12 / n_col_filled)}
-  })
+	a_file_pulldown_r <- reactive({
+		validate(need(!is.null(file1_path()), ''))
+		data.frame(datapath=file1_path(), stringsAsFactors = F)
+	})
 
-  # TODO handle input file error
-  # show hide multi file columns based on input
-  observeEvent(multi_dataPathS1(), {
-    if (!is.null(multi_dataPathS1()) &
-        (is.null(multi_errVals1$input_errors) |
-        !grepl('Error', multi_errVals1$input_errors, fixed = T))) {
-      shinyjs::show(id='multifile_column_1')
-      col1_filled(1)
-    } else {
-      shinyjs::hide(id='multifile_column_1')
-      col1_filled(0)
-    }
-  })
-  observeEvent(multi_dataPathS2(), {
-    if (!is.null(multi_dataPathS2()) &
-        (is.null(multi_errVals2$input_errors) |
-        !grepl('Error', multi_errVals2$input_errors, fixed = T))) {
-      shinyjs::show(id='multifile_column_2')
-      col2_filled(1)
-    } else {
-      shinyjs::hide(id='multifile_column_2')
-      col2_filled(0)
-    }
-  })
-  observeEvent(multi_dataPathS3(), {
-    if (!is.null(multi_dataPathS3()) &
-        (is.null(multi_errVals3$input_errors) |
-        !grepl('Error', multi_errVals3$input_errors, fixed = T))) {
-      shinyjs::show(id='multifile_column_3')
-      col3_filled(1)
-    } else {
-      shinyjs::hide(id='multifile_column_3')
-      col3_filled(0)
-    }
-  })
+	output$a_color_scheme <- renderUI({
+		radioButtons("colorscheme", "Color scheme:",
+				 c("FDR" = "fdr", 
+				   "ExAC" = "exac",
+				   "Grayscale" = "cbf",
+				   "User value" = "user"),
+				 inline = T)
+	})
+
+	output$a_sig_text_ui <- renderUI({
+		req(thldVals$sigTxt, thldVals$fcSigTxt)
+		HTML(paste0(thldVals$sigTxt, ', ', thldVals$fcSigTxt))
+	})
+	
+	output$a_insig_text_ui <- renderUI({
+		req(thldVals$insigTxt, thldVals$fcInsigTxt)
+		HTML(paste0(thldVals$insigTxt, ', ',thldVals$fcInsigTxt))
+	})
+
+# ----------------------------------------------------------------------------------------
+# Multi Files Comparison
+
+	multiDataS1 <- dataServer("multi1")
+	multiDataS2 <- dataServer("multi2")
+	multiDataS3 <- dataServer("multi3")
+	
+	# Servers for toggling different panels  
+	multiFilePanelUpdate <- triggerPanelUpdateServer("multi_file")
+	
+	# Servers for storing genes
+	multi_baitS1 <- baitServer("gene_overlay1")
+	multi_baitS2 <- baitServer("gene_overlay2")
+	multi_baitS3 <- baitServer("gene_overlay3")
+	
+	multi_goiS1 <- goiServer("gene_overlay1")
+	multi_goiS2 <- goiServer("gene_overlay2")
+	multi_goiS3 <- goiServer("gene_overlay3")
+	
+	multi_goiAlphaS1 <- goiAlphaServer("gene_overlay1")
+	multi_goiAlphaS2 <- goiAlphaServer("gene_overlay2")
+	multi_goiAlphaS3 <- goiAlphaServer("gene_overlay3")
   
-  # wrap the multifile column in one uiOutput for dynamic hide/show
-  observeEvent(multi_col_width(), {
-    output$multifile_column_1 <- renderUI({
-      column(
-        multi_col_width(),
-        multi_statsParamsOptions("multi_stats_input1"),
-        summaryBox("summary1"),
-        drawVolcanoPlot("volcano_plot1"),
-        basicPlotInputBox("basic_plot_inputs1"),
-        plotGGpairFrame("plot_ggpair1"),
-      )
-    })
-    output$multifile_column_2 <- renderUI({
-      column(
-        multi_col_width(),
-        multi_statsParamsOptions("multi_stats_input2"),
-        summaryBox("summary2"),
-        drawVolcanoPlot("volcano_plot2"),
-        basicPlotInputBox("basic_plot_inputs2"),
-        plotGGpairFrame("plot_ggpair2"),
-      )
-    })
-    output$multifile_column_3 <- renderUI({
-      column(
-        multi_col_width(),
-        multi_statsParamsOptions("multi_stats_input3"),
-        summaryBox("summary3"),
-        drawVolcanoPlot("volcano_plot3"),
-        basicPlotInputBox("basic_plot_inputs3"),
-        plotGGpairFrame("plot_ggpair3"),
-      )
-    })
-  })
+	# Servers for storing plots
+	multi_sharedPlotVals <- plotValues("multi_shared")
+	multi_plotVals1 <- plotValues("multi_volcano_plot1")
+	multi_plotVals2 <- plotValues("multi_volcano_plot2")
+	multi_plotVals3 <- plotValues("multi_volcano_plot3")
   
+	# initialize reactive values for plot options
+	multi_statsParamVals1 <- statsParamsValues("multi_stats_input1")
+	multi_statsParamVals2 <- statsParamsValues("multi_stats_input2")
+	multi_statsParamVals3 <- statsParamsValues("multi_stats_input3")
+	
+	multi_sigColorS1 <- sigColorServer("multi_sig_color1")
+	multi_sigColorS2 <- sigColorServer("multi_sig_color2")
+	multi_sigColorS3 <- sigColorServer("multi_sig_color3")
+	
+	multi_insigColorS1 <- insigColorServer("multi_insig_color1")
+	multi_insigColorS2 <- insigColorServer("multi_insig_color2")
+	multi_insigColorS3 <- insigColorServer("multi_insig_color3")
   
-  multiFileLogFCCorrelationDf <- reactiveVal(value = NULL)
-  multiFileLogFCCorrelationPlot <- reactiveVal(value = NULL)
-  logfcCorrelationBothSigColor <- reactiveVal(value = 'green')
-  logfcCorrelationFirstSigColor <- reactiveVal(value = '#FF00D7')
-  logfcCorrelationSecondSigColor <- reactiveVal(value = 'orange')
-  logfcCorrelationNoSigColor <- reactiveVal(value = '#7F7F80')
-  ComparisonPlotParamServer(
-    'logfc_comparison',
-    logfcCorrelationBothSigColor,
-    logfcCorrelationFirstSigColor,
-    logfcCorrelationSecondSigColor,
-    logfcCorrelationNoSigColor)
-  mulitFilelogFCCorrelation <- logFCCorrelationServer(
-    'logfc_comparison',
-    # logfcCorrelationBothSigColor,
-    # logfcCorrelationFirstSigColor,
-    # logfcCorrelationSecondSigColor,
-    # logfcCorrelationNoSigColor,
-    multi_sigS1,
-    multi_sigS2,
-    multi_sigS3,
-    multi_FileName1,
-    multi_FileName2,
-    multi_FileName3,
-    multiFileLogFCCorrelationPlot,
-    multiFileLogFCCorrelationDf)
-  vennDfS <- dataServer("multifile_venn")
-  vennDiagram <- plotVennServer('multifile_venn', 
-                                multi_sigS1, 
-                                multi_sigS2, 
-                                multi_sigS3,
-                                multi_FileName1,
-                                multi_FileName2,
-                                multi_FileName3,
-                                multi_sharedPlotVals, 
-                                vennDfS)
+	# Server for storing reactive error messages
+	multi_errVals1 <- errorValues("error_messsages1")
+	multi_errVals2 <- errorValues("error_messsages2")
+	multi_errVals3 <- errorValues("error_messsages3")
   
-  multi_exampleBtn <- getMultiExampleServer(
-    "multi_file", 
-    c(multi_dataPathS1, multi_dataPathS2, multi_dataPathS3), 
-    multiFilePanelUpdate)
+	# Servers for reading data in multi file mode
+	multi_sigS1 <- sigificanceServer("mutli1")
+	multi_sigS2 <- sigificanceServer("mutli2")
+	multi_sigS3 <- sigificanceServer("mutli3")
+	
+	multi_dataPathS1 <- dataPathServer("mutli1")
+	multi_dataPathS2 <- dataPathServer("mutli2")
+	multi_dataPathS3 <- dataPathServer("mutli3")
+	
+	multi_colVals1 <- columnsValues("mutli1")
+	multi_colVals2 <- columnsValues("mutli2")
+	multi_colVals3 <- columnsValues("mutli3")
+	
+	multi_dataFrameS1 <- dataFrameServer("mutli1", multi_dataPathS1)
+	multi_dataFrameS2 <- dataFrameServer("mutli2", multi_dataPathS2)
+	multi_dataFrameS3 <- dataFrameServer("mutli3", multi_dataPathS3)
   
-  # use observe event to update tab items:
-  # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
-  observeEvent(multiFilePanelUpdate(),
-               {updateTabItems(session, "sidebarmenu", 'widgets')})
+	# Servers for processing data in multi file mode
+	multi_inputErrS1 <- inputErrorServer("multi_data_check1",
+		multi_dataFrameS1, multi_errVals1)
+	multi_inputErrS2 <- inputErrorServer("multi_data_check2",
+		multi_dataFrameS2, multi_errVals2)
+	multi_inputErrS3 <- inputErrorServer("multi_data_check3",
+		multi_dataFrameS3, multi_errVals3)
+		
+	multi_accMapErrS1 <- accessionMapErrorServer("multi_mapping_check1",
+		multi_mapAccessionToGeneS1, multi_errVals1)
+	multi_accMapErrS2 <- accessionMapErrorServer("multi_mapping_check2",
+		multi_mapAccessionToGeneS2, multi_errVals2)
+	multi_accMapErrS3 <- accessionMapErrorServer("multi_mapping_check3",
+		multi_mapAccessionToGeneS3, multi_errVals3)
+		
+	multi_mapAccessionToGeneS1 <- mapAccessionToGeneServer("multi1",
+		multi_dataFrameS1, multi_errVals1)
+	multi_mapAccessionToGeneS2 <- mapAccessionToGeneServer("multi2",
+		multi_dataFrameS2, multi_errVals2)
+	multi_mapAccessionToGeneS3 <- mapAccessionToGeneServer("multi3",
+		multi_dataFrameS3, multi_errVals3)
+		
+	multi_statsParamsS1 <- statsParamsServer("multi_stats_input1",
+		multi_mapAccessionToGeneS1, multiDataS1, multi_colVals1, multi_statsParamVals1)
+	multi_statsParamsS2 <- statsParamsServer("multi_stats_input2",
+		multi_mapAccessionToGeneS2, multiDataS2, multi_colVals2, multi_statsParamVals2)
+	multi_statsParamsS3 <- statsParamsServer("multi_stats_input3",
+		multi_mapAccessionToGeneS3, multiDataS3, multi_colVals3, multi_statsParamVals3)
+		
+	multi_thldVals1 <- thresholdsValues("multi_file_thresholds1")
+	multi_thldVals2 <- thresholdsValues("multi_file_thresholds2")
+	multi_thldVals3 <- thresholdsValues("multi_file_thresholds3")
+	
+	multi_enrichmentStatsS1 <- enrichmentStatsServer("multi1",
+		multi_mapAccessionToGeneS1, multi_statsParamVals1, multiDataS1, multi_errVals1)
+	multi_enrichmentStatsS2 <- enrichmentStatsServer("multi2",
+		multi_mapAccessionToGeneS2, multi_statsParamVals2, multiDataS2, multi_errVals2)
+	multi_enrichmentStatsS3 <- enrichmentStatsServer("multi3",
+		multi_mapAccessionToGeneS3, multi_statsParamVals3, multiDataS3, multi_errVals3)
+		
+	multi_findSigS1 <- findSignificantServer("multi1",
+		multi_statsParamVals1, multiDataS1, multi_sigS1)
+	multi_findSigS2 <- findSignificantServer("multi2",
+		multi_statsParamVals2, multiDataS2, multi_sigS2)
+	multi_findSigS3 <- findSignificantServer("multi3",
+		multi_statsParamVals3, multiDataS3, multi_sigS3)
+		
+	multi_inputFileS1 <- inputFileServer("multi_file1", multi_dataPathS1, multi_errVals1)
+	multi_inputFileS2 <- inputFileServer("multi_file2", multi_dataPathS2, multi_errVals2)
+	multi_inputFileS3 <- inputFileServer("multi_file3", multi_dataPathS3, multi_errVals3)
+	
+	multi_FileName1 <- reactiveVal(value = "File1")
+	multi_FileName2 <- reactiveVal(value = "File2")
+	multi_FileName3 <- reactiveVal(value = "File3")
+	
+	multi_FileNameS1<- multiFileNameServer("multi_file1", "File1", multi_FileName1)
+	multi_FileNameS2<- multiFileNameServer("multi_file2", "File2", multi_FileName2)
+	multi_FileNameS3<- multiFileNameServer("multi_file3", "File3", multi_FileName3)
   
-  # Servers for rendering UI and controlling I/O
-  multi_thresholdTextS1 <- thresholdTextServer("summary1", multi_statsParamVals1, multi_thldVals1)
-  multi_thresholdTextS2 <- thresholdTextServer("summary2", multi_statsParamVals2, multi_thldVals2)
-  multi_thresholdTextS3 <- thresholdTextServer("summary3", multi_statsParamVals3, multi_thldVals3)
-  multi_summaryStatsS1 <- summaryStatsServer("summary1", multi_sigS1)
-  multi_summaryStatsS2 <- summaryStatsServer("summary2", multi_sigS2)
-  multi_summaryStatsS3 <- summaryStatsServer("summary3", multi_sigS3)
-  multi_summaryDisplayS1 <- summaryDisplayServer("summary1", multi_summaryStatsS1, multi_statsParamVals1, multi_thldVals1, multiDataS1, multi_colVals1, multi_errVals1)
-  multi_summaryDisplayS2 <- summaryDisplayServer("summary2", multi_summaryStatsS2, multi_statsParamVals2, multi_thldVals2, multiDataS2, multi_colVals2, multi_errVals2)
-  multi_summaryDisplayS3 <- summaryDisplayServer("summary3", multi_summaryStatsS3, multi_statsParamVals3, multi_thldVals3, multiDataS3, multi_colVals3, multi_errVals3)
-  multi_drawVolcanoS1 <- drawVolcanoServer("volcano_plot1", multi_plotVals1, multi_sigS1, multi_sigColorS1, multi_insigColorS1)
-  multi_drawVolcanoS2 <- drawVolcanoServer("volcano_plot2", multi_plotVals2, multi_sigS2, multi_sigColorS2, multi_insigColorS2)
-  multi_drawVolcanoS3 <- drawVolcanoServer("volcano_plot3", multi_plotVals3, multi_sigS3, multi_sigColorS3, multi_insigColorS3)
-  multi_overlayVolcanoS1 <- overlayVolcanoServer("volcano_plot1", multi_plotVals1, multi_baitS1, multi_goiS1, multi_goiAlphaS1, multi_statsParamVals1)
-  multi_overlayVolcanoS2 <- overlayVolcanoServer("volcano_plot2", multi_plotVals2, multi_baitS2, multi_goiS2, multi_goiAlphaS2, multi_statsParamVals2)
-  multi_overlayVolcanoS3 <- overlayVolcanoServer("volcano_plot3", multi_plotVals3, multi_baitS3, multi_goiS3, multi_goiAlphaS3, multi_statsParamVals3)
-  multi_ggpairS1 <- plotGGpairServer("plot_ggpair1", multi_sigS1, multi_colVals1, multi_plotVals1, multi_sigColorS1, multi_insigColorS1)
-  multi_ggpairS2 <- plotGGpairServer("plot_ggpair2", multi_sigS2, multi_colVals2, multi_plotVals2, multi_sigColorS2, multi_insigColorS2)
-  multi_ggpairS3 <- plotGGpairServer("plot_ggpair3", multi_sigS3, multi_colVals3, multi_plotVals3, multi_sigColorS3, multi_insigColorS3)
-  # basic plot param Box
-  multi_basicPlotParamS1 <- basicPlotParamServer("basic_plot_inputs1", multi_baitS1, multi_goiS1, multi_goiAlphaS1, multi_sigColorS1, multi_insigColorS1)
-  multi_basicPlotParamS2 <- basicPlotParamServer("basic_plot_inputs2", multi_baitS2, multi_goiS2, multi_goiAlphaS2, multi_sigColorS2, multi_insigColorS2)
-  multi_basicPlotParamS3 <- basicPlotParamServer("basic_plot_inputs3", multi_baitS3, multi_goiS3, multi_goiAlphaS3, multi_sigColorS3, multi_insigColorS3)
+	# track the number of valid datapath
+	col1_filled <- reactiveVal(value = 0)
+	col2_filled <- reactiveVal(value = 0)
+	col3_filled <- reactiveVal(value = 0)
+	multi_col_width <- reactiveVal(value = 12)
+	observeEvent({col1_filled(); col2_filled(); col3_filled()}, {
+		n_col_filled <- col1_filled() + col2_filled() + col3_filled()
+		if (n_col_filled > 0) {multi_col_width(12 / n_col_filled)}
+	})
+
+	# TODO handle input file error
+	# show hide multi file columns based on input
+	observeEvent(multi_dataPathS1(), {
+		if (!is.null(multi_dataPathS1()) & (is.null(multi_errVals1$input_errors) |
+			!grepl('Error', multi_errVals1$input_errors, fixed = T))) {
+			shinyjs::show(id='multifile_column_1')
+			col1_filled(1)
+		} else {
+			shinyjs::hide(id='multifile_column_1')
+			col1_filled(0)
+		}
+	})
+	
+	observeEvent(multi_dataPathS2(), {
+		if (!is.null(multi_dataPathS2()) & (is.null(multi_errVals2$input_errors) |
+			!grepl('Error', multi_errVals2$input_errors, fixed = T))) {
+			shinyjs::show(id='multifile_column_2')
+			col2_filled(1)
+		} else {
+			shinyjs::hide(id='multifile_column_2')
+			col2_filled(0)
+		}
+	})
+	
+	observeEvent(multi_dataPathS3(), {
+		if (!is.null(multi_dataPathS3()) & (is.null(multi_errVals3$input_errors) |
+			!grepl('Error', multi_errVals3$input_errors, fixed = T))) {
+			shinyjs::show(id='multifile_column_3')
+			col3_filled(1)
+		} else {
+			shinyjs::hide(id='multifile_column_3')
+			col3_filled(0)
+		}
+	})
   
+	# wrap the multifile column in one uiOutput for dynamic hide/show
+	observeEvent(multi_col_width(), {
+		output$multifile_column_1 <- renderUI({
+			column(
+				multi_col_width(),
+				multi_statsParamsOptions("multi_stats_input1"),
+				summaryBox("summary1"),
+				drawVolcanoPlot("volcano_plot1"),
+				basicPlotInputBox("basic_plot_inputs1"),
+				plotGGpairFrame("plot_ggpair1")
+			)
+		})
+		output$multifile_column_2 <- renderUI({
+			column(
+				multi_col_width(),
+				multi_statsParamsOptions("multi_stats_input2"),
+				summaryBox("summary2"),
+				drawVolcanoPlot("volcano_plot2"),
+				basicPlotInputBox("basic_plot_inputs2"),
+				plotGGpairFrame("plot_ggpair2")
+			)
+		})
+		output$multifile_column_3 <- renderUI({
+			column(
+				multi_col_width(),
+				multi_statsParamsOptions("multi_stats_input3"),
+				summaryBox("summary3"),
+				drawVolcanoPlot("volcano_plot3"),
+				basicPlotInputBox("basic_plot_inputs3"),
+				plotGGpairFrame("plot_ggpair3")
+			)
+		})
+	})
   
-  #---------------- TEMPORARY PLACEHOLDER ----------------
+	multiFileLogFCCorrelationDf <- reactiveVal(value = NULL)
+	multiFileLogFCCorrelationPlot <- reactiveVal(value = NULL)
+	
+	logfcCorrelationBothSigColor <- reactiveVal(value = 'green')
+	logfcCorrelationFirstSigColor <- reactiveVal(value = '#FF00D7')
+	logfcCorrelationSecondSigColor <- reactiveVal(value = 'orange')
+	logfcCorrelationNoSigColor <- reactiveVal(value = '#7F7F80')
+	
+  	ComparisonPlotParamServer(
+		'logfc_comparison',
+		logfcCorrelationBothSigColor,
+		logfcCorrelationFirstSigColor,
+		logfcCorrelationSecondSigColor,
+		logfcCorrelationNoSigColor
+	)
+    
+	mulitFilelogFCCorrelation <- logFCCorrelationServer(
+		'logfc_comparison',
+		# logfcCorrelationBothSigColor,
+		# logfcCorrelationFirstSigColor,
+		# logfcCorrelationSecondSigColor,
+		# logfcCorrelationNoSigColor,
+		multi_sigS1,
+		multi_sigS2,
+		multi_sigS3,
+		multi_FileName1,
+		multi_FileName2,
+		multi_FileName3,
+		multiFileLogFCCorrelationPlot,
+		multiFileLogFCCorrelationDf
+	)
+	
+	vennDfS <- dataServer("multifile_venn")
+	vennDiagram <- plotVennServer('multifile_venn', 
+		multi_sigS1, multi_sigS2, multi_sigS3,
+		multi_FileName1, multi_FileName2, multi_FileName3,
+		multi_sharedPlotVals,
+		vennDfS
+	)
+  
+	multi_exampleBtn <- getMultiExampleServer(
+		"multi_file", 
+		c(multi_dataPathS1, multi_dataPathS2, multi_dataPathS3), multiFilePanelUpdate
+	)
+  
+	# use observe event to update tab items:
+	# https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
+	observeEvent(multiFilePanelUpdate(),
+		{updateTabItems(session, "sidebarmenu", 'widgets')})
+  
+	# Servers for rendering UI and controlling I/O
+	multi_thresholdTextS1 <- thresholdTextServer("summary1",
+		multi_statsParamVals1, multi_thldVals1)
+	multi_thresholdTextS2 <- thresholdTextServer("summary2",
+		multi_statsParamVals2, multi_thldVals2)
+	multi_thresholdTextS3 <- thresholdTextServer("summary3",
+		multi_statsParamVals3, multi_thldVals3)
+		
+	multi_summaryStatsS1 <- summaryStatsServer("summary1", multi_sigS1)
+	multi_summaryStatsS2 <- summaryStatsServer("summary2", multi_sigS2)
+	multi_summaryStatsS3 <- summaryStatsServer("summary3", multi_sigS3)
+
+	multi_summaryDisplayS1 <- summaryDisplayServer("summary1",
+		multi_summaryStatsS1, multi_statsParamVals1, multi_thldVals1,
+		multiDataS1, multi_colVals1, multi_errVals1)
+	multi_summaryDisplayS2 <- summaryDisplayServer("summary2",
+		multi_summaryStatsS2, multi_statsParamVals2, multi_thldVals2,
+		multiDataS2, multi_colVals2, multi_errVals2)
+	multi_summaryDisplayS3 <- summaryDisplayServer("summary3",
+		multi_summaryStatsS3, multi_statsParamVals3, multi_thldVals3,
+		multiDataS3, multi_colVals3, multi_errVals3)
+  
+	multi_drawVolcanoS1 <- drawVolcanoServer("volcano_plot1",
+		multi_plotVals1, multi_sigS1, multi_sigColorS1, multi_insigColorS1)
+	multi_drawVolcanoS2 <- drawVolcanoServer("volcano_plot2",
+		multi_plotVals2, multi_sigS2, multi_sigColorS2, multi_insigColorS2)
+	multi_drawVolcanoS3 <- drawVolcanoServer("volcano_plot3",
+		multi_plotVals3, multi_sigS3, multi_sigColorS3, multi_insigColorS3)
+		
+	multi_overlayVolcanoS1 <- overlayVolcanoServer("volcano_plot1",
+		multi_plotVals1, multi_baitS1, multi_goiS1,
+		multi_goiAlphaS1, multi_statsParamVals1)
+	multi_overlayVolcanoS2 <- overlayVolcanoServer("volcano_plot2",
+		multi_plotVals2, multi_baitS2, multi_goiS2,
+		multi_goiAlphaS2, multi_statsParamVals2)
+	multi_overlayVolcanoS3 <- overlayVolcanoServer("volcano_plot3",
+		multi_plotVals3, multi_baitS3, multi_goiS3,
+		multi_goiAlphaS3, multi_statsParamVals3)
+		
+	multi_ggpairS1 <- plotGGpairServer("plot_ggpair1", multi_sigS1,
+		multi_colVals1, multi_plotVals1, multi_sigColorS1, multi_insigColorS1)
+	multi_ggpairS2 <- plotGGpairServer("plot_ggpair2", multi_sigS2,
+		multi_colVals2, multi_plotVals2, multi_sigColorS2, multi_insigColorS2)
+	multi_ggpairS3 <- plotGGpairServer("plot_ggpair3", multi_sigS3,
+		multi_colVals3, multi_plotVals3, multi_sigColorS3, multi_insigColorS3)
+		
+	# basic plot param Box
+	multi_basicPlotParamS1 <- basicPlotParamServer("basic_plot_inputs1",
+		multi_baitS1, multi_goiS1, multi_goiAlphaS1, multi_sigColorS1, multi_insigColorS1)
+	multi_basicPlotParamS2 <- basicPlotParamServer("basic_plot_inputs2",
+		multi_baitS2, multi_goiS2, multi_goiAlphaS2, multi_sigColorS2, multi_insigColorS2)
+	multi_basicPlotParamS3 <- basicPlotParamServer("basic_plot_inputs3",
+		multi_baitS3, multi_goiS3, multi_goiAlphaS3, multi_sigColorS3, multi_insigColorS3)
+  
+
+# ----------------------------------------------------------------------------------------
+# TEMPORARY PLACEHOLDER?
   
   # venn diagram inweb mapping for inweb
   a_inweb_calc_hyper <- reactive({
@@ -358,7 +425,11 @@ shinyServer(function(input, output, session){
       return(mapping)
     } 
   })
-  #----------------------------------------------------------
+
+
+# ----------------------------------------------------------------------------------------
+# Single File: Basic plotting?
+
   # Server for storing reactive error messages
   errVals <- errorValues("error_messsages")
   
@@ -366,7 +437,6 @@ shinyServer(function(input, output, session){
   statsParamVals <- statsParamsValues("stats_input")
   sigColorS <- sigColorServer("sig_color")
   insigColorS <- insigColorServer("insig_color")
-  
   
   # Servers for storing genes
   baitS <- baitServer("gene_overlay")
@@ -415,14 +485,16 @@ shinyServer(function(input, output, session){
     "plot_ggpair", sigS, colVals, plotVals, sigColorS, insigColorS)
   
   # use observe event to update tab items:
-  # https://stackoverflow.com/questions/51708815/accessing-parent-namespace-inside-a-shiny-module
   observeEvent(singleFilePanelUpdate(),
                {updateTabItems(session, "sidebarmenu", 'dashboard')})
   
   # basic plot Box
   basicPlotParamS <- basicPlotParamServer(
     "basic_plot_inputs", baitS, goiS, goiAlphaS, sigColorS, insigColorS)
-  
+
+# ----------------------------------------------------------------------------------------
+# Single File: Integrated plotting
+	
   # Integrated plots
   ppiParams <- overlayExternalPPIServer(
     "ppi_overlay", dataS,a_ppi_mapping_df)
@@ -530,14 +602,15 @@ shinyServer(function(input, output, session){
     selectInput('a_symbol_inweb', NULL, choices = allowed_plotly_symbols, selected = 'circle')
   })
   
-  # intgrated plot, gwas catalogue
+
+  # intgrated plot, gwas catalog
   output$a_color_gwas_cat_sig_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$sig, monitor_logfc_threshold()$sig), collapse =', ')))
     colourpicker::colourInput('a_color_gwas_cat_sig', NULL, value = 'cyan', showColour = 'both', 
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
-  # intgrated plot, gwas catalogue
+  # intgrated plot, gwas catalog
   output$a_color_gwas_cat_insig_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
     #label = isolate(HTML(paste(c(monitor_significance_thresholds()$insig, monitor_logfc_threshold()$insig), collapse =', ')))
@@ -545,18 +618,19 @@ shinyServer(function(input, output, session){
                               palette = c( "limited"), allowedCols = allowed_colors)
   })
   
-  # integrated plot, gwas catalogue
+  # integrated plot, gwas catalog
   output$a_overlay_gwas_cat_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_overlay_gwas_cat", label = "Toggle overlay", value = TRUE)
   })
   
-  # integrated plot, gwas catalogue
+  # integrated plot, gwas catalog
   output$a_symbol_gwas_cat_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
     selectInput('a_symbol_gwas_cat', NULL, choices = allowed_plotly_symbols, selected = 'diamond')
   })
-  # integrated plot, genes upload
+  
+  # integrated plot, gwas catalog
   output$a_label_gwas_cat_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
     checkboxInput("a_label_gwas_cat", label = "Toggle labels", value = TRUE)
@@ -606,7 +680,7 @@ shinyServer(function(input, output, session){
   output$a_slide_gnomad_pli_threshold_ui <- renderUI({
     validate(need(dataPathS()  != '', ""))
     #validate(need(input$a_select_gnomad_pli_type == 'threshold', ""))
-    sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Subset interactors by pLI threshold', 
+    sliderInput(inputId = "a_slide_gnomad_pli_threshold", label = 'Set pLI threshold', 
                 min = 0, max = 1, value = 0.9, step = 0.01)
   })
   
@@ -640,20 +714,21 @@ shinyServer(function(input, output, session){
     checkboxInput("a_overlay_tissue", label = "Toggle overlay", value = TRUE)
   })
   
-  # # GWAS catalog traits
-  # gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
+  # GWAS catalog traits
+  gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
   
-  # output$a_gwas_catalogue_ui <- renderUI({
-  #   selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):', gwas_traits(), multiple=T, selectize=TRUE, selected = "grey")
+  output$a_gwas_catalogue_ui <- renderUI({
+  	selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):',
+  		gwas_traits(), multiple=T, selectize=TRUE, selected = "grey")
+  })
+  
+ # output$a_gwas_subset_traits_by_data <- renderUI({
+  #  checkboxInput("a_toggle_gwas_subset", label = "Subset entries with traits in data (WARNING: takes a while)", value = FALSE)
   # })
   
-  # output$a_gwas_subset_traits_by_data <- renderUI({
-  #   checkboxInput("a_toggle_gwas_subset", label = "Subset entries with traits in data (WARNING: takes a while)", value = FALSE)
-  # })
-  
-  # output$a_gwas_subset_traits_by_data_freq <- renderUI({
-  #   checkboxInput("a_toggle_gwas_subset_freq", label = "Order entries by frequency", value = FALSE)
-  # })
+  #output$a_gwas_subset_traits_by_data_freq <- renderUI({
+  #  checkboxInput("a_toggle_gwas_subset_freq", label = "Order entries by frequency", value = FALSE)
+  #})
   
   # # Investigate why this is taking so long
   # observeEvent(input$a_toggle_gwas_subset,{
@@ -672,7 +747,7 @@ shinyServer(function(input, output, session){
   
   # select PPI DB
   output$a_ppi_select_ui <- renderUI({
-    selectInput('a_ppi_select', 'select PPI database',  c("InWeb_InBioMap" = "inweb", "iRefIndex 17.0" = "irefindex", "BioPlex 3.0" = "bioplex"), multiple=F, selectize=TRUE, selected = "grey")
+    selectInput('a_ppi_select', 'Select PPI database',  c("InWeb" = "inweb", "iRefIndex" = "irefindex", "STRING" = "string", "BioPlex" = "bioplex"), multiple=F, selectize=TRUE, selected = "grey")
   })
   
   
@@ -692,10 +767,14 @@ shinyServer(function(input, output, session){
   output$a_tissue_select_ui <- renderUI({
     selectInput('a_tissue_select', 'Select reference dataset',  c("GTEx - RNA" = "GTEx - RNA", "GTEx - Protein" = "GTEx - Protein","HPA - RNA" = "HPA - RNA"), multiple=F, selectize=TRUE, selected = "grey")
   })
-  
+
+
+# ----------------------------------------------------------------------------------------
+# Single File: Tissue enrichment?
+                                                                                                          
   # tissue enrichment (Tissue enrichment tab)
   output$a_tissue_enrichment_slider_ui <- renderUI({
-    sliderInput('a_tissue_enrichment_slider', 'Select significance threshold', 0.001, 1, value = 0.05, step = 0.001)
+    sliderInput('a_tissue_enrichment_slider', 'Set significance threshold', 0.001, 1, value = 0.05, step = 0.001)
   })
   
   
@@ -724,7 +803,7 @@ shinyServer(function(input, output, session){
   #
   output$a_select_venn_genes_upload_ui <- renderUI({
     selectInput('a_select_venn_list_genes_upload',
-                'Select GENES UPLOAD list', 
+                'Select gene list', 
                 choices = c(a_available_lists_genes_upload(), 'combined'))
                 #multiple=T, selectize=TRUE, selected = "grey")
   })
@@ -781,23 +860,26 @@ shinyServer(function(input, output, session){
                 '.tsv')
     )
   })
-  
+
+# ----------------------------------------------------------------------------------------
+# Single File: Gene set annotations?
+
   output$a_pf_loc_selection <- renderUI({
     #req(a_file_pulldown_r() ())
     selectInput('a_pf_loc_option', 'Gene sets', c("HGNC gene groups"="hgnc", 
-                                                     "GO terms: molecular function"="mf", 
-                                                     "GO terms: cellular component"="cc", 
-                                                     "GO terms: biological process"="bp", 
-                                                     "MSigDB H: hallmark gene sets"="h",
-                                                     "MsigDB C1: positional gene sets" = 'c1',
-                                                     "MSigDB C2: curated gene sets" = 'c2',
-                                                     "MSigDB C3: regulatory target gene sets" = 'c3',
-                                                     "MSigDB C4: computational gene sets" = 'c4',
-                                                     "MSigDB C5: ontology gene sets" = 'c5',
-                                                     "MSigDB C6: oncogenic signature gene sets" = 'c6',
-                                                     "MSigDB C7: immunologic signature gene sets" = 'c7',
-                                                     "MSigDB C8: cell type signature gene sets" = 'c8'),
-                                                     selectize=FALSE)
+									 "GO terms: molecular function"="mf", 
+									 "GO terms: cellular component"="cc", 
+									 "GO terms: biological process"="bp", 
+									 "MSigDB H: hallmark gene sets"="h",
+									 "MsigDB C1: positional gene sets" = 'c1',
+									 "MSigDB C2: curated gene sets" = 'c2',
+									 "MSigDB C3: regulatory target gene sets" = 'c3',
+									 "MSigDB C4: computational gene sets" = 'c4',
+									 "MSigDB C5: ontology gene sets" = 'c5',
+									 "MSigDB C6: oncogenic signature gene sets" = 'c6',
+									 "MSigDB C7: immunologic signature gene sets" = 'c7',
+									 "MSigDB C8: cell type signature gene sets" = 'c8'),
+									 selectize=FALSE)
   })
   
   output$a_pathway_mapping_freq_slider_ui <- renderUI({
@@ -805,7 +887,7 @@ shinyServer(function(input, output, session){
     freq = a_pathway_mapping_values()$Freq
     fmax = ifelse(is.null(freq), 1, max(freq))
     fmin = ifelse(is.null(freq), 1, a_pathway_mapping_freq_lowest_allowed()) #ifelse(is.null(freq), 1, min(freq)) 
-    sliderInput("a_pathway_mapping_freq_slider", "Subset by frequency",
+    sliderInput("a_pathway_mapping_freq_slider", "Set frequency threshold",
                 min = fmin, max = fmax, value = c(fmin, fmax), step = 1)
   })
   
@@ -876,15 +958,20 @@ shinyServer(function(input, output, session){
         ppiParams()$bait_search, 
         type = ppiParams()$inweb_type)
     }
-    if(db == 'bioplex' & !is.null(ppiParams()$bioplex_prob)) {
-      mapping = get_bioplex_list(
-        ppiParams()$bait_search,
-        score = ppiParams()$bioplex_prob)
-    }
     if(db == 'irefindex' & !is.null(ppiParams()$irefindex_min_pub)) {
       mapping = get_irefindex_list(
         ppiParams()$bait_search, 
         score = ppiParams()$irefindex_min_pub)
+    }
+    if(db == 'string' & !is.null(ppiParams()$string_prob)) {
+      mapping = get_string_list(
+        ppiParams()$bait_search,
+        score = ppiParams()$string_prob)
+    }
+    if(db == 'bioplex' & !is.null(ppiParams()$bioplex_prob)) {
+      mapping = get_bioplex_list(
+        ppiParams()$bait_search,
+        score = ppiParams()$bioplex_prob)
     }
     return(mapping)
   })
@@ -895,9 +982,10 @@ shinyServer(function(input, output, session){
     name = NULL
     # db = input$a_ppi_select
     db = ppiParams()$selected_ppi
-    if (db == 'inweb') name = 'Inweb'
-    if (db == 'bioplex') name = 'Bioplex'
-    if (db == 'irefindex') name = 'IRefIndex'
+    if (db == 'inweb') name = 'InWeb'
+    if (db == 'irefindex') name = 'iRefIndex'
+    if (db == 'string') name = 'STRING'
+    if (db == 'bioplex') name = 'BioPlex'
     return(name)
   })
   
@@ -923,37 +1011,37 @@ shinyServer(function(input, output, session){
   #   } 
   # })
   
-  # # map gwas catalouge
-  # a_gwas_catalogue_mapping <- reactive({
-  #   req(input$a_gwas_catalogue, dataS())
-  #   genes = dataS()$gene
-  #   validate(need(!all(is.na(genes)), ""))
-  #   mapping = get_gwas_lists(input$a_gwas_catalogue, genes)
-  #   if (!is.null(mapping)){
-  #     mapping$col_significant = input$a_color_gwas_cat_sig
-  #     mapping$col_other = input$a_color_gwas_cat_insig
-  #     mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_gwas_cat)
-  #     mapping$symbol = input$a_symbol_gwas_cat
-  #     mapping$label = input$a_label_gwas_cat
-  #     #mapping$alt_label = mapping$SNP
-  #     mapping$alt_label = paste(mapping$DISEASE.TRAIT,'-',mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
-  #     mapping$dataset = 'GWAS catalog'
-  #     return(mapping)
-  #   } 
-  # })
+  # map gwas catalouge
+   a_gwas_catalogue_mapping <- reactive({
+     req(input$a_gwas_catalogue, dataS())
+     genes = dataS()$gene
+     validate(need(!all(is.na(genes)), ""))
+     mapping = get_gwas_lists(input$a_gwas_catalogue, genes)
+     if (!is.null(mapping)){
+       mapping$col_significant = input$a_color_gwas_cat_sig
+       mapping$col_other = input$a_color_gwas_cat_insig
+       mapping$shape = genoppi:::symbol_to_shape(input$a_symbol_gwas_cat)
+       mapping$symbol = input$a_symbol_gwas_cat
+       mapping$label = input$a_label_gwas_cat
+       #mapping$alt_label = mapping$SNP
+       mapping$alt_label = paste(mapping$DISEASE.TRAIT,'-',mapping$SNP, paste0('(PMID:',mapping$PUBMEDID,' study P-value:',mapping$P.VALUE,')'))
+       mapping$dataset = 'GWAS catalog'
+       return(mapping)
+     } 
+   })
   
-  # # traits in data
-  # a_gwas_catalogue_traits_in_data <- eventReactive(input$a_toggle_gwas_subset,{
-  #   genes = as.character(dataS()$gene)
+  # traits in data
+   a_gwas_catalogue_traits_in_data <- eventReactive(input$a_toggle_gwas_subset,{
+     genes = as.character(dataS()$gene)
     
-  #   # map genes to snps and find gwas table entry
-  #   tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps_hash[[x]])
-  #   tabl_bool = apply(do.call(cbind, tabl), 1, any)
-  #   tabl_subset = gwas_table[tabl_bool, ]
-  #   result = tabl_subset$DISEASE.TRAIT
+     # map genes to snps and find gwas table entry
+     tabl = lapply(genes, function(x) gwas_table$SNP %in% genes_snps_hash[[x]])
+     tabl_bool = apply(do.call(cbind, tabl), 1, any)
+     tabl_subset = gwas_table[tabl_bool, ]
+     result = tabl_subset$DISEASE.TRAIT
 
-  #   return(unique(result))
-  # })
+   return(unique(result))
+   })
   
   # setup main gnomad mapping
   a_gnomad_mapping <- reactive({
@@ -1255,19 +1343,19 @@ shinyServer(function(input, output, session){
     }
   )
   
-  # # venn diagram mapping for gwas catalogue
-  # output$a_gwas_catalogue_venn_mapping_download <- downloadHandler(
-  #   filename = function() {
-  #     paste("genoppi-gwas-catalog-venn-mapping",".csv", sep="")
-  #   },
-  #   content = function(file) {
-  #     venn = a_gwas_catalogue_mapping_venn()
-  #     diagram = genoppi::venn_to_table(venn)
-  #     mapping = a_gwas_catalogue_mapping()[,c('gene','SNP', 'P.VALUE','PUBMEDID', 'STUDY.ACCESSION', 'DISEASE.TRAIT')]
-  #     mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
-  #     write.csv(mymerge, file, row.names = F)
-  #   }
-  # )
+   # venn diagram mapping for gwas catalogue
+   output$a_gwas_catalogue_venn_mapping_download <- downloadHandler(
+     filename = function() {
+       paste("genoppi-gwas-catalog-venn-mapping",".csv", sep="")
+     },
+     content = function(file) {
+       venn = a_gwas_catalogue_mapping_venn()
+       diagram = genoppi::venn_to_table(venn)
+       mapping = a_gwas_catalogue_mapping()[,c('gene','SNP', 'P.VALUE','PUBMEDID', 'STUDY.ACCESSION', 'DISEASE.TRAIT')]
+       mymerge = merge(diagram, mapping, by = 'gene', all.x = T)
+       write.csv(mymerge, file, row.names = F)
+     }
+   )
   
   # venn diagram human protein atlas
   output$a_tissue_venn_mapping_download <- downloadHandler(
@@ -1337,8 +1425,9 @@ shinyServer(function(input, output, session){
   
   # show hide select PPI DBs
   observe({shinyjs::toggle(id="a_inweb_type", condition = input$a_ppi_select == 'inweb')})
-  observe({shinyjs::toggle(id="a_bioplex_type", condition = input$a_ppi_select == 'bioplex')})
-  observe({shinyjs::toggle(id="a_irefindex_type", condition = input$a_ppi_select == 'irefindex')})  
+  observe({shinyjs::toggle(id="a_irefindex_type", condition = input$a_ppi_select == 'irefindex')}) 
+  observe({shinyjs::toggle(id="a_string_type", condition = input$a_ppi_select == 'string')})
+  observe({shinyjs::toggle(id="a_bioplex_type", condition = input$a_ppi_select == 'bioplex')}) 
   
   # show hide alpha sliders
   # observe({shinyjs::toggle(id="a_goi_search_rep_alpha", condition = input$a_goi_search_rep != '')})
@@ -2120,7 +2209,7 @@ shinyServer(function(input, output, session){
   output$info_gnomad_ui <- renderUI({actionLink('info_gnomad', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_gnomad,{
     text = paste(readLines(find_docs('gnomad_table.info')))
-    showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'gnomAD'))
+    showModal(modalDialog(HTML(text), easyClose = T, footer=genoppi.ver, title = 'gnomAD gene constraints'))
   })
   
   output$info_tissue_ui <- renderUI({actionLink('info_tissue', ' ', icon = icon('question-circle'))})
@@ -2128,7 +2217,7 @@ shinyServer(function(input, output, session){
     text = paste(readLines(find_docs('hpa_rna_table.info')), '<br> <br>', 
                  readLines(find_docs('gtex_rna_table.info')), '<br> <br>', 
                  readLines(find_docs('gtex_protein_table.info')))
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx / HPA tissue expression'))
   })
   
   output$info_tissue_enrichment_ui <- renderUI({actionLink('info_tissue_enrichment', ' ', icon = icon('question-circle'))})
@@ -2136,15 +2225,25 @@ shinyServer(function(input, output, session){
     text = paste(readLines(find_docs('hpa_rna_table.info')), '<br> <br>', 
                  readLines(find_docs('gtex_rna_table.info')), '<br> <br>', 
                  readLines(find_docs('gtex_protein_table.info')))
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx (RNA/Protein) or HPA (RNA)'))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'GTEx / HPA tissue expression'))
   })
   
   output$info_geneset_ui <- renderUI({actionLink('info_geneset', ' ', icon = icon('question-circle'))})
   observeEvent(input$info_geneset,{
-    files = list.files('documentation/', full.names = T)
-    files = files[grepl(files, pattern = '(msigdb)|(go)|(hgnc)')]
-    text = paste(lapply(files, function(x) readLines(x)), collapse = '<br> <br>')
-    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Geneset annotations'))
+  	text = paste(readLines(find_docs('hgnc_group_table.info')), '<br> <br>',
+  				readLines(find_docs('goa_mf_table.info')), '<br> <br>',
+  				readLines(find_docs('goa_cc_table.info')), '<br> <br>',
+  				readLines(find_docs('goa_bp_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_h_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c1_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c2_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c3_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c4_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c5_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c6_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c7_table.info')), '<br> <br>',
+				readLines(find_docs('msigdb_c8_table.info')))
+    showModal(modalDialog(HTML(paste(text)), easyClose = T, footer=genoppi.ver, title = 'Gene set annotations'))
   })
 
   getPage_guide<-function() {
@@ -2157,8 +2256,8 @@ shinyServer(function(input, output, session){
     getPage_guide()
   })
   
-  output$documentation <- renderUI({
-    return(includeHTML("documentation/doc_0316.html"))
-  })
+#  output$documentation <- renderUI({
+#    return(includeHTML("documentation/doc_0316.html"))
+#  })
   
 })
