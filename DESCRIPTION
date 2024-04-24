@@ -2,9 +2,9 @@ Package: genoppi
 Title: genoppi
 Version: 1.1.2
 Authors@R: c(
-    person("Frederik", "Lassen", , "flassen@broadinstitute.org", role = "aut"),
-    person("Yu-Han", "Hsu", , "yuhanhsu@broadinstitute.org", role = "aut"),
+    person("Yu-Han", "Hsu", , "yuhanhsu@broadinstitute.org", role = c("aut","cre")),
     person("Joshua", "Ching", , "jching@broadinstitute.org", role = "aut")
+    person("Frederik", "Lassen", , "flassen@broadinstitute.org", role = "aut"),
   )
 Description: An open-source software for robust and standardized
     integration of proteomic and genetic data.
