@@ -1,6 +1,26 @@
 # GENOPPI SHINY APP SERVER
 
-shinyServer(function(input, output, session){
+shinyServer(function(input, output, session) {
+
+  # -----------------------------------------------------------------
+  # Initialization of react values
+  multi_file_logfc_corr_df <- reactiveVal(value = NULL)
+  multi_file_logfc_corr_plot <- reactiveVal(value = NULL)
+  logfc_corr_both_sig_color <- reactiveVal(value = "green")
+  logfc_corr_first_sig_color <- reactiveVal(value = "#FF00D7")
+  logfc_corr_second_sig_color <- reactiveVal(value = "orange")
+  logfc_corr_no_sig_color <- reactiveVal(value = "#7F7F80")
+  multi_FileName1 <- reactiveVal(value = "File1")
+	multi_FileName2 <- reactiveVal(value = "File2")
+	multi_FileName3 <- reactiveVal(value = "File3")
+  file1_path <- reactiveVal(value = NULL)
+  gwas_traits <- reactiveVal(
+    value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
+  col1_filled <- reactiveVal(value = 0)
+	col2_filled <- reactiveVal(value = 0)
+	col3_filled <- reactiveVal(value = 0)
+	multi_col_width <- reactiveVal(value = 12)
+  
 	
 	# suppress warnings
 	storeWarn <- getOption('warn')
@@ -16,49 +36,17 @@ shinyServer(function(input, output, session){
 	#	return(HTML(documentation))
 	#})
   
-  	# redundant code in R/inputFile.R?
-	output$a_example_file_ui <- renderUI({
-		fileInput('a_file_pulldown_extra',
-		'Upload a proteomic data file to get started!',accept=files_accepted)
-	})
- 
-	output$a_get_example_file_ui <- renderUI({
-		HTML(paste(actionLink('a_get_example_multiple_files', 'multiple example files')))
-	})
-  	
-	observeEvent(input$a_get_example_file,{
-		updateTabItems(session,'sidebarmenu','dashboard')
-		file1_path(example_file)
-		dataPath(example_file)
-	})
-  
-	observeEvent(input$a_file_pulldown_extra,{
-		updateTabItems(session,'sidebarmenu','dashboard')
-		file1_path(input$a_file_pulldown_extra$datapath)
-	})
-  
 	observeEvent(input$tab_welcome, {
 		updateTabItems(session,'sidebarmenu','guide')
 	})
   
-	observeEvent(input$a_file_pulldown_r,{
-		file1_path(input$a_file_pulldown_r$datapath)
-	})
-  
-	file1_path <- reactiveVal(value = NULL)
+	# observeEvent(input$a_file_pulldown_r,{
+	# 	file1_path(input$a_file_pulldown_r$datapath)
+	# })
   
 	a_file_pulldown_r <- reactive({
 		validate(need(!is.null(file1_path()), ''))
 		data.frame(datapath=file1_path(), stringsAsFactors = F)
-	})
-
-	output$a_color_scheme <- renderUI({
-		radioButtons("colorscheme", "Color scheme:",
-				 c("FDR" = "fdr", 
-				   "ExAC" = "exac",
-				   "Grayscale" = "cbf",
-				   "User value" = "user"),
-				 inline = T)
 	})
 
 	output$a_sig_text_ui <- renderUI({
@@ -186,19 +174,13 @@ shinyServer(function(input, output, session){
 	multi_inputFileS2 <- inputFileServer("multi_file2", multi_dataPathS2, multi_errVals2)
 	multi_inputFileS3 <- inputFileServer("multi_file3", multi_dataPathS3, multi_errVals3)
 	
-	multi_FileName1 <- reactiveVal(value = "File1")
-	multi_FileName2 <- reactiveVal(value = "File2")
-	multi_FileName3 <- reactiveVal(value = "File3")
+	
 	
 	multi_FileNameS1<- multiFileNameServer("multi_file1", "File1", multi_FileName1)
 	multi_FileNameS2<- multiFileNameServer("multi_file2", "File2", multi_FileName2)
 	multi_FileNameS3<- multiFileNameServer("multi_file3", "File3", multi_FileName3)
   
 	# track the number of valid datapath
-	col1_filled <- reactiveVal(value = 0)
-	col2_filled <- reactiveVal(value = 0)
-	col3_filled <- reactiveVal(value = 0)
-	multi_col_width <- reactiveVal(value = 12)
 	observeEvent({col1_filled(); col2_filled(); col3_filled()}, {
 		n_col_filled <- col1_filled() + col2_filled() + col3_filled()
 		if (n_col_filled > 0) {multi_col_width(12 / n_col_filled)}
@@ -272,37 +254,29 @@ shinyServer(function(input, output, session){
 			)
 		})
 	})
-  
-	multiFileLogFCCorrelationDf <- reactiveVal(value = NULL)
-	multiFileLogFCCorrelationPlot <- reactiveVal(value = NULL)
-	
-	logfcCorrelationBothSigColor <- reactiveVal(value = 'green')
-	logfcCorrelationFirstSigColor <- reactiveVal(value = '#FF00D7')
-	logfcCorrelationSecondSigColor <- reactiveVal(value = 'orange')
-	logfcCorrelationNoSigColor <- reactiveVal(value = '#7F7F80')
 	
   	ComparisonPlotParamServer(
 		'logfc_comparison',
-		logfcCorrelationBothSigColor,
-		logfcCorrelationFirstSigColor,
-		logfcCorrelationSecondSigColor,
-		logfcCorrelationNoSigColor
+		logfc_corr_both_sig_color,
+		logfc_corr_first_sig_color,
+		logfc_corr_second_sig_color,
+		logfc_corr_no_sig_color
 	)
     
 	mulitFilelogFCCorrelation <- logFCCorrelationServer(
 		'logfc_comparison',
-		# logfcCorrelationBothSigColor,
-		# logfcCorrelationFirstSigColor,
-		# logfcCorrelationSecondSigColor,
-		# logfcCorrelationNoSigColor,
+		# logfc_corr_both_sig_color,
+		# logfc_corr_first_sig_color,
+		# logfc_corr_second_sig_color,
+		# logfc_corr_no_sig_color,
 		multi_sigS1,
 		multi_sigS2,
 		multi_sigS3,
 		multi_FileName1,
 		multi_FileName2,
 		multi_FileName3,
-		multiFileLogFCCorrelationPlot,
-		multiFileLogFCCorrelationDf
+		multi_file_logfc_corr_plot,
+		multi_file_logfc_corr_df
 	)
 	
 	vennDfS <- dataServer("multifile_venn")
@@ -715,35 +689,10 @@ shinyServer(function(input, output, session){
   })
   
   # GWAS catalog traits
-  gwas_traits <- reactiveVal(value = unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
-  
   output$a_gwas_catalogue_ui <- renderUI({
   	selectInput('a_gwas_catalogue', 'Search GWAS catalog trait(s):',
   		gwas_traits(), multiple=T, selectize=TRUE, selected = "grey")
-  })
-  
- # output$a_gwas_subset_traits_by_data <- renderUI({
-  #  checkboxInput("a_toggle_gwas_subset", label = "Subset entries with traits in data (WARNING: takes a while)", value = FALSE)
-  # })
-  
-  #output$a_gwas_subset_traits_by_data_freq <- renderUI({
-  #  checkboxInput("a_toggle_gwas_subset_freq", label = "Order entries by frequency", value = FALSE)
-  #})
-  
-  # # Investigate why this is taking so long
-  # observeEvent(input$a_toggle_gwas_subset,{
-  #   print(input$a_toggle_gwas_subset)
-  #   input = input$a_toggle_gwas_subset
-  #   if (input){
-  #     print("input$a_toggle_gwas_subset")
-  #     showModal(modalDialog(HTML(paste("subsetting GWAS entries by uploaded data.. This may take a while.", '<div class="loader"></div>')), easyClose = T, footer=NULL))
-  #     gwas_traits(a_gwas_catalogue_traits_in_data())
-  #     removeModal()
-  #   } else {
-  #     gwas_traits(unique(as.character(as.vector(gwas_table$DISEASE.TRAIT))))
-  #   }
-  # })
-  
+  })  
   
   # select PPI DB
   output$a_ppi_select_ui <- renderUI({
@@ -1928,7 +1877,6 @@ shinyServer(function(input, output, session){
   })
   
   # download integrated plot graphics.
-  input_integrated_plot_gg <- function(){a_integrated_plot_gg()}
   output$a_integrated_plot_download = downloadHandler(
     filename = 'genoppi-integrated-plot.png',
     content = function(file) {
@@ -1936,13 +1884,12 @@ shinyServer(function(input, output, session){
         grDevices::png(..., width = width, height = height,
                        res = 300, units = "in")
       }
-      ggplot2::ggsave(file, plot =  input_integrated_plot_gg(), device = device,
+      ggplot2::ggsave(file, plot =  a_integrated_plot_gg(), device = device,
              width = global.img.volcano.download.width,
              height = global.img.volcano.download.height)
     })
   
- # download pathway annoation plot
- input_pathway_plot_gg <- function(){a_pathway_plot_gg()}
+  # download pathway annoation plot
   output$a_pathway_plot_download = downloadHandler(
     filename = paste0('genoppi-','geneset', '-plot.png'),
     content = function(file) {
@@ -1956,7 +1903,6 @@ shinyServer(function(input, output, session){
     })
   
   # save the legend of the pathway plot
-  input_pathway_plot_legend_gg <- function(){a_pathway_plot_legend_gg()}
   output$a_pathway_plot_legend_download = downloadHandler(
     filename = paste0('genoppi-', 'geneset', '-legend.png'),
     content = function(file) {
@@ -2164,26 +2110,9 @@ shinyServer(function(input, output, session){
     return(p)
   })
   
-
-  a_multi_vp_plus <- reactive({
-    validate(
-      need(!is.null(a_search_gene()), "")
-    )
-    p <- a_multi_vp_layer()
-    goi <- a_search_gene()
-    orig_data <- dataS()
-    searchgene <- orig_data[grepl(goi,orig_data$gene),]
-    p1 <- search_volcano(p, searchgene)
-    p1
-  })
   output$VolcanoPlotPathway <- plotly::renderPlotly({
     req(a_pathway_plot())
     a_pathway_plot()
-  })
-  
-  output$ScatterPlot <- plotly::renderPlotly({
-    validate(need(a_file_pulldown_r()  != '', "Upload file"))
-    a_sp()
   })
 
   output$Multi_VolcanoPlot <- plotly::renderPlotly({
@@ -2192,12 +2121,6 @@ shinyServer(function(input, output, session){
     a_integrated_plot()
   })
   
-  output$a_file_display_table_ui <- DT::renderDataTable({
-    req(dataFrameS())
-    DT::datatable(dataFrameS()$data)
-  })
-  
- 
   ##### GENERAL #####
   #documentation
   output$info_gwas_ui <- renderUI({actionLink('info_gwas', ' ', icon = icon('question-circle'))})

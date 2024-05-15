@@ -1,6 +1,6 @@
 Package: genoppi
 Title: genoppi
-Version: 1.1.2
+Version: 1.1.3
 Authors@R: c(
     person("Yu-Han", "Hsu", , "yuhanhsu@broadinstitute.org", role = c("aut","cre")),
     person("Joshua", "Ching", , "jching@broadinstitute.org", role = "aut"),
